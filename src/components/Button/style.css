@@ -1,0 +1,110 @@
+.button {
+  align-items: center;
+  border: 1px solid;
+  border-radius: var(--variable-collection-radius);
+  display: inline-flex;
+  gap: 8px;
+  overflow: hidden;
+  position: relative;
+  cursor: pointer;
+}
+
+.button:hover {
+  background-color: rgba(0, 0, 0, 0);
+}
+
+.button .icon-3 {
+  flex: 0 0 auto !important;
+}
+
+.button .class-5 {
+  color: var(--variable-collection-warning) !important;
+}
+
+.button .text-2 {
+  font-family: "Source Sans Pro", Helvetica;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+}
+
+.button.secondary-large {
+  border-color: var(--variable-collection-green);
+  min-width: 120px;
+  padding: 10px 12px;
+}
+
+.button.warning-large {
+  border-color: var(--variable-collection-warning);
+  min-width: 120px;
+  padding: 10px 12px;
+}
+
+.button.primary-large {
+  background-color: var(--variable-collection-green);
+  border-color: var(--variable-collection-green);
+  min-width: 120px;
+  padding: 10px 12px;
+}
+
+.button.secondary-small {
+  border-color: var(--variable-collection-green);
+  justify-content: center;
+  padding: 8px 16px;
+}
+
+.button.primary-small {
+  background-color: var(--variable-collection-green);
+  border-color: var(--variable-collection-green);
+  justify-content: center;
+  padding: 8px 16px;
+}
+
+.button.warning {
+  border-color: var(--variable-collection-warning);
+  justify-content: center;
+  padding: 8px 16px;
+}
+
+.button.secondary-large .text-2 {
+  color: var(--variable-collection-green);
+  flex: 1;
+  font-size: 18px;
+  margin-top: -0.5px;
+  text-align: center;
+}
+
+.button.warning-large .text-2 {
+  color: var(--variable-collection-warning);
+  flex: 1;
+  font-size: 18px;
+  margin-top: -0.5px;
+  text-align: center;
+}
+
+.button.primary-large .text-2 {
+  color: var(--variable-collection-white);
+  flex: 1;
+  font-size: 18px;
+  margin-top: -0.5px;
+  text-align: center;
+}
+
+.button.secondary-small .text-2 {
+  color: var(--variable-collection-green);
+  font-size: 12.8px;
+  width: fit-content;
+}
+
+.button.primary-small .text-2 {
+  color: var(--variable-collection-white);
+  font-size: 12.8px;
+  width: fit-content;
+}
+
+.button.warning .text-2 {
+  color: var(--variable-collection-warning);
+  font-size: 12.8px;
+  width: fit-content;
+}

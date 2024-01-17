@@ -1,0 +1,128 @@
+.banner {
+  align-items: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  position: relative;
+  width: 100%;
+}
+
+.banner .text-wrapper-2 {
+  color: var(--variable-collection-white);
+  font-family: "Titillium Web", Helvetica;
+  font-size: 56px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: 64px;
+  margin-top: -1px;
+  position: relative;
+  text-align: center;
+  text-shadow: 1px 1px 8px #0000004c;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.banner .p {
+  color: var(--variable-collection-white);
+  font-family: "Source Sans Pro", Helvetica;
+  font-size: 24px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  text-align: center;
+  width: fit-content;
+}
+
+.banner .frame {
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+}
+
+.banner .instance-node {
+  background-image: url(https://c.animaapp.com/YAXjJbDO/img/icon@2x.png) !important;
+  display: flex !important;
+  height: 132px !important;
+  min-height: unset !important;
+  min-width: unset !important;
+  width: 132px !important;
+}
+
+.banner .class {
+  color: var(--variable-collection-white) !important;
+}
+
+.banner .class-2 {
+  color: var(--variable-collection-white) !important;
+  flex: unset !important;
+  white-space: nowrap !important;
+  width: fit-content !important;
+}
+
+.banner .class-3 {
+  align-self: stretch !important;
+  flex: 0 0 auto !important;
+  width: 100% !important;
+}
+
+.banner .class-4 {
+  display: inline-flex !important;
+  flex: 0 0 auto !important;
+  width: unset !important;
+}
+
+.banner .button-wrapper {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-direction: column;
+  gap: 10px;
+  justify-content: center;
+  position: relative;
+}
+
+.banner .button-instance {
+  margin-top: -1px !important;
+}
+
+.banner .instance-node-2 {
+  flex: 0 0 auto !important;
+}
+
+.banner.variant-article {
+  background-color: var(--variable-collection-black);
+  padding: 48px 16px;
+}
+
+.banner.variant-user-info {
+  background-color: var(--variable-collection-black);
+  padding: 48px 16px;
+}
+
+.banner.variant-default {
+  background-color: var(--variable-collection-green);
+  box-shadow: inset 0px 0px 24px #00000040;
+  padding: 48px 0px;
+}
+
+.banner.variant-article .frame {
+  align-items: flex-start;
+  align-self: stretch;
+  display: flex;
+  max-width: 800px;
+  width: 100%;
+}
+
+.banner.variant-user-info .frame {
+  align-items: center;
+  display: inline-flex;
+}
+
+.banner.variant-default .frame {
+  align-items: flex-start;
+  display: flex;
+}

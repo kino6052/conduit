@@ -1,0 +1,13 @@
+.pagination-bar {
+  align-items: flex-start;
+  border-color: var(--variable-collection-green);
+  border-right-style: solid;
+  border-right-width: 1px;
+  display: inline-flex;
+  position: relative;
+  margin: 8px;
+}
+
+.pagination-bar .pagination-button-instance {
+  flex: 0 0 auto !important;
+}

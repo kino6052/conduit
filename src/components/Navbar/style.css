@@ -1,0 +1,73 @@
+.navbar {
+  align-items: center;
+  background-color: #ffffff;
+  border-bottom-style: solid;
+  border-bottom-width: 1px;
+  border-color: #0000001a;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px 10px;
+  justify-content: center;
+  padding: 10px;
+  position: relative;
+  width: 800px;
+}
+
+.navbar .container {
+  align-items: flex-start;
+  background-color: #ffffff;
+  display: flex;
+  flex: 1;
+  flex-grow: 1;
+  flex-wrap: wrap;
+  gap: 10px 10px;
+  justify-content: space-between;
+  max-width: 800px;
+  padding: 0px 10px;
+  position: relative;
+}
+
+.navbar .link {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  gap: 10px;
+  height: 34px;
+  justify-content: center;
+  padding: 0px 64px 0px 0px;
+  position: relative;
+}
+
+.navbar .div {
+  color: var(--variable-collection-green);
+  font-family: "Titillium Web", Helvetica;
+  font-size: 24px;
+  font-weight: 700;
+  letter-spacing: 0;
+  line-height: normal;
+  margin-bottom: -0.5px;
+  margin-top: -2.5px;
+  position: relative;
+  text-align: center;
+  width: fit-content;
+}
+
+.navbar .navbar-nav {
+  align-items: center;
+  display: inline-flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px 8px;
+  justify-content: flex-end;
+  max-width: 400px;
+  min-width: 200px;
+  position: relative;
+}
+
+.navbar .tab-instance {
+  flex: 0 0 auto !important;
+}
+
+.navbar .design-component-instance-node {
+  margin-top: -2px !important;
+}

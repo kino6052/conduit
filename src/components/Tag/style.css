@@ -1,0 +1,41 @@
+.tag {
+  align-items: center;
+  background-color: var(--variable-collection-white);
+  border: 1px solid;
+  border-color: var(--variable-collection-grey);
+  border-radius: var(--variable-collection-radius);
+  display: inline-flex;
+  gap: 8px;
+  justify-content: center;
+  padding: 6px 16px;
+  position: relative;
+  cursor: pointer;
+}
+
+tag:hover {
+  background-color: var(--variable-collection-grey);
+}
+
+.tag .text-wrapper-3 {
+  color: var(--variable-collection-grey);
+  font-family: "Source Sans Pro", Helvetica;
+  font-size: 12.8px;
+  font-weight: 600;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  text-align: center;
+  white-space: nowrap;
+  width: fit-content;
+}
+
+.tags {
+  align-items: flex-start;
+  align-self: stretch;
+  display: flex;
+  flex: 0 0 auto;
+  flex-wrap: wrap;
+  gap: 8px 8px;
+  position: relative;
+  width: 100%;
+}

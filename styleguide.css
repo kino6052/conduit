@@ -1,0 +1,9 @@
+:root {
+  --variable-collection-black: rgba(51, 51, 51, 1);
+  --variable-collection-green: rgba(97, 187, 97, 1);
+  --variable-collection-grey: rgba(170, 170, 170, 1);
+  --variable-collection-lightgrey: rgba(245, 245, 245, 1);
+  --variable-collection-radius: 8px;
+  --variable-collection-warning: rgba(187, 97, 97, 1);
+  --variable-collection-white: rgba(255, 255, 255, 1);
+}
