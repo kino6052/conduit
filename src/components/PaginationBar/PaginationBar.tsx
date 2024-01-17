@@ -22,10 +22,7 @@ export const PaginationBar: React.FC<TPaginationBarProps> = ({
         const isSelected = i === selected;
         return (
           <PaginationButton
-            id={{
-              id: "pagination-button",
-              uuid: String(i),
-            }}
+            id={String(i + 1)}
             value={String(i + 1)}
             variant={isSelected ? "selected" : "default"}
           />

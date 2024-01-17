@@ -4,25 +4,23 @@ Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcN
 */
 
 import React from "react";
-import { Id } from "../../utils/events";
-import { withEventWrapper } from "../../utils/withEventWrapper";
+import { TWithId } from "../../utils/withEventWrapper";
 import "./style.css";
 
-interface Props {
+type TPaginationButtonProps = TWithId<{
   value: string;
   variant: "selected" | "default";
   className: any;
-  id: Id;
-}
+}>;
 
-export const id = "pagination-button";
+export const slug = "pagination-button";
 
-const _PaginationButton = ({
+export const PaginationButton = ({
   value = "1",
   variant,
   className,
   ...props
-}: Props): JSX.Element => {
+}: TPaginationButtonProps): JSX.Element => {
   return (
     <button
       {...props}
@@ -32,9 +30,3 @@ const _PaginationButton = ({
     </button>
   );
 };
-
-export const PaginationButton = withEventWrapper([
-  "onClick",
-  "onBlur",
-  "onKeyDown",
-])(_PaginationButton);

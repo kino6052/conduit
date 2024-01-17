@@ -1,8 +1,19 @@
 import React, { PropsWithChildren, SyntheticEvent } from "react";
 import { EventSubject, Id } from "./events";
 
-export const withEventWrapper = (handlers?: string[]) => {
-  return function <T extends PropsWithChildren<{ id: Id }>>(
+export type TWithId<T> = T & {
+  slug: string;
+  id?: string;
+};
+
+export const withEventWrapper = ({
+  slug,
+  handlers,
+}: {
+  slug?: string;
+  handlers?: string[];
+}) => {
+  return function <T extends PropsWithChildren<{ id: string; slug: string }>>(
     WrappedComponent: React.FC<T>,
   ) {
     const getHandlers = (id: Id) =>
@@ -21,8 +32,14 @@ export const withEventWrapper = (handlers?: string[]) => {
           {},
         );
 
-    return (props: T) => (
-      <WrappedComponent {...props} {...getHandlers(props.id)} />
+    return ({ id, ...props }: T) => (
+      <WrappedComponent
+        {...props}
+        {...getHandlers({
+          slug: slug || props.slug,
+          id,
+        })}
+      />
     );
   };
 };
