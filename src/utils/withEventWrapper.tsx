@@ -1,5 +1,5 @@
 import React, { PropsWithChildren, SyntheticEvent } from "react";
-import { EventSubject, Id } from "./events";
+import { EventSubject } from "./events";
 
 export type TWithId<T> = T & {
   slug: string;
@@ -13,10 +13,10 @@ export const withEventWrapper = ({
   slug?: string;
   handlers?: string[];
 }) => {
-  return function <T extends PropsWithChildren<{ id: string; slug: string }>>(
+  return function <T extends PropsWithChildren<TWithId<{}>>>(
     WrappedComponent: React.FC<T>,
   ) {
-    const getHandlers = (id: Id) =>
+    const getHandlers = ({ slug, id }: TWithId<{}>) =>
       handlers
         ?.filter((name) => /^on/.test(name))
         .reduce(
@@ -24,6 +24,7 @@ export const withEventWrapper = ({
             ...acc,
             [name]: (e: SyntheticEvent) =>
               EventSubject.next({
+                slug,
                 id,
                 type: name,
                 payload: JSON.stringify(e.nativeEvent),
