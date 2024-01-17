@@ -21,7 +21,7 @@ type TPageDefault = {
 export const DefaultState: TPageDefault = {
   username: "eni9mu5",
   banner: {
-    variant: "default",
+    variant: "article",
     heading: "Article text",
     userInfo: {
       date: "01 April 1990",

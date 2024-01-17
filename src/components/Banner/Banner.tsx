@@ -10,7 +10,7 @@ import { Heading } from "../Heading";
 import { Icon } from "../Icon";
 import { UserInfo } from "../UserInfo";
 import { TUserInfo } from "../UserInfo/UserInfo";
-import "./style.css";
+import "./style.scss";
 
 export interface TBannerProps {
   variant: "user-info" | "article" | "default";
