@@ -21,15 +21,18 @@ interface Props {
   divClassName: string;
 }
 
+export const slug = "button";
+
 export const Button = ({
   text = "Text",
   hasIcon = true,
   variant,
   className,
   divClassName,
+  ...props
 }: Props): JSX.Element => {
   return (
-    <button className={`button ${variant} ${className}`}>
+    <button {...props} className={`button ${variant} ${className}`}>
       {hasIcon && (
         <Icon
           className="icon-3"
