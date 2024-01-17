@@ -3,5 +3,5 @@ import { Button as _Button, slug } from "./Button";
 
 export const Button = withEventWrapper({
   handlers: ["onClick"],
-  slug,
+  slug: _Button.name,
 })(_Button);

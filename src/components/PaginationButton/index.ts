@@ -5,6 +5,6 @@ import {
 } from "./PaginationButton";
 
 export const PaginationButton = withEventWrapper({
-  slug,
+  slug: _PaginationButton.name,
   handlers: ["onClick", "onBlur", "onKeyDown"],
 })(_PaginationButton);

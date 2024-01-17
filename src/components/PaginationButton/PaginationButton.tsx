@@ -13,8 +13,6 @@ type TPaginationButtonProps = TWithId<{
   className: any;
 }>;
 
-export const slug = "pagination-button";
-
 export const PaginationButton = ({
   value = "1",
   variant,

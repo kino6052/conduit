@@ -21,8 +21,6 @@ interface Props {
   divClassName: string;
 }
 
-export const slug = "button";
-
 export const Button = ({
   text = "Text",
   hasIcon = true,
