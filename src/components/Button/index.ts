@@ -1,7 +1,4 @@
 import { withEventWrapper } from "../../utils/withEventWrapper";
-import { Button as _Button, slug } from "./Button";
+import { Button as _Button } from "./Button";
 
-export const Button = withEventWrapper({
-  handlers: ["onClick"],
-  slug: _Button.name,
-})(_Button);
+export const Button = withEventWrapper(["onClick"])(_Button);

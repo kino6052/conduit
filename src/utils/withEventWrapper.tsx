@@ -6,13 +6,9 @@ export type TWithId<T> = T & {
   id?: string;
 };
 
-export const withEventWrapper = ({
-  slug,
-  handlers,
-}: {
-  slug?: string;
-  handlers?: string[];
-}) => {
+export const withEventWrapper = (
+  handlers?: string[]
+) => {
   return function <T extends PropsWithChildren<TWithId<{}>>>(
     WrappedComponent: React.FC<T>,
   ) {
@@ -37,7 +33,7 @@ export const withEventWrapper = ({
       <WrappedComponent
         {...props}
         {...getHandlers({
-          slug: slug || props.slug,
+          slug: WrappedComponent.name,
           id,
         })}
       />
