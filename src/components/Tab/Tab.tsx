@@ -1,9 +1,3 @@
-/*
-We're constantly improving the code you see. 
-Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcNg&d=1152665201300829
-*/
-
-import PropTypes from "prop-types";
 import React from "react";
 import { Icon } from "../Icon";
 import "./style.css";
@@ -49,12 +43,4 @@ export const Tab: React.FC<TTabProps> = ({
       )}
     </div>
   );
-};
-
-Tab.propTypes = {
-  hasIcon: PropTypes.bool,
-  hasUnderline: PropTypes.bool,
-  text: PropTypes.string,
-  variant: PropTypes.oneOf(["menu", "selected", "unselected"]),
-  iconIcon: PropTypes.string,
 };

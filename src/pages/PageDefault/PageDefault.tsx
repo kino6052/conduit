@@ -10,7 +10,7 @@ import { TSidebarProps } from "../../components/Sidebar/types";
 import { Tab, TTabProps } from "../../components/Tab/Tab";
 import "./style.css";
 
-type TPageDefault = {
+export type TPageDefaultProps = {
   username: "eni9mu5";
   banner: TBannerProps;
   sidebarProps: TSidebarProps;
@@ -18,7 +18,7 @@ type TPageDefault = {
   tabs: TTabProps[];
 };
 
-export const DefaultState: TPageDefault = {
+export const DefaultState: TPageDefaultProps = {
   username: "eni9mu5",
   banner: {
     variant: "article",
@@ -34,6 +34,7 @@ export const DefaultState: TPageDefault = {
   },
   posts: [
     {
+      id: "post-1",
       date: "01 January 2024",
       username: "Jane Lobster",
       description: "A good article, a really really good one",
@@ -42,6 +43,7 @@ export const DefaultState: TPageDefault = {
       title: "A good thing",
     },
     {
+      id: "post-2",
       date: "01 January 2024",
       username: "Jane Lobster",
       description: "A good article, a really really good one",
@@ -56,7 +58,7 @@ export const DefaultState: TPageDefault = {
   ],
 };
 
-export const PageDefault: React.FC<TPageDefault> = ({
+export const PageDefault: React.FC<TPageDefaultProps> = ({
   username,
   banner,
   sidebarProps,

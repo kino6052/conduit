@@ -1,8 +1,8 @@
-import { Heading } from ".";
+import { Typography } from ".";
 
 export default {
-  title: "Components/Heading",
-  component: Heading,
+  title: "Components/Typography",
+  component: Typography,
   argTypes: {
     variant: {
       options: ["regular", "regular-bold", "regular-grey", "h-1", "h-2"],

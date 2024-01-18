@@ -6,7 +6,7 @@ Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcN
 import PropTypes from "prop-types";
 import React from "react";
 import { Button } from "../Button";
-import { Heading } from "../Heading";
+import { Typography } from "../Typography";
 import { Icon } from "../Icon";
 import { UserInfo } from "../UserInfo";
 import { TUserInfo } from "../UserInfo/UserInfo";
@@ -38,7 +38,7 @@ export const Banner: React.FC<TBannerProps> = ({
             <Icon className="instance-node" variant="with-image" />
           )}
 
-          <Heading
+          <Typography
             className={`${variant === "article" ? "class-3" : "class-4"}`}
             textClassName={`${variant === "article" ? "class" : "class-2"}`}
             value={heading}

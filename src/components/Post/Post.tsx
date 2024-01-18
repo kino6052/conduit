@@ -1,18 +1,14 @@
-/*
-We're constantly improving the code you see. 
-Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcNg&d=1152665201300829
-*/
-
-import PropTypes from "prop-types";
 import React from "react";
 import { Button } from "../Button";
-import { Heading } from "../Heading";
-import { Tag } from "../Tag";
 import { Tags } from "../Tag/Tag";
 import { UserInfo } from "../UserInfo";
+import { Typography } from "../Typography";
+import { Link } from "../Link";
+
 import "./style.css";
 
 export interface TPostProps {
+  id: string;
   title: string;
   date: string;
   description: string;
@@ -28,6 +24,7 @@ export const Post: React.FC<TPostProps> = ({
   username = "John Lobster",
   likes = 64,
   tags = [],
+  id,
 }) => {
   return (
     <div className={`post`}>
@@ -45,24 +42,16 @@ export const Post: React.FC<TPostProps> = ({
         />
       </div>
       <div className="post-content">
-        <Heading className="heading-2" value={title} variant="h-2" />
-        <Heading
-          className="heading-2"
-          value={description}
-          variant="regular-grey"
-        />
+        <Link id={`post-${id}`}>
+          <Typography className="heading-2" value={title} variant="h-2" />
+          <Typography
+            className="heading-2"
+            value={description}
+            variant="regular-grey"
+          />
+        </Link>
         <Tags tags={tags} />
       </div>
     </div>
   );
-};
-
-Post.propTypes = {
-  title: PropTypes.string,
-  date: PropTypes.string,
-  description: PropTypes.string,
-  username: PropTypes.string,
-  buttonText: PropTypes.string,
-  headingValue: PropTypes.string,
-  headingValue1: PropTypes.string,
 };
