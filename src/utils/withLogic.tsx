@@ -11,19 +11,19 @@ export function withLogic<
 >(update: (event: IEvent, state: T) => Promise<T>) {
   return function (WrappedComponent: React.FC<T>) {
     return (props: T) => {
-      const [state, setState] = useState<T>(props);
-
+      const [_state, setState] = useState<T>(props);
+      
       useEffect(() => {
         const subscription = EventSubject.subscribe((event) => {
-          update(event, state).then((newState) => {
+          update(event, _state).then((newState) => {
             setState(newState);
           });
         });
 
         return () => subscription.unsubscribe();
-      }, []);
+      }, [_state]);
 
-      return <WrappedComponent {...state} />;
+      return <WrappedComponent {..._state} />;
     };
   };
 }

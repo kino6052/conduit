@@ -35,7 +35,7 @@ export const Post: React.FC<TPostProps> = ({
           username={username}
         />
         <Button
-          id={title}
+          id={id}
           className="design-component-instance-node-2"
           text={String(likes)}
           variant="secondary-small"
