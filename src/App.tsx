@@ -1,12 +1,7 @@
 import React from "react";
 import { Navbar } from "./components/Navbar";
-import { EPage, TAppProps } from "./types";
+import { TAppProps } from "./types";
 import { pagesMap } from "./utils/pagesMap";
-import { HomePage } from "./pages/HomePage/HomePage";
-import { ArticlePage } from "./pages/ArticlePage/ArticlePage";
-
-pagesMap.set(EPage.Home, HomePage);
-pagesMap.set(EPage.Article, ArticlePage);
 
 export const App: React.FC<TAppProps> = ({ page, pageProps }) => {
   const Page = pagesMap.get(page);

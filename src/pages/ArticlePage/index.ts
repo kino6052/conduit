@@ -1,1 +1,1 @@
-export { ArticlePage as PageDefault } from "./ArticlePage";
+export { ArticlePage } from "./ArticlePage";
