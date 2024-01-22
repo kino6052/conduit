@@ -1,1 +1,0 @@
-export { PageDefault } from "./PageDefault";

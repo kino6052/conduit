@@ -6,19 +6,17 @@ Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcN
 import PropTypes from "prop-types";
 import React from "react";
 import { Tab } from "../Tab";
-import "./style.css";
+import "./style.scss";
 
 export interface TNavbarProps {
-  className: any;
   username: string;
 }
 
 export const Navbar: React.FC<TNavbarProps> = ({
-  className,
   username = "Profile",
 }) => {
   return (
-    <div className={`navbar ${className}`}>
+    <div className={`navbar`}>
       <div className="container">
         <div className="link">
           <div className="div">conduit</div>

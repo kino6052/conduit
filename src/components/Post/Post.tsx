@@ -42,7 +42,7 @@ export const Post: React.FC<TPostProps> = ({
         />
       </div>
       <div className="post-content">
-        <Link id={`post-${id}`}>
+        <Link id={id}>
           <Typography className="heading-2" value={title} variant="h-2" />
           <Typography
             className="heading-2"

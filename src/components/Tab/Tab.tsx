@@ -7,8 +7,6 @@ export interface TTabProps {
   hasUnderline: boolean;
   text: string;
   variant: "menu" | "selected" | "unselected";
-  className: any;
-  divClassName: any;
   iconIcon: string;
 }
 
@@ -17,12 +15,10 @@ export const Tab: React.FC<TTabProps> = ({
   hasUnderline = true,
   text = "Home",
   variant,
-  className,
-  divClassName,
   iconIcon = "favorite",
 }) => {
   return (
-    <div className={`tab ${variant} ${className}`}>
+    <div className={`tab ${variant}`}>
       {["selected", "unselected"].includes(variant) && (
         <div className="home">{text}</div>
       )}
@@ -38,7 +34,7 @@ export const Tab: React.FC<TTabProps> = ({
               />
             )}
           </>
-          <div className={`text-wrapper ${divClassName}`}>{text}</div>
+          <div className="text-wrapper">{text}</div>
         </>
       )}
     </div>
