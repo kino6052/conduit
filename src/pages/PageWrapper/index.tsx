@@ -15,7 +15,7 @@ export const PageWrapper: React.FC<PropsWithChildren<TPageWrapperProps>> = ({
       <div className="page-container">
         <div className="row">{children}</div>
       </div>
-      <PaginationBar {...paginationBarProps} />
+      {paginationBarProps && <PaginationBar {...paginationBarProps} />}
     </div>
   );
 };

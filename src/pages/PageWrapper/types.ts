@@ -3,5 +3,5 @@ import { TPaginationBarProps } from "../../components/PaginationBar/PaginationBa
 
 export type TPageWrapperProps = {
   bannerProps: TBannerProps;
-  paginationBarProps: TPaginationBarProps;
+  paginationBarProps?: TPaginationBarProps;
 };

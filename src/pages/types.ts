@@ -10,5 +10,5 @@ export type TPageProps = {
   sidebarProps: TSidebarProps;
   posts: TPostProps[];
   tabs: TTabProps[];
-  paginationBarProps: TPaginationBarProps;
+  paginationBarProps?: TPaginationBarProps;
 };

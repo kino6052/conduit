@@ -1,6 +1,6 @@
 import { Button } from "../components/Button/Button";
 import { Link } from "../components/Link/Link";
-import { TAppProps } from "../types";
+import { EPage, TAppProps } from "../types";
 import { IEvent } from "../utils/events";
 
 type TPost = {};
@@ -25,10 +25,11 @@ export const logic = async (
     const id = event.id;
     return {
       ...state,
+      page: EPage.Article,
       pageProps: {
         ...pageProps,
-        banner: {
-          ...pageProps.banner,
+        bannerProps: {
+          ...pageProps.bannerProps,
           heading: postMap[id].title,
           variant: "article",
         },
