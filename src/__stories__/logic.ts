@@ -82,36 +82,36 @@ export const logic = async (
 
         return defaultProps;
       }
-    } else {
-      if (event.slug === Link.name && event.id) {
-        pageProps.posts = [...Database.Posts];
-        const postMap = Object.fromEntries(
-          pageProps.posts?.map((post) => [post.id, post]),
-        );
+    }
 
-        if (!Object.keys(postMap).includes(event.id)) return;
+    if (event.slug === Link.name && event.id) {
+      pageProps.posts = [...Database.Posts];
+      const postMap = Object.fromEntries(
+        pageProps.posts?.map((post) => [post.id, post]),
+      );
 
-        const id = event.id;
-        state.page = EPage.Article;
-        state.pageProps.bannerProps.heading = postMap[id].title;
-        state.pageProps.bannerProps.variant = "article";
-        return;
-      }
+      if (!Object.keys(postMap).includes(event.id)) return;
 
-      if (event.slug === Button.name) {
-        state.pageProps.posts = pageProps.posts.map((post) => {
-          if (post.id !== event.id) return post;
+      const id = event.id;
+      state.page = EPage.Article;
+      state.pageProps.bannerProps.heading = postMap[id].title;
+      state.pageProps.bannerProps.variant = "article";
+      return;
+    }
 
-          const hasLiked = Database.HasLiked;
-          Database.HasLiked = !hasLiked;
+    if (event.slug === Button.name) {
+      state.pageProps.posts = pageProps.posts.map((post) => {
+        if (post.id !== event.id) return post;
 
-          return {
-            ...post,
-            likes: post.likes + (hasLiked ? -1 : 1),
-          };
-        });
-        return;
-      }
+        const hasLiked = Database.HasLiked;
+        Database.HasLiked = !hasLiked;
+
+        return {
+          ...post,
+          likes: post.likes + (hasLiked ? -1 : 1),
+        };
+      });
+      return;
     }
 
     // TODO: Remove Tab.name and change it to slug that is exported from the index file
