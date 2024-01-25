@@ -2,7 +2,7 @@ import { App } from "../App";
 import { DefaultAppProps } from "./data";
 import { EventSubject } from "../utils/events";
 import { withLogic } from "../utils/withLogic";
-import { logic } from "./logic";
+import { getDefaultAppProps, logic } from "./logic";
 
 export default {
   title: "Components/App",
@@ -10,7 +10,7 @@ export default {
 };
 
 export const Default = {
-  args: DefaultAppProps,
+  args: getDefaultAppProps(),
 };
 
 EventSubject.subscribe(console.warn);

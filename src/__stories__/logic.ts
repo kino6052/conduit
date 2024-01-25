@@ -9,6 +9,8 @@ import { ENewPostPageId } from "../pages/NewPostPage/types";
 import { EPage, TAppProps, TCommonPageProps, getIsNewPostPage } from "../types";
 import { IEvent } from "../utils/events";
 import { uniqueId } from "lodash";
+import { TPageProps } from "../pages/types";
+import { produce } from "immer";
 
 type TPost = {};
 
@@ -31,118 +33,102 @@ const hasPressedEnter = (event: IEvent) => {
   return event.type === "onKeyDown" && event.event?.key === "Enter";
 };
 
+export const getDefaultAppProps = (): TAppProps<TPageProps> => {
+  return {
+    ...DefaultAppProps,
+    pageProps: {
+      ...DefaultAppProps.pageProps,
+      posts: [...Database.Posts],
+    },
+  };
+};
+
 export const logic = async (
   event: IEvent,
-  state: TAppProps<TCommonPageProps>,
+  _state: TAppProps<TCommonPageProps>,
 ): Promise<TAppProps<TCommonPageProps>> => {
-  const pageProps = state.pageProps;
-  if (getIsNewPostPage(state, pageProps)) {
-    if (
-      event.slug === InputSlug &&
-      event.id === ENewPostPageId.PostId &&
-      event.type === "onChange"
-    ) {
-      return {
-        ...state,
-        pageProps: {
-          ...pageProps,
-          input: event.event?.target?.value,
-        },
-      };
-    }
+  return produce(_state, (state): void => {
+    const pageProps = state.pageProps;
+    if (getIsNewPostPage(state, pageProps)) {
+      if (
+        event.slug === InputSlug &&
+        event.id === ENewPostPageId.PostId &&
+        event.type === "onChange"
+      ) {
+        pageProps.input = event.event?.target?.value;
+        return;
+      }
 
-    if (
-      event.slug === InputSlug &&
-      event.id === ENewPostPageId.PostId &&
-      hasPressedEnter(event)
-    ) {
-      Database.Posts = [
-        ...Database.Posts,
-        {
-          date: new Date().toISOString(),
-          description: pageProps.input,
-          id: uniqueId(),
-          likes: 0,
-          tags: [],
-          title: pageProps.input,
-          username: "username",
-        },
-      ];
-
-      console.warn(Database.Posts);
-
-      return {
-        ...DefaultAppProps,
-        pageProps: {
-          ...DefaultAppProps.pageProps,
-          posts: Database.Posts,
-        },
-      };
-    }
-  } else {
-    pageProps.posts = [...Database.Posts];
-    const postMap = Object.fromEntries(
-      pageProps.posts?.map((post) => [post.id, post]),
-    );
-
-    if (
-      event.slug === Link.name &&
-      event.id &&
-      Object.keys(postMap).includes(event.id)
-    ) {
-      const id = event.id;
-      return {
-        ...state,
-        page: EPage.Article,
-        pageProps: {
-          ...pageProps,
-          bannerProps: {
-            ...pageProps.bannerProps,
-            heading: postMap[id].title,
-            variant: "article",
+      if (
+        event.slug === InputSlug &&
+        event.id === ENewPostPageId.PostId &&
+        hasPressedEnter(event)
+      ) {
+        Database.Posts = [
+          {
+            date: new Date().toISOString(),
+            description: pageProps.input,
+            id: uniqueId(),
+            likes: 0,
+            tags: [],
+            title: pageProps.input,
+            username: "username",
           },
-        },
-      };
+          ...Database.Posts,
+        ];
+
+        const defaultProps = getDefaultAppProps();
+        defaultProps.posts = Database.Posts;
+
+        return defaultProps;
+      }
+    } else {
+      if (event.slug === Link.name && event.id) {
+        pageProps.posts = [...Database.Posts];
+        const postMap = Object.fromEntries(
+          pageProps.posts?.map((post) => [post.id, post]),
+        );
+
+        if (!Object.keys(postMap).includes(event.id)) return;
+
+        const id = event.id;
+        state.page = EPage.Article;
+        state.pageProps.bannerProps.heading = postMap[id].title;
+        state.pageProps.bannerProps.variant = "article";
+        return;
+      }
+
+      if (event.slug === Button.name) {
+        state.pageProps.posts = pageProps.posts.map((post) => {
+          if (post.id !== event.id) return post;
+
+          const hasLiked = Database.HasLiked;
+          Database.HasLiked = !hasLiked;
+
+          return {
+            ...post,
+            likes: post.likes + (hasLiked ? -1 : 1),
+          };
+        });
+        return;
+      }
     }
 
-    if (event.slug === Button.name) {
-      return {
-        ...state,
-        pageProps: {
-          ...pageProps,
-          posts: pageProps.posts.map((post) => {
-            if (post.id !== event.id) return post;
-
-            const hasLiked = Database.HasLiked;
-            Database.HasLiked = !hasLiked;
-
-            return {
-              ...post,
-              likes: post.likes + (hasLiked ? -1 : 1),
-            };
-          }),
-        },
-      };
+    // TODO: Remove Tab.name and change it to slug that is exported from the index file
+    if (event.slug === Tab.name && event.id === ETabId.Home) {
+      return getDefaultAppProps();
     }
-  }
 
-  // TODO: Remove Tab.name and change it to slug that is exported from the index file
-  if (event.slug === Tab.name && event.id === ETabId.Home) {
-    return DefaultAppProps;
-  }
+    if (
+      event.slug === Tab.name &&
+      state.page !== EPage.NewPostPage &&
+      event.id === ETabId.NewPost
+    ) {
+      state.page = EPage.NewPostPage;
+      state.pageProps.input = "";
+      return;
+    }
 
-  if (
-    event.slug === Tab.name &&
-    state.page !== EPage.NewPostPage &&
-    event.id === ETabId.NewPost
-  ) {
-    return {
-      page: EPage.NewPostPage,
-      pageProps: {
-        input: "",
-      },
-    };
-  }
-
-  return state;
+    return;
+  });
 };

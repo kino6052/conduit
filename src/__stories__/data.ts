@@ -1,7 +1,7 @@
 import { TPageProps } from "../pages/types";
 import { EPage, TAppProps, TCommonPageProps } from "../types";
 
-export const getDefaultDataProps = (): TAppProps<TPageProps> => ({
+export const DefaultAppProps: TAppProps<TPageProps> = {
   page: EPage.Home,
   pageProps: {
     username: "eni9mu5",
@@ -28,4 +28,4 @@ export const getDefaultDataProps = (): TAppProps<TPageProps> => ({
       },
     ],
   },
-});
+};
