@@ -1,4 +1,4 @@
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Icon } from "../Icon";
 import "./style.css";
 
@@ -8,6 +8,7 @@ export interface TTabProps {
   text: string;
   variant: "menu" | "selected" | "unselected";
   iconIcon: string;
+  id?: string
 }
 
 export const Tab: React.FC<TTabProps> = ({
@@ -16,9 +17,10 @@ export const Tab: React.FC<TTabProps> = ({
   text = "Home",
   variant,
   iconIcon = "favorite",
+  ...props
 }) => {
   return (
-    <div className={`tab ${variant}`}>
+    <div {...props} className={`tab ${variant}`}>
       {["selected", "unselected"].includes(variant) && (
         <div className="home">{text}</div>
       )}

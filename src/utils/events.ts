@@ -4,7 +4,7 @@ export type IEvent = {
   type: string;
   slug: string;
   id?: string;
-  payload?: string;
+  event?: Event;
 };
 
 export const EventSubject = new Subject<IEvent>();

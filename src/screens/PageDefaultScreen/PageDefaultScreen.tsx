@@ -1,7 +1,7 @@
 import React from "react";
-import { PageDefault } from "../../pages/HomePage";
-import { DefaultState } from "../../pages/HomePage/HomePage";
+import { App } from "../../App";
+import { DefaultAppProps } from "../../__stories__/data";
 
 export const PageDefaultScreen = (): JSX.Element => {
-  return <PageDefault {...DefaultState} />;
+  return <App {...DefaultAppProps} />;
 };

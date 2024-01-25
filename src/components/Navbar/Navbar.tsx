@@ -4,15 +4,23 @@ Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcN
 */
 
 import PropTypes from "prop-types";
-import React from "react";
+import React, { PropsWithChildren } from "react";
 import { Tab } from "../Tab";
 import "./style.scss";
 
 export interface TNavbarProps {
+  id?: string;
   username: string;
 }
 
-export const Navbar: React.FC<TNavbarProps> = ({
+export enum ETabId {
+  Home = 'Home',
+  NewPost = "NewPost",
+  Settings = "Settings",
+  Profile = "Profile"
+}
+
+export const Navbar: React.FC<PropsWithChildren<TNavbarProps>> = ({
   username = "Profile",
 }) => {
   return (
@@ -23,26 +31,25 @@ export const Navbar: React.FC<TNavbarProps> = ({
         </div>
         <div className="navbar-nav">
           <Tab
-            className="tab-instance"
-            divClassName="design-component-instance-node"
+            id={ETabId.Home}
             hasIcon={false}
             text="Home"
             variant="menu"
           />
           <Tab
-            className="tab-instance"
+            id={ETabId.NewPost}
             iconIcon="edit"
             text="New Post"
             variant="menu"
           />
           <Tab
-            className="tab-instance"
+            id={ETabId.Settings}
             iconIcon="settings"
             text="Settings"
             variant="menu"
           />
           <Tab
-            className="tab-instance"
+            id={ETabId.Profile}
             iconIcon="person"
             text={username}
             variant="menu"

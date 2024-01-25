@@ -20,7 +20,7 @@ export const HomePage: React.FC<TPageProps> = ({
     >
       <div className="tabs">
         {tabs.map((tab) => (
-          <Tab {...tab} />
+          <Tab {...tab} key={tab.id} />
         ))}
       </div>
       <Sidebar {...sidebarProps} />

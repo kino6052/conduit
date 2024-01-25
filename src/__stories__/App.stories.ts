@@ -1,5 +1,5 @@
 import { App } from "../App";
-import { DefaultAppProps } from "../data";
+import { DefaultAppProps } from "./data";
 import { EventSubject } from "../utils/events";
 import { withLogic } from "../utils/withLogic";
 import { logic } from "./logic";

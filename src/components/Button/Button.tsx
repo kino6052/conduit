@@ -19,6 +19,7 @@ interface Props {
     | "warning-large";
   className: string;
   divClassName: string;
+  id?: string
 }
 
 export const Button = ({
