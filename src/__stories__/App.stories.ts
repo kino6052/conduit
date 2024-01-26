@@ -1,8 +1,9 @@
 import { App } from "../App";
-import { DefaultAppProps } from "./data";
 import { EventSubject } from "../utils/events";
 import { withLogic } from "../utils/withLogic";
-import { getDefaultAppProps, logic } from "./logic";
+import { DefaultAppProps } from "./data";
+import { logic } from "./logic";
+import { ResultingStateSubject } from "./logic/common.logic";
 
 export default {
   title: "Components/App",
@@ -10,7 +11,7 @@ export default {
 };
 
 export const Default = {
-  args: getDefaultAppProps(),
+  args: ResultingStateSubject.getValue(),
 };
 
 EventSubject.subscribe(console.warn);

@@ -28,7 +28,7 @@ export const withEventWrapper = ({
           {},
         );
 
-    return ({ id, ...props }: T) => (
+    const Component: React.FC<T> = ({ id, ...props }: T) => (
       <WrappedComponent
         {...props}
         {...getHandlers({
@@ -37,5 +37,8 @@ export const withEventWrapper = ({
         })}
       />
     );
+    Component.displayName = slug;
+
+    return Component;
   };
 };
