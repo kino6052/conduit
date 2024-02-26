@@ -16,11 +16,15 @@ export const UserInfoSubject = new BehaviorSubject<TUserInfo>({
   date: "01 April 1990",
   username: "Test",
 });
+
 export const CurrentPageSubject = new BehaviorSubject<EPage>(EPage.Home);
+
 export const CurrentArticleId = new BehaviorSubject<string | undefined>(
   undefined,
 );
+
 export const PostInputValueSubject = new BehaviorSubject<string>("");
+
 export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
   "post-1": {
     id: "post-1",
@@ -32,6 +36,7 @@ export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
     title: "A good thing",
   },
 });
+
 export const LikesSubject = new BehaviorSubject<{
   [id: string]: boolean;
 }>({});
