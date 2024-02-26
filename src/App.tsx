@@ -1,9 +1,9 @@
 import React from "react";
 import { Navbar } from "./components/Navbar";
-import { TAppProps, TCommonPageProps } from "./types";
+import { TAppProps } from "./types";
 import { pagesMap } from "./utils/pagesMap";
 
-export const App: React.FC<TAppProps<TCommonPageProps>> = ({ page, pageProps }) => {
+export const App: React.FC<TAppProps> = ({ page, pageProps }) => {
   const Page = pagesMap[page];
 
   if (!Page) {

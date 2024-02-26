@@ -1,14 +1,14 @@
+import { ArticlePage } from "../pages/ArticlePage";
+import { HomePage } from "../pages/HomePage";
+import { NewPostPage } from "../pages/NewPostPage";
 import { TPageProps } from "../pages/types";
 import { EPage } from "../types";
-import { HomePage } from "../pages/HomePage";
-import { ArticlePage } from "../pages/ArticlePage";
-import { NewPostPage } from "../pages/NewPostPage";
-import { TNewPostPageProps } from "../pages/NewPostPage/types";
 
+// TODO: Don't unify props, keep them separate, but use class that allows to automatically get props
 export type TPagePropsMap = {
   [EPage.Home]: React.FC<TPageProps>;
   [EPage.Article]: React.FC<TPageProps>;
-  [EPage.NewPostPage]: React.FC<TNewPostPageProps>;
+  [EPage.NewPostPage]: React.FC<TPageProps>;
 };
 
 export const pagesMap = {} as TPagePropsMap;

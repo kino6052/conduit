@@ -3,15 +3,15 @@ import { EventSubject } from "./events";
 
 export const withEventWrapper = ({
   handlers,
-  slug
+  slug,
 }: {
-  handlers: string[],
-  slug: string
+  handlers: string[];
+  slug: string;
 }) => {
-  return function <T extends PropsWithChildren<{ id?: string, slug?: string }>>(
+  return function <T extends PropsWithChildren<{ id?: string; slug?: string }>>(
     WrappedComponent: React.FC<T>,
   ) {
-    const getHandlers = ({ slug, id }: { slug: string, id?: string }) =>
+    const getHandlers = ({ slug, id }: { slug: string; id?: string }) =>
       handlers
         ?.filter((name) => /^on/.test(name))
         .reduce(
@@ -28,15 +28,17 @@ export const withEventWrapper = ({
           {},
         );
 
-    const Component: React.FC<T> = ({ id, ...props }: T) => (
-      <WrappedComponent
-        {...props}
-        {...getHandlers({
-          slug,
-          id,
-        })}
-      />
-    );
+    const Component: React.FC<T> = (props: T) => {
+      return (
+        <WrappedComponent
+          {...props}
+          {...getHandlers({
+            slug,
+            id: props.id,
+          })}
+        />
+      );
+    };
     Component.displayName = slug;
 
     return Component;
