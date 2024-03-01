@@ -1,32 +1,33 @@
 import React from "react";
+import { PaginationBar } from "../../components/PaginationBar";
 import { Post } from "../../components/Post";
 import { Sidebar } from "../../components/Sidebar";
 import { Tab } from "../../components/Tab/Tab";
-import { PageWrapper } from "../PageWrapper";
-import { TPageProps } from "../types";
-import "./style.scss";
+import styles from "./style.scss";
+import { THomePageProps } from "./types";
+import { DefaultBanner } from "../../components/Banner";
 
-export const HomePage: React.FC<TPageProps> = ({
-  bannerProps,
+export const HomePage: React.FC<THomePageProps> = ({
   sidebarProps,
   posts,
   tabs,
   paginationBarProps,
 }) => {
   return (
-    <PageWrapper
-      bannerProps={bannerProps}
-      paginationBarProps={paginationBarProps}
-    >
-      <div className="tabs">
-        {tabs.map((tab) => (
-          <Tab {...tab} key={tab.id} />
+    <div className={styles.wrapper}>
+      <DefaultBanner />
+      <div className={styles.content}>
+        <div className={styles.tabs}>
+          {tabs.map((tab) => (
+            <Tab {...tab} key={tab.id} />
+          ))}
+        </div>
+        <Sidebar {...sidebarProps} />
+        {posts.map((post) => (
+          <Post {...post} />
         ))}
       </div>
-      <Sidebar {...sidebarProps} />
-      {posts.map((post) => (
-        <Post {...post} />
-      ))}
-    </PageWrapper>
+      <PaginationBar {...paginationBarProps} />
+    </div>
   );
 };

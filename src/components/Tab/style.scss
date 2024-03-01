@@ -1,0 +1,38 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  position: relative;
+  cursor: pointer;
+  width: fit-content;
+  min-width: 98px;
+  flex: 1;
+  font-family: "Source Sans Pro", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  position: relative;
+  padding: 8px 16px;
+  text-align: center;
+  gap: 8px;
+  border-bottom: 2px solid;
+  border-bottom-color: var(--variable-collection-grey);
+
+  &.active {
+    border-bottom-color: var(--variable-collection-green);
+  }
+
+  &.menu {
+    min-width: 0;
+    border: none;
+  }
+}
+
+.content {
+  color: var(--variable-collection-black);
+  font-family: "Source Sans Pro", Helvetica;
+  font-size: 16px;
+  position: relative;
+  text-align: center;
+  white-space: nowrap;
+  width: fit-content;
+}

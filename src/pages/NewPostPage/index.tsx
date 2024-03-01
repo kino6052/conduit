@@ -1,31 +1,27 @@
 import React from "react";
 import { Button } from "../../components/Button";
-import { TButtonProps } from "../../components/Button/types";
+import { EButtonVariant } from "../../components/Button/types";
 import { Input } from "../../components/Input";
-import { TInputProps } from "../../components/Input/Input";
-import "./styles.scss";
-
-export type TNewPostPageProps = {
-  titleInputProps: TInputProps;
-  articleInputProps: TInputProps;
-  tagsInputProps: TInputProps;
-  buttonProps: TButtonProps;
-};
+import { Tags } from "../../components/Tag/Tag";
+import styles from "./styles.scss";
+import { TNewPostPageProps } from "./types";
 
 export const NewPostPage: React.FC<TNewPostPageProps> = ({
   titleInputProps,
   articleInputProps,
   tagsInputProps,
+  tags,
   buttonProps,
 }) => {
   return (
-    <div className="wrapper">
-      <div className="form-wrapper">
+    <div className={styles.wrapper}>
+      <div className={styles["form-wrapper"]}>
         <Input {...titleInputProps} />
-        <Input {...articleInputProps} />
+        <Input {...articleInputProps} isTextArea />
         <Input {...tagsInputProps} />
-        <Button {...buttonProps} />
+        <Tags tags={tags} />
       </div>
+      <Button variant={EButtonVariant.Primary} {...buttonProps} />
     </div>
   );
 };

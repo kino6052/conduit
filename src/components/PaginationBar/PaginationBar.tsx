@@ -1,15 +1,7 @@
-/*
-We're constantly improving the code you see. 
-Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcNg&d=1152665201300829
-*/
-
 import React from "react";
 import { PaginationButton } from "../PaginationButton";
-import "./style.scss";
-
-export type TPaginationBarProps = {
-  numberOfPages: number;
-};
+import styles from "./style.scss";
+import { TPaginationBarProps } from "./types";
 
 export const PaginationBar: React.FC<TPaginationBarProps> = ({
   numberOfPages = 1,
@@ -17,14 +9,16 @@ export const PaginationBar: React.FC<TPaginationBarProps> = ({
 }) => {
   const array = new Array(numberOfPages).fill(null);
   return (
-    <div className={`pagination-bar`}>
+    <div className={styles.wrapper}>
       {array.map((_, i) => {
         const isSelected = i === selected;
+        const id = String(i + 1);
         return (
           <PaginationButton
-            id={String(i + 1)}
-            value={String(i + 1)}
-            variant={isSelected ? "selected" : "default"}
+            id={id}
+            value={id}
+            key={id}
+            isSelected={isSelected}
           />
         );
       })}

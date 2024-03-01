@@ -1,5 +1,4 @@
-.post {
-  align-items: flex-start;
+.wrapper {
   background-color: var(--variable-collection-white);
   border: 1px solid;
   border-color: var(--variable-collection-grey);
@@ -14,7 +13,7 @@
   width: 100%;
 }
 
-.post .post-heading {
+.heading {
   align-items: center;
   align-self: stretch;
   display: flex;
@@ -25,11 +24,7 @@
   width: 100%;
 }
 
-.post .design-component-instance-node-2 {
-  flex: 0 0 auto !important;
-}
-
-.post .post-content {
+.content {
   align-items: flex-start;
   align-self: stretch;
   display: flex;
@@ -41,19 +36,7 @@
   width: 100%;
 }
 
-.post .heading-2 {
-  align-self: stretch !important;
-  flex: 0 0 auto !important;
-  width: 100% !important;
-}
-
-.post .tags-2 {
-  align-items: flex-start;
-  align-self: stretch;
+.link {
   display: flex;
-  flex: 0 0 auto;
-  flex-wrap: wrap;
-  gap: 10px 10px;
-  position: relative;
-  width: 100%;
+  flex-direction: column;
 }

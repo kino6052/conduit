@@ -3,22 +3,26 @@ import { Tab } from ".";
 export default {
   title: "Components/Tab",
   component: Tab,
-  argTypes: {
-    variant: {
-      options: ["menu", "selected", "unselected"],
-      control: { type: "select" },
-    },
+  argTypes: {},
+};
+
+export const Menu = {
+  args: {
+    text: "Home",
+    variant: "menu",
+    icon: "favorite",
   },
 };
 
 export const Default = {
   args: {
-    hasIcon: true,
-    hasUnderline: true,
-    text: "Home",
-    variant: "menu",
-    className: {},
-    divClassName: {},
-    iconIcon: "favorite",
+    text: "Tab 1",
+  },
+};
+
+export const DefaultActive = {
+  args: {
+    text: "Tab 1",
+    isActive: true
   },
 };

@@ -5,7 +5,7 @@ export default {
   component: Typography,
   argTypes: {
     variant: {
-      options: ["regular", "regular-bold", "regular-grey", "h-1", "h-2"],
+      options: ["regular", "regular-bold", "regular-grey", "h1", "h2"],
       control: { type: "select" },
     },
   },

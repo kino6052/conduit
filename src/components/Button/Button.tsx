@@ -1,7 +1,8 @@
 import React from "react";
 
-import "./styles.scss";
+import styles from "./styles.scss";
 import { TButtonProps } from "./types";
+import { getClassNames } from "../../utils/styles";
 
 export const Button: React.FC<TButtonProps> = ({
   text = "Text",
@@ -10,11 +11,11 @@ export const Button: React.FC<TButtonProps> = ({
   className,
   ...props
 }) => {
-  const buttonClassName = ["button", variant, className].join(" ");
   return (
-    <button {...props} className={buttonClassName}>
-      {/* {hasIcon && <Icon />} */}
-
+    <button
+      {...props}
+      className={getClassNames(["button", variant, className], styles)}
+    >
       <div className="wrapper">{text}</div>
     </button>
   );

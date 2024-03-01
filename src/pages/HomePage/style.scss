@@ -1,109 +1,16 @@
-.tabs {
-  align-items: flex-start;
-  align-self: stretch;
-  border-bottom-style: solid;
-  border-bottom-width: 1px;
-  border-color: #0000001a;
+.wrapper {
   display: flex;
-  flex: 0 0 auto;
-  gap: 10px;
-  padding: 0px 15px;
-  position: relative;
+  flex-direction: column;
+  align-items: center;
   width: 100%;
+  
 }
 
-.div-wrapper {
-  align-items: center;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-color: #5cb85c;
+.content {
+  padding: 24px;
+  max-width: 800px;
   display: flex;
-  gap: 10px;
-  justify-content: center;
-  padding: 8px 16px;
-  position: relative;
-  width: 98px;
-}
-
-.text-wrapper-4 {
-  color: #5cb85c;
-  flex: 1;
-  font-family: "Source Sans Pro", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: normal;
-  margin-top: -2px;
-  position: relative;
-  text-align: center;
-}
-
-.tab-2 {
-  align-items: center;
-  border-bottom-style: solid;
-  border-bottom-width: 2px;
-  border-color: var(--variable-collection-grey);
-  display: inline-flex;
-  flex: 0 0 auto;
-  gap: 10px;
-  justify-content: center;
-  padding: 8px 16px;
-  position: relative;
-}
-
-.text-wrapper-5 {
-  color: var(--variable-collection-grey);
-  font-family: "Source Sans Pro", Helvetica;
-  font-size: 16px;
-  font-weight: 400;
-  letter-spacing: 0;
-  line-height: normal;
-  margin-top: -2px;
-  position: relative;
-  text-align: center;
-  width: fit-content;
-}
-
-.design-component-instance-node-4 {
-  flex: 0 0 auto !important;
-  margin-bottom: -1px !important;
-  margin-left: -1px !important;
-  margin-top: -1px !important;
-}
-
-.design-component-instance-node-5 {
-  flex: 0 0 auto !important;
-  margin-bottom: -1px !important;
-  margin-top: -1px !important;
-}
-
-.post-instance {
-  align-self: stretch !important;
-  flex: 0 0 auto !important;
-  margin-left: -1px !important;
-  margin-right: -1px !important;
-  width: 100% !important;
-}
-
-.post-2 {
-  align-self: stretch !important;
-  flex: 0 0 auto !important;
-  margin-left: -1px !important;
-  margin-right: -1px !important;
-  width: 100% !important;
-}
-
-.post-3 {
-  align-self: stretch !important;
-  flex: 0 0 auto !important;
-  margin-left: -1px !important;
-  margin-right: -1px !important;
-  width: 100% !important;
-}
-
-.pagination-bar-instance {
-  align-items: center !important;
-  flex: 0 0 auto !important;
-  justify-content: center !important;
-  margin-bottom: -459px !important;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
 }

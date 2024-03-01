@@ -7,3 +7,6 @@ export type RecursivePartial<T> = {
         : RecursivePartial<T[P]>
       : T[P]; // NOTE: otherwise
 };
+
+export type TWithClassName<T> = T & { className?: string };
+export type TWithId<T> = T & { id: string };

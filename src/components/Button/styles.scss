@@ -4,6 +4,12 @@
   min-width: 120px;
   width: fit-content;
   border-radius: 8px;
+  background-color: var(--variable-collection-white);
+  border: 2px solid var(--variable-collection-grey);
+
+  &:hover {
+    background-color: var(--variable-collection-lightgrey);;
+  }
 }
 
 .icon {

@@ -1,54 +1,37 @@
 import React from "react";
 import { Button } from "../Button";
-import { Tags } from "../Tag/Tag";
-import { UserInfo } from "../UserInfo";
-import { Typography } from "../Typography";
 import { Link } from "../Link";
+import { Tags } from "../Tag/Tag";
+import { Typography } from "../Typography";
+import { UserInfo } from "../UserInfo";
 
-import "./style.css";
-
-export interface TPostProps {
-  id: string;
-  title: string;
-  date: string;
-  description: string;
-  username: string;
-  tags: string[];
-  likes: number;
-}
+import { EButtonVariant } from "../Button/types";
+import styles from "./style.scss";
+import { TPostProps } from "./types";
+import { ETypographyType } from "../Typography/types";
 
 export const Post: React.FC<TPostProps> = ({
-  title = "Try to transmit the HTTP card, maybe it will override the multi-byte hard drive!",
-  date = "01 January 2024",
-  description = "Try to transmit the HTTP card, maybe it will override the multi-byte hard drive!",
-  username = "John Lobster",
-  likes = 64,
+  title,
+  description,
+  userInfoProps,
+  likes,
   tags = [],
   id,
 }) => {
   return (
-    <div className={`post`}>
-      <div className="post-heading">
-        <UserInfo
-          className="design-component-instance-node-2"
-          date={date}
-          username={username}
-        />
+    <div className={styles.wrapper}>
+      <div className={styles.heading}>
+        <UserInfo {...userInfoProps} />
         <Button
           id={id}
-          className="design-component-instance-node-2"
           text={String(likes)}
-          variant="secondary-small"
+          variant={EButtonVariant.Secondary}
         />
       </div>
-      <div className="post-content">
-        <Link id={id}>
-          <Typography className="heading-2" value={title} variant="h-2" />
-          <Typography
-            className="heading-2"
-            value={description}
-            variant="regular-grey"
-          />
+      <div className={styles.content}>
+        <Link id={id} className={styles.link}>
+          <Typography value={title} variant={ETypographyType.Heading2} />
+          <Typography value={description} />
         </Link>
         <Tags tags={tags} />
       </div>

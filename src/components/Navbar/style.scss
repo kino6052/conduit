@@ -1,4 +1,4 @@
-.navbar {
+.wrapper {
   align-self: stretch;
   width: 100%;
   align-items: center;
@@ -14,7 +14,7 @@
   position: relative;
 }
 
-.navbar .container {
+.content {
   align-items: flex-start;
   background-color: #ffffff;
   display: flex;
@@ -28,7 +28,7 @@
   position: relative;
 }
 
-.navbar .link {
+.logo {
   align-items: center;
   display: inline-flex;
   flex: 0 0 auto;
@@ -37,23 +37,23 @@
   justify-content: center;
   padding: 0px 64px 0px 0px;
   position: relative;
+
+  .text {
+    color: var(--variable-collection-green);
+    font-family: "Titillium Web", Helvetica;
+    font-size: 24px;
+    font-weight: 700;
+    letter-spacing: 0;
+    line-height: normal;
+    margin-bottom: -0.5px;
+    margin-top: -2.5px;
+    position: relative;
+    text-align: center;
+    width: fit-content;
+  }
 }
 
-.navbar .div {
-  color: var(--variable-collection-green);
-  font-family: "Titillium Web", Helvetica;
-  font-size: 24px;
-  font-weight: 700;
-  letter-spacing: 0;
-  line-height: normal;
-  margin-bottom: -0.5px;
-  margin-top: -2.5px;
-  position: relative;
-  text-align: center;
-  width: fit-content;
-}
-
-.navbar .navbar-nav {
+.navigation {
   align-items: center;
   display: inline-flex;
   flex: 0 0 auto;
@@ -63,12 +63,4 @@
   max-width: 400px;
   min-width: 200px;
   position: relative;
-}
-
-.navbar .tab-instance {
-  flex: 0 0 auto !important;
-}
-
-.navbar .design-component-instance-node {
-  margin-top: -2px !important;
 }

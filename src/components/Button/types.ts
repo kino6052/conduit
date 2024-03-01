@@ -9,11 +9,16 @@ export enum EButtonSize {
   Small = "small",
 }
 
-export type TButtonProps = {
-  text: string;
-  hasIcon: boolean;
+export type TButtonConfigProps = {
   variant: EButtonVariant;
   size: EButtonSize;
-  id?: string;
-  className?: string;
+  className: string;
 };
+
+export type TButtonContentProps = {
+  text: string;
+  hasIcon?: boolean;
+  id?: string;
+};
+
+export type TButtonProps = Partial<TButtonConfigProps> & TButtonContentProps;

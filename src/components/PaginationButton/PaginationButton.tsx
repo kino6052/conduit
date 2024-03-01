@@ -1,25 +1,20 @@
 import React from "react";
-import "./style.css";
-
-type TPaginationButtonProps = {
-  value: string;
-  variant: "selected" | "default";
-  className: any;
-  id?: string;
-};
+import styles from "./styles.scss";
+import { TPaginationButtonProps } from "./types";
+import { getClassNames } from "../../utils/styles";
 
 export const PaginationButton = ({
-  value = "1",
-  variant,
+  value,
+  isSelected,
   className,
   ...props
 }: TPaginationButtonProps): JSX.Element => {
   return (
     <button
+      className={getClassNames(["button", isSelected && "selected"], styles)}
       {...props}
-      className={`pagination-button variant-1-${variant} ${className}`}
     >
-      <span className="element">{value}</span>
+      <span className={styles.text}>{value}</span>
     </button>
   );
 };

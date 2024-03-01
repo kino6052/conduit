@@ -1,4 +1,4 @@
-.tag {
+.wrapper {
   align-items: center;
   background-color: var(--variable-collection-white);
   border: 1px solid;
@@ -10,13 +10,13 @@
   padding: 6px 16px;
   position: relative;
   cursor: pointer;
+
+  &:hover {
+    background-color: var(--variable-collection-lightgrey);
+  }
 }
 
-tag:hover {
-  background-color: var(--variable-collection-grey);
-}
-
-.tag .text-wrapper-3 {
+.content {
   color: var(--variable-collection-grey);
   font-family: "Source Sans Pro", Helvetica;
   font-size: 12.8px;

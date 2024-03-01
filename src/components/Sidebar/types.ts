@@ -1,4 +1,6 @@
-export interface TSidebarProps {
-  tags: string[];
+import { TTagProps } from "../Tag/types";
+
+export type TSidebarProps = {
+  tags: TTagProps[];
   title: string;
-}
+};

@@ -3,4 +3,10 @@
   border-radius: 8px;
   padding: 12px;
   border: 1px solid #AAAAAA;
+  resize: vertical;
+  font-family: Arial, Helvetica, sans-serif;
+}
+
+textarea {
+  min-height: 256px;
 }

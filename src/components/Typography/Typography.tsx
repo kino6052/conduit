@@ -1,22 +1,16 @@
 import React from "react";
-import "./style.css";
+import styles from "./styles.scss";
+import { ETypographyType, TTypographyProps } from "./types";
+import { getClassNames } from "../../utils/styles";
 
-interface Props {
-  value: string;
-  variant: "regular" | "regular-bold" | "regular-grey" | "h-1" | "h-2";
-  className: any;
-  textClassName: any;
-}
-
-export const Typography = ({
-  value = "This is text",
-  variant,
+export const Typography: React.FC<TTypographyProps> = ({
+  value,
+  variant = ETypographyType.Regular,
   className,
-  textClassName,
-}: Props): JSX.Element => {
+}) => {
   return (
-    <div className={`heading ${className}`}>
-      <div className={`text ${variant} ${textClassName}`}>{value}</div>
-    </div>
+    <span className={getClassNames(["text", variant, className], styles)}>
+      {value}
+    </span>
   );
 };

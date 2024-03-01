@@ -1,4 +1,4 @@
-.sidebar {
+.wrapper {
   align-items: flex-start;
   border: 1px solid;
   border-color: var(--variable-collection-grey);
@@ -11,19 +11,8 @@
   width: 100%;
 }
 
-.sidebar .heading-instance {
+.content {
   align-self: stretch !important;
   flex: 0 0 auto !important;
   width: 100% !important;
-}
-
-.sidebar .tags {
-  align-items: flex-start;
-  align-self: stretch;
-  display: flex;
-  flex: 0 0 auto;
-  flex-wrap: wrap;
-  gap: 8px 8px;
-  position: relative;
-  width: 100%;
 }

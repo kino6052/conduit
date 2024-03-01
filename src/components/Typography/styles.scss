@@ -1,20 +1,12 @@
-.heading {
-  align-items: center;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0px 0px;
-  position: relative;
-  width: 268px;
-}
-
-.heading .text {
+.text {
+  display: inline-flex;
   flex: 1;
   letter-spacing: 0;
   margin-top: -1px;
   position: relative;
 }
 
-.heading .h-1 {
+.h1 {
   color: var(--variable-collection-black);
   font-family: "Titillium Web", Helvetica;
   font-size: 46px;
@@ -22,7 +14,7 @@
   line-height: 40px;
 }
 
-.heading .h-2 {
+.h2 {
   color: var(--variable-collection-black);
   font-family: "Titillium Web", Helvetica;
   font-size: 32px;
@@ -30,7 +22,7 @@
   line-height: 36px;
 }
 
-.heading .regular-bold {
+.regular-bold {
   color: var(--variable-collection-black);
   font-family: "Titillium Web", Helvetica;
   font-size: 16px;
@@ -38,7 +30,7 @@
   line-height: 24px;
 }
 
-.heading .regular-grey {
+.regular-grey {
   color: var(--variable-collection-grey);
   font-family: "Source Sans Pro", Helvetica;
   font-size: 16px;
@@ -46,7 +38,7 @@
   line-height: 24px;
 }
 
-.heading .regular {
+.regular {
   color: var(--variable-collection-black);
   font-family: "Source Sans Pro", Helvetica;
   font-size: 16px;

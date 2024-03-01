@@ -1,16 +1,11 @@
-import React, { PropsWithChildren } from "react";
-import "./styles.scss";
-
-export type TInputProps = PropsWithChildren<
-  React.InputHTMLAttributes<{}> & {
-    isTextArea?: boolean;
-  }
->;
+import React from "react";
+import styles from "./styles.scss";
+import { TInputProps } from "./types";
 
 export const Input: React.FC<TInputProps> = (props) => {
   return props.isTextArea ? (
-    <textarea className="input" {...props} />
+    <textarea className={styles.input} {...props} />
   ) : (
-    <input className="input" {...props} />
+    <input className={styles.input} {...props} />
   );
 };

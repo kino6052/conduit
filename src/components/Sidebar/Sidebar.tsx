@@ -1,16 +1,17 @@
 import React from "react";
 import { Tags } from "../Tag/Tag";
 import { Typography } from "../Typography";
-import "./style.css";
+import styles from "./style.scss";
 import { TSidebarProps } from "./types";
+import { ETypographyType } from "../Typography/types";
 
-export const Sidebar: React.FC<Partial<TSidebarProps>> = ({ tags, title }) => {
+export const Sidebar: React.FC<TSidebarProps> = ({ tags, title }) => {
   return (
-    <div className={`sidebar`}>
+    <div className={styles.wrapper}>
       <Typography
-        className="heading-instance"
+        className={styles.content}
         value={title}
-        variant="regular-bold"
+        variant={ETypographyType.RegularBold}
       />
       <Tags tags={tags} />
     </div>

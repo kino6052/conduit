@@ -1,26 +1,21 @@
-/*
-We're constantly improving the code you see. 
-Please share your feedback here: https://form.asana.com/?k=uvp-HPgd3_hyoXRBw1IcNg&d=1152665201300829
-*/
-
-import PropTypes from "prop-types";
 import React from "react";
-import "./style.css";
+import styles from "./style.scss";
 import { TTagProps } from "./types";
+import { getClassNames } from "../../utils/styles";
 
-export const Tag = ({ text = "tag", className }: TTagProps): JSX.Element => {
+export const Tag: React.FC<TTagProps> = ({ text = "tag", className }) => {
   return (
-    <div className={`tag ${className}`}>
-      <div className="text-wrapper-3">{text}</div>
+    <div className={getClassNames(["wrapper", className], styles)}>
+      <span className={styles.content}>{text}</span>
     </div>
   );
 };
 
-export const Tags: React.FC<{ tags: string[] }> = ({ tags }) => {
+export const Tags: React.FC<{ tags: TTagProps[] }> = ({ tags }) => {
   return (
-    <div className="tags">
+    <div className={styles.tags}>
       {tags.map((tag) => (
-        <Tag text={tag} />
+        <Tag {...tag} />
       ))}
     </div>
   );

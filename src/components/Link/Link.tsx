@@ -1,16 +1,15 @@
 import React, { PropsWithChildren } from "react";
-import "./style.scss";
-interface TLinkProps {
-  href?: string;
-}
+import { getClassNames } from "../../utils/styles";
+import styles from "./style.scss";
+import { TLinkProps } from "./types";
 
 export const Link: React.FC<PropsWithChildren<TLinkProps>> = ({
   href,
   children,
-  ...props
-}): JSX.Element => {
+  className,
+}) => {
   return (
-    <a className="link" href={href} {...props}>
+    <a href={href} className={getClassNames(["link", className], styles)}>
       {children}
     </a>
   );
