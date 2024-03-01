@@ -1,8 +1,8 @@
-import { TBannerProps } from "../components/Banner/Banner";
-import { TPaginationBarProps } from "../components/PaginationBar/PaginationBar";
-import { TPostProps } from "../components/Post/Post";
+import { TBannerProps } from "../components/Banner/types";
+import { TPaginationBarProps } from "../components/PaginationBar/types";
+import { TPostProps } from "../components/Post/types";
 import { TSidebarProps } from "../components/Sidebar/types";
-import { TTabProps } from "../components/Tab/Tab";
+import { TTabProps } from "../components/Tab/types";
 import { RecursivePartial } from "../utils/types";
 
 export type TPageProps = RecursivePartial<{
