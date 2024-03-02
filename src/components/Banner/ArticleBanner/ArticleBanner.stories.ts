@@ -1,4 +1,4 @@
-import { TArticleBannerProps } from "../types";
+import { TArticleBannerProps } from "./types";
 import { ArticleBanner } from "./ArticleBanner";
 
 export default {
@@ -12,7 +12,7 @@ export const Default = {
     title: "Article",
     userInfoProps: {
       date: new Date().toISOString(),
-      username: "John Lobster"
-    }
+      username: "John Lobster",
+    },
   } as TArticleBannerProps,
 };
