@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../../components/Button";
 import { EButtonVariant } from "../../components/Button/types";
-import { Input } from "../../components/Input";
+import { Input } from "../../components/Input/Input";
 import { Tags } from "../../components/Tag/Tag";
 import styles from "./styles.scss";
 import { TNewPostPageProps } from "./types";

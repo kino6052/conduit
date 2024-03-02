@@ -9,7 +9,11 @@ export const Link: React.FC<PropsWithChildren<TLinkProps>> = ({
   className,
 }) => {
   return (
-    <a href={href} className={getClassNames(["link", className], styles)}>
+    <a
+      tabIndex={0}
+      href={href}
+      className={getClassNames(["link", className], styles)}
+    >
       {children}
     </a>
   );

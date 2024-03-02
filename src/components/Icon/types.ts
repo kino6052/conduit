@@ -1,4 +1,7 @@
-export type TIconProps = {
+import { TWithClassName } from "../../utils/types";
+
+export type TIconContentProps = {
   icon: string;
-  className?: any;
 };
+
+export type TIconProps = TWithClassName<TIconContentProps>;

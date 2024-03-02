@@ -1,6 +1,6 @@
 import { uniqueId } from "lodash";
 import { filter, tap } from "rxjs";
-import { Input } from "../../components/Input";
+import { Input } from "../../components/Input/Input";
 import { ENewPostPageId } from "../../pages/NewPostPage/types";
 import { EPage } from "../../types";
 import {

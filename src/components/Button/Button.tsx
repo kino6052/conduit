@@ -16,7 +16,7 @@ export const Button: React.FC<TButtonProps> = ({
       {...props}
       className={getClassNames(["button", variant, className], styles)}
     >
-      <div className="wrapper">{text}</div>
+      <span className="content">{text}</span>
     </button>
   );
 };

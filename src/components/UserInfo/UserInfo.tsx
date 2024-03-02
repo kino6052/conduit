@@ -10,7 +10,10 @@ export const UserInfo: React.FC<TUserInfoProps> = ({
   className,
 }) => {
   return (
-    <div className={getClassNames(["user-info", className], styles)}>
+    <div
+      tabIndex={0}
+      className={getClassNames(["user-info", className], styles)}
+    >
       <Icon icon="person" />
       <div className={styles.description}>
         <div className={styles.username}>{username}</div>

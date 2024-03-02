@@ -1,0 +1,22 @@
+.wrapper {
+  display: flex;
+  border-radius: 8px;
+  flex-direction: column;
+  align-self: stretch;
+}
+
+.comment {
+  border-radius: 8px 8px 0 0;
+  min-height: 128px;
+}
+
+.controls {
+  display: flex;
+  background-color: var(--variable-collection-lightgrey);
+  border-radius: 0 0 8px 8px;
+  height: 75px;
+  padding: 16px;
+  justify-content: space-between;
+  border: 1px solid var(--variable-collection-grey);
+  border-top: 0;
+}

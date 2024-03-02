@@ -6,6 +6,8 @@
   border-radius: 8px;
   background-color: var(--variable-collection-white);
   border: 2px solid var(--variable-collection-grey);
+  justify-content: center;
+  
 
   &:hover {
     background-color: var(--variable-collection-lightgrey);;
@@ -16,7 +18,7 @@
 
 }
 
-.wrapper {
+.content {
   display: flex;
-  flex-direction: column;
+  color: var(--variable-collection-black);
 }

@@ -1,6 +1,5 @@
-import { TWithClassName } from "../../utils/types";
+import { TWithClassName, TWithId } from "../../utils/types";
 
-export type TTagProps = TWithClassName<{
-  text: string;
-  id: string;
-}>;
+export type TTagContentProps = TWithId<{ text: string }>;
+
+export type TTagProps = TWithClassName<TTagContentProps>;

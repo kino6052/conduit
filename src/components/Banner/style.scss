@@ -3,7 +3,6 @@
   width: 100%;
   flex-direction: column;
   align-items: center;
-  
   padding: 48px;
 }
 
@@ -18,8 +17,13 @@
 }
 
 .article {
-  align-items: flex-start;
+  align-items: center;
   background-color: var(--variable-collection-black);
+
+  .content {
+    align-items: flex-start;
+    max-width: 800px;
+  }
 }
 
 .content {

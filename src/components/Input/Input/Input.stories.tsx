@@ -1,8 +1,8 @@
 import { Input } from ".";
-import { TInputProps } from "./Input";
+import { TInputProps } from "../types";
 
 export default {
-  title: "Components/Input",
+  title: "Components/Input/Default",
   component: Input,
   argTypes: {},
 };
@@ -10,5 +10,6 @@ export default {
 export const Default: { args: TInputProps } = {
   args: {
     value: "Test",
+    placeholder: "Input",
   },
 };

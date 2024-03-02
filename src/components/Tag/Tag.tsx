@@ -5,7 +5,7 @@ import { getClassNames } from "../../utils/styles";
 
 export const Tag: React.FC<TTagProps> = ({ text = "tag", className }) => {
   return (
-    <div className={getClassNames(["wrapper", className], styles)}>
+    <div tabIndex={0} className={getClassNames(["wrapper", className], styles)}>
       <span className={styles.content}>{text}</span>
     </div>
   );

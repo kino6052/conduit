@@ -14,6 +14,7 @@ export const Tab: React.FC<TTabProps> = ({
   return (
     <div
       {...props}
+      tabIndex={0}
       className={getClassNames(
         ["wrapper", variant, isActive && "active"],
         styles,

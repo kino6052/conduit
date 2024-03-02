@@ -9,4 +9,4 @@ export type RecursivePartial<T> = {
 };
 
 export type TWithClassName<T> = T & { className?: string };
-export type TWithId<T> = T & { id: string };
+export type TWithId<T> = T & { id?: string; slug?: string };
