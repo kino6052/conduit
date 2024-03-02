@@ -1,4 +1,4 @@
-import { TArticleBannerProps } from "../../components/Banner/types";
+import { TArticleBannerProps } from "../../components/Banner/ArticleBanner/types";
 import { TButtonContentProps } from "../../components/Button/types";
 import { TCommentInputProps } from "../../components/Input/types";
 import { TTagContentProps } from "../../components/Tag/types";

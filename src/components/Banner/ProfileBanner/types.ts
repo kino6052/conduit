@@ -1,6 +1,5 @@
-import { TUserInfoProps } from "../../UserInfo/types";
+import { TUserInfoContentProps } from "../../UserInfo/types";
 
 export type TProfileBannerProps = {
-  title: string;
-  userInfoProps: TUserInfoProps;
+  userInfoProps: TUserInfoContentProps;
 };
