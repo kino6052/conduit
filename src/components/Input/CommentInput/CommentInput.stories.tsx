@@ -1,5 +1,6 @@
 import { CommentInput } from ".";
-import { TCommentInputProps, TInputProps } from "../types";
+import { TCommentInputProps } from "../types";
+import { DefaultData } from "./data";
 
 export default {
   title: "Components/Input/Comment",
@@ -8,16 +9,5 @@ export default {
 };
 
 export const Default: { args: TCommentInputProps } = {
-  args: {
-    buttonProps: {
-      text: "Submit",
-    },
-    iconProps: {
-      icon: "favorite",
-    },
-    inputProps: {
-      placeholder: "Input your comment",
-      value: "",
-    },
-  },
+  args: DefaultData,
 };

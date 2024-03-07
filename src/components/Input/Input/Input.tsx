@@ -4,13 +4,9 @@ import { TInputProps } from "../types";
 import { getClassNames } from "../../../utils/styles";
 
 export const Input: React.FC<TInputProps> = (props) => {
-  return props.isTextArea ? (
-    <textarea
-      {...props}
-      className={getClassNames(["input", props.className], styles)}
-    />
-  ) : (
-    <input
+  const Component = props.isTextArea ? "textarea" : "input";
+  return (
+    <Component
       {...props}
       className={getClassNames(["input", props.className], styles)}
     />

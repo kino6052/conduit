@@ -16,13 +16,15 @@ export const withEventWrapper = ({
         .reduce(
           (acc, name) => ({
             ...acc,
-            [name]: (e: SyntheticEvent) =>
+            [name]: (e: SyntheticEvent) => {
+              e.preventDefault();
               EventSubject.next({
                 slug,
                 id,
                 type: name,
                 event: e.nativeEvent,
-              }),
+              });
+            },
           }),
           {},
         );
@@ -32,12 +34,13 @@ export const withEventWrapper = ({
         <WrappedComponent
           {...props}
           {...getHandlers({
-            slug,
+            slug: props.slug ?? slug,
             id: props.id,
           })}
         />
       );
     };
+
     Component.displayName = slug;
 
     return Component;

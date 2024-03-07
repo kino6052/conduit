@@ -12,4 +12,5 @@ export type TArticlePageProps = {
   commentBoxProps: TCommentInputProps;
   content: string;
   tags: TTagContentProps[];
+  comments: TCommentInputProps[];
 };

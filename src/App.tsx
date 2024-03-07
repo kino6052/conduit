@@ -1,10 +1,16 @@
 import React from "react";
 import { Navbar } from "./components/Navbar";
-import { TAppProps } from "./types";
+import { EPage, TPagePropsMap } from "./types";
 import { pagesMap } from "./utils/pagesMap";
 
-export const App: React.FC<TAppProps> = ({ page, pageProps }) => {
-  const Page = pagesMap[page];
+export function App<T extends EPage>({
+  page,
+  pageProps,
+}: {
+  page: T;
+  pageProps: TPagePropsMap[T];
+}): JSX.Element | null {
+  const Page = pagesMap[page] as React.FC<typeof pageProps>;
 
   if (!Page) {
     console.error(
@@ -19,4 +25,4 @@ export const App: React.FC<TAppProps> = ({ page, pageProps }) => {
       <Page {...pageProps} />
     </div>
   );
-};
+}

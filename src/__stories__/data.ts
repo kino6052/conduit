@@ -1,29 +1,36 @@
-import { TPageProps } from "../pages/types";
-import { EPage, TAppProps, TCommonPageProps } from "../types";
+import { ETabVariant } from "../components/Tab/types";
+import { EPage, TAppProps } from "../types";
 
-export const DefaultAppProps: TAppProps<TPageProps> = {
+export const DefaultAppProps: TAppProps<EPage.Home> = {
   page: EPage.Home,
   pageProps: {
-    username: "eni9mu5",
-    bannerProps: {
-      variant: "default",
-      heading: "Article text",
-      userInfo: {
-        date: "01 April 1990",
-        username: "Test",
-      },
+    paginationBarProps: {
+      numberOfPages: 1,
+      selected: 0,
     },
     sidebarProps: {
       title: "Popular tags",
-      tags: ["one", "something", "chinese", "english", "french"],
+      tags: [
+        {
+          text: "one",
+          id: "1",
+        },
+        {
+          text: "two",
+          id: "2",
+        },
+        {
+          text: "three",
+          id: "3",
+        },
+      ],
     },
     posts: [],
     tabs: [
-      { text: "Your feed", variant: "selected", id: "YourFeed" },
+      { text: "Your feed", variant: ETabVariant.Default, id: "YourFeed" },
       {
         text: "Your feed",
-        variant: "unselected",
-        hasUnderline: false,
+        variant: ETabVariant.Default,
         id: "OtherTab",
       },
     ],

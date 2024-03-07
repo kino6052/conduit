@@ -16,6 +16,7 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
   commentBoxProps,
   content,
   tags,
+  comments,
 }) => {
   return (
     <div className={styles.wrapper}>
@@ -23,13 +24,23 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
       <div className={styles.content}>
         <Typography value={content} />
         <Tags tags={tags} />
-        <div className={styles.comment}>
+        <div className={styles.comments}>
           <div className={styles.user}>
             <UserInfo {...userInfoProps} />
             <Button {...followButtonProps} />
             <Button {...favoriteButtonProps} />
           </div>
           <CommentInput {...commentBoxProps} />
+          {comments.map(({ iconProps, inputProps, id }) => (
+            <CommentInput
+              id={id}
+              iconProps={iconProps}
+              inputProps={{
+                ...inputProps,
+                disabled: true,
+              }}
+            />
+          ))}
         </div>
       </div>
     </div>

@@ -33,4 +33,26 @@ export const DefaultData: TArticlePageProps = {
   content:
     "Omnis perspiciatis qui quia commodi sequi modi. Nostrum quam aut cupiditate est facere omnis possimus. Tenetur similique nemo illo soluta molestias facere quo. Ipsam totam facilis delectus nihil quidem soluta vel est omnis.",
   tags: [{ text: "One" }, { text: "Two" }, { text: "Three" }],
+  comments: [
+    {
+      iconProps: {
+        icon: "favorite",
+      },
+      inputProps: {
+        placeholder: "Test",
+        value: "Hey, this is a great article!",
+      },
+      id: "1",
+    },
+    {
+      iconProps: {
+        icon: "favorite",
+      },
+      inputProps: {
+        placeholder: "Test",
+        value: "Hey, this is a great article!",
+      },
+      id: "2",
+    },
+  ],
 };

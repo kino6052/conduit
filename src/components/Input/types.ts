@@ -6,12 +6,13 @@ export type TInputContentProps = TWithId<{
   value: string;
   placeholder: string;
   isTextArea?: boolean;
+  disabled?: boolean;
 }>;
 
 export type TInputProps = TWithClassName<TInputContentProps>;
 
 export type TCommentInputProps = TWithId<{
   inputProps: TInputContentProps;
-  buttonProps: TButtonContentProps;
+  buttonProps?: TButtonContentProps;
   iconProps: TIconContentProps;
 }>;

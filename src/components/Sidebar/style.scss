@@ -1,5 +1,4 @@
 .wrapper {
-  align-items: flex-start;
   border: 1px solid;
   border-color: var(--variable-collection-grey);
   border-radius: var(--variable-collection-radius);
@@ -12,7 +11,5 @@
 }
 
 .content {
-  align-self: stretch !important;
-  flex: 0 0 auto !important;
-  width: 100% !important;
+  width: 100%;
 }

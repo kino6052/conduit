@@ -8,6 +8,11 @@
 .comment {
   border-radius: 8px 8px 0 0;
   min-height: 128px;
+  
+  &:disabled {
+    resize: none;
+    min-height: fit-content;
+  }
 }
 
 .controls {

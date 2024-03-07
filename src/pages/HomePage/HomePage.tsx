@@ -24,7 +24,7 @@ export const HomePage: React.FC<THomePageProps> = ({
         </div>
         <Sidebar {...sidebarProps} />
         {posts.map((post) => (
-          <Post {...post} />
+          <Post {...post} key={post.id} />
         ))}
       </div>
       <PaginationBar {...paginationBarProps} />

@@ -9,6 +9,7 @@ import { EButtonVariant } from "../Button/types";
 import styles from "./style.scss";
 import { TPostProps } from "./types";
 import { ETypographyType } from "../Typography/types";
+import { EConstant } from "./constants";
 
 export const Post: React.FC<TPostProps> = ({
   title,
@@ -17,6 +18,7 @@ export const Post: React.FC<TPostProps> = ({
   likes,
   tags = [],
   id,
+  slug,
 }) => {
   return (
     <div className={styles.wrapper}>
@@ -29,7 +31,7 @@ export const Post: React.FC<TPostProps> = ({
         />
       </div>
       <div className={styles.content}>
-        <Link id={id} className={styles.link}>
+        <Link id={id} className={styles.link} slug={EConstant.Slug}>
           <Typography value={title} variant={ETypographyType.Heading2} />
           <Typography value={description} />
         </Link>

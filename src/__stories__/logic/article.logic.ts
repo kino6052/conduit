@@ -11,6 +11,7 @@ import {
   ResultingStateSubject,
   hasPressedEnter,
 } from "./common.logic";
+import { getPropsFromStateSafely } from "../../utils/pagesMap";
 
 IncomingEventSubject.pipe(
   filter((event) => {
@@ -36,23 +37,29 @@ IncomingEventSubject.pipe(
     );
   }),
   tap(() => {
-    const state = ResultingStateSubject.getValue();
-    const pageProps = state.pageProps;
+    const state = getPropsFromStateSafely(
+      EPage.Article,
+      ResultingStateSubject.getValue(),
+    );
 
-    if (!pageProps.input) return;
+    if (!state) return;
+
+    const pageProps = state.pageProps;
 
     const currentPosts = PostsSubject.getValue();
     const id = uniqueId();
     const nextPosts = {
       ...currentPosts,
       [id]: {
-        date: new Date().toISOString(),
-        description: pageProps.input,
+        userInfoProps: {
+          date: new Date().toISOString(),
+          username: "username",
+        },
+        description: "",
         id,
         likes: 0,
         tags: [],
-        title: pageProps.input,
-        username: "username",
+        title: "",
       },
     };
     PostInputValueSubject.next("");

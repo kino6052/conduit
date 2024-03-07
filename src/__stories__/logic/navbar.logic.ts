@@ -8,6 +8,7 @@ IncomingEventSubject.pipe(
     return event.slug === Tab.displayName && !!event.id;
   }),
   tap((event) => {
-    if (event.id && EPage[event.id]) CurrentPageSubject.next(event.id as EPage);
+    if (event.id && EPage[event.id as EPage])
+      CurrentPageSubject.next(event.id as EPage);
   }),
 ).subscribe();

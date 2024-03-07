@@ -15,7 +15,7 @@ export const CommentInput: React.FC<TCommentInputProps> = ({
       <Input {...inputProps} isTextArea className={styles.comment} />
       <div className={styles.controls}>
         <Icon {...iconProps} />
-        <Button {...buttonProps} />
+        {buttonProps && <Button {...buttonProps} />}
       </div>
     </div>
   );
