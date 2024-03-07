@@ -2,13 +2,16 @@ import { TNewPostPageProps } from "./types";
 
 export const DefaultData: TNewPostPageProps = {
   articleInputProps: {
-    placeholder: "Article text",
-  },
-  titleInputProps: {
-    placeholder: "Title",
+    placeholder: "Article",
+    value: "",
   },
   tagsInputProps: {
     placeholder: "Tags",
+    value: "",
+  },
+  titleInputProps: {
+    placeholder: "Title",
+    value: "",
   },
   buttonProps: {
     text: "Publish Article",
