@@ -1,5 +1,5 @@
-import { ETabVariant } from "../components/Tab/types";
-import { EPage, TAppProps } from "../types";
+import { ETabVariant } from "./components/Tab/types";
+import { EPage, TAppProps } from "./types";
 
 export const DefaultAppProps: TAppProps<EPage.Home> = {
   page: EPage.Home,

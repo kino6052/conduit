@@ -1,9 +1,10 @@
 import { BehaviorSubject, Subject } from "rxjs";
-import { TPostProps } from "../../components/Post/types";
-import { TUserInfoContentProps } from "../../components/UserInfo/types";
-import { EPage, TAppProps } from "../../types";
-import { IEvent } from "../../utils/events";
+import { TPostProps } from "../components/Post/types";
+import { TUserInfoContentProps } from "../components/UserInfo/types";
+import { EPage, TAppProps } from "../types";
+import { IEvent } from "../utils/events";
 import { DefaultAppProps } from "../data";
+import { TTagContentProps } from "../components/Tag/types";
 
 export const hasPressedEnter = (event: IEvent) => {
   const _event = event.event as KeyboardEvent;
@@ -50,6 +51,24 @@ export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
     title: "A good thing",
   },
 });
+
+export const TagsSubject = new BehaviorSubject<TTagContentProps[]>([
+  {
+    text: "one",
+    id: "one",
+    slug: "one",
+  },
+  {
+    text: "two",
+    id: "two",
+    slug: "two",
+  },
+  {
+    text: "three",
+    id: "three",
+    slug: "three",
+  },
+]);
 
 export const LikesSubject = new BehaviorSubject<{
   [id: string]: boolean;

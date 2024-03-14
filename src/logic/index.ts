@@ -1,5 +1,5 @@
-import { EPage, TAppProps } from "../../types";
-import { IEvent } from "../../utils/events";
+import { EPage, TAppProps } from "../types";
+import { IEvent } from "../utils/events";
 import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
 
 import "./new-article.logic";

@@ -2,16 +2,19 @@ import { filter, tap } from "rxjs";
 import {
   CurrentArticleId,
   CurrentPageSubject,
+  IncomingEventSubject,
   PostsSubject,
   ResultingStateSubject,
+  UserInfoSubject,
 } from "./common.logic";
-import { EPage, TAppProps } from "../../types";
-import { DefaultData as DefaultArticleData } from "../../pages/ArticlePage/data";
+import { EPage, TAppProps } from "../types";
+import { DefaultData as DefaultArticleData } from "../pages/ArticlePage/data";
+import { EButtonConstants } from "../components/Button/constants";
+import { EArticleBannerConstant } from "../components/Banner/ArticleBanner/constants";
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Article),
-  tap((page) => {
-    alert("Article!");
+  tap(() => {
     const currentArticleId = CurrentArticleId.getValue();
 
     if (!currentArticleId) {
@@ -34,6 +37,9 @@ CurrentPageSubject.pipe(
         bannerProps: {
           title: currentArticle.title,
           userInfoProps: currentArticle.userInfoProps,
+          canEdit:
+            UserInfoSubject.getValue().username ===
+            currentArticle.userInfoProps.username,
         },
         commentBoxProps: DefaultArticleData["commentBoxProps"],
         comments: [], // TODO: Add comments,
@@ -46,5 +52,16 @@ CurrentPageSubject.pipe(
     };
 
     ResultingStateSubject.next(nextState);
+  }),
+).subscribe();
+
+IncomingEventSubject.pipe(
+  filter(
+    (event) =>
+      event.slug === EButtonConstants.Slug &&
+      event.id === EArticleBannerConstant.EditButtonId,
+  ),
+  tap(() => {
+    CurrentPageSubject.next(EPage.NewPostPage);
   }),
 ).subscribe();

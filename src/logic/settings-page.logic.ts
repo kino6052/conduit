@@ -1,6 +1,6 @@
 import { filter, tap } from "rxjs";
-import { DefaultData } from "../../pages/SettingsPage/data";
-import { EPage, TAppProps } from "../../types";
+import { DefaultData } from "../pages/SettingsPage/data";
+import { EPage, TAppProps } from "../types";
 import { CurrentPageSubject, ResultingStateSubject } from "./common.logic";
 
 CurrentPageSubject.pipe(

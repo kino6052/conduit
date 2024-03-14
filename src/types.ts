@@ -5,7 +5,6 @@ import { TProfilePageProps } from "./pages/ProfilePage/types";
 import { TSettingsPageProps } from "./pages/SettingsPage/types";
 import { TSignInPageProps } from "./pages/SignInPage/types";
 import { TSignUpPageProps } from "./pages/SignUpPage/types";
-import { TPageProps } from "./pages/types";
 
 export enum EPage {
   Home = "Home",

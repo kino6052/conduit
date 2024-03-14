@@ -1,18 +1,18 @@
 import { filter, tap } from "rxjs";
-import { EConstant as EPostConstant } from "../../components/Post/constants";
+import { EConstant as EPostConstant } from "../components/Post/constants";
 import {
   CurrentArticleId,
   CurrentPageSubject,
   IncomingEventSubject,
   PostsSubject,
   ResultingStateSubject,
+  TagsSubject,
 } from "./common.logic";
-import { EPage, TAppProps } from "../../types";
+import { EPage, TAppProps } from "../types";
 
 IncomingEventSubject.pipe(
   filter((event) => event.slug === EPostConstant.Slug),
   tap((event) => {
-    alert("Click!");
     CurrentArticleId.next(event.id);
     CurrentPageSubject.next(EPage.Article);
   }),
@@ -20,7 +20,7 @@ IncomingEventSubject.pipe(
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Home),
-  tap((page) => {
+  tap(() => {
     const nextState: TAppProps<EPage.Home> = {
       page: EPage.Home,
       pageProps: {
@@ -32,7 +32,7 @@ CurrentPageSubject.pipe(
           selected: 0,
         },
         sidebarProps: {
-          tags: [],
+          tags: TagsSubject.getValue(),
           title: "Popular Tags",
         },
         tabs: [],

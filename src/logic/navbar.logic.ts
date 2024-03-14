@@ -1,6 +1,6 @@
 import { filter, tap } from "rxjs";
-import { Tab } from "../../components/Tab";
-import { EPage } from "../../types";
+import { Tab } from "../components/Tab";
+import { EPage } from "../types";
 import { CurrentPageSubject, IncomingEventSubject } from "./common.logic";
 
 IncomingEventSubject.pipe(
