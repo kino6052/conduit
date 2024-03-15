@@ -10,6 +10,7 @@
     "build-storybook": "storybook build"
   },
   "dependencies": {
+    "@types/react": "^18.2.66",
     "classnames": "^2.5.1",
     "immer": "^10.0.3",
     "lodash": "^4.17.21",

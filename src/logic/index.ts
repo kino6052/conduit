@@ -3,7 +3,7 @@ import { IEvent } from "../utils/events";
 import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
 
 import "./editArticle";
-import "./home.logic";
+import "./home";
 import "./navbar.logic";
 import "./article";
 import "./settings-page.logic";

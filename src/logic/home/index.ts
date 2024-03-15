@@ -1,5 +1,5 @@
 import { filter, tap } from "rxjs";
-import { EConstant as EPostConstant } from "../components/Post/constants";
+import { EPostConstant as EPostConstant } from "../../components/Post/constants";
 import {
   CurrentArticleId,
   CurrentPageSubject,
@@ -7,14 +7,29 @@ import {
   PostsSubject,
   ResultingStateSubject,
   TagsSubject,
-} from "./common.logic";
-import { EPage, TAppProps } from "../types";
+} from "../common.logic";
+import { EPage, TAppProps } from "../../types";
+import { EButtonConstants } from "../../components/Button/constants";
+import { getCurrentArticleId, likeArticleById } from "../utils/article-crud";
 
 IncomingEventSubject.pipe(
   filter((event) => event.slug === EPostConstant.Slug),
   tap((event) => {
     CurrentArticleId.next(event.id);
     CurrentPageSubject.next(EPage.Article);
+  }),
+).subscribe();
+
+IncomingEventSubject.pipe(
+  filter((event) => event.slug === EPostConstant.LikeButtonSlug),
+  tap((event) => {
+    const id = event.id;
+
+    if (!id) return;
+
+    likeArticleById(id);
+
+    CurrentPageSubject.next(EPage.Home);
   }),
 ).subscribe();
 

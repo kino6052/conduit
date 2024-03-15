@@ -8,6 +8,7 @@ export type TPostProps = TWithId<{
   description: string;
   tags: TTagProps[];
   likes: number;
+  hasLiked: boolean;
   userInfoProps: TUserInfoProps;
   comments: TCommentInputProps[];
 }>;

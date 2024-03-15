@@ -25,13 +25,6 @@ export const CurrentArticleId = new BehaviorSubject<string | undefined>(
   undefined,
 );
 
-export const getCurrentArticle = () => {
-  const id = CurrentArticleId.getValue();
-  if (!id) return undefined;
-  const article = PostsSubject.getValue()[id];
-  return article;
-};
-
 export const PostInputValueSubject = new BehaviorSubject<string>("");
 
 export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
@@ -42,6 +35,7 @@ export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
       username: "Jane Lobster",
     },
     description: "A good article, a really really good one",
+    hasLiked: false,
     likes: 24,
     tags: [
       {

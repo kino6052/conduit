@@ -1,3 +1,5 @@
+import { TWithId } from "../../utils/types";
+
 export enum EButtonVariant {
   Warning = "warning",
   Primary = "primary",
@@ -18,7 +20,7 @@ export type TButtonConfigProps = {
 export type TButtonContentProps = {
   text: string;
   hasIcon?: boolean;
-  id?: string;
 };
 
-export type TButtonProps = Partial<TButtonConfigProps> & TButtonContentProps;
+export type TButtonProps = Partial<TButtonConfigProps> &
+  TWithId<TButtonContentProps>;

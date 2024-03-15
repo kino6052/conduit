@@ -16,8 +16,8 @@ import {
   PostsSubject,
   ResultingStateSubject,
   UserInfoSubject,
-  getCurrentArticle,
 } from "../common.logic";
+import { getCurrentArticle } from "../utils/article-crud";
 
 const TitleInputSubject = new BehaviorSubject("");
 const ArticleInputSubject = new BehaviorSubject("");
@@ -128,12 +128,13 @@ IncomingEventSubject.pipe(
 
     if (!id) return;
 
-    const post = {
+    const post: TPostProps = {
       id,
       title: TitleInputSubject.getValue(),
       description: ArticleInputSubject.getValue(),
       userInfoProps: UserInfoSubject.getValue(),
       likes: 0,
+      hasLiked: false,
       tags: TagsInputSubject.getValue()
         .split(",")
         .join(" ")
@@ -143,7 +144,8 @@ IncomingEventSubject.pipe(
           text: sub,
           id: sub,
         })),
-    } as TPostProps;
+      comments: [],
+    };
 
     const nextPosts = {
       ...posts,
