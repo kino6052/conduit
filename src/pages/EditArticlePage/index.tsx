@@ -2,7 +2,7 @@ import React from "react";
 import { Button } from "../../components/Button";
 import { EButtonVariant } from "../../components/Button/types";
 import { Input } from "../../components/Input/Input";
-import { Tags } from "../../components/Tag/Tag";
+import { Tags } from "../../components/Tag";
 import { ENewPostPageConstant } from "./constants";
 import styles from "./styles.scss";
 import { TEditArticlePageProps } from "./types";

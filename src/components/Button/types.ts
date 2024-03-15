@@ -17,10 +17,10 @@ export type TButtonConfigProps = {
   className: string;
 };
 
-export type TButtonContentProps = {
+export type TButtonContentProps = TWithId<{
   text: string;
   hasIcon?: boolean;
-};
+}>;
 
 export type TButtonProps = Partial<TButtonConfigProps> &
-  TWithId<TButtonContentProps>;
+  TButtonContentProps;

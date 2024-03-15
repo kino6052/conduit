@@ -6,7 +6,7 @@ import { CommentInput } from "../../components/Input";
 import { UserInfo } from "../../components/UserInfo";
 import { TArticlePageProps } from "./types";
 import { Typography } from "../../components/Typography";
-import { Tags } from "../../components/Tag/Tag";
+import { Tags } from "../../components/Tag";
 import { EArticlePageConstants } from "./constants";
 
 export const ArticlePage: React.FC<TArticlePageProps> = ({

@@ -17,6 +17,8 @@ export const UserInfoSubject = new BehaviorSubject<TUserInfoContentProps>({
   username: "Test",
 });
 
+export const SelectedTagSubject = new BehaviorSubject<string | undefined>(undefined);
+
 export const CurrentPageSubject = new BehaviorSubject<EPage>(EPage.Home);
 
 CurrentPageSubject.pipe(tap((page) => console.warn({ page }))).subscribe();
@@ -39,15 +41,12 @@ export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
     likes: 24,
     tags: [
       {
-        text: "first",
         id: "1",
       },
       {
-        text: "second",
         id: "2",
       },
       {
-        text: "third",
         id: "3",
       },
     ],
@@ -58,19 +57,13 @@ export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
 
 export const TagsSubject = new BehaviorSubject<TTagContentProps[]>([
   {
-    text: "one",
-    id: "one",
-    slug: "one",
+    id: "1",
   },
   {
-    text: "two",
-    id: "two",
-    slug: "two",
+    id: "2",
   },
   {
-    text: "three",
-    id: "three",
-    slug: "three",
+    id: "3",
   },
 ]);
 

@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../Button";
 import { Link } from "../Link";
-import { Tags } from "../Tag/Tag";
+import { Tags } from "../Tag";
 import { Typography } from "../Typography";
 import { UserInfo } from "../UserInfo";
 

@@ -1,5 +1,5 @@
 import React from "react";
-import { Tags } from "../Tag/Tag";
+import { Tags } from "../Tag";
 import { Typography } from "../Typography";
 import styles from "./style.scss";
 import { TSidebarProps } from "./types";

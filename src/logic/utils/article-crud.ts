@@ -9,6 +9,15 @@ export const getCurrentArticle = () => {
   return article;
 };
 
+export const getArticlesByTagText = (text: string): TPostProps[] => {
+  const articles = PostsSubject.getValue();
+
+  return Object.values(articles).filter((article) => {
+    const tag = article.tags.find(t => t.id === text)
+    return !!tag;
+  })
+}
+
 export const likeArticleById = (id: string) => {
   const article = getArticleById(id);
 
