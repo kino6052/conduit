@@ -1,4 +1,4 @@
-import { BehaviorSubject, Subject } from "rxjs";
+import { BehaviorSubject, Subject, tap } from "rxjs";
 import { TPostProps } from "../components/Post/types";
 import { TUserInfoContentProps } from "../components/UserInfo/types";
 import { EPage, TAppProps } from "../types";
@@ -19,9 +19,18 @@ export const UserInfoSubject = new BehaviorSubject<TUserInfoContentProps>({
 
 export const CurrentPageSubject = new BehaviorSubject<EPage>(EPage.Home);
 
+CurrentPageSubject.pipe(tap((page) => console.warn({ page }))).subscribe();
+
 export const CurrentArticleId = new BehaviorSubject<string | undefined>(
   undefined,
 );
+
+export const getCurrentArticle = () => {
+  const id = CurrentArticleId.getValue();
+  if (!id) return undefined;
+  const article = PostsSubject.getValue()[id];
+  return article;
+};
 
 export const PostInputValueSubject = new BehaviorSubject<string>("");
 
@@ -49,6 +58,7 @@ export const PostsSubject = new BehaviorSubject<{ [id: string]: TPostProps }>({
       },
     ],
     title: "A good thing",
+    comments: [],
   },
 });
 

@@ -5,9 +5,9 @@ import { Input } from "../../components/Input/Input";
 import { Tags } from "../../components/Tag/Tag";
 import { ENewPostPageConstant } from "./constants";
 import styles from "./styles.scss";
-import { TNewPostPageProps } from "./types";
+import { TEditArticlePageProps } from "./types";
 
-export const NewPostPage: React.FC<TNewPostPageProps> = ({
+export const EditArticlePage: React.FC<TEditArticlePageProps> = ({
   titleInputProps,
   articleInputProps,
   tagsInputProps,

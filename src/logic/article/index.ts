@@ -1,4 +1,8 @@
-import { filter, tap } from "rxjs";
+import { BehaviorSubject, filter, tap } from "rxjs";
+import { EArticleBannerConstant } from "../../components/Banner/ArticleBanner/constants";
+import { EButtonConstants } from "../../components/Button/constants";
+import { DefaultData as DefaultArticleData } from "../../pages/ArticlePage/data";
+import { EPage, TAppProps } from "../../types";
 import {
   CurrentArticleId,
   CurrentPageSubject,
@@ -6,11 +10,11 @@ import {
   PostsSubject,
   ResultingStateSubject,
   UserInfoSubject,
-} from "./common.logic";
-import { EPage, TAppProps } from "../types";
-import { DefaultData as DefaultArticleData } from "../pages/ArticlePage/data";
-import { EButtonConstants } from "../components/Button/constants";
-import { EArticleBannerConstant } from "../components/Banner/ArticleBanner/constants";
+} from "../common.logic";
+import { EInputConstants } from "../../components/Input/Input/constants";
+import { EArticlePageConstants } from "../../pages/ArticlePage/constants";
+
+const CommentInputSubject = new BehaviorSubject("");
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Article),
@@ -62,6 +66,17 @@ IncomingEventSubject.pipe(
       event.id === EArticleBannerConstant.EditButtonId,
   ),
   tap(() => {
-    CurrentPageSubject.next(EPage.NewPostPage);
+    CurrentPageSubject.next(EPage.EditArticle);
+  }),
+).subscribe();
+
+IncomingEventSubject.pipe(
+  filter(
+    (event) =>
+      event.slug === EInputConstants.Slug &&
+      event.id === EArticlePageConstants.InputId,
+  ),
+  tap((event) => {
+    const value = getEventTargetValue(event);
   }),
 ).subscribe();

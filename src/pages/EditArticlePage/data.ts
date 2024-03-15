@@ -1,6 +1,6 @@
-import { TNewPostPageProps } from "./types";
+import { TEditArticlePageProps } from "./types";
 
-export const DefaultData: TNewPostPageProps = {
+export const DefaultData: TEditArticlePageProps = {
   articleInputProps: {
     placeholder: "Article",
     value: "",

@@ -1,5 +1,5 @@
 import { TWithClassName, TWithId } from "../../utils/types";
-import { TButtonContentProps } from "../Button/types";
+import { TButtonProps } from "../Button/types";
 import { TIconContentProps } from "../Icon/types";
 
 export type TInputContentProps = TWithId<{
@@ -12,7 +12,7 @@ export type TInputContentProps = TWithId<{
 export type TInputProps = TWithClassName<TInputContentProps>;
 
 export type TCommentInputProps = TWithId<{
-  inputProps: TInputContentProps;
-  buttonProps?: TButtonContentProps;
+  inputProps: TInputProps;
+  buttonProps?: TButtonProps;
   iconProps: TIconContentProps;
 }>;

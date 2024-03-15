@@ -1,7 +1,7 @@
 import React from "react";
 import { Button } from "../../Button";
 import { Icon } from "../../Icon";
-import { Input } from "../Input/Input";
+import { Input } from "../Input";
 import styles from "./styles.scss";
 import { TCommentInputProps } from "../types";
 

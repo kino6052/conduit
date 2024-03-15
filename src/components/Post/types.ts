@@ -1,4 +1,5 @@
 import { TWithId } from "../../utils/types";
+import { TCommentInputProps } from "../Input/types";
 import { TTagProps } from "../Tag/types";
 import { TUserInfoProps } from "../UserInfo/types";
 
@@ -8,4 +9,5 @@ export type TPostProps = TWithId<{
   tags: TTagProps[];
   likes: number;
   userInfoProps: TUserInfoProps;
+  comments: TCommentInputProps[];
 }>;

@@ -2,10 +2,10 @@ import { EPage, TAppProps } from "../types";
 import { IEvent } from "../utils/events";
 import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
 
-import "./new-article.logic";
+import "./editArticle";
 import "./home.logic";
 import "./navbar.logic";
-import "./post.logic";
+import "./article";
 import "./settings-page.logic";
 import "./profile.logic";
 

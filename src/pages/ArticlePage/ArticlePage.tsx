@@ -7,6 +7,7 @@ import { UserInfo } from "../../components/UserInfo";
 import { TArticlePageProps } from "./types";
 import { Typography } from "../../components/Typography";
 import { Tags } from "../../components/Tag/Tag";
+import { EArticlePageConstants } from "./constants";
 
 export const ArticlePage: React.FC<TArticlePageProps> = ({
   bannerProps,
@@ -30,7 +31,19 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
             <Button {...followButtonProps} />
             <Button {...favoriteButtonProps} />
           </div>
-          <CommentInput {...commentBoxProps} />
+          <CommentInput
+            {...commentBoxProps}
+            inputProps={{
+              ...commentBoxProps.inputProps,
+              id: EArticlePageConstants.InputId,
+            }}
+            buttonProps={
+              commentBoxProps.buttonProps && {
+                ...commentBoxProps.buttonProps,
+                id: EArticlePageConstants.SubmitButtonId,
+              }
+            }
+          />
           {comments.map(({ iconProps, inputProps, id }) => (
             <CommentInput
               id={id}

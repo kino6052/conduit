@@ -15,7 +15,7 @@ export const Navbar: React.FC<TNavbarProps> = ({ username }) => {
         <div className={styles.navigation}>
           <Tab id={EPage.Home} text="Home" variant={ETabVariant.Menu} />
           <Tab
-            id={EPage.NewPostPage}
+            id={EPage.NewArticle}
             icon="edit"
             text="New Post"
             variant={ETabVariant.Menu}

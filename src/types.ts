@@ -1,6 +1,6 @@
 import { TArticlePageProps } from "./pages/ArticlePage/types";
 import { THomePageProps } from "./pages/HomePage/types";
-import { TNewPostPageProps } from "./pages/NewPostPage/types";
+import { TEditArticlePageProps } from "./pages/EditArticlePage/types";
 import { TProfilePageProps } from "./pages/ProfilePage/types";
 import { TSettingsPageProps } from "./pages/SettingsPage/types";
 import { TSignInPageProps } from "./pages/SignInPage/types";
@@ -9,7 +9,8 @@ import { TSignUpPageProps } from "./pages/SignUpPage/types";
 export enum EPage {
   Home = "Home",
   Article = "Article",
-  NewPostPage = "NewPostPage",
+  NewArticle = "NewArticle",
+  EditArticle = "EditArticle",
   Settings = "Settings",
   Profile = "Profile",
   SignUp = "SignUp",
@@ -19,7 +20,8 @@ export enum EPage {
 export type TPagePropsMap = {
   [EPage.Home]: THomePageProps;
   [EPage.Article]: TArticlePageProps;
-  [EPage.NewPostPage]: TNewPostPageProps;
+  [EPage.EditArticle]: TEditArticlePageProps;
+  [EPage.NewArticle]: TEditArticlePageProps;
   [EPage.Settings]: TSettingsPageProps;
   [EPage.Profile]: TProfilePageProps;
   [EPage.SignUp]: TSignUpPageProps;
