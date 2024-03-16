@@ -5,6 +5,8 @@ import { TProfilePageProps } from "./pages/ProfilePage/types";
 import { TSettingsPageProps } from "./pages/SettingsPage/types";
 import { TSignInPageProps } from "./pages/SignInPage/types";
 import { TSignUpPageProps } from "./pages/SignUpPage/types";
+import { TUserInfoProps } from "./components/UserInfo/types";
+import { TNavbarProps } from "./components/Navbar/types";
 
 export enum EPage {
   Home = "Home",
@@ -30,5 +32,6 @@ export type TPagePropsMap = {
 
 export type TAppProps<T extends EPage> = {
   page: T;
+  navbarProps: TNavbarProps;
   pageProps: TPagePropsMap[T];
 };

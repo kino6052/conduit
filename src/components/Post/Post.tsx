@@ -23,7 +23,9 @@ export const Post: React.FC<TPostProps> = ({
   return (
     <div className={styles.wrapper}>
       <div className={styles.heading}>
-        <UserInfo {...userInfoProps} />
+        <Link id={id} slug={EPostConstant.UserInfoSlug}>
+          <UserInfo {...userInfoProps} />
+        </Link>
         <Button
           id={id}
           slug={EPostConstant.LikeButtonSlug}

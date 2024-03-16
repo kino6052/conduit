@@ -1,14 +1,28 @@
 import { filter, tap } from "rxjs";
-import { Tab } from "../components/Tab";
+import { ETabConstant } from "../components/Tab/constants";
 import { EPage } from "../types";
-import { CurrentPageSubject, IncomingEventSubject } from "./common.logic";
+import {
+  CurrentPageSubject,
+  IncomingEventSubject,
+  SelectedUserInfoSubject,
+  UserInfoSubject,
+} from "./common.logic";
 
 IncomingEventSubject.pipe(
   filter((event) => {
-    return event.slug === Tab.displayName && !!event.id;
+    return (
+      event.slug === ETabConstant.Slug &&
+      !!event.id &&
+      !!EPage[event.id as EPage]
+    );
   }),
   tap((event) => {
-    if (event.id && EPage[event.id as EPage])
-      CurrentPageSubject.next(event.id as EPage);
+    const userInfo = UserInfoSubject.getValue();
+
+    if (event.id === EPage.Profile && userInfo) {
+      SelectedUserInfoSubject.next(userInfo);
+    }
+
+    if (event) CurrentPageSubject.next(event.id as EPage);
   }),
 ).subscribe();

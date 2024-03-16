@@ -1,15 +1,13 @@
 import React from "react";
 import { Navbar } from "./components/Navbar";
-import { EPage, TPagePropsMap } from "./types";
+import { EPage, TAppProps, TPagePropsMap } from "./types";
 import { pagesMap } from "./utils/pagesMap";
 
 export function App<T extends EPage>({
   page,
   pageProps,
-}: {
-  page: T;
-  pageProps: TPagePropsMap[T];
-}): JSX.Element | null {
+  navbarProps,
+}: TAppProps<T>): JSX.Element | null {
   const Page = pagesMap[page] as React.FC<typeof pageProps>;
 
   if (!Page) {
@@ -21,7 +19,7 @@ export function App<T extends EPage>({
 
   return (
     <div className="page-default">
-      <Navbar username="eni9mu5" />
+      <Navbar {...navbarProps} />
       <Page {...pageProps} />
     </div>
   );

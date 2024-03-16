@@ -24,7 +24,9 @@ const ArticleInputSubject = new BehaviorSubject("");
 const TagsInputSubject = new BehaviorSubject("");
 
 const updateForm = () => {
+  const prevState = ResultingStateSubject.getValue();
   const nextState: TAppProps<EPage.NewArticle> = {
+    ...prevState,
     page: EPage.NewArticle,
     pageProps: {
       ...DefaultData,
@@ -125,14 +127,15 @@ IncomingEventSubject.pipe(
       isEditing && CurrentArticleId.getValue(),
       uniqueId(),
     ]);
+    const userInfoProps = UserInfoSubject.getValue();
 
-    if (!id) return;
+    if (!id || !userInfoProps) return;
 
     const post: TPostProps = {
       id,
       title: TitleInputSubject.getValue(),
       description: ArticleInputSubject.getValue(),
-      userInfoProps: UserInfoSubject.getValue(),
+      userInfoProps: userInfoProps,
       likes: 0,
       hasLiked: false,
       tags: TagsInputSubject.getValue()

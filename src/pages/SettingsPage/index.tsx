@@ -8,6 +8,7 @@ import { TSettingsPageProps } from "./types";
 export const SettingsPage: React.FC<TSettingsPageProps> = ({
   inputProps,
   buttonProps,
+  logoutButtonProps,
 }) => {
   return (
     <div className={styles.wrapper}>
@@ -15,6 +16,7 @@ export const SettingsPage: React.FC<TSettingsPageProps> = ({
         <Input {...inputProps} />
       </div>
       <Button variant={EButtonVariant.Primary} {...buttonProps} />
+      <Button variant={EButtonVariant.Secondary} {...logoutButtonProps} />
     </div>
   );
 };

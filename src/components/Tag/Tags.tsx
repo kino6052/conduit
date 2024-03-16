@@ -7,7 +7,7 @@ export const Tags: React.FC<{ tags: TTagProps[] }> = ({ tags }) => {
   return (
     <div className={styles.tags}>
       {tags.map((tag) => (
-        <Tag {...tag} />
+        <Tag {...tag} key={tag.id} />
       ))}
     </div>
   );

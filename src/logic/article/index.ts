@@ -12,6 +12,7 @@ import {
   IncomingEventSubject,
   ResultingStateSubject,
   UserInfoSubject,
+  provideNavbarProps,
 } from "../common.logic";
 import {
   addCommentToArticle,
@@ -19,8 +20,34 @@ import {
   getCurrentArticleId,
   removeArticleById,
 } from "../utils/article-crud";
+import { TPostProps } from "../../components/Post/types";
 
 const CommentInputSubject = new BehaviorSubject("");
+
+export const provideArticleAppProps = (
+  currentArticle: TPostProps,
+): TAppProps<EPage.Article> => {
+  return {
+    page: EPage.Article,
+    pageProps: {
+      bannerProps: {
+        title: currentArticle.title,
+        userInfoProps: currentArticle.userInfoProps,
+        canEdit:
+          UserInfoSubject.getValue()?.username ===
+          currentArticle.userInfoProps.username,
+      },
+      commentBoxProps: DefaultArticleData["commentBoxProps"],
+      comments: currentArticle.comments, // TODO: Add comments,
+      content: currentArticle.description,
+      favoriteButtonProps: DefaultArticleData["favoriteButtonProps"],
+      followButtonProps: DefaultArticleData["followButtonProps"],
+      tags: currentArticle.tags,
+      userInfoProps: currentArticle.userInfoProps,
+    },
+    navbarProps: provideNavbarProps(),
+  };
+};
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Article),
@@ -41,25 +68,9 @@ CurrentPageSubject.pipe(
       return;
     }
 
-    const nextState: TAppProps<EPage.Article> = {
-      page: EPage.Article,
-      pageProps: {
-        bannerProps: {
-          title: currentArticle.title,
-          userInfoProps: currentArticle.userInfoProps,
-          canEdit:
-            UserInfoSubject.getValue().username ===
-            currentArticle.userInfoProps.username,
-        },
-        commentBoxProps: DefaultArticleData["commentBoxProps"],
-        comments: currentArticle.comments, // TODO: Add comments,
-        content: currentArticle.description,
-        favoriteButtonProps: DefaultArticleData["favoriteButtonProps"],
-        followButtonProps: DefaultArticleData["followButtonProps"],
-        tags: currentArticle.tags,
-        userInfoProps: currentArticle.userInfoProps,
-      },
-    };
+    // TODO: Create a factory
+    const nextState: TAppProps<EPage.Article> =
+      provideArticleAppProps(currentArticle);
 
     ResultingStateSubject.next(nextState);
   }),
@@ -111,6 +122,7 @@ IncomingEventSubject.pipe(
           },
         },
       },
+      navbarProps: provideNavbarProps(),
     };
 
     ResultingStateSubject.next(nextState);
@@ -151,6 +163,7 @@ IncomingEventSubject.pipe(
           },
         },
       },
+      navbarProps: provideNavbarProps(),
     };
 
     ResultingStateSubject.next(nextState);

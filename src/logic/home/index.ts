@@ -1,5 +1,7 @@
 import { filter, tap } from "rxjs";
-import { EPostConstant as EPostConstant } from "../../components/Post/constants";
+import { EPostConstant } from "../../components/Post/constants";
+import { ETagConstant } from "../../components/Tag/constants";
+import { EPage, TAppProps } from "../../types";
 import {
   CurrentArticleId,
   CurrentPageSubject,
@@ -7,12 +9,12 @@ import {
   PostsSubject,
   ResultingStateSubject,
   SelectedTagSubject,
+  SelectedUserInfoSubject,
   TagsSubject,
+  UserDatabase,
+  provideNavbarProps,
 } from "../common.logic";
-import { EPage, TAppProps } from "../../types";
-import { EButtonConstants } from "../../components/Button/constants";
-import { getArticlesByTagText, getCurrentArticleId, likeArticleById } from "../utils/article-crud";
-import { ETagConstant } from "../../components/Tag/constants";
+import { getArticleById, likeArticleById } from "../utils/article-crud";
 
 IncomingEventSubject.pipe(
   filter((event) => event.slug === EPostConstant.Slug),
@@ -48,6 +50,26 @@ IncomingEventSubject.pipe(
   }),
 ).subscribe();
 
+IncomingEventSubject.pipe(
+  filter((event) => event.slug === EPostConstant.UserInfoSlug),
+  tap((event) => {
+    const id = event.id;
+
+    if (!id) return;
+
+    const article = getArticleById(id);
+
+    if (!article) return;
+
+    const { userInfoProps } = article;
+
+    const userInfo = UserDatabase.findUserByName(userInfoProps.username);
+
+    SelectedUserInfoSubject.next(userInfo);
+    CurrentPageSubject.next(EPage.Profile);
+  }),
+).subscribe();
+
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Home),
   tap(() => {
@@ -56,7 +78,7 @@ CurrentPageSubject.pipe(
       pageProps: {
         posts: Object.values(PostsSubject.getValue()).filter((post) => {
           const selectedTag = SelectedTagSubject.getValue();
-          
+
           if (!selectedTag) return true;
 
           const tag = post.tags.find(({ id }) => id === selectedTag);
@@ -72,6 +94,7 @@ CurrentPageSubject.pipe(
         },
         tabs: [],
       },
+      navbarProps: provideNavbarProps(),
     };
 
     ResultingStateSubject.next(nextState);

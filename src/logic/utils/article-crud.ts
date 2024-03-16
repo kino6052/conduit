@@ -13,10 +13,10 @@ export const getArticlesByTagText = (text: string): TPostProps[] => {
   const articles = PostsSubject.getValue();
 
   return Object.values(articles).filter((article) => {
-    const tag = article.tags.find(t => t.id === text)
+    const tag = article.tags.find((t) => t.id === text);
     return !!tag;
-  })
-}
+  });
+};
 
 export const likeArticleById = (id: string) => {
   const article = getArticleById(id);
@@ -51,6 +51,13 @@ export const getArticleById = (id: string): TPostProps | undefined => {
   const articles = PostsSubject.getValue();
   const article = articles[id];
   return article;
+};
+
+export const getArticlesByUsername = (username: string): TPostProps[] => {
+  const articles = Object.values(PostsSubject.getValue());
+  return articles.filter(
+    (article) => article.userInfoProps.username === username,
+  );
 };
 
 export const updateArticleById = (

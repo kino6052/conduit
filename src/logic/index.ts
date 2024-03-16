@@ -6,8 +6,10 @@ import "./editArticle";
 import "./home";
 import "./navbar.logic";
 import "./article";
-import "./settings-page.logic";
-import "./profile.logic";
+import "./settings";
+import "./profile";
+import "./signIn";
+import "./signUp";
 
 export const logic = async (
   event: IEvent,
