@@ -13,6 +13,7 @@ export const SignInPage: React.FC<TSignInPageProps> = ({
   passwordInputProps,
   buttonProps,
   linkProps,
+  errors,
 }) => {
   return (
     <div className={styles.wrapper}>
@@ -24,6 +25,7 @@ export const SignInPage: React.FC<TSignInPageProps> = ({
         <Input {...usernameInputProps} />
         <Input {...passwordInputProps} />
       </div>
+
       <Button variant={EButtonVariant.Primary} {...buttonProps} />
     </div>
   );

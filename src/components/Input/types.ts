@@ -6,6 +6,7 @@ export type TInputContentProps = TWithId<{
   value: string;
   placeholder: string;
   isTextArea?: boolean;
+  error?: string;
   disabled?: boolean;
 }>;
 

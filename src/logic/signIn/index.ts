@@ -12,7 +12,10 @@ import {
 import { ESignInConstant } from "./constants";
 
 let usernameInput = "";
+let usernameError = "";
+
 let passwordInput = "";
+let passwordError = "";
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.SignIn),
@@ -29,11 +32,13 @@ CurrentPageSubject.pipe(
           id: ESignInConstant.PasswordInputId,
           placeholder: "Password",
           value: passwordInput,
+          error: passwordError,
         },
         usernameInputProps: {
           id: ESignInConstant.UserNameInputId,
           placeholder: "Username",
           value: usernameInput,
+          error: usernameError,
         },
         linkProps: {
           id: ESignInConstant.DocumentationLinkId,
@@ -85,17 +90,21 @@ IncomingEventSubject.pipe(
     const userInfo = UserDatabase.findUserByName(usernameInput);
 
     if (!userInfo) {
-      console.error("Not found");
+      usernameError = "Not found";
+      console.error(usernameError);
+    }
+
+    if (userInfo && passwordInput !== userInfo.password) {
+      passwordError = "Passwords don't match";
+      console.error(passwordError);
+    }
+
+    if (userInfo) {
+      UserInfoSubject.next(userInfo);
+      CurrentPageSubject.next(EPage.Home);
       return;
     }
 
-    if (passwordInput !== userInfo.password) {
-      console.error("Passwords don't match");
-      return;
-    }
-
-    UserInfoSubject.next(userInfo);
-
-    CurrentPageSubject.next(EPage.Home);
+    CurrentPageSubject.next(EPage.SignIn);
   }),
 ).subscribe();

@@ -1,5 +1,13 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  align-self: stretch;
+  gap: 8px;
+}
+
 .input {
   display: inline-flex;
+  align-self: stretch;
   border-radius: 8px;
   padding: 12px;
   border: 1px solid #AAAAAA;
@@ -10,4 +18,8 @@
 
 textarea {
   min-height: 256px;
+}
+
+.error {
+  color: var(--variable-collection-warning);
 }

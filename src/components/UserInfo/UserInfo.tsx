@@ -16,8 +16,8 @@ export const UserInfo: React.FC<TUserInfoProps> = ({
     >
       <Icon icon="person" />
       <div className={styles.description}>
-        <div className={styles.username}>{username}</div>
-        <div className={styles.date}>{date}</div>
+        <span className={styles.username}>{username}</span>
+        <span className={styles.date}>{date}</span>
       </div>
     </div>
   );

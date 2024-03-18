@@ -21,6 +21,7 @@ import {
   removeArticleById,
 } from "../utils/article-crud";
 import { TPostProps } from "../../components/Post/types";
+import { getIsLoggedIn } from "../utils/user";
 
 const CommentInputSubject = new BehaviorSubject("");
 
@@ -98,6 +99,13 @@ IncomingEventSubject.pipe(
 
     if (!id) return;
 
+    const isLoggedIn = getIsLoggedIn();
+
+    if (!isLoggedIn) {
+      CurrentPageSubject.next(EPage.SignIn);
+      return;
+    }
+
     const value = CommentInputSubject.getValue();
 
     CommentInputSubject.next("");
@@ -143,8 +151,6 @@ IncomingEventSubject.pipe(
     if (!currentArticle) return;
 
     CommentInputSubject.next(value ?? prevValue);
-
-    console.warn({ value: value ?? prevValue });
   }),
   tap(() => {
     const value = CommentInputSubject.getValue();

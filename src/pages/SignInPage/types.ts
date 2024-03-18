@@ -7,4 +7,5 @@ export type TSignInPageProps = {
   passwordInputProps: TInputContentProps;
   buttonProps: TButtonContentProps;
   linkProps: TLinkProps;
+  errors?: string[];
 };

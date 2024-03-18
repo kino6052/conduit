@@ -1,6 +1,7 @@
 import React from "react";
 import { Navbar } from "./components/Navbar";
-import { EPage, TAppProps, TPagePropsMap } from "./types";
+import styles from "./styles.scss";
+import { EPage, TAppProps } from "./types";
 import { pagesMap } from "./utils/pagesMap";
 
 export function App<T extends EPage>({
@@ -18,9 +19,9 @@ export function App<T extends EPage>({
   }
 
   return (
-    <div className="page-default">
+    <>
       <Navbar {...navbarProps} />
       <Page {...pageProps} />
-    </div>
+    </>
   );
 }

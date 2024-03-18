@@ -4,7 +4,9 @@
   cursor: pointer;
 
   &:hover {
-    text-decoration: underline;
-    text-decoration-color: var(--variable-collection-grey);
+    a, p, b, li, span {
+      text-decoration: underline;
+      text-decoration-color: var(--variable-collection-grey);
+    }
   }
 }
