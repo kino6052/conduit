@@ -28,6 +28,24 @@ export class UserDatabase {
     return this.users.find((user) => user.username === username);
   }
 
+  public static updateUserByName(
+    username: string,
+    partialUser: Partial<TUserInfo>,
+  ) {
+    this.users = this.users.map((user) => {
+      if (user.username === username) {
+        return {
+          ...user,
+          ...partialUser,
+        };
+      }
+
+      return user;
+    });
+
+    return this.findUserByName(partialUser.username || username);
+  }
+
   public static registerNewUser(user: TUserInfo) {
     const alreadyRegisteredUser = this.users.find((_user) => {
       return _user.username === user.username;

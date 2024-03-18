@@ -6,14 +6,20 @@ import styles from "./styles.scss";
 import { TSettingsPageProps } from "./types";
 
 export const SettingsPage: React.FC<TSettingsPageProps> = ({
-  inputProps,
+  usernameInputProps,
+  bioInputProps,
+  imageUrlInputProps,
+  passwordInputProps,
   buttonProps,
   logoutButtonProps,
 }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles["form-wrapper"]}>
-        <Input {...inputProps} />
+        <Input {...usernameInputProps} />
+        <Input {...passwordInputProps} />
+        <Input {...imageUrlInputProps} />
+        <Input {...bioInputProps} isTextArea />
       </div>
       <Button variant={EButtonVariant.Primary} {...buttonProps} />
       <Button variant={EButtonVariant.Secondary} {...logoutButtonProps} />
