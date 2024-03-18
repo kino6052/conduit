@@ -12,15 +12,12 @@ export const DefaultAppProps: TAppProps<EPage.Home> = {
       title: "Popular tags",
       tags: [
         {
-          text: "one",
           id: "1",
         },
         {
-          text: "two",
           id: "2",
         },
         {
-          text: "three",
           id: "3",
         },
       ],
