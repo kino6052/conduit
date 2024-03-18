@@ -8,7 +8,6 @@ import {
   ResultingStateSubject,
   SelectedTagSubject,
   SelectedUserInfoSubject,
-  TagsSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
@@ -93,7 +92,7 @@ CurrentPageSubject.pipe(
           selected: 0,
         },
         sidebarProps: {
-          tags: TagsSubject.getValue(),
+          tags: ArticleDatabase.getAllTags(),
           title: "Popular Tags",
         },
         tabs: [],

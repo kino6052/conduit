@@ -94,9 +94,7 @@ export class ArticleDatabase {
   }
 
   public static publishArticle(article: TArticleProps) {
-    const alreadyExistingArticle = this.getArticleById(article.id);
-
-    if (alreadyExistingArticle) {
+    if (this.getDoesArticleExist(article.id)) {
       throw new Error("Article already exists");
     }
 

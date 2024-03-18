@@ -21,7 +21,7 @@ let articleInput = "";
 let tagsInput = "";
 
 const refreshForm = () => {
-  CurrentPageSubject.next(EPage.EditArticle);
+  CurrentPageSubject.next(CurrentPageSubject.getValue());
 };
 
 const updateForm = () => {
@@ -56,7 +56,6 @@ const resetForm = () => {
 
 CurrentPageSubject.pipe(
   filter((page) => [EPage.NewArticle, EPage.EditArticle].includes(page)),
-  tap(resetForm),
   tap((page) => {
     const isEditing = page === EPage.EditArticle;
 

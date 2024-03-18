@@ -24,18 +24,6 @@ CurrentPageSubject.pipe(tap((page) => console.warn({ page }))).subscribe();
 
 export const PostInputValueSubject = new BehaviorSubject<string>("");
 
-export const TagsSubject = new BehaviorSubject<TTagContentProps[]>([
-  {
-    id: "1",
-  },
-  {
-    id: "2",
-  },
-  {
-    id: "3",
-  },
-]);
-
 export const LikesSubject = new BehaviorSubject<{
   [id: string]: boolean;
 }>({});
