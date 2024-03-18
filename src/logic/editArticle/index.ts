@@ -1,27 +1,28 @@
 import { uniqueId } from "lodash";
 import { BehaviorSubject, filter, tap } from "rxjs";
+import { TArticleProps } from "../../components/Article/types";
 import { EButtonConstants } from "../../components/Button/constants";
 import { EInputConstants } from "../../components/Input/Input/constants";
-import { TPostProps } from "../../components/Post/types";
-import { EArticlePageConstants } from "../../pages/ArticlePage/constants";
 import { ENewPostPageConstant } from "../../pages/EditArticlePage/constants";
 import { DefaultData } from "../../pages/EditArticlePage/data";
 import { EPage, TAppProps } from "../../types";
 import { findFirst } from "../../utils/array";
 import { getEventTargetValue } from "../../utils/events";
 import {
-  CurrentArticleId,
   CurrentPageSubject,
   IncomingEventSubject,
-  PostsSubject,
   ResultingStateSubject,
   UserInfoSubject,
 } from "../common.logic";
-import { getCurrentArticle } from "../utils/article-crud";
+import { ArticleDatabase } from "../data/article";
 
-const TitleInputSubject = new BehaviorSubject("");
-const ArticleInputSubject = new BehaviorSubject("");
-const TagsInputSubject = new BehaviorSubject("");
+let titleInput = "";
+let articleInput = "";
+let tagsInput = "";
+
+const refreshForm = () => {
+  CurrentPageSubject.next(EPage.EditArticle);
+};
 
 const updateForm = () => {
   const prevState = ResultingStateSubject.getValue();
@@ -32,15 +33,15 @@ const updateForm = () => {
       ...DefaultData,
       titleInputProps: {
         ...DefaultData.titleInputProps,
-        value: TitleInputSubject.getValue(),
+        value: titleInput,
       },
       articleInputProps: {
         ...DefaultData.articleInputProps,
-        value: ArticleInputSubject.getValue(),
+        value: articleInput,
       },
       tagsInputProps: {
         ...DefaultData.tagsInputProps,
-        value: TagsInputSubject.getValue(),
+        value: tagsInput,
       },
     },
   };
@@ -48,9 +49,9 @@ const updateForm = () => {
 };
 
 const resetForm = () => {
-  TitleInputSubject.next("");
-  ArticleInputSubject.next("");
-  TagsInputSubject.next("");
+  titleInput = "";
+  articleInput = "";
+  tagsInput = "";
 };
 
 CurrentPageSubject.pipe(
@@ -58,21 +59,17 @@ CurrentPageSubject.pipe(
   tap(resetForm),
   tap((page) => {
     const isEditing = page === EPage.EditArticle;
+
     if (!isEditing) return;
 
-    const curr = getCurrentArticle();
-    console.warn({ curr });
+    const curr = ArticleDatabase.getCurrentArticle();
 
-    TitleInputSubject.next(curr?.title ?? "");
-    ArticleInputSubject.next(curr?.description ?? "");
-    TagsInputSubject.next(curr?.tags.join(" ") ?? "");
+    titleInput = curr?.title ?? "";
+    articleInput = curr?.description ?? "";
+    tagsInput = curr?.tags.join(" ") ?? "";
   }),
   tap(updateForm),
 ).subscribe();
-
-TitleInputSubject.pipe(tap(updateForm)).subscribe();
-ArticleInputSubject.pipe(tap(updateForm)).subscribe();
-TagsInputSubject.pipe(tap(updateForm)).subscribe();
 
 IncomingEventSubject.pipe(
   filter(
@@ -82,9 +79,9 @@ IncomingEventSubject.pipe(
   ),
   tap((event) => {
     const nextValue = getEventTargetValue(event);
-    const previousValue = TitleInputSubject.getValue();
-    TitleInputSubject.next(nextValue || previousValue);
+    titleInput = nextValue ?? titleInput;
   }),
+  tap(refreshForm),
 ).subscribe();
 
 IncomingEventSubject.pipe(
@@ -95,9 +92,9 @@ IncomingEventSubject.pipe(
   ),
   tap((event) => {
     const nextValue = getEventTargetValue(event);
-    const previousValue = ArticleInputSubject.getValue();
-    ArticleInputSubject.next(nextValue || previousValue);
+    articleInput = nextValue ?? articleInput;
   }),
+  tap(refreshForm),
 ).subscribe();
 
 IncomingEventSubject.pipe(
@@ -108,9 +105,9 @@ IncomingEventSubject.pipe(
   ),
   tap((event) => {
     const nextValue = getEventTargetValue(event);
-    const previousValue = TagsInputSubject.getValue();
-    TagsInputSubject.next(nextValue || previousValue);
+    tagsInput = nextValue ?? tagsInput;
   }),
+  tap(refreshForm),
 ).subscribe();
 
 IncomingEventSubject.pipe(
@@ -120,25 +117,24 @@ IncomingEventSubject.pipe(
       event.id === ENewPostPageConstant.SubmitButtonId,
   ),
   tap(() => {
-    const posts = PostsSubject.getValue();
     const page = CurrentPageSubject.getValue();
     const isEditing = page === EPage.EditArticle;
     const id = findFirst([
-      isEditing && CurrentArticleId.getValue(),
+      isEditing && ArticleDatabase.getCurrentArticleId(),
       uniqueId(),
     ]);
     const userInfoProps = UserInfoSubject.getValue();
 
     if (!id || !userInfoProps) return;
 
-    const post: TPostProps = {
+    const article: TArticleProps = {
       id,
-      title: TitleInputSubject.getValue(),
-      description: ArticleInputSubject.getValue(),
+      title: titleInput,
+      description: articleInput,
       userInfoProps: userInfoProps,
       likes: 0,
       hasLiked: false,
-      tags: TagsInputSubject.getValue()
+      tags: tagsInput
         .split(",")
         .join(" ")
         .split(" ")
@@ -150,11 +146,7 @@ IncomingEventSubject.pipe(
       comments: [],
     };
 
-    const nextPosts = {
-      ...posts,
-      [id]: post,
-    };
-    PostsSubject.next(nextPosts);
+    ArticleDatabase.publishArticle(article);
     CurrentPageSubject.next(EPage.Home);
   }),
 ).subscribe();

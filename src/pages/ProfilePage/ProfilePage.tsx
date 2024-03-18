@@ -1,7 +1,7 @@
 import React from "react";
 import { ProfileBanner } from "../../components/Banner";
 import { PaginationBar } from "../../components/PaginationBar";
-import { Post } from "../../components/Post";
+import { Post } from "../../components/Article";
 import { Sidebar } from "../../components/Sidebar";
 import { Tab } from "../../components/Tab/Tab";
 import styles from "./style.scss";

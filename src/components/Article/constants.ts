@@ -1,4 +1,4 @@
-export enum EPostConstant {
+export enum EArticleConstant {
   Slug = "Post",
   LikeButtonSlug = "LikeButtonSlug",
   UserInfoSlug = "PostUserInfoSlug",

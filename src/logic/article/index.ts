@@ -1,4 +1,5 @@
 import { BehaviorSubject, filter, tap } from "rxjs";
+import { TArticleProps } from "../../components/Article/types";
 import { EArticleBannerConstant } from "../../components/Banner/ArticleBanner/constants";
 import { EButtonConstants } from "../../components/Button/constants";
 import { EInputConstants } from "../../components/Input/Input/constants";
@@ -7,26 +8,19 @@ import { DefaultData as DefaultArticleData } from "../../pages/ArticlePage/data"
 import { EPage, TAppProps } from "../../types";
 import { getEventTargetValue } from "../../utils/events";
 import {
-  CurrentArticleId,
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
   UserInfoSubject,
-  provideNavbarProps,
 } from "../common.logic";
-import {
-  addCommentToArticle,
-  getCurrentArticle,
-  getCurrentArticleId,
-  removeArticleById,
-} from "../utils/article-crud";
-import { TPostProps } from "../../components/Post/types";
+import { ArticleDatabase } from "../data/article";
 import { getIsLoggedIn } from "../utils/user";
+import { provideNavbarProps } from "../utils/utils";
 
 const CommentInputSubject = new BehaviorSubject("");
 
 export const provideArticleAppProps = (
-  currentArticle: TPostProps,
+  currentArticle: TArticleProps,
 ): TAppProps<EPage.Article> => {
   return {
     page: EPage.Article,
@@ -53,27 +47,17 @@ export const provideArticleAppProps = (
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Article),
   tap(() => {
-    const currentArticleId = CurrentArticleId.getValue();
+    try {
+      const currentArticle = ArticleDatabase.getCurrentArticle();
 
-    if (!currentArticleId) {
-      console.error("Article not found");
+      const nextState: TAppProps<EPage.Article> =
+        provideArticleAppProps(currentArticle);
+
+      ResultingStateSubject.next(nextState);
+    } catch (e) {
+      console.error(e);
       CurrentPageSubject.next(EPage.Home);
-      return;
     }
-
-    const currentArticle = getCurrentArticle();
-
-    if (!currentArticle) {
-      console.error("Article not found");
-      CurrentPageSubject.next(EPage.Home);
-      return;
-    }
-
-    // TODO: Create a factory
-    const nextState: TAppProps<EPage.Article> =
-      provideArticleAppProps(currentArticle);
-
-    ResultingStateSubject.next(nextState);
   }),
 ).subscribe();
 
@@ -95,45 +79,50 @@ IncomingEventSubject.pipe(
       event.id === EArticlePageConstants.SubmitButtonId,
   ),
   tap(() => {
-    const id = getCurrentArticleId();
+    try {
+      const id = ArticleDatabase.getCurrentArticleId();
 
-    if (!id) return;
+      if (!id) throw new Error("No article is selected");
 
-    const isLoggedIn = getIsLoggedIn();
+      const isLoggedIn = getIsLoggedIn(); // TODO: Move to UserDatabase
 
-    if (!isLoggedIn) {
-      CurrentPageSubject.next(EPage.SignIn);
-      return;
-    }
+      if (!isLoggedIn) {
+        CurrentPageSubject.next(EPage.SignIn);
+        return;
+      }
 
-    const value = CommentInputSubject.getValue();
+      const value = CommentInputSubject.getValue();
 
-    CommentInputSubject.next("");
+      CommentInputSubject.next("");
 
-    if (!value) return;
+      if (!value) return;
 
-    const prevState =
-      ResultingStateSubject.getValue() as TAppProps<EPage.Article>;
+      const prevState =
+        ResultingStateSubject.getValue() as TAppProps<EPage.Article>;
 
-    const nextPost = addCommentToArticle(id, value);
+      const nextPost = ArticleDatabase.addCommentById(id, value);
 
-    const nextState: TAppProps<EPage.Article> = {
-      page: EPage.Article,
-      pageProps: {
-        ...prevState.pageProps,
-        comments: nextPost?.comments || [],
-        commentBoxProps: {
-          ...prevState.pageProps.commentBoxProps,
-          inputProps: {
-            ...prevState.pageProps.commentBoxProps.inputProps,
-            value: CommentInputSubject.getValue(),
+      const nextState: TAppProps<EPage.Article> = {
+        page: EPage.Article,
+        pageProps: {
+          ...prevState.pageProps,
+          comments: nextPost?.comments || [],
+          commentBoxProps: {
+            ...prevState.pageProps.commentBoxProps,
+            inputProps: {
+              ...prevState.pageProps.commentBoxProps.inputProps,
+              value: CommentInputSubject.getValue(),
+            },
           },
         },
-      },
-      navbarProps: provideNavbarProps(),
-    };
+        navbarProps: provideNavbarProps(),
+      };
 
-    ResultingStateSubject.next(nextState);
+      ResultingStateSubject.next(nextState);
+    } catch (e) {
+      console.error(e);
+      CurrentPageSubject.next(EPage.Home);
+    }
   }),
 ).subscribe();
 
@@ -146,7 +135,7 @@ IncomingEventSubject.pipe(
   tap((event) => {
     const value = getEventTargetValue(event);
     const prevValue = CommentInputSubject.getValue();
-    const currentArticle = getCurrentArticle();
+    const currentArticle = ArticleDatabase.getCurrentArticle();
 
     if (!currentArticle) return;
 
@@ -183,11 +172,11 @@ IncomingEventSubject.pipe(
       event.id === EArticleBannerConstant.RemoveButtonId,
   ),
   tap(() => {
-    const id = getCurrentArticleId();
+    const id = ArticleDatabase.getCurrentArticleId();
 
     if (!id) return;
 
-    removeArticleById(id);
+    ArticleDatabase.removeArticleById(id);
 
     CurrentPageSubject.next(EPage.Home);
   }),

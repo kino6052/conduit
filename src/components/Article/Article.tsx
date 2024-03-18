@@ -7,34 +7,33 @@ import { UserInfo } from "../UserInfo";
 
 import { EButtonVariant } from "../Button/types";
 import styles from "./style.scss";
-import { TPostProps } from "./types";
+import { TArticleProps } from "./types";
 import { ETypographyType } from "../Typography/types";
-import { EPostConstant } from "./constants";
+import { EArticleConstant } from "./constants";
 
-export const Post: React.FC<TPostProps> = ({
+export const Article: React.FC<TArticleProps> = ({
   title,
   description,
   userInfoProps,
   likes,
   tags = [],
   id,
-  slug,
 }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.heading}>
-        <Link id={id} slug={EPostConstant.UserInfoSlug}>
+        <Link id={id} slug={EArticleConstant.UserInfoSlug}>
           <UserInfo {...userInfoProps} />
         </Link>
         <Button
           id={id}
-          slug={EPostConstant.LikeButtonSlug}
+          slug={EArticleConstant.LikeButtonSlug}
           text={String(likes)}
           variant={EButtonVariant.Secondary}
         />
       </div>
       <div className={styles.content}>
-        <Link id={id} className={styles.link} slug={EPostConstant.Slug}>
+        <Link id={id} className={styles.link} slug={EArticleConstant.Slug}>
           <Typography value={title} variant={ETypographyType.Heading2} />
           <Typography value={description} />
         </Link>

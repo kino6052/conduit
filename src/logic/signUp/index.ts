@@ -4,12 +4,12 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  UserDatabase,
   UserInfoSubject,
-  provideNavbarProps,
 } from "../common.logic";
 import { ESignUpConstant } from "./constants";
 import { getEventTargetValue } from "../../utils/events";
+import { provideNavbarProps } from "../utils/utils";
+import { UserDatabase } from "../data/user";
 
 let usernameInput = "";
 let passwordInput = "";

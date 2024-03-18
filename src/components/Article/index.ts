@@ -1,4 +1,4 @@
 import { memo } from "react";
-import { Post as _Post } from "./Post";
+import { Article as _Post } from "./Article";
 
 export const Post = memo(_Post);

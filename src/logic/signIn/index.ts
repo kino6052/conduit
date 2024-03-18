@@ -5,11 +5,11 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  UserDatabase,
   UserInfoSubject,
-  provideNavbarProps,
 } from "../common.logic";
 import { ESignInConstant } from "./constants";
+import { UserDatabase } from "../data/user";
+import { provideNavbarProps } from "../utils/utils";
 
 let usernameInput = "";
 let usernameError = "";

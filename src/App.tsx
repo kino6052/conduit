@@ -1,6 +1,5 @@
 import React from "react";
 import { Navbar } from "./components/Navbar";
-import styles from "./styles.scss";
 import { EPage, TAppProps } from "./types";
 import { pagesMap } from "./utils/pagesMap";
 

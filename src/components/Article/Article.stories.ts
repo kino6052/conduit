@@ -1,8 +1,8 @@
 import { Post } from ".";
-import { TPostProps } from "./types";
+import { TArticleProps } from "./types";
 
 export default {
-  title: "Components/Post",
+  title: "Components/Article",
   component: Post,
 };
 
@@ -14,14 +14,12 @@ export const Default = {
       "Try to transmit the HTTP card, maybe it will override the multi-byte hard drive!",
     likes: 64,
     id: "1",
-    tags: [
-      { id: "1", text: "One" },
-      { id: "2", text: "Two" },
-      { id: "3", text: "Three" },
-    ],
+    tags: [{ id: "1" }, { id: "2" }, { id: "3" }],
     userInfoProps: {
       date: "1st January 2024",
       username: "John Lobster",
     },
-  } as TPostProps,
+    comments: [],
+    hasLiked: false,
+  } as TArticleProps,
 };

@@ -4,9 +4,9 @@ import {
   CurrentPageSubject,
   ResultingStateSubject,
   SelectedUserInfoSubject,
-  provideNavbarProps,
 } from "../common.logic";
-import { getArticlesByUsername } from "../utils/article-crud";
+import { ArticleDatabase } from "../data/article";
+import { provideNavbarProps } from "../utils/utils";
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Profile),
@@ -28,7 +28,7 @@ CurrentPageSubject.pipe(
           numberOfPages: 1,
           selected: 0,
         },
-        posts: getArticlesByUsername(userInfoProps.username),
+        posts: ArticleDatabase.getArticlesByUsername(userInfoProps.username),
         sidebarProps: {
           tags: [], // FIXME
           title: "Popular tags",
