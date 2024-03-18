@@ -1,10 +1,8 @@
 import React from "react";
+import { getClassNames } from "../../../utils/styles";
 import { Typography } from "../../Typography";
 import { ETypographyType } from "../../Typography/types";
 import styles from "./styles.scss";
-import { getClassNames } from "../../../utils/styles";
-import { Link } from "../../Link";
-import { EBannerConstant } from "./constants";
 
 export const DefaultBanner: React.FC = () => {
   return (
