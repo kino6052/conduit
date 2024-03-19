@@ -3,6 +3,7 @@ import { getClassNames } from "../../utils/styles";
 import { Icon } from "../Icon";
 import styles from "./style.scss";
 import { TUserInfoProps } from "./types";
+import { Link } from "../Link";
 
 export const UserInfo: React.FC<TUserInfoProps> = ({
   date,
@@ -10,15 +11,14 @@ export const UserInfo: React.FC<TUserInfoProps> = ({
   className,
 }) => {
   return (
-    <div
-      tabIndex={0}
-      className={getClassNames(["user-info", className], styles)}
-    >
-      <Icon icon="person" />
-      <div className={styles.description}>
-        <span className={styles.username}>{username}</span>
-        <span className={styles.date}>{date}</span>
+    <Link id={username}>
+      <div className={getClassNames(["user-info", className], styles)}>
+        <Icon icon="person" />
+        <div className={styles.description}>
+          <span className={styles.username}>{username}</span>
+          <span className={styles.date}>{date}</span>
+        </div>
       </div>
-    </div>
+    </Link>
   );
 };

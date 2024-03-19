@@ -10,17 +10,7 @@ export const DefaultAppProps: TAppProps<EPage.Home> = {
     },
     sidebarProps: {
       title: "Popular tags",
-      tags: [
-        {
-          id: "1",
-        },
-        {
-          id: "2",
-        },
-        {
-          id: "3",
-        },
-      ],
+      tags: [],
     },
     posts: [],
     tabs: [
@@ -31,5 +21,8 @@ export const DefaultAppProps: TAppProps<EPage.Home> = {
         id: "OtherTab",
       },
     ],
+  },
+  navbarProps: {
+    tabs: [],
   },
 };
