@@ -12,7 +12,7 @@ import { UserDatabase } from "../data/user";
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Profile),
   tap((page) => {
-    const username = AppState.currentUserId;
+    const username = AppState.selectedUserId;
 
     if (!username) return;
 

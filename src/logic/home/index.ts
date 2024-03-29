@@ -7,6 +7,7 @@ import {
   IncomingEventSubject
 } from "../common.logic";
 import { HomePage } from "./logic";
+import { EUserInfoConstant } from "../../components/UserInfo/constants";
 
 IncomingEventSubject.pipe(
   filter((event) => event.slug === EArticleConstant.Slug),
@@ -24,7 +25,7 @@ IncomingEventSubject.pipe(
 ).subscribe();
 
 IncomingEventSubject.pipe(
-  filter((event) => event.slug === EArticleConstant.UserInfoSlug),
+  filter((event) => event.slug === EUserInfoConstant.UserInfoSlug),
   tap(HomePage.handleUserInfoClick),
 ).subscribe();
 

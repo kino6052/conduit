@@ -1,12 +1,14 @@
 import { sequence } from "../..";
-import { ETabConstant } from "../../../components/Tab/constants";
 import { DefaultAppProps } from "../../../data";
 import { EPage } from "../../../types";
 
-describe("Test", () => {
-  it("should visit sign in page when clicked ", async () => {
+describe("User Info", () => {
+  it('should click on user-info when logged out', async () => {
     const result = await sequence(
-      [{ slug: ETabConstant.Slug, id: EPage.Home, type: "onClick" }],
+      [
+        { slug: E.Slug, id: EPage.SignUp, type: "onClick" },
+        
+      ],
       DefaultAppProps,
     );
 
@@ -20,13 +22,21 @@ describe("Test", () => {
         "variant": "menu",
       },
       {
-        "id": "SignIn",
-        "text": "Sign In",
+        "icon": "edit",
+        "id": "NewArticle",
+        "text": "New Post",
         "variant": "menu",
       },
       {
-        "id": "SignUp",
-        "text": "Sign Up",
+        "icon": "settings",
+        "id": "Settings",
+        "text": "Settings",
+        "variant": "menu",
+      },
+      {
+        "icon": "person",
+        "id": "Profile",
+        "text": "testset",
         "variant": "menu",
       },
     ],
@@ -38,6 +48,23 @@ describe("Test", () => {
       "selected": 0,
     },
     "posts": [
+      {
+        "comments": [],
+        "description": "text",
+        "hasLiked": false,
+        "id": "1",
+        "likes": 0,
+        "tags": [],
+        "title": "title",
+        "userInfoProps": {
+          "articleIds": [],
+          "date": "",
+          "favoriteArticleIds": [],
+          "imageSrc": "",
+          "password": "testset",
+          "username": "testset",
+        },
+      },
       {
         "comments": [],
         "description": "A good article, a really really good one",
@@ -80,5 +107,5 @@ describe("Test", () => {
   },
 }
 `);
-  });
-});
+  })
+})
