@@ -4,9 +4,9 @@ import { EPage } from "../types";
 import {
   CurrentPageSubject,
   IncomingEventSubject,
-  SelectedUserInfoSubject,
-  UserInfoSubject,
 } from "./common.logic";
+import { AppState } from "./data/app";
+import { UserDatabase } from "./data/user";
 
 IncomingEventSubject.pipe(
   filter((event) => {
@@ -17,12 +17,15 @@ IncomingEventSubject.pipe(
     );
   }),
   tap((event) => {
-    const userInfo = UserInfoSubject.getValue();
+    const username = AppState.currentUserId;
 
-    if (event.id === EPage.Profile && userInfo) {
-      SelectedUserInfoSubject.next(userInfo);
+    
+    if (event.id === EPage.Profile && username) {
+      const userInfo = UserDatabase.findUserByName(username);
+      
+      AppState.currentUserId = userInfo?.username;
     }
 
-    if (event) CurrentPageSubject.next(event.id as EPage);
+    CurrentPageSubject.next(event.id as EPage);
   }),
 ).subscribe();

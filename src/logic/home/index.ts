@@ -6,14 +6,12 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  SelectedTagSubject,
-  SelectedUserInfoSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
 import { provideNavbarProps } from "../utils/utils";
+import { AppState } from "../data/app";
 
-// TODO: Rewrite as handler registry
 IncomingEventSubject.pipe(
   filter((event) => event.slug === EArticleConstant.Slug),
   tap((event) => {
@@ -49,7 +47,7 @@ IncomingEventSubject.pipe(
 
     if (!id) return;
 
-    SelectedTagSubject.next(id);
+    AppState.selectedTagId = id;
 
     CurrentPageSubject.next(EPage.Home);
   }),
@@ -68,7 +66,8 @@ IncomingEventSubject.pipe(
 
     const userInfo = UserDatabase.findUserByName(userInfoProps.username);
 
-    SelectedUserInfoSubject.next(userInfo);
+    AppState.selectedUserId = userInfo?.username;
+
     CurrentPageSubject.next(EPage.Profile);
   }),
 ).subscribe();
@@ -80,11 +79,11 @@ CurrentPageSubject.pipe(
       page: EPage.Home,
       pageProps: {
         posts: ArticleDatabase.getArticles().filter((post) => {
-          const selectedTag = SelectedTagSubject.getValue();
+          const selectedTag = ArticleDatabase.getAllTags().find(t => t.id === AppState.selectedTagId);
 
           if (!selectedTag) return true;
 
-          const tag = post.tags.find(({ id }) => id === selectedTag);
+          const tag = post.tags.find(({ id }) => id === selectedTag.id);
           return !!tag;
         }),
         paginationBarProps: {

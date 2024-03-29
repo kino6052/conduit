@@ -4,12 +4,12 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  UserInfoSubject,
 } from "../common.logic";
 import { ESignUpConstant } from "./constants";
 import { getEventTargetValue } from "../../utils/events";
 import { provideNavbarProps } from "../utils/utils";
 import { UserDatabase } from "../data/user";
+import { AppState } from "../data/app";
 
 let usernameInput = "";
 let passwordInput = "";
@@ -102,7 +102,7 @@ IncomingEventSubject.pipe(
 
     UserDatabase.registerNewUser(newUserInfo);
 
-    UserInfoSubject.next(newUserInfo);
+    AppState.currentUserId = newUserInfo.username;
 
     CurrentPageSubject.next(EPage.Home);
   }),

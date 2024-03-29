@@ -5,11 +5,11 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  UserInfoSubject,
 } from "../common.logic";
 import { ESignInConstant } from "./constants";
 import { UserDatabase } from "../data/user";
 import { provideNavbarProps } from "../utils/utils";
+import { AppState } from "../data/app";
 
 let usernameInput = "";
 let usernameError = "";
@@ -100,7 +100,7 @@ IncomingEventSubject.pipe(
     }
 
     if (userInfo) {
-      UserInfoSubject.next(userInfo);
+      AppState.currentUserId = userInfo.username;
       CurrentPageSubject.next(EPage.Home);
       return;
     }

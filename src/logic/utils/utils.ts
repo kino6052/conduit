@@ -2,7 +2,7 @@ import { TNavbarProps } from "../../components/Navbar/types";
 import { ETabVariant, TTabProps } from "../../components/Tab/types";
 import { EPage } from "../../types";
 import { IEvent } from "../../utils/events";
-import { UserInfoSubject } from "../common.logic";
+import { AppState } from "../data/app";
 
 export const hasPressedEnter = (event: IEvent) => {
   const _event = event.event as KeyboardEvent;
@@ -10,7 +10,7 @@ export const hasPressedEnter = (event: IEvent) => {
 };
 
 export const provideNavbarProps = (): TNavbarProps => {
-  const username = UserInfoSubject.getValue()?.username;
+  const username = AppState.currentUserId;
 
   const isLogedIn = !!username;
 

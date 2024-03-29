@@ -3,15 +3,20 @@ import { EPage, TAppProps } from "../../types";
 import {
   CurrentPageSubject,
   ResultingStateSubject,
-  SelectedUserInfoSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
 import { provideNavbarProps } from "../utils/utils";
+import { AppState } from "../data/app";
+import { UserDatabase } from "../data/user";
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Profile),
   tap((page) => {
-    const userInfoProps = SelectedUserInfoSubject.getValue();
+    const username = AppState.currentUserId;
+
+    if (!username) return;
+
+    const userInfoProps = UserDatabase.findUserByName(username);
 
     if (!userInfoProps) {
       CurrentPageSubject.next(EPage.Home);

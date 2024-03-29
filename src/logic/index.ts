@@ -25,7 +25,6 @@ export const sequence = async (events: IEvent[], state: TAppProps<EPage>) => {
 
   for (let index = 0; index < events.length; index++) {
     const event = events[index];
-
     result = await update(event, result);
   }
 

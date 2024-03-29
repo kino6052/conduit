@@ -12,9 +12,10 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  UserInfoSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
+import { UserDatabase } from "../data/user";
+import { AppState } from "../data/app";
 
 let titleInput = "";
 let articleInput = "";
@@ -122,7 +123,12 @@ IncomingEventSubject.pipe(
       isEditing && ArticleDatabase.getCurrentArticleId(),
       uniqueId(),
     ]);
-    const userInfoProps = UserInfoSubject.getValue();
+
+    const username = AppState.currentUserId;
+
+    if (!username) return;
+
+    const userInfoProps = UserDatabase.findUserByName(username)
 
     if (!id || !userInfoProps) return;
 

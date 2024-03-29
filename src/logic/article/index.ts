@@ -11,11 +11,11 @@ import {
   CurrentPageSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-  UserInfoSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
 import { getIsLoggedIn } from "../utils/user";
 import { provideNavbarProps } from "../utils/utils";
+import { AppState } from "../data/app";
 
 const CommentInputSubject = new BehaviorSubject("");
 
@@ -29,7 +29,7 @@ export const provideArticleAppProps = (
         title: currentArticle.title,
         userInfoProps: currentArticle.userInfoProps,
         canEdit:
-          UserInfoSubject.getValue()?.username ===
+          AppState.currentUserId ===
           currentArticle.userInfoProps.username,
       },
       commentBoxProps: DefaultArticleData["commentBoxProps"],
