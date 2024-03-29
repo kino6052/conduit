@@ -30,5 +30,5 @@ IncomingEventSubject.pipe(
 
 CurrentPageSubject.pipe(
   filter((page) => page === EPage.Home),
-  tap(() => HomePage.update()),
+  tap(HomePage.update),
 ).subscribe();

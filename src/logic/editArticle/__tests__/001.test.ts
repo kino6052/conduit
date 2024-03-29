@@ -1,4 +1,5 @@
 import { sequence } from "../..";
+import { EButtonConstants } from "../../../components/Button/constants";
 import { EInputConstants } from "../../../components/Input/Input/constants";
 import { ETabConstant } from "../../../components/Tab/constants";
 import { DefaultAppProps } from "../../../data";
@@ -62,7 +63,7 @@ describe("Navigation", () => {
           },
         },
         {
-          slug: EInputConstants.Slug,
+          slug: EButtonConstants.Slug,
           id: ENewPostPageConstant.SubmitButtonId,
           type: "onClick",
         },
@@ -99,37 +100,69 @@ describe("Navigation", () => {
       },
     ],
   },
-  "page": "NewArticle",
+  "page": "Home",
   "pageProps": {
-    "articleInputProps": {
-      "placeholder": "Article",
-      "value": "text",
+    "paginationBarProps": {
+      "numberOfPages": 1,
+      "selected": 0,
     },
-    "buttonProps": {
-      "text": "Publish Article",
-    },
-    "tags": [
+    "posts": [
       {
+        "comments": [],
+        "description": "text",
+        "hasLiked": false,
         "id": "1",
-        "text": "one",
+        "likes": 0,
+        "tags": [],
+        "title": "title",
+        "userInfoProps": {
+          "articleIds": [],
+          "date": "",
+          "favoriteArticleIds": [],
+          "imageSrc": "",
+          "password": "testset",
+          "username": "testset",
+        },
       },
       {
-        "id": "2",
-        "text": "two",
-      },
-      {
-        "id": "3",
-        "text": "three",
+        "comments": [],
+        "description": "A good article, a really really good one",
+        "hasLiked": false,
+        "id": "post-1",
+        "likes": 24,
+        "tags": [
+          {
+            "id": "1",
+          },
+          {
+            "id": "2",
+          },
+          {
+            "id": "3",
+          },
+        ],
+        "title": "A good thing",
+        "userInfoProps": {
+          "date": "01 January 2024",
+          "username": "jane-lobster",
+        },
       },
     ],
-    "tagsInputProps": {
-      "placeholder": "Tags",
-      "value": "",
+    "sidebarProps": {
+      "tags": [
+        {
+          "id": "1",
+        },
+        {
+          "id": "2",
+        },
+        {
+          "id": "3",
+        },
+      ],
+      "title": "Popular Tags",
     },
-    "titleInputProps": {
-      "placeholder": "Title",
-      "value": "title",
-    },
+    "tabs": [],
   },
 }
 `);
