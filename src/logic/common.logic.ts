@@ -1,5 +1,4 @@
 import { BehaviorSubject, Subject, tap } from "rxjs";
-import { TTagContentProps } from "../components/Tag/types";
 import { DefaultAppProps } from "../data";
 import { EPage, TAppProps } from "../types";
 import { IEvent } from "../utils/events";
@@ -21,12 +20,6 @@ export const SelectedTagSubject = new BehaviorSubject<string | undefined>(
 export const CurrentPageSubject = new BehaviorSubject<EPage>(EPage.Home);
 
 CurrentPageSubject.pipe(tap((page) => console.warn({ page }))).subscribe();
-
-export const PostInputValueSubject = new BehaviorSubject<string>("");
-
-export const LikesSubject = new BehaviorSubject<{
-  [id: string]: boolean;
-}>({});
 
 // Messengers
 export const IncomingEventSubject = new Subject<IEvent>();
