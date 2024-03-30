@@ -7,7 +7,7 @@ import { provideNavbarProps, updatePage } from "../utils/utils";
 
 export class ProfileLogic {
   public static update() {
-    const username = AppState.currentUserId;
+    const username = AppState.selectedUserId;
 
     if (!username) return;
 

@@ -1,5 +1,5 @@
 import { uniqueId } from "lodash";
-import { BehaviorSubject, filter, tap } from "rxjs";
+import { filter, tap } from "rxjs";
 import { TArticleProps } from "../../components/Article/types";
 import { EButtonConstants } from "../../components/Button/constants";
 import { EInputConstants } from "../../components/Input/Input/constants";
@@ -9,14 +9,15 @@ import { EPage, TAppProps } from "../../types";
 import { findFirst } from "../../utils/array";
 import { getEventTargetValue } from "../../utils/events";
 import {
-  RefreshSubject,
   IncomingEventSubject,
+  RefreshSubject,
   ResultingStateSubject,
 } from "../common.logic";
+import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
-import { AppState } from "../data/app";
 import { updatePage } from "../utils/utils";
+import { processTags } from "./utils";
 
 let titleInput = "";
 let articleInput = "";
@@ -45,15 +46,10 @@ const updateForm = () => {
         ...DefaultData.tagsInputProps,
         value: tagsInput,
       },
+      tags: processTags(tagsInput),
     },
   };
   ResultingStateSubject.next(nextState);
-};
-
-const resetForm = () => {
-  titleInput = "";
-  articleInput = "";
-  tagsInput = "";
 };
 
 RefreshSubject.pipe(
@@ -139,15 +135,7 @@ IncomingEventSubject.pipe(
       userInfoProps: userInfoProps,
       likes: 0,
       hasLiked: false,
-      tags: tagsInput
-        .split(",")
-        .join(" ")
-        .split(" ")
-        .filter(Boolean)
-        .map((sub) => ({
-          text: sub,
-          id: sub,
-        })),
+      tags: processTags(tagsInput),
       comments: [],
     };
 

@@ -20,7 +20,7 @@ IncomingEventSubject.pipe(
     if (event.id === EPage.Profile && username) {
       const userInfo = UserDatabase.findUserByName(username);
 
-      AppState.currentUserId = userInfo?.username;
+      AppState.selectedUserId = userInfo?.username;
     }
 
     updatePage(event.id as EPage);

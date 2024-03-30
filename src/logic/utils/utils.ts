@@ -10,6 +10,10 @@ export const hasPressedEnter = (event: IEvent) => {
   return event.type === "onKeyDown" && _event.key === "Enter";
 };
 
+export function filterUnique<T>(v: T, i: number, arr: T[]) {
+  return arr.findIndex((_v) => _v === v) === i;
+}
+
 export const updatePage = (page?: EPage) => {
   if (page) {
     AppState.currentPage = page;

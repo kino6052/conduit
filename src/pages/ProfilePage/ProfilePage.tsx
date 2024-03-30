@@ -23,7 +23,7 @@ export const ProfilePage: React.FC<TProfilePageProps> = ({
             <Tab {...tab} key={tab.id} />
           ))}
         </div>}
-        <Sidebar {...sidebarProps} />
+        {sidebarProps.tags.length > 0 && <Sidebar {...sidebarProps} />}
         {posts.map((post) => (
           <Post {...post} />
         ))}

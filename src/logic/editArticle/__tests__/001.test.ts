@@ -7,8 +7,8 @@ import { ENewPostPageConstant } from "../../../pages/EditArticlePage/constants";
 import { EPage } from "../../../types";
 import { ESignUpConstant } from "../../signUp/constants";
 
-describe("Navigation", () => {
-  it("should visit sign in page when clicked ", async () => {
+describe("Edit Article", () => {
+  it("Should create an article", async () => {
     const result = await sequence(
       [
         { slug: ETabConstant.Slug, id: EPage.SignUp, type: "onClick" },
