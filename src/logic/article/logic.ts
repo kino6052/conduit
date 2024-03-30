@@ -96,8 +96,6 @@ export class ArticleLogic {
     const prevState =
       ResultingStateSubject.getValue() as TAppProps<EPage.Article>;
 
-    console.warn(ArticleLogic.commentInput);
-
     const nextState: TAppProps<EPage.Article> = {
       page: EPage.Article,
       pageProps: {
