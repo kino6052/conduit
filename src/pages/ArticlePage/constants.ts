@@ -1,5 +1,5 @@
 export enum EArticlePageConstants {
   CommentInputId = "ArticlePageCommentInputId",
-  SubmitButtonId = "ArticlePageCommentInputSubmitId",
+  SubmitCommentButtonId = "ArticlePageCommentInputSubmitId",
   UserInfoId = "ArticlePageUserInfoId",
 }

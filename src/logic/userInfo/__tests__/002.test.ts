@@ -120,7 +120,7 @@ describe("User Info", () => {
       "canEdit": false,
       "title": "A good thing",
       "userInfoProps": {
-        "date": "01 January 2024",
+        "date": "Sat Mar 30 2024",
         "username": "jane-lobster",
       },
     },
@@ -156,7 +156,7 @@ describe("User Info", () => {
       },
     ],
     "userInfoProps": {
-      "date": "01 January 2024",
+      "date": "Sat Mar 30 2024",
       "username": "jane-lobster",
     },
   },

@@ -18,6 +18,8 @@ import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
 import { updatePage } from "../utils/utils";
 import { processTags } from "./utils";
+import { TArticle } from "../data/article/types";
+import { DEFAULT_TIME } from "../utils/verification";
 
 let titleInput = "";
 let articleInput = "";
@@ -46,7 +48,7 @@ const updateForm = () => {
         ...DefaultData.tagsInputProps,
         value: tagsInput,
       },
-      tags: processTags(tagsInput),
+      tags: processTags(tagsInput).map((id) => ({ id })),
     },
   };
   ResultingStateSubject.next(nextState);
@@ -128,15 +130,16 @@ IncomingEventSubject.pipe(
 
     if (!id || !userInfoProps) return;
 
-    const article: TArticleProps = {
+    const article: TArticle = {
       id,
       title: titleInput,
       description: articleInput,
-      userInfoProps: userInfoProps,
+      username,
       likes: 0,
       hasLiked: false,
       tags: processTags(tagsInput),
       comments: [],
+      date: new Date(DEFAULT_TIME).toDateString(),
     };
 
     ArticleDatabase.publishArticle(article);

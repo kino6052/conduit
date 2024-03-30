@@ -22,7 +22,7 @@ export const ArticleBanner: React.FC<TArticleBannerProps> = ({
           className={styles.white}
         />
         <div>
-          <UserInfo id={userInfoProps.username} {...userInfoProps} />
+          {userInfoProps && <UserInfo id={userInfoProps.username} {...userInfoProps} />}
           {canEdit && (
             <Button text="Edit" id={EArticleBannerConstant.EditButtonId} />
           )}

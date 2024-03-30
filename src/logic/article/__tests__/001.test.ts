@@ -30,7 +30,7 @@ describe("Article", () => {
         {
           type: "onClick",
           slug: EButtonConstants.Slug,
-          id: EArticlePageConstants.SubmitButtonId,
+          id: EArticlePageConstants.SubmitCommentButtonId,
         },
       ],
       DefaultAppProps,
@@ -71,7 +71,7 @@ describe("Article", () => {
       "canEdit": false,
       "title": "A good thing",
       "userInfoProps": {
-        "date": "01 January 2024",
+        "date": "Sat Mar 30 2024",
         "username": "jane-lobster",
       },
     },
@@ -90,13 +90,17 @@ describe("Article", () => {
     "comments": [
       {
         "iconProps": {
-          "icon": "favorite",
+          "icon": "",
         },
         "id": "1",
         "inputProps": {
-          "id": "2",
+          "id": "1",
           "placeholder": "",
           "value": "comment",
+        },
+        "userInfoProps": {
+          "date": "Sat Mar 30 2024",
+          "username": "testset",
         },
       },
     ],
@@ -119,7 +123,7 @@ describe("Article", () => {
       },
     ],
     "userInfoProps": {
-      "date": "01 January 2024",
+      "date": "Sat Mar 30 2024",
       "username": "jane-lobster",
     },
   },

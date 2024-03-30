@@ -6,7 +6,7 @@ import { TUserInfoContentProps } from "../../components/UserInfo/types";
 
 export type TArticlePageProps = {
   bannerProps: TArticleBannerProps;
-  userInfoProps: TUserInfoContentProps;
+  userInfoProps?: TUserInfoContentProps;
   followButtonProps: TButtonContentProps;
   favoriteButtonProps: TButtonContentProps;
   commentBoxProps: TCommentInputProps;

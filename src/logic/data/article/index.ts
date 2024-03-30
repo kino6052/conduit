@@ -1,35 +1,22 @@
 import { uniqueId } from "lodash";
-import { TArticleProps } from "../../components/Article/types";
-import { TIdMap } from "../../utils/types";
-import { UserDatabase } from "./user";
-import { TUserInfo } from "../types";
+import { TIdMap } from "../../../utils/types";
+import { TArticle } from "./types";
+import { DEFAULT_TIME } from "../../utils/verification";
 
-const DEFAULT_POST = {
+const DEFAULT_POST: TArticle = {
   id: "post-1",
-  userInfoProps: {
-    date: "01 January 2024",
-    username: "jane-lobster",
-  },
+  username: "jane-lobster",
   description: "A good article, a really really good one",
   hasLiked: false,
   likes: 24,
-  tags: [
-    {
-      id: "1",
-    },
-    {
-      id: "2",
-    },
-    {
-      id: "3",
-    },
-  ],
+  tags: ["1", "2", "3"],
   title: "A good thing",
+  date: new Date(DEFAULT_TIME).toDateString(),
   comments: [],
 };
 
 export class ArticleDatabase {
-  private static articles: TIdMap<TArticleProps> = {
+  private static articles: TIdMap<TArticle> = {
     [DEFAULT_POST.id]: DEFAULT_POST,
   };
 
@@ -57,7 +44,7 @@ export class ArticleDatabase {
 
   public static updateArticleById(
     id: string,
-    partialArticle: Partial<TArticleProps>,
+    partialArticle: Partial<TArticle>,
   ) {
     const article = this.getArticleById(id);
 
@@ -71,7 +58,7 @@ export class ArticleDatabase {
     return this.articles[id];
   }
 
-  public static publishArticle(article: TArticleProps) {
+  public static publishArticle(article: TArticle) {
     if (this.getDoesArticleExist(article.id)) {
       throw new Error("Article already exists");
     }
@@ -81,13 +68,13 @@ export class ArticleDatabase {
 
   public static getArticlesByTag(tag: string) {
     return this.getArticles().filter(
-      (article) => !!article.tags.find((_tag) => _tag.id === tag),
+      (article) => !!article.tags.find((_tag) => _tag === tag),
     );
   }
 
   public static getArticlesByUsername(username: string) {
     return this.getArticles().filter(
-      (article) => article.userInfoProps.username === username,
+      (article) => article.username === username,
     );
   }
 
@@ -110,26 +97,15 @@ export class ArticleDatabase {
     });
   }
 
-  public static addCommentById(
-    id: string,
-    comment: string,
-    userInfo: TUserInfo,
-  ) {
+  public static addCommentById(id: string, comment: string, username: string) {
     const article = this.getArticleById(id);
 
     this.updateArticleById(id, {
       comments: [
         {
           id: uniqueId(),
-          inputProps: {
-            id: uniqueId(),
-            placeholder: "",
-            value: comment,
-          },
-          iconProps: {
-            icon: "favorite",
-          },
-          // userInfo,
+          text: comment,
+          username,
         },
         ...article.comments,
       ],

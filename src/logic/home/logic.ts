@@ -3,6 +3,7 @@ import { IEvent } from "../../utils/events";
 import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
+import { processArticle } from "../data/article/utils";
 import { provideNavbarProps, updatePage } from "../utils/utils";
 
 export class HomePageLogic {
@@ -42,22 +43,24 @@ export class HomePageLogic {
     const nextState: TAppProps<EPage.Home> = {
       page: EPage.Home,
       pageProps: {
-        posts: ArticleDatabase.getArticles().filter((post) => {
-          const selectedTag = ArticleDatabase.getAllTags().find(
-            (t) => t.id === AppState.selectedTagId,
-          );
+        posts: ArticleDatabase.getArticles()
+          .map(processArticle)
+          .filter((post) => {
+            const selectedTag = ArticleDatabase.getAllTags().find(
+              (t) => t === AppState.selectedTagId,
+            );
 
-          if (!selectedTag) return true;
+            if (!selectedTag) return true;
 
-          const tag = post.tags.find(({ id }) => id === selectedTag.id);
-          return !!tag;
-        }),
+            const tag = post.tags.find(({ id }) => id === selectedTag);
+            return !!tag;
+          }),
         paginationBarProps: {
           numberOfPages: 1,
           selected: 0,
         },
         sidebarProps: {
-          tags: ArticleDatabase.getAllTags(),
+          tags: ArticleDatabase.getAllTags().map((id) => ({ id })),
           title: "Popular Tags",
         },
         tabs: [],

@@ -142,16 +142,11 @@ describe("Profile", () => {
         "tags": [
           {
             "id": "text",
-            "text": "text",
           },
         ],
         "title": "title",
         "userInfoProps": {
-          "articleIds": [],
-          "date": "",
-          "favoriteArticleIds": [],
-          "imageSrc": "",
-          "password": "testset",
+          "date": "Sat Mar 30 2024",
           "username": "testset",
         },
       },
@@ -160,7 +155,6 @@ describe("Profile", () => {
       "tags": [
         {
           "id": "text",
-          "text": "text",
         },
       ],
       "title": "Related tags",

@@ -116,11 +116,7 @@ describe("Edit Article", () => {
         "tags": [],
         "title": "title",
         "userInfoProps": {
-          "articleIds": [],
-          "date": "",
-          "favoriteArticleIds": [],
-          "imageSrc": "",
-          "password": "testset",
+          "date": "Sat Mar 30 2024",
           "username": "testset",
         },
       },
@@ -143,7 +139,7 @@ describe("Edit Article", () => {
         ],
         "title": "A good thing",
         "userInfoProps": {
-          "date": "01 January 2024",
+          "date": "Sat Mar 30 2024",
           "username": "jane-lobster",
         },
       },
