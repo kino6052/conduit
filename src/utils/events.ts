@@ -5,7 +5,7 @@ export type IEvent = {
   type: string;
   slug: string;
   id?: string;
-  event?: Event;
+  event?: Omit<Partial<Event>, "target"> & { target: { value?: string } };
 };
 
 export const EventSubject = new Subject<IEvent>();

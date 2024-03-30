@@ -1,7 +1,6 @@
 import { uniqueId } from "lodash";
 import { TArticleProps } from "../../components/Article/types";
 import { TIdMap } from "../../utils/types";
-import { TUserInfo } from "../types";
 
 const DEFAULT_POST = {
   id: "post-1",
@@ -28,8 +27,6 @@ const DEFAULT_POST = {
 };
 
 export class ArticleDatabase {
-  private static currentArticleId: string | undefined;
-
   private static articles: TIdMap<TArticleProps> = {
     [DEFAULT_POST.id]: DEFAULT_POST,
   };
@@ -42,26 +39,6 @@ export class ArticleDatabase {
     const ids = this.getArticleIds();
 
     return ids.includes(id);
-  }
-
-  public static setCurrentArticleId(id: string) {
-    if (!this.getDoesArticleExist(id)) {
-      throw new Error(`Article with an id "${id}" does not exist`);
-    }
-
-    this.currentArticleId = id;
-  }
-
-  public static getCurrentArticleId() {
-    return this.currentArticleId;
-  }
-
-  public static getCurrentArticle() {
-    const id = this.getCurrentArticleId();
-
-    if (!id) throw new Error("No article is selected");
-
-    return this.getArticleById(id);
   }
 
   public static getArticleById(id: string) {

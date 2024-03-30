@@ -27,7 +27,7 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
         <Tags tags={tags} />
         <div className={styles.comments}>
           <div className={styles.user}>
-            <UserInfo {...userInfoProps} />
+            <UserInfo id={userInfoProps.username} {...userInfoProps} />
             <Button {...followButtonProps} />
             <Button {...favoriteButtonProps} />
           </div>

@@ -47,7 +47,11 @@ RefreshSubject.pipe(
   filter(() => AppState.currentPage === EPage.Article),
   tap(() => {
     try {
-      const currentArticle = ArticleDatabase.getCurrentArticle();
+      const currentArticle = AppState.getCurrentArticle();
+
+      if (!currentArticle) {
+        throw new Error("No article selected");
+      }
 
       const nextState: TAppProps<EPage.Article> =
         provideArticleAppProps(currentArticle);
@@ -79,7 +83,7 @@ IncomingEventSubject.pipe(
   ),
   tap(() => {
     try {
-      const id = ArticleDatabase.getCurrentArticleId();
+      const id = AppState.selectedArticleId;
 
       if (!id) throw new Error("No article is selected");
 
@@ -134,7 +138,8 @@ IncomingEventSubject.pipe(
   tap((event) => {
     const value = getEventTargetValue(event);
     const prevValue = CommentInputSubject.getValue();
-    const currentArticle = ArticleDatabase.getCurrentArticle();
+
+    const currentArticle = AppState.getCurrentArticle();
 
     if (!currentArticle) return;
 
@@ -171,7 +176,7 @@ IncomingEventSubject.pipe(
       event.id === EArticleBannerConstant.RemoveButtonId,
   ),
   tap(() => {
-    const id = ArticleDatabase.getCurrentArticleId();
+    const id = AppState.selectedArticleId;
 
     if (!id) return;
 

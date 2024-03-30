@@ -22,7 +22,7 @@ export const Article: React.FC<TArticleProps> = ({
   return (
     <div className={styles.wrapper}>
       <div className={styles.heading}>
-        <UserInfo id={id} {...userInfoProps} />
+        <UserInfo id={userInfoProps.username} {...userInfoProps} />
         <Button
           id={id}
           slug={EArticleConstant.LikeButtonSlug}

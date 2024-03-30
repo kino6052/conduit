@@ -65,7 +65,7 @@ RefreshSubject.pipe(
 
     if (!isEditing) return;
 
-    const curr = ArticleDatabase.getCurrentArticle();
+    const curr = AppState.getCurrentArticle();
 
     titleInput = curr?.title ?? "";
     articleInput = curr?.description ?? "";
@@ -122,10 +122,7 @@ IncomingEventSubject.pipe(
   tap(() => {
     const page = AppState.currentPage;
     const isEditing = page === EPage.EditArticle;
-    const id = findFirst([
-      isEditing && ArticleDatabase.getCurrentArticleId(),
-      uniqueId(),
-    ]);
+    const id = findFirst([isEditing && AppState.selectedArticleId, uniqueId()]);
 
     const username = AppState.currentUserId;
 

@@ -1,12 +1,11 @@
 import { EPage, TAppProps } from "../../types";
 import { IEvent } from "../../utils/events";
-import { RefreshSubject, ResultingStateSubject } from "../common.logic";
+import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
-import { UserDatabase } from "../data/user";
 import { provideNavbarProps, updatePage } from "../utils/utils";
 
-export class HomePage {
+export class HomePageLogic {
   static handleArticleClick(event: IEvent) {
     // TODO: Move into "article handlers"
     const id = event.id;
@@ -16,7 +15,7 @@ export class HomePage {
       return;
     }
 
-    ArticleDatabase.setCurrentArticleId(id);
+    AppState.selectedArticleId = id;
     updatePage(EPage.Article); // TODO: Change AppState instead
   }
 
@@ -37,22 +36,6 @@ export class HomePage {
     AppState.selectedTagId = id;
 
     updatePage(EPage.Home);
-  }
-
-  static handleUserInfoClick(event: IEvent) {
-    const id = event.id;
-
-    if (!id) return;
-
-    const article = ArticleDatabase.getArticleById(id);
-
-    const { userInfoProps } = article;
-
-    const userInfo = UserDatabase.findUserByName(userInfoProps.username);
-
-    AppState.selectedUserId = userInfo?.username;
-
-    updatePage(EPage.Profile);
   }
 
   static update() {

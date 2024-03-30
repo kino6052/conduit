@@ -1,14 +1,18 @@
 import { sequence } from "../..";
+import { EArticleConstant } from "../../../components/Article/constants";
 import { EButtonConstants } from "../../../components/Button/constants";
 import { EInputConstants } from "../../../components/Input/Input/constants";
 import { ETabConstant } from "../../../components/Tab/constants";
+import { EUserInfoConstant } from "../../../components/UserInfo/constants";
 import { DefaultAppProps } from "../../../data";
+import { EArticlePageConstants } from "../../../pages/ArticlePage/constants";
 import { ENewPostPageConstant } from "../../../pages/EditArticlePage/constants";
 import { EPage } from "../../../types";
+import { ArticleDatabase } from "../../data/article";
 import { ESignUpConstant } from "../../signUp/constants";
 
 describe("User Info", () => {
-  it('should click on user-info when logged out', async () => {
+  it("should click on user-info when logged out", async () => {
     const result = await sequence(
       [
         { slug: ETabConstant.Slug, id: EPage.SignUp, type: "onClick" },
@@ -67,6 +71,16 @@ describe("User Info", () => {
           id: ENewPostPageConstant.SubmitButtonId,
           type: "onClick",
         },
+        {
+          slug: EArticleConstant.Slug,
+          id: ArticleDatabase.getArticles().at(-1)?.id,
+          type: "onClick",
+        },
+        {
+          slug: EUserInfoConstant.UserInfoSlug,
+          id: EArticlePageConstants.UserInfoId,
+          type: "onClick",
+        },
       ],
       DefaultAppProps,
     );
@@ -100,71 +114,53 @@ describe("User Info", () => {
       },
     ],
   },
-  "page": "Home",
+  "page": "Article",
   "pageProps": {
-    "paginationBarProps": {
-      "numberOfPages": 1,
-      "selected": 0,
+    "bannerProps": {
+      "canEdit": false,
+      "title": "A good thing",
+      "userInfoProps": {
+        "date": "01 January 2024",
+        "username": "jane-lobster",
+      },
     },
-    "posts": [
+    "commentBoxProps": {
+      "buttonProps": {
+        "text": "Comment",
+      },
+      "iconProps": {
+        "icon": "favorite",
+      },
+      "inputProps": {
+        "placeholder": "Your Comment",
+        "value": "",
+      },
+    },
+    "comments": [],
+    "content": "A good article, a really really good one",
+    "favoriteButtonProps": {
+      "text": "Favorite",
+    },
+    "followButtonProps": {
+      "text": "Follow",
+    },
+    "tags": [
       {
-        "comments": [],
-        "description": "text",
-        "hasLiked": false,
         "id": "1",
-        "likes": 0,
-        "tags": [],
-        "title": "title",
-        "userInfoProps": {
-          "articleIds": [],
-          "date": "",
-          "favoriteArticleIds": [],
-          "imageSrc": "",
-          "password": "testset",
-          "username": "testset",
-        },
       },
       {
-        "comments": [],
-        "description": "A good article, a really really good one",
-        "hasLiked": false,
-        "id": "post-1",
-        "likes": 24,
-        "tags": [
-          {
-            "id": "1",
-          },
-          {
-            "id": "2",
-          },
-          {
-            "id": "3",
-          },
-        ],
-        "title": "A good thing",
-        "userInfoProps": {
-          "date": "01 January 2024",
-          "username": "jane-lobster",
-        },
+        "id": "2",
+      },
+      {
+        "id": "3",
       },
     ],
-    "sidebarProps": {
-      "tags": [
-        {
-          "id": "1",
-        },
-        {
-          "id": "2",
-        },
-        {
-          "id": "3",
-        },
-      ],
-      "title": "Popular Tags",
+    "userInfoProps": {
+      "date": "01 January 2024",
+      "username": "jane-lobster",
     },
-    "tabs": [],
   },
 }
 `);
-  })
-})
+  });
+});

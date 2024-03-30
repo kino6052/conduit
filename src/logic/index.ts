@@ -10,6 +10,7 @@ import "./settings";
 import "./profile";
 import "./signIn";
 import "./signUp";
+import "./userInfo";
 
 export const update = async (
   event: IEvent,

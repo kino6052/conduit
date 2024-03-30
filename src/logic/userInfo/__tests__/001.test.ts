@@ -1,7 +1,6 @@
 import { sequence } from "../..";
 import { EUserInfoConstant } from "../../../components/UserInfo/constants";
 import { DefaultAppProps } from "../../../data";
-import { EPage } from "../../../types";
 import { ArticleDatabase } from "../../data/article";
 
 describe("User Info", () => {
@@ -38,19 +37,8 @@ describe("User Info", () => {
       },
     ],
   },
-  "page": "Profile",
+  "page": "Home",
   "pageProps": {
-    "bannerProps": {
-      "userInfoProps": {
-        "articleIds": [
-          "post-1",
-        ],
-        "date": "",
-        "favoriteArticleIds": [],
-        "password": "123456",
-        "username": "jane-lobster",
-      },
-    },
     "paginationBarProps": {
       "numberOfPages": 1,
       "selected": 0,
@@ -81,8 +69,18 @@ describe("User Info", () => {
       },
     ],
     "sidebarProps": {
-      "tags": [],
-      "title": "Popular tags",
+      "tags": [
+        {
+          "id": "1",
+        },
+        {
+          "id": "2",
+        },
+        {
+          "id": "3",
+        },
+      ],
+      "title": "Popular Tags",
     },
     "tabs": [],
   },
