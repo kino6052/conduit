@@ -144,6 +144,7 @@ describe("User Info", () => {
     "followButtonProps": {
       "text": "Follow",
     },
+    "id": "post-1",
     "tags": [
       {
         "id": "1",

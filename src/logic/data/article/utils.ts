@@ -1,35 +1,46 @@
 import { TArticleProps } from "../../../components/Article/types";
 import { AppState } from "../app";
 import { UserDatabase } from "../user";
+import { TUserInfo } from "../user/types";
 import { TArticle } from "./types";
 
-export const processArticle = (article: TArticle): TArticleProps => {
+export const processArticle = (
+  article: TArticle,
+): TArticleProps | undefined => {
   const user = UserDatabase.findUserByName(article.username);
+
+  if (!user) return undefined;
 
   return {
     id: article.id,
-    comments: article.comments.map((c) => {
-      const user = c.username
-        ? UserDatabase.findUserByName(c.username)
-        : undefined;
-      return {
-        id: c.id,
-        inputProps: {
+    comments: article.comments
+      .filter((c) => {
+        if (!c.username) return false;
+        return !!UserDatabase.findUserByName(c.username);
+      })
+      .map((c) => {
+        const user = UserDatabase.findUserByName(
+          c.username as string,
+        ) as TUserInfo;
+
+        return {
           id: c.id,
-          value: c.text,
-          placeholder: "",
-        },
-        iconProps: {
-          icon: user?.imageSrc ?? "favorite",
-        },
-        userInfoProps: user?.username
-          ? {
-              username: user?.username,
-              date: article.date,
-            }
-          : undefined,
-      };
-    }),
+          inputProps: {
+            id: c.id,
+            value: c.text,
+            placeholder: "",
+          },
+          iconProps: {
+            icon: user?.imageSrc ?? "favorite",
+          },
+          userInfoProps: user.username
+            ? {
+                username: user.username,
+                date: article.date,
+              }
+            : undefined,
+        };
+      }),
     description: article.description,
     hasLiked:
       !!AppState.currentUserId &&
@@ -39,11 +50,9 @@ export const processArticle = (article: TArticle): TArticleProps => {
       id: t,
     })),
     title: article.title,
-    userInfoProps: user?.username
-      ? {
-          username: user?.username,
-          date: article.date,
-        }
-      : undefined,
+    userInfoProps: {
+      username: user.username,
+      date: article.date,
+    },
   };
 };

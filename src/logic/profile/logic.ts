@@ -1,3 +1,4 @@
+import { TArticleProps } from "../../components/Article/types";
 import { EPage, TAppProps } from "../../types";
 import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";
@@ -19,10 +20,10 @@ export class ProfileLogic {
       return;
     }
 
-    const posts = ArticleDatabase.getArticlesByUsername(
-      userInfoProps.username,
-    ).map((p) => processArticle(p));
-    const tags = posts.map((post) => post.tags).flat();
+    const posts = ArticleDatabase.getArticlesByUsername(userInfoProps.username)
+      .map((p) => processArticle(p))
+      .filter(Boolean) as TArticleProps[];
+    const tags = posts.map((post) => post?.tags ?? []).flat();
 
     const nextState: TAppProps<EPage.Profile> = {
       page: EPage.Profile,
@@ -53,26 +54,5 @@ export class ProfileLogic {
     };
 
     ResultingStateSubject.next(nextState);
-  }
-
-  public static handleFollowClick() {
-    const currentUserId = AppState.currentUserId;
-
-    if (!currentUserId) {
-      AppState.currentPage = EPage.SignIn;
-      updatePage();
-      return;
-    }
-
-    const selectedUserId = AppState.selectedUserId;
-
-    if (!selectedUserId) {
-      AppState.currentPage = EPage.Home;
-      updatePage();
-      return;
-    }
-
-    UserDatabase.followUserById(selectedUserId, currentUserId);
-    updatePage();
   }
 }

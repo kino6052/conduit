@@ -56,6 +56,10 @@ describe("Article", () => {
   "page": "Profile",
   "pageProps": {
     "bannerProps": {
+      "followButtonProps": {
+        "id": "",
+        "text": "Follow",
+      },
       "userInfoProps": {
         "articleIds": [
           "post-1",

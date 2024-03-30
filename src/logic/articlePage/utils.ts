@@ -1,7 +1,9 @@
 import { TArticleProps } from "../../components/Article/types";
+import { DefaultData as DefaultArticleData } from "../../pages/ArticlePage/data";
 import { EPage, TAppProps } from "../../types";
 import { AppState } from "../data/app";
-import { DefaultData as DefaultArticleData } from "../../pages/ArticlePage/data";
+import { ArticleDatabase } from "../data/article";
+import { UserDatabase } from "../data/user";
 import { provideNavbarProps } from "../utils/utils";
 
 export const provideArticleAppProps = (
@@ -10,6 +12,7 @@ export const provideArticleAppProps = (
   return {
     page: EPage.Article,
     pageProps: {
+      id: currentArticle.id,
       bannerProps: {
         title: currentArticle.title,
         userInfoProps: currentArticle.userInfoProps,
@@ -19,8 +22,26 @@ export const provideArticleAppProps = (
       commentBoxProps: DefaultArticleData["commentBoxProps"],
       comments: currentArticle.comments, // TODO: Add comments,
       content: currentArticle.description,
-      favoriteButtonProps: DefaultArticleData["favoriteButtonProps"],
-      followButtonProps: DefaultArticleData["followButtonProps"],
+      favoriteButtonProps: {
+        ...DefaultArticleData["favoriteButtonProps"],
+        text:
+          !!AppState.currentUserId &&
+          ArticleDatabase.getLikers(currentArticle.id).includes(
+            AppState.currentUserId,
+          )
+            ? "Unfavorite"
+            : "Favorite",
+      },
+      followButtonProps: {
+        ...DefaultArticleData["followButtonProps"],
+        text:
+          !!AppState.currentUserId &&
+          UserDatabase.getFollowers(
+            currentArticle.userInfoProps.username,
+          ).includes(AppState.currentUserId)
+            ? "Unfollow"
+            : "Follow",
+      },
       tags: currentArticle.tags,
       userInfoProps: currentArticle.userInfoProps,
     },

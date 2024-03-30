@@ -8,8 +8,11 @@ import { TArticlePageProps } from "./types";
 import { Typography } from "../../components/Typography";
 import { Tags } from "../../components/Tag";
 import { EArticlePageConstants } from "./constants";
+import { EUserInfoConstant } from "../../components/UserInfo/constants";
+import { EArticleConstant } from "../../components/Article/constants";
 
 export const ArticlePage: React.FC<TArticlePageProps> = ({
+  id,
   bannerProps,
   userInfoProps,
   followButtonProps,
@@ -28,8 +31,8 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
         <div className={styles.comments}>
           <div className={styles.user}>
             {userInfoProps && <UserInfo id={userInfoProps.username} {...userInfoProps} />}
-            <Button {...followButtonProps} />
-            <Button {...favoriteButtonProps} />
+            <Button {...followButtonProps} slug={EUserInfoConstant.FollowUserButtonSlug} id={userInfoProps?.username || ''} />
+            <Button {...favoriteButtonProps} slug={EArticleConstant.LikeButtonSlug} id={id} />
           </div>
           <CommentInput
             {...commentBoxProps}

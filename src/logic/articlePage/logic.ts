@@ -19,9 +19,14 @@ export class ArticleLogic {
         throw new Error("No article selected");
       }
 
-      const nextState: TAppProps<EPage.Article> = provideArticleAppProps(
-        processArticle(currentArticle),
-      );
+      const processedArticle = processArticle(currentArticle);
+
+      if (!processedArticle) {
+        throw new Error("Could not process the article");
+      }
+
+      const nextState: TAppProps<EPage.Article> =
+        provideArticleAppProps(processedArticle);
 
       ResultingStateSubject.next(nextState);
     } catch (e) {

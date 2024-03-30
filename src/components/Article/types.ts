@@ -9,6 +9,6 @@ export type TArticleProps = TWithId<{
   tags: TTagProps[];
   likes: number;
   hasLiked: boolean;
-  userInfoProps?: TUserInfoProps;
+  userInfoProps: TUserInfoProps;
   comments: TCommentInputProps[];
 }>;

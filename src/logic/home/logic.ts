@@ -1,3 +1,4 @@
+import { TArticleProps } from "../../components/Article/types";
 import { EPage, TAppProps } from "../../types";
 import { IEvent } from "../../utils/events";
 import { ResultingStateSubject } from "../common.logic";
@@ -23,6 +24,7 @@ export class HomePageLogic {
       pageProps: {
         posts: ArticleDatabase.getArticles()
           .map(processArticle)
+          .filter(Boolean)
           .filter((post) => {
             const selectedTag = ArticleDatabase.getAllTags().find(
               (t) => t === AppState.selectedTagId,
@@ -30,9 +32,9 @@ export class HomePageLogic {
 
             if (!selectedTag) return true;
 
-            const tag = post.tags.find(({ id }) => id === selectedTag);
+            const tag = post?.tags.find(({ id }) => id === selectedTag);
             return !!tag;
-          }),
+          }) as TArticleProps[],
         paginationBarProps: {
           numberOfPages: 1,
           selected: 0,

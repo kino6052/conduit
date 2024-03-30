@@ -119,10 +119,15 @@ describe("Profile", () => {
   "page": "Profile",
   "pageProps": {
     "bannerProps": {
+      "followButtonProps": {
+        "id": "",
+        "text": "Follow",
+      },
       "userInfoProps": {
         "articleIds": [],
         "date": "",
         "favoriteArticleIds": [],
+        "followers": [],
         "imageSrc": "",
         "password": "testset",
         "username": "testset",

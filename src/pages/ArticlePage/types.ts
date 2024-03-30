@@ -5,6 +5,7 @@ import { TTagContentProps } from "../../components/Tag/types";
 import { TUserInfoContentProps } from "../../components/UserInfo/types";
 
 export type TArticlePageProps = {
+  id: string;
   bannerProps: TArticleBannerProps;
   userInfoProps?: TUserInfoContentProps;
   followButtonProps: TButtonContentProps;

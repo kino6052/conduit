@@ -6,6 +6,7 @@ import { ETypographyType } from "../../Typography/types";
 import styles from "./styles.scss";
 import { TProfileBannerProps } from "./types";
 import { EProfileBannerConstant } from "./constants";
+import { EUserInfoConstant } from "../../UserInfo/constants";
 
 export const ProfileBanner: React.FC<TProfileBannerProps> = ({
   userInfoProps: { username, imageSrc },
@@ -23,7 +24,7 @@ export const ProfileBanner: React.FC<TProfileBannerProps> = ({
           variant={ETypographyType.Heading2}
           className={styles.white}
         />
-        <Button {...followButtonProps} id={EProfileBannerConstant.FollowButtonId} />
+        <Button {...followButtonProps} slug={EUserInfoConstant.FollowUserButtonSlug} id={username} />
       </div>
     </div>
   );

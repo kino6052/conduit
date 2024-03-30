@@ -14,4 +14,25 @@ export class UserInfoLogic {
 
     updatePage(EPage.Profile);
   }
+
+  public static handleFollowClick(event: IEvent) {
+    const currentUserId = AppState.currentUserId;
+
+    if (!currentUserId) {
+      AppState.currentPage = EPage.SignIn;
+      updatePage();
+      return;
+    }
+
+    const selectedUserId = event.id;
+
+    if (!selectedUserId) {
+      AppState.currentPage = EPage.Home;
+      updatePage();
+      return;
+    }
+
+    UserDatabase.followUserById(selectedUserId, currentUserId);
+    updatePage();
+  }
 }

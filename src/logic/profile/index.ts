@@ -9,9 +9,3 @@ RefreshSubject.pipe(
   filter(() => AppState.currentPage === EPage.Profile),
   tap(ProfileLogic.update),
 ).subscribe();
-
-IncomingEventSubject.pipe(
-  filter(() => AppState.currentPage === EPage.Profile),
-  filter((event) => event.id === EProfileBannerConstant.FollowButtonId),
-  tap(ProfileLogic.handleFollowClick),
-).subscribe();
