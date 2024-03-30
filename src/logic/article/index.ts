@@ -133,7 +133,7 @@ IncomingEventSubject.pipe(
   filter(
     (event) =>
       event.slug === EInputConstants.Slug &&
-      event.id === EArticlePageConstants.InputId,
+      event.id === EArticlePageConstants.CommentInputId,
   ),
   tap((event) => {
     const value = getEventTargetValue(event);

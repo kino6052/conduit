@@ -1,6 +1,8 @@
 import { uniqueId } from "lodash";
 import { TArticleProps } from "../../components/Article/types";
 import { TIdMap } from "../../utils/types";
+import { UserDatabase } from "./user";
+import { TUserInfo } from "../types";
 
 const DEFAULT_POST = {
   id: "post-1",
@@ -108,7 +110,11 @@ export class ArticleDatabase {
     });
   }
 
-  public static addCommentById(id: string, comment: string) {
+  public static addCommentById(
+    id: string,
+    comment: string,
+    userInfo: TUserInfo,
+  ) {
     const article = this.getArticleById(id);
 
     this.updateArticleById(id, {
@@ -123,6 +129,7 @@ export class ArticleDatabase {
           iconProps: {
             icon: "favorite",
           },
+          // userInfo,
         },
         ...article.comments,
       ],

@@ -35,7 +35,7 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
             {...commentBoxProps}
             inputProps={{
               ...commentBoxProps.inputProps,
-              id: EArticlePageConstants.InputId,
+              id: EArticlePageConstants.CommentInputId,
             }}
             buttonProps={
               commentBoxProps.buttonProps && {
