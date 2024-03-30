@@ -1,23 +1,23 @@
-import { filter, tap } from "rxjs";
+import { ArgumentOutOfRangeError, filter, tap } from "rxjs";
 import { ESettingsPageConstant } from "../../pages/SettingsPage/constants";
 import { EPage, TAppProps } from "../../types";
 import {
-  CurrentPageSubject,
   IncomingEventSubject,
+  RefreshSubject,
   ResultingStateSubject,
-  UserInfoSubject,
 } from "../common.logic";
 import { getEventTargetValue } from "../../utils/events";
 import { UserDatabase } from "../data/user";
-import { provideNavbarProps } from "../utils/utils";
+import { provideNavbarProps, updatePage } from "../utils/utils";
+import { AppState } from "../data/app";
 
 let usernameInput = "";
 let passwordInput = "";
 let imageUrlInput = "";
 let bioInput = "";
 
-CurrentPageSubject.pipe(
-  filter((page) => page === EPage.Settings),
+RefreshSubject.pipe(
+  filter(() => AppState.currentPage === EPage.Settings),
   tap(() => {
     const nextState: TAppProps<EPage.Settings> = {
       page: EPage.Settings,
@@ -64,9 +64,9 @@ IncomingEventSubject.pipe(
 
     if (!id) return;
 
-    UserInfoSubject.next(undefined);
+    AppState.currentUserId = undefined;
 
-    CurrentPageSubject.next(EPage.Home);
+    updatePage(EPage.Home);
   }),
 ).subscribe();
 
@@ -77,17 +77,17 @@ IncomingEventSubject.pipe(
 
     if (!id) return;
 
-    const username = UserInfoSubject.getValue()?.username;
+    const username = AppState.currentUserId;
 
     if (usernameInput && username) {
       const userInfo = UserDatabase.updateUserByName(username, {
         username: usernameInput,
       });
 
-      UserInfoSubject.next(userInfo);
+      AppState.currentUserId = userInfo?.username;
     }
 
-    CurrentPageSubject.next(EPage.Home);
+    updatePage(EPage.Home);
   }),
 ).subscribe();
 
@@ -100,6 +100,6 @@ IncomingEventSubject.pipe(
 
     usernameInput = getEventTargetValue(event) ?? "";
 
-    CurrentPageSubject.next(EPage.Settings);
+    updatePage(EPage.Settings);
   }),
 ).subscribe();

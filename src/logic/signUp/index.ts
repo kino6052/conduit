@@ -1,21 +1,21 @@
 import { filter, tap } from "rxjs";
 import { EPage, TAppProps } from "../../types";
 import {
-  CurrentPageSubject,
+  RefreshSubject,
   IncomingEventSubject,
   ResultingStateSubject,
 } from "../common.logic";
 import { ESignUpConstant } from "./constants";
 import { getEventTargetValue } from "../../utils/events";
-import { provideNavbarProps } from "../utils/utils";
+import { provideNavbarProps, updatePage } from "../utils/utils";
 import { UserDatabase } from "../data/user";
 import { AppState } from "../data/app";
 
 let usernameInput = "";
 let passwordInput = "";
 
-CurrentPageSubject.pipe(
-  filter((page) => page === EPage.SignUp),
+RefreshSubject.pipe(
+  filter(() => AppState.currentPage === EPage.SignUp),
   tap(() => {
     const nextState: TAppProps<EPage.SignUp> = {
       navbarProps: provideNavbarProps(),
@@ -53,7 +53,7 @@ IncomingEventSubject.pipe(
 
     usernameInput = value ?? "";
 
-    CurrentPageSubject.next(EPage.SignUp);
+    updatePage(EPage.SignUp);
   }),
 ).subscribe();
 
@@ -68,7 +68,7 @@ IncomingEventSubject.pipe(
 
     passwordInput = value ?? "";
 
-    CurrentPageSubject.next(EPage.SignUp);
+    updatePage(EPage.SignUp);
   }),
 ).subscribe();
 
@@ -104,6 +104,6 @@ IncomingEventSubject.pipe(
 
     AppState.currentUserId = newUserInfo.username;
 
-    CurrentPageSubject.next(EPage.Home);
+    updatePage(EPage.Home);
   }),
 ).subscribe();

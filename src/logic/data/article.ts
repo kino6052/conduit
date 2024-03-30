@@ -35,7 +35,6 @@ export class ArticleDatabase {
   };
 
   public static getArticleIds() {
-    console.warn(this.articles);
     return Object.keys(this.articles);
   }
 

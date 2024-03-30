@@ -2,12 +2,10 @@ import { filter, tap } from "rxjs";
 import { EArticleConstant } from "../../components/Article/constants";
 import { ETagConstant } from "../../components/Tag/constants";
 import { EPage } from "../../types";
-import {
-  CurrentPageSubject,
-  IncomingEventSubject
-} from "../common.logic";
+import { IncomingEventSubject, RefreshSubject } from "../common.logic";
 import { HomePage } from "./logic";
 import { EUserInfoConstant } from "../../components/UserInfo/constants";
+import { AppState } from "../data/app";
 
 IncomingEventSubject.pipe(
   filter((event) => event.slug === EArticleConstant.Slug),
@@ -29,7 +27,7 @@ IncomingEventSubject.pipe(
   tap(HomePage.handleUserInfoClick),
 ).subscribe();
 
-CurrentPageSubject.pipe(
-  filter((page) => page === EPage.Home),
+RefreshSubject.pipe(
+  filter(() => AppState.currentPage === EPage.Home),
   tap(HomePage.update),
 ).subscribe();

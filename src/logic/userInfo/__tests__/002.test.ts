@@ -1,3 +1,4 @@
+import { sequence } from "../..";
 import { EButtonConstants } from "../../../components/Button/constants";
 import { EInputConstants } from "../../../components/Input/Input/constants";
 import { ETabConstant } from "../../../components/Tab/constants";

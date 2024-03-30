@@ -8,13 +8,13 @@ import { DefaultData as DefaultArticleData } from "../../pages/ArticlePage/data"
 import { EPage, TAppProps } from "../../types";
 import { getEventTargetValue } from "../../utils/events";
 import {
-  CurrentPageSubject,
+  RefreshSubject,
   IncomingEventSubject,
   ResultingStateSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
 import { getIsLoggedIn } from "../utils/user";
-import { provideNavbarProps } from "../utils/utils";
+import { provideNavbarProps, updatePage } from "../utils/utils";
 import { AppState } from "../data/app";
 
 const CommentInputSubject = new BehaviorSubject("");
@@ -29,8 +29,7 @@ export const provideArticleAppProps = (
         title: currentArticle.title,
         userInfoProps: currentArticle.userInfoProps,
         canEdit:
-          AppState.currentUserId ===
-          currentArticle.userInfoProps.username,
+          AppState.currentUserId === currentArticle.userInfoProps.username,
       },
       commentBoxProps: DefaultArticleData["commentBoxProps"],
       comments: currentArticle.comments, // TODO: Add comments,
@@ -44,8 +43,8 @@ export const provideArticleAppProps = (
   };
 };
 
-CurrentPageSubject.pipe(
-  filter((page) => page === EPage.Article),
+RefreshSubject.pipe(
+  filter(() => AppState.currentPage === EPage.Article),
   tap(() => {
     try {
       const currentArticle = ArticleDatabase.getCurrentArticle();
@@ -56,7 +55,7 @@ CurrentPageSubject.pipe(
       ResultingStateSubject.next(nextState);
     } catch (e) {
       console.error(e);
-      CurrentPageSubject.next(EPage.Home);
+      updatePage(EPage.Home);
     }
   }),
 ).subscribe();
@@ -68,7 +67,7 @@ IncomingEventSubject.pipe(
       event.id === EArticleBannerConstant.EditButtonId,
   ),
   tap(() => {
-    CurrentPageSubject.next(EPage.EditArticle);
+    updatePage(EPage.EditArticle);
   }),
 ).subscribe();
 
@@ -87,7 +86,7 @@ IncomingEventSubject.pipe(
       const isLoggedIn = getIsLoggedIn(); // TODO: Move to UserDatabase
 
       if (!isLoggedIn) {
-        CurrentPageSubject.next(EPage.SignIn);
+        updatePage(EPage.SignIn);
         return;
       }
 
@@ -121,7 +120,7 @@ IncomingEventSubject.pipe(
       ResultingStateSubject.next(nextState);
     } catch (e) {
       console.error(e);
-      CurrentPageSubject.next(EPage.Home);
+      updatePage(EPage.Home);
     }
   }),
 ).subscribe();
@@ -178,6 +177,6 @@ IncomingEventSubject.pipe(
 
     ArticleDatabase.removeArticleById(id);
 
-    CurrentPageSubject.next(EPage.Home);
+    updatePage(EPage.Home);
   }),
 ).subscribe();

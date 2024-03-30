@@ -9,20 +9,21 @@ import { EPage, TAppProps } from "../../types";
 import { findFirst } from "../../utils/array";
 import { getEventTargetValue } from "../../utils/events";
 import {
-  CurrentPageSubject,
+  RefreshSubject,
   IncomingEventSubject,
   ResultingStateSubject,
 } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
 import { AppState } from "../data/app";
+import { updatePage } from "../utils/utils";
 
 let titleInput = "";
 let articleInput = "";
 let tagsInput = "";
 
 const refreshForm = () => {
-  CurrentPageSubject.next(CurrentPageSubject.getValue());
+  updatePage();
 };
 
 const updateForm = () => {
@@ -55,8 +56,10 @@ const resetForm = () => {
   tagsInput = "";
 };
 
-CurrentPageSubject.pipe(
-  filter((page) => [EPage.NewArticle, EPage.EditArticle].includes(page)),
+RefreshSubject.pipe(
+  filter(() =>
+    [EPage.NewArticle, EPage.EditArticle].includes(AppState.currentPage),
+  ),
   tap((page) => {
     const isEditing = page === EPage.EditArticle;
 
@@ -117,7 +120,7 @@ IncomingEventSubject.pipe(
       event.id === ENewPostPageConstant.SubmitButtonId,
   ),
   tap(() => {
-    const page = CurrentPageSubject.getValue();
+    const page = AppState.currentPage;
     const isEditing = page === EPage.EditArticle;
     const id = findFirst([
       isEditing && ArticleDatabase.getCurrentArticleId(),
@@ -128,7 +131,7 @@ IncomingEventSubject.pipe(
 
     if (!username) return;
 
-    const userInfoProps = UserDatabase.findUserByName(username)
+    const userInfoProps = UserDatabase.findUserByName(username);
 
     if (!id || !userInfoProps) return;
 
@@ -152,6 +155,6 @@ IncomingEventSubject.pipe(
     };
 
     ArticleDatabase.publishArticle(article);
-    CurrentPageSubject.next(EPage.Home);
+    updatePage(EPage.Home);
   }),
 ).subscribe();

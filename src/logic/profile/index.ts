@@ -1,17 +1,14 @@
 import { filter, tap } from "rxjs";
 import { EPage, TAppProps } from "../../types";
-import {
-  CurrentPageSubject,
-  ResultingStateSubject,
-} from "../common.logic";
+import { RefreshSubject, ResultingStateSubject } from "../common.logic";
 import { ArticleDatabase } from "../data/article";
-import { provideNavbarProps } from "../utils/utils";
+import { provideNavbarProps, updatePage } from "../utils/utils";
 import { AppState } from "../data/app";
 import { UserDatabase } from "../data/user";
 
-CurrentPageSubject.pipe(
-  filter((page) => page === EPage.Profile),
-  tap((page) => {
+RefreshSubject.pipe(
+  filter(() => AppState.currentPage === EPage.Profile),
+  tap(() => {
     const username = AppState.selectedUserId;
 
     if (!username) return;
@@ -19,7 +16,7 @@ CurrentPageSubject.pipe(
     const userInfoProps = UserDatabase.findUserByName(username);
 
     if (!userInfoProps) {
-      CurrentPageSubject.next(EPage.Home);
+      updatePage(EPage.Home);
       return;
     }
 

@@ -2,13 +2,13 @@ import { filter, tap } from "rxjs";
 import { EPage, TAppProps } from "../../types";
 import { getEventTargetValue } from "../../utils/events";
 import {
-  CurrentPageSubject,
+  RefreshSubject,
   IncomingEventSubject,
   ResultingStateSubject,
 } from "../common.logic";
 import { ESignInConstant } from "./constants";
 import { UserDatabase } from "../data/user";
-import { provideNavbarProps } from "../utils/utils";
+import { provideNavbarProps, updatePage } from "../utils/utils";
 import { AppState } from "../data/app";
 
 let usernameInput = "";
@@ -17,8 +17,8 @@ let usernameError = "";
 let passwordInput = "";
 let passwordError = "";
 
-CurrentPageSubject.pipe(
-  filter((page) => page === EPage.SignIn),
+RefreshSubject.pipe(
+  filter(() => AppState.currentPage === EPage.SignIn),
   tap(() => {
     const nextState: TAppProps<EPage.SignIn> = {
       navbarProps: provideNavbarProps(),
@@ -61,7 +61,7 @@ IncomingEventSubject.pipe(
 
     usernameInput = value ?? "";
 
-    CurrentPageSubject.next(EPage.SignIn);
+    updatePage(EPage.SignIn);
   }),
 ).subscribe();
 
@@ -76,7 +76,7 @@ IncomingEventSubject.pipe(
 
     passwordInput = value ?? "";
 
-    CurrentPageSubject.next(EPage.SignIn);
+    updatePage(EPage.SignIn);
   }),
 ).subscribe();
 
@@ -101,10 +101,10 @@ IncomingEventSubject.pipe(
 
     if (userInfo) {
       AppState.currentUserId = userInfo.username;
-      CurrentPageSubject.next(EPage.Home);
+      updatePage(EPage.Home);
       return;
     }
 
-    CurrentPageSubject.next(EPage.SignIn);
+    updatePage(EPage.SignIn);
   }),
 ).subscribe();

@@ -1,12 +1,10 @@
 import { filter, tap } from "rxjs";
 import { ETabConstant } from "../components/Tab/constants";
 import { EPage } from "../types";
-import {
-  CurrentPageSubject,
-  IncomingEventSubject,
-} from "./common.logic";
+import { IncomingEventSubject } from "./common.logic";
 import { AppState } from "./data/app";
 import { UserDatabase } from "./data/user";
+import { updatePage } from "./utils/utils";
 
 IncomingEventSubject.pipe(
   filter((event) => {
@@ -19,13 +17,12 @@ IncomingEventSubject.pipe(
   tap((event) => {
     const username = AppState.currentUserId;
 
-    
     if (event.id === EPage.Profile && username) {
       const userInfo = UserDatabase.findUserByName(username);
-      
+
       AppState.currentUserId = userInfo?.username;
     }
 
-    CurrentPageSubject.next(event.id as EPage);
+    updatePage(event.id as EPage);
   }),
 ).subscribe();

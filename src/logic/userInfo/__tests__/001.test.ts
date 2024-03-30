@@ -1,13 +1,18 @@
 import { sequence } from "../..";
+import { EUserInfoConstant } from "../../../components/UserInfo/constants";
 import { DefaultAppProps } from "../../../data";
 import { EPage } from "../../../types";
+import { ArticleDatabase } from "../../data/article";
 
 describe("User Info", () => {
-  it('should click on user-info when logged out', async () => {
+  it("should click on user-info when logged out", async () => {
     const result = await sequence(
       [
-        { slug: E.Slug, id: EPage.SignUp, type: "onClick" },
-        
+        {
+          slug: EUserInfoConstant.UserInfoSlug,
+          id: ArticleDatabase.getArticles()[0]?.id,
+          type: "onClick",
+        },
       ],
       DefaultAppProps,
     );
@@ -22,49 +27,35 @@ describe("User Info", () => {
         "variant": "menu",
       },
       {
-        "icon": "edit",
-        "id": "NewArticle",
-        "text": "New Post",
+        "id": "SignIn",
+        "text": "Sign In",
         "variant": "menu",
       },
       {
-        "icon": "settings",
-        "id": "Settings",
-        "text": "Settings",
-        "variant": "menu",
-      },
-      {
-        "icon": "person",
-        "id": "Profile",
-        "text": "testset",
+        "id": "SignUp",
+        "text": "Sign Up",
         "variant": "menu",
       },
     ],
   },
-  "page": "Home",
+  "page": "Profile",
   "pageProps": {
+    "bannerProps": {
+      "userInfoProps": {
+        "articleIds": [
+          "post-1",
+        ],
+        "date": "",
+        "favoriteArticleIds": [],
+        "password": "123456",
+        "username": "jane-lobster",
+      },
+    },
     "paginationBarProps": {
       "numberOfPages": 1,
       "selected": 0,
     },
     "posts": [
-      {
-        "comments": [],
-        "description": "text",
-        "hasLiked": false,
-        "id": "1",
-        "likes": 0,
-        "tags": [],
-        "title": "title",
-        "userInfoProps": {
-          "articleIds": [],
-          "date": "",
-          "favoriteArticleIds": [],
-          "imageSrc": "",
-          "password": "testset",
-          "username": "testset",
-        },
-      },
       {
         "comments": [],
         "description": "A good article, a really really good one",
@@ -90,22 +81,12 @@ describe("User Info", () => {
       },
     ],
     "sidebarProps": {
-      "tags": [
-        {
-          "id": "1",
-        },
-        {
-          "id": "2",
-        },
-        {
-          "id": "3",
-        },
-      ],
-      "title": "Popular Tags",
+      "tags": [],
+      "title": "Popular tags",
     },
     "tabs": [],
   },
 }
 `);
-  })
-})
+  });
+});
