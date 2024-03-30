@@ -62,6 +62,7 @@ describe("Article", () => {
         ],
         "date": "",
         "favoriteArticleIds": [],
+        "followers": [],
         "password": "123456",
         "username": "jane-lobster",
       },
@@ -76,7 +77,7 @@ describe("Article", () => {
         "description": "A good article, a really really good one",
         "hasLiked": true,
         "id": "post-1",
-        "likes": 25,
+        "likes": 1,
         "tags": [
           {
             "id": "1",

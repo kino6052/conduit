@@ -31,8 +31,10 @@ export const processArticle = (article: TArticle): TArticleProps => {
       };
     }),
     description: article.description,
-    hasLiked: article.hasLiked,
-    likes: article.likes,
+    hasLiked:
+      !!AppState.currentUserId &&
+      article.likers.includes(AppState.currentUserId),
+    likes: article.likers.length,
     tags: article.tags.map((t) => ({
       id: t,
     })),

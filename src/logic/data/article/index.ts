@@ -1,14 +1,13 @@
 import { uniqueId } from "lodash";
 import { TIdMap } from "../../../utils/types";
-import { TArticle } from "./types";
 import { DEFAULT_TIME } from "../../utils/verification";
+import { TArticle } from "./types";
 
 const DEFAULT_POST: TArticle = {
   id: "post-1",
   username: "jane-lobster",
   description: "A good article, a really really good one",
-  hasLiked: false,
-  likes: 24,
+  likers: [],
   tags: ["1", "2", "3"],
   title: "A good thing",
   date: new Date(DEFAULT_TIME).toDateString(),
@@ -84,17 +83,35 @@ export class ArticleDatabase {
       .flat();
   }
 
-  public static likeArticleById(id: string) {
+  public static getLikers(id: string) {
+    const article = ArticleDatabase.getArticleById(id);
+
+    if (!article) return [];
+
+    return article.likers;
+  }
+
+  public static updateLikers(id: string, likers: string[]) {
+    const article = ArticleDatabase.getArticleById(id);
+
+    if (!article) return;
+
+    this.updateArticleById(id, { likers });
+  }
+
+  public static likeArticleById(id: string, username: string) {
     const article = this.getArticleById(id);
 
-    const increment = [article.hasLiked && -1, 1].find(
-      (item) => typeof item === "number",
-    ) as number;
+    const likers = this.getLikers(article.id);
 
-    this.updateArticleById(id, {
-      hasLiked: !article.hasLiked,
-      likes: article.likes + increment,
-    });
+    const hasLiked = likers.find((id) => id === username);
+
+    const nextLikers = [
+      ...likers.filter((id) => id !== username),
+      !hasLiked && username,
+    ].filter(Boolean) as string[];
+
+    this.updateLikers(id, nextLikers);
   }
 
   public static addCommentById(id: string, comment: string, username: string) {

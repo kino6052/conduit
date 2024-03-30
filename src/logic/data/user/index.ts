@@ -1,4 +1,4 @@
-import { TUserInfo } from "../types";
+import { TUserInfo } from "./types";
 
 export class UserDatabase {
   private static users: TUserInfo[] = [
@@ -8,6 +8,7 @@ export class UserDatabase {
       articleIds: ["post-1"],
       date: "",
       favoriteArticleIds: [],
+      followers: [],
     },
   ];
 
@@ -31,6 +32,24 @@ export class UserDatabase {
     });
 
     return this.findUserByName(partialUser.username || username);
+  }
+
+  public static getFollowers(username: string) {
+    const user = UserDatabase.findUserByName(username);
+
+    if (!user) return [];
+
+    return user.followers;
+  }
+
+  public static updateFollowers(username: string, followers: string[]) {
+    const user = UserDatabase.findUserByName(username);
+
+    if (!user) return;
+
+    user.followers = followers;
+
+    UserDatabase.updateUserByName(username, { followers });
   }
 
   public static registerNewUser(user: TUserInfo) {

@@ -5,4 +5,5 @@ export type TUserInfo = {
   imageSrc?: string;
   articleIds: string[];
   favoriteArticleIds: string[];
+  followers: string[];
 };

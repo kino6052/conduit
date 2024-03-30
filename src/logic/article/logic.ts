@@ -23,7 +23,15 @@ export class ArticleLogic {
 
     if (!id) return;
 
-    ArticleDatabase.likeArticleById(id);
+    const username = AppState.currentUserId;
+
+    if (!username) {
+      AppState.currentPage = EPage.SignIn;
+      updatePage();
+      return;
+    }
+
+    ArticleDatabase.likeArticleById(id, username);
     updatePage();
   }
 }

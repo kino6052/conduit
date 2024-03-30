@@ -3,8 +3,7 @@ export type TArticle = {
   title: string;
   description: string;
   tags: string[];
-  likes: number;
-  hasLiked: boolean;
+  likers: string[];
   username: string;
   date: string;
   comments: {

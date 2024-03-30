@@ -49,7 +49,7 @@ describe("User Info", () => {
         "description": "A good article, a really really good one",
         "hasLiked": false,
         "id": "post-1",
-        "likes": 24,
+        "likes": 0,
         "tags": [
           {
             "id": "1",
