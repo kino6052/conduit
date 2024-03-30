@@ -29,6 +29,14 @@ export class ProfileLogic {
       pageProps: {
         bannerProps: {
           userInfoProps,
+          followButtonProps: {
+            id: "",
+            text: userInfoProps.followers.find(
+              (id) => id === AppState.currentUserId,
+            )
+              ? "Unfollow"
+              : "Follow",
+          },
         },
         paginationBarProps: {
           numberOfPages: 1,
@@ -45,5 +53,26 @@ export class ProfileLogic {
     };
 
     ResultingStateSubject.next(nextState);
+  }
+
+  public static handleFollowClick() {
+    const currentUserId = AppState.currentUserId;
+
+    if (!currentUserId) {
+      AppState.currentPage = EPage.SignIn;
+      updatePage();
+      return;
+    }
+
+    const selectedUserId = AppState.selectedUserId;
+
+    if (!selectedUserId) {
+      AppState.currentPage = EPage.Home;
+      updatePage();
+      return;
+    }
+
+    UserDatabase.followUserById(selectedUserId, currentUserId);
+    updatePage();
   }
 }

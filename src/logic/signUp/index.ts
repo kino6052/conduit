@@ -98,6 +98,7 @@ IncomingEventSubject.pipe(
       password: passwordInput,
       username: usernameInput,
       imageSrc: "",
+      followers: [],
     };
 
     UserDatabase.registerNewUser(newUserInfo);

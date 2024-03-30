@@ -52,6 +52,23 @@ export class UserDatabase {
     UserDatabase.updateUserByName(username, { followers });
   }
 
+  public static followUserById(id: string, username: string) {
+    const user = UserDatabase.findUserByName(id);
+
+    if (!user) return;
+
+    const followers = UserDatabase.getFollowers(user?.username);
+
+    const hasFollowed = followers.find((id) => id === username);
+
+    const nextLikers = [
+      ...followers.filter((id) => id !== username),
+      !hasFollowed && username,
+    ].filter(Boolean) as string[];
+
+    this.updateFollowers(id, nextLikers);
+  }
+
   public static registerNewUser(user: TUserInfo) {
     const alreadyRegisteredUser = this.users.find((_user) => {
       return _user.username === user.username;
