@@ -7,28 +7,6 @@ import { processArticle } from "../data/article/utils";
 import { provideNavbarProps, updatePage } from "../utils/utils";
 
 export class HomePageLogic {
-  static handleArticleClick(event: IEvent) {
-    // TODO: Move into "article handlers"
-    const id = event.id;
-
-    if (!id) {
-      console.error("Item doesn't have an id");
-      return;
-    }
-
-    AppState.selectedArticleId = id;
-    updatePage(EPage.Article); // TODO: Change AppState instead
-  }
-
-  static handleArticleLike(event: IEvent) {
-    const id = event.id;
-
-    if (!id) return;
-
-    ArticleDatabase.likeArticleById(id);
-    updatePage(EPage.Home);
-  }
-
   static selectTag(event: IEvent) {
     const id = event.id;
 

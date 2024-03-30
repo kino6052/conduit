@@ -5,12 +5,13 @@ import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
 import "./editArticle";
 import "./home";
 import "./navbar.logic";
-import "./article";
+import "./articlePage";
 import "./settings";
 import "./profile";
 import "./signIn";
 import "./signUp";
 import "./userInfo";
+import "./article";
 
 export const update = async (
   event: IEvent,

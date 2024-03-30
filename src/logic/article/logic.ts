@@ -1,126 +1,29 @@
-import { EPage, TAppProps } from "../../types";
-import { IEvent, getEventTargetValue } from "../../utils/events";
-import { ResultingStateSubject } from "../common.logic";
+import { EPage } from "../../types";
+import { IEvent } from "../../utils/events";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
-import { processArticle } from "../data/article/utils";
-import { getCurrentUser, getIsLoggedIn } from "../utils/user";
-import { provideNavbarProps, updatePage } from "../utils/utils";
-import { provideArticleAppProps } from "./utils";
+import { updatePage } from "../utils/utils";
 
 export class ArticleLogic {
-  public static commentInput: string = "";
+  static handleArticleClick(event: IEvent) {
+    // TODO: Move into "article handlers"
+    const id = event.id;
 
-  public static update() {
-    try {
-      const currentArticle = AppState.getCurrentArticle();
-
-      if (!currentArticle) {
-        throw new Error("No article selected");
-      }
-
-      const nextState: TAppProps<EPage.Article> = provideArticleAppProps(
-        processArticle(currentArticle),
-      );
-
-      ResultingStateSubject.next(nextState);
-    } catch (e) {
-      console.error(e);
-      updatePage(EPage.Home);
+    if (!id) {
+      console.error("Item doesn't have an id");
+      return;
     }
+
+    AppState.selectedArticleId = id;
+    updatePage(EPage.Article); // TODO: Change AppState instead
   }
 
-  public static submitComment() {
-    try {
-      const id = AppState.selectedArticleId;
-
-      if (!id) throw new Error("No article is selected");
-
-      const isLoggedIn = getIsLoggedIn(); // TODO: Move to UserDatabase
-
-      if (!isLoggedIn) {
-        updatePage(EPage.SignIn);
-        return;
-      }
-
-      const value = ArticleLogic.commentInput;
-
-      ArticleLogic.commentInput = "";
-
-      if (!value) return;
-
-      const prevState =
-        ResultingStateSubject.getValue() as TAppProps<EPage.Article>;
-
-      const currentUser = getCurrentUser();
-
-      if (!currentUser) return;
-
-      const nextPost = processArticle(
-        ArticleDatabase.addCommentById(id, value, currentUser.username),
-      );
-
-      const nextState: TAppProps<EPage.Article> = {
-        page: EPage.Article,
-        pageProps: {
-          ...prevState.pageProps,
-          comments: nextPost?.comments || [],
-          commentBoxProps: {
-            ...prevState.pageProps.commentBoxProps,
-            inputProps: {
-              ...prevState.pageProps.commentBoxProps.inputProps,
-              value: ArticleLogic.commentInput,
-            },
-          },
-        },
-        navbarProps: provideNavbarProps(),
-      };
-
-      ResultingStateSubject.next(nextState);
-    } catch (e) {
-      console.error(e);
-      updatePage(EPage.Home);
-    }
-  }
-
-  public static handleCommentInput(event: IEvent) {
-    const value = getEventTargetValue(event);
-    const prevValue = ArticleLogic.commentInput;
-
-    const currentArticle = AppState.getCurrentArticle();
-
-    if (!currentArticle) return;
-
-    ArticleLogic.commentInput = value ?? prevValue;
-
-    const prevState =
-      ResultingStateSubject.getValue() as TAppProps<EPage.Article>;
-
-    const nextState: TAppProps<EPage.Article> = {
-      page: EPage.Article,
-      pageProps: {
-        ...prevState.pageProps,
-        commentBoxProps: {
-          ...prevState.pageProps.commentBoxProps,
-          inputProps: {
-            ...prevState.pageProps.commentBoxProps.inputProps,
-            value: ArticleLogic.commentInput,
-          },
-        },
-      },
-      navbarProps: provideNavbarProps(),
-    };
-
-    ResultingStateSubject.next(nextState); // FIXME: Rid of explicitly setting nextState and instead reasemble state on refresh
-  }
-
-  public static handleRemove() {
-    const id = AppState.selectedArticleId;
+  static handleArticleLike(event: IEvent) {
+    const id = event.id;
 
     if (!id) return;
 
-    ArticleDatabase.removeArticleById(id);
-
-    updatePage(EPage.Home);
+    ArticleDatabase.likeArticleById(id);
+    updatePage();
   }
 }

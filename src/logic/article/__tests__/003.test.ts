@@ -1,14 +1,20 @@
 import { sequence } from "../..";
 import { EArticleConstant } from "../../../components/Article/constants";
+import { EUserInfoConstant } from "../../../components/UserInfo/constants";
 import { DefaultAppProps } from "../../../data";
 import { ArticleDatabase } from "../../data/article";
 import { createUserSequence } from "../../utils/sequences";
 
 describe("Article", () => {
-  it("should like article", async () => {
+  it("should navigate to user profile and like article", async () => {
     const result = await sequence(
       [
         ...createUserSequence,
+        {
+          slug: EUserInfoConstant.UserInfoSlug,
+          id: ArticleDatabase.getArticles()[0].username,
+          type: "onClick",
+        },
         {
           slug: EArticleConstant.LikeButtonSlug,
           id: ArticleDatabase.getArticleIds()[0],
@@ -47,8 +53,19 @@ describe("Article", () => {
       },
     ],
   },
-  "page": "Home",
+  "page": "Profile",
   "pageProps": {
+    "bannerProps": {
+      "userInfoProps": {
+        "articleIds": [
+          "post-1",
+        ],
+        "date": "",
+        "favoriteArticleIds": [],
+        "password": "123456",
+        "username": "jane-lobster",
+      },
+    },
     "paginationBarProps": {
       "numberOfPages": 1,
       "selected": 0,
@@ -90,7 +107,7 @@ describe("Article", () => {
           "id": "3",
         },
       ],
-      "title": "Popular Tags",
+      "title": "Related tags",
     },
     "tabs": [],
   },

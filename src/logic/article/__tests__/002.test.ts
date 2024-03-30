@@ -5,10 +5,15 @@ import { ArticleDatabase } from "../../data/article";
 import { createUserSequence } from "../../utils/sequences";
 
 describe("Article", () => {
-  it("should like article", async () => {
+  it("should unlike article", async () => {
     const result = await sequence(
       [
         ...createUserSequence,
+        {
+          slug: EArticleConstant.LikeButtonSlug,
+          id: ArticleDatabase.getArticleIds()[0],
+          type: "onClick",
+        },
         {
           slug: EArticleConstant.LikeButtonSlug,
           id: ArticleDatabase.getArticleIds()[0],
@@ -57,9 +62,9 @@ describe("Article", () => {
       {
         "comments": [],
         "description": "A good article, a really really good one",
-        "hasLiked": true,
+        "hasLiked": false,
         "id": "post-1",
-        "likes": 25,
+        "likes": 24,
         "tags": [
           {
             "id": "1",
