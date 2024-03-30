@@ -18,11 +18,11 @@ export const ProfilePage: React.FC<TProfilePageProps> = ({
     <div className={styles.wrapper}>
       <ProfileBanner {...bannerProps} />
       <div className={styles.content}>
-        <div className={styles.tabs}>
+        {tabs.length > 0 && <div className={styles.tabs}>
           {tabs.map((tab) => (
             <Tab {...tab} key={tab.id} />
           ))}
-        </div>
+        </div>}
         <Sidebar {...sidebarProps} />
         {posts.map((post) => (
           <Post {...post} />
