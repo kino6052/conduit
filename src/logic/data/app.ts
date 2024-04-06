@@ -10,6 +10,7 @@ export class AppState {
   static selectedArticleId: string | undefined;
   static currentPage: EPage = EPage.Home;
   static currentTab: ETabType = ETabType.Global;
+  static currentPaginationTabIndex: number = 0;
 
   static getCurrentArticle() {
     const articleId = AppState.selectedArticleId;

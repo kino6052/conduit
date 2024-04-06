@@ -8,6 +8,7 @@ import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";
 import { provideNavbarProps } from "../navbar/utils";
 import { provideTabsProps } from "../tabs/utils";
+import { getIsLoggedIn } from "../utils/user";
 import { wait } from "../utils/utils";
 
 export class HomePageLogic {
@@ -18,20 +19,32 @@ export class HomePageLogic {
 
     AppState.selectedTagId = id;
     AppState.currentPage = EPage.Home;
+    AppState.currentPaginationTabIndex = 0;
+  }
+
+  static paginate(event: IEvent) {
+    const id = event.id;
+
+    if (!id) return;
+
+    AppState.currentPaginationTabIndex = Number(id);
   }
 
   static update() {
     const username = AppState.currentUserId;
     const tag = AppState.selectedTagId;
 
+    console.warn({ AppState });
+
     const posts = (
       findFirst([
-        !!tag && ArticleDatabase.getArticlesByTag(tag),
-        AppState.currentTab === ETabType.Global &&
-          ArticleDatabase.getArticles(),
         AppState.currentTab === ETabType.Personal &&
           !!username &&
           ArticleDatabase.getArticlesByUsername(username),
+        ArticleDatabase.getArticlesByPagination({
+          index: AppState.currentPaginationTabIndex,
+          tag,
+        }),
       ]) ?? []
     )
       .filter(Boolean)
@@ -43,8 +56,14 @@ export class HomePageLogic {
         isLoading: false,
         posts,
         paginationBarProps: {
-          numberOfPages: 1,
-          selected: 0,
+          numberOfPages: ArticleDatabase.getArticlePaginationTotal({
+            tag,
+            username:
+              AppState.currentTab === ETabType.Personal
+                ? AppState.currentUserId
+                : undefined,
+          }),
+          selected: AppState.currentPaginationTabIndex,
         },
         sidebarProps: {
           tags: ArticleDatabase.getAllTags().map((id) => ({ id })),

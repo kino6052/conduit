@@ -120,7 +120,10 @@ IncomingEventSubject.pipe(
   tap(() => {
     const page = AppState.currentPage;
     const isEditing = page === EPage.EditArticle;
-    const id = findFirst([isEditing && AppState.selectedArticleId, uniqueId()]);
+    const id = findFirst([
+      isEditing && AppState.selectedArticleId,
+      uniqueId("post-"),
+    ]);
 
     const username = AppState.currentUserId;
 

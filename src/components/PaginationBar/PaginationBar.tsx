@@ -12,11 +12,12 @@ export const PaginationBar: React.FC<TPaginationBarProps> = ({
     <div className={styles.wrapper}>
       {array.map((_, i) => {
         const isSelected = i === selected;
-        const id = String(i + 1);
+        const id = String(i);
+        const value = String(i + 1);
         return (
           <PaginationButton
             id={id}
-            value={id}
+            value={value}
             key={id}
             isSelected={isSelected}
           />

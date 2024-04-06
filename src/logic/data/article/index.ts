@@ -2,6 +2,7 @@ import { uniqueId } from "lodash";
 import { TIdMap } from "../../../utils/types";
 import { DEFAULT_TIME } from "../../utils/verification";
 import { TArticle } from "./types";
+import { EArticleDatabaseConstant } from "./constants";
 
 const DEFAULT_POST: TArticle = {
   id: "post-1",
@@ -15,9 +16,15 @@ const DEFAULT_POST: TArticle = {
 };
 
 export class ArticleDatabase {
-  private static articles: TIdMap<TArticle> = {
-    [DEFAULT_POST.id]: DEFAULT_POST,
-  };
+  private static articles: TIdMap<TArticle> = new Array(100)
+    .fill(null)
+    .map((_, i) => `${i}`)
+    .reduce((acc, id) => {
+      return {
+        ...acc,
+        [id]: { ...DEFAULT_POST, id, title: `${id}: ${DEFAULT_POST.title}` },
+      };
+    }, {} as TIdMap<TArticle>);
 
   public static getArticleIds() {
     return Object.keys(this.articles);
@@ -71,6 +78,56 @@ export class ArticleDatabase {
     );
   }
 
+  public static getArticlePaginationTotal({
+    tag,
+    username,
+  }: {
+    index?: number;
+    articlesPerPage?: number;
+    tag?: string;
+    username?: string;
+  }) {
+    const articles = ArticleDatabase.getArticlesByPagination({
+      articlesPerPage: Number.MAX_SAFE_INTEGER,
+      tag,
+      username,
+    });
+    return Math.ceil(
+      articles.length / EArticleDatabaseConstant.ArticlesPerPage,
+    );
+  }
+
+  public static getArticlesByPagination({
+    index = 0,
+    articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
+    tag,
+    username,
+  }: {
+    index?: number;
+    articlesPerPage?: number;
+    tag?: string;
+    username?: string;
+  }) {
+    return this.getArticles()
+
+      .filter((article) => {
+        if (!tag || !!username) return article;
+
+        return !!article.tags.find((_tag) => _tag === tag);
+      })
+      .filter((article) => {
+        if (!username) return article;
+
+        return article.username === username;
+      })
+      .filter((_, i) => {
+        const low = articlesPerPage * index;
+        const high = low + articlesPerPage;
+
+        return i >= low && i < high;
+      });
+  }
+
   public static getArticlesByUsername(username: string) {
     return this.getArticles().filter(
       (article) => article.username === username,
@@ -78,9 +135,13 @@ export class ArticleDatabase {
   }
 
   public static getAllTags() {
-    return this.getArticles()
-      .map((article) => article.tags)
-      .flat();
+    return Array.from(
+      new Set(
+        this.getArticles()
+          .map((article) => article.tags)
+          .flat(),
+      ),
+    );
   }
 
   public static getLikers(id: string) {
