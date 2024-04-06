@@ -20,7 +20,7 @@ export class HomePageLogic {
     AppState.currentPage = EPage.Home;
   }
 
-  static async update() {
+  static update() {
     const username = AppState.currentUserId;
     const tag = AppState.selectedTagId;
 

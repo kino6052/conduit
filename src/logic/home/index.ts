@@ -25,6 +25,6 @@ combineLatest([
 
 RefreshSubject.pipe(
   filter(() => AppState.currentPage === EPage.Home),
-  switchMap(HomePageLogic.update),
+  map(HomePageLogic.update),
   tap(propagateState),
 ).subscribe();
