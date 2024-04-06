@@ -5,7 +5,7 @@ import {
   RefreshSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-} from "../navbar/common.logic";
+} from "../common.logic";
 import { ESignInConstant } from "./constants";
 import { UserDatabase } from "../data/user";
 import { updatePage } from "../utils/utils";

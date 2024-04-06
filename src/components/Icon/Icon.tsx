@@ -8,8 +8,6 @@ export const Icon: React.FC<TIconProps> = ({
   className,
 }) => {
   return (
-    <div className={getClassNames(["wrapper", className], styles)}>
-      <div className={styles.icon}>{icon}</div>
-    </div>
+    <div className={getClassNames(["icon", className], styles)}>{icon}</div>
   );
 };

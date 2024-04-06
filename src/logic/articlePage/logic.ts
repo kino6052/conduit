@@ -1,6 +1,6 @@
 import { EPage, TAppProps } from "../../types";
 import { IEvent, getEventTargetValue } from "../../utils/events";
-import { ResultingStateSubject } from "../navbar/common.logic";
+import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";

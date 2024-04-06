@@ -4,7 +4,7 @@ import {
   RefreshSubject,
   IncomingEventSubject,
   ResultingStateSubject,
-} from "../navbar/common.logic";
+} from "../common.logic";
 import { ESignUpConstant } from "./constants";
 import { getEventTargetValue } from "../../utils/events";
 import { updatePage } from "../utils/utils";

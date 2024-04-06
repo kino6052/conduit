@@ -2,6 +2,7 @@ import { ETabVariant } from "../../components/Tab/types";
 import { THomePageProps } from "./types";
 
 export const DefaultData: THomePageProps = {
+  isLoading: false,
   tabs: [
     {
       id: "1",
@@ -18,14 +19,14 @@ export const DefaultData: THomePageProps = {
       tags: [
         {
           id: "1",
-          text: "one",
         },
         {
           id: "1",
-          text: "two",
         },
       ],
       title: "Title",
+      comments: [],
+      hasLiked: true,
       userInfoProps: {
         date: "1st January",
         username: "John Lobster",
@@ -37,15 +38,12 @@ export const DefaultData: THomePageProps = {
     tags: [
       {
         id: "1",
-        text: "one",
       },
       {
         id: "2",
-        text: "two",
       },
       {
         id: "3",
-        text: "three",
       },
     ],
   },

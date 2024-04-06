@@ -5,7 +5,7 @@ import { EInputConstants } from "../../components/Input/Input/constants";
 import { EArticlePageConstants } from "../../pages/ArticlePage/constants";
 
 import { EPage } from "../../types";
-import { IncomingEventSubject, RefreshSubject } from "../navbar/common.logic";
+import { IncomingEventSubject, RefreshSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { updatePage } from "../utils/utils";
 import { ArticleLogic } from "./logic";

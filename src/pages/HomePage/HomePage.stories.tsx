@@ -11,3 +11,10 @@ export default {
 export const Default: { args: THomePageProps } = {
   args: DefaultData,
 };
+
+export const Loading: { args: THomePageProps } = {
+  args: {
+    ...DefaultData,
+    isLoading: true,
+  },
+};

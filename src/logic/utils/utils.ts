@@ -2,7 +2,7 @@ import { TNavbarProps } from "../../components/Navbar/types";
 import { ETabVariant, TTabProps } from "../../components/Tab/types";
 import { EPage } from "../../types";
 import { IEvent } from "../../utils/events";
-import { RefreshSubject } from "../navbar/common.logic";
+import { RefreshSubject } from "../common.logic";
 import { AppState } from "../data/app";
 
 export const hasPressedEnter = (event: IEvent) => {
@@ -21,3 +21,10 @@ export const updatePage = (page?: EPage) => {
 
   RefreshSubject.next({});
 };
+
+export const wait = async (interval: number) =>
+  new Promise<undefined>((res) => {
+    setTimeout(() => {
+      res(undefined);
+    }, interval);
+  });

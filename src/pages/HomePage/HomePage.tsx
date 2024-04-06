@@ -6,12 +6,14 @@ import styles from "./style.scss";
 import { THomePageProps } from "./types";
 import { DefaultBanner } from "../../components/Banner";
 import { Tabs } from "../../components/Tabs";
+import { Loader } from "../../components/Loader";
 
 export const HomePage: React.FC<THomePageProps> = ({
   sidebarProps,
   posts,
   tabs,
   paginationBarProps,
+  isLoading,
 }) => {
   return (
     <div className={styles.wrapper}>
@@ -19,9 +21,8 @@ export const HomePage: React.FC<THomePageProps> = ({
       <div className={styles.content}>
         <Tabs tabs={tabs} />
         <Sidebar {...sidebarProps} />
-        {posts.map((post) => (
-          <Post {...post} key={post.id} />
-        ))}
+        {!isLoading && posts.map((post) => <Post {...post} key={post.id} />)}
+        {isLoading && <Loader />}
       </div>
       <PaginationBar {...paginationBarProps} />
     </div>

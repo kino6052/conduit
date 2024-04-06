@@ -2,7 +2,7 @@ import { App } from "./App";
 import { EventSubject } from "./utils/events";
 import { withLogic } from "./utils/withLogic";
 import { update } from "./logic";
-import { ResultingStateSubject } from "./logic/navbar/common.logic";
+import { ResultingStateSubject } from "./logic/common.logic";
 
 export default {
   title: "Components/App",

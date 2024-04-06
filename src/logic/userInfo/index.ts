@@ -1,6 +1,6 @@
 import { filter, tap } from "rxjs";
 import { EUserInfoConstant } from "../../components/UserInfo/constants";
-import { IncomingEventSubject } from "../navbar/common.logic";
+import { IncomingEventSubject } from "../common.logic";
 import { UserInfoLogic } from "./logic";
 
 IncomingEventSubject.pipe(

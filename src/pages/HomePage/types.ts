@@ -8,4 +8,5 @@ export type THomePageProps = {
   sidebarProps: TSidebarProps;
   posts: TArticleProps[];
   paginationBarProps: TPaginationBarProps;
+  isLoading: boolean;
 };

@@ -1,5 +1,5 @@
 import { filter, tap } from "rxjs";
-import { IncomingEventSubject } from "../navbar/common.logic";
+import { IncomingEventSubject } from "../common.logic";
 import { EArticleConstant } from "../../components/Article/constants";
 import { ArticleLogic } from "./logic";
 

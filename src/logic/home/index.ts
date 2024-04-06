@@ -1,11 +1,12 @@
-import { combineLatest, filter, map, tap } from "rxjs";
+import { combineLatest, filter, map, tap, switchMap } from "rxjs";
 import { ETagConstant } from "../../components/Tag/constants";
 import { EPage } from "../../types";
 import {
   IncomingEventSubject,
   RefreshSubject,
-  ResultingStateSubject,
-} from "../navbar/common.logic";
+  refresh,
+  propagateState,
+} from "../common.logic";
 import { AppState } from "../data/app";
 import { HomePageLogic } from "./logic";
 
@@ -19,15 +20,11 @@ combineLatest([
     tap(HomePageLogic.selectTag),
   ),
 ])
-  .pipe(
-    tap(() => {
-      RefreshSubject.next({});
-    }),
-  )
+  .pipe(tap(refresh))
   .subscribe();
 
 RefreshSubject.pipe(
   filter(() => AppState.currentPage === EPage.Home),
-  map(HomePageLogic.update),
-  tap((nextState) => ResultingStateSubject.next(nextState)),
+  switchMap(HomePageLogic.update),
+  tap(propagateState),
 ).subscribe();

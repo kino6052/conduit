@@ -3,6 +3,7 @@ import { EPage } from "../../types";
 import { ArticleDatabase } from "./article";
 
 export class AppState {
+  static isLoading: boolean = false;
   static selectedTagId: string | undefined;
   static currentUserId: string | undefined;
   static selectedUserId: string | undefined;

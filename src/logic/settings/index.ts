@@ -5,7 +5,7 @@ import {
   IncomingEventSubject,
   RefreshSubject,
   ResultingStateSubject,
-} from "../navbar/common.logic";
+} from "../common.logic";
 import { getEventTargetValue } from "../../utils/events";
 import { UserDatabase } from "../data/user";
 import { provideNavbarProps } from "../navbar/utils";

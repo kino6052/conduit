@@ -1,6 +1,6 @@
 import { TArticleProps } from "../../components/Article/types";
 import { EPage, TAppProps } from "../../types";
-import { ResultingStateSubject } from "../navbar/common.logic";
+import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";

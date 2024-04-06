@@ -12,7 +12,7 @@ import {
   IncomingEventSubject,
   RefreshSubject,
   ResultingStateSubject,
-} from "../navbar/common.logic";
+} from "../common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";

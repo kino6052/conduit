@@ -8,6 +8,7 @@ import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";
 import { provideNavbarProps } from "../navbar/utils";
 import { provideTabsProps } from "../tabs/utils";
+import { wait } from "../utils/utils";
 
 export class HomePageLogic {
   static selectTag(event: IEvent) {
@@ -19,7 +20,7 @@ export class HomePageLogic {
     AppState.currentPage = EPage.Home;
   }
 
-  static update() {
+  static async update() {
     const username = AppState.currentUserId;
     const tag = AppState.selectedTagId;
 
@@ -39,6 +40,7 @@ export class HomePageLogic {
     const nextState: TAppProps<EPage.Home> = {
       page: EPage.Home,
       pageProps: {
+        isLoading: false,
         posts,
         paginationBarProps: {
           numberOfPages: 1,

@@ -1,13 +1,10 @@
 import { EPage, TAppProps } from "../types";
 import { IEvent } from "../utils/events";
-import {
-  IncomingEventSubject,
-  ResultingStateSubject,
-} from "./navbar/common.logic";
+import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
 
 import "./editArticle";
 import "./home";
-import "./navbar.logic";
+import "./navbar";
 import "./articlePage";
 import "./settings";
 import "./profile";

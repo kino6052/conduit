@@ -1,0 +1,28 @@
+.wrapper {
+  display: flex;
+  align-items: center;
+  align-self: stretch;
+  height: 100%;
+  background-color: white;
+  border: 1px dashed var(--variable-collection-green);
+  justify-content: center;
+  padding: 24px;
+}
+
+.icon {
+  display: flex;
+  align-items: center;
+  border-radius: 100%;
+  color: var(--variable-collection-green);
+  font-size: 64px;
+  animation: rotate 1s linear infinite;
+}
+
+@keyframes rotate {
+  0%{
+     transform: rotate(0deg);
+    }
+ 100%{
+     transform: rotate(359deg);
+    }
+ }
