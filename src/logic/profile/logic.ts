@@ -1,11 +1,12 @@
 import { TArticleProps } from "../../components/Article/types";
 import { EPage, TAppProps } from "../../types";
-import { ResultingStateSubject } from "../common.logic";
+import { ResultingStateSubject } from "../navbar/common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";
 import { UserDatabase } from "../data/user";
-import { provideNavbarProps, updatePage } from "../utils/utils";
+import { provideNavbarProps } from "../navbar/utils";
+import { updatePage } from "../utils/utils";
 
 export class ProfileLogic {
   public static update() {

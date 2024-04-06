@@ -1,6 +1,6 @@
 import { filter, tap } from "rxjs";
 import { EPage } from "../../types";
-import { IncomingEventSubject, RefreshSubject } from "../common.logic";
+import { IncomingEventSubject, RefreshSubject } from "../navbar/common.logic";
 import { AppState } from "../data/app";
 import { ProfileLogic } from "./logic";
 import { EProfileBannerConstant } from "../../components/Banner/ProfileBanner/constants";

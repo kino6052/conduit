@@ -1,7 +1,7 @@
 import React from "react";
 import { getClassNames } from "../../utils/styles";
 import { Icon } from "../Icon";
-import styles from "./style.scss";
+import styles from "./styles.scss";
 import { ETabVariant, TTabProps } from "./types";
 
 export const Tab: React.FC<TTabProps> = ({

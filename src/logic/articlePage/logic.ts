@@ -1,12 +1,13 @@
 import { EPage, TAppProps } from "../../types";
 import { IEvent, getEventTargetValue } from "../../utils/events";
-import { ResultingStateSubject } from "../common.logic";
+import { ResultingStateSubject } from "../navbar/common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";
 import { getCurrentUser, getIsLoggedIn } from "../utils/user";
-import { provideNavbarProps, updatePage } from "../utils/utils";
+import { provideNavbarProps } from "../navbar/utils";
 import { provideArticleAppProps } from "./utils";
+import { updatePage } from "../utils/utils";
 
 export class ArticleLogic {
   public static commentInput: string = "";

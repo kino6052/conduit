@@ -5,11 +5,12 @@ import {
   IncomingEventSubject,
   RefreshSubject,
   ResultingStateSubject,
-} from "../common.logic";
+} from "../navbar/common.logic";
 import { getEventTargetValue } from "../../utils/events";
 import { UserDatabase } from "../data/user";
-import { provideNavbarProps, updatePage } from "../utils/utils";
+import { provideNavbarProps } from "../navbar/utils";
 import { AppState } from "../data/app";
+import { updatePage } from "../utils/utils";
 
 let usernameInput = "";
 let passwordInput = "";

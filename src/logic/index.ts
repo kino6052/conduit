@@ -1,6 +1,9 @@
 import { EPage, TAppProps } from "../types";
 import { IEvent } from "../utils/events";
-import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
+import {
+  IncomingEventSubject,
+  ResultingStateSubject,
+} from "./navbar/common.logic";
 
 import "./editArticle";
 import "./home";
@@ -12,6 +15,7 @@ import "./signIn";
 import "./signUp";
 import "./userInfo";
 import "./article";
+import "./tabs";
 
 export const update = async (
   event: IEvent,

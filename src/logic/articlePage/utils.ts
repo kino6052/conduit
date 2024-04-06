@@ -4,7 +4,7 @@ import { EPage, TAppProps } from "../../types";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
-import { provideNavbarProps } from "../utils/utils";
+import { provideNavbarProps } from "../navbar/utils";
 
 export const provideArticleAppProps = (
   currentArticle: TArticleProps,

@@ -2,10 +2,10 @@ import React from "react";
 import { PaginationBar } from "../../components/PaginationBar";
 import { Post } from "../../components/Article";
 import { Sidebar } from "../../components/Sidebar";
-import { Tab } from "../../components/Tab/Tab";
 import styles from "./style.scss";
 import { THomePageProps } from "./types";
 import { DefaultBanner } from "../../components/Banner";
+import { Tabs } from "../../components/Tabs";
 
 export const HomePage: React.FC<THomePageProps> = ({
   sidebarProps,
@@ -17,11 +17,7 @@ export const HomePage: React.FC<THomePageProps> = ({
     <div className={styles.wrapper}>
       <DefaultBanner />
       <div className={styles.content}>
-        <div className={styles.tabs}>
-          {tabs.map((tab) => (
-            <Tab {...tab} key={tab.id} />
-          ))}
-        </div>
+        <Tabs tabs={tabs} />
         <Sidebar {...sidebarProps} />
         {posts.map((post) => (
           <Post {...post} key={post.id} />
