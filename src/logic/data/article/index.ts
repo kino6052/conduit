@@ -109,7 +109,6 @@ export class ArticleDatabase {
     username?: string;
   }) {
     return this.getArticles()
-
       .filter((article) => {
         if (!tag || !!username) return article;
 

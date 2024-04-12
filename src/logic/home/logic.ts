@@ -8,11 +8,9 @@ import { ArticleDatabase } from "../data/article";
 import { processArticle } from "../data/article/utils";
 import { provideNavbarProps } from "../navbar/utils";
 import { provideTabsProps } from "../tabs/utils";
-import { getIsLoggedIn } from "../utils/user";
-import { wait } from "../utils/utils";
 
 export class HomePageLogic {
-  static selectTag(event: IEvent) {
+  static async selectTag(event: IEvent) {
     const id = event.id;
 
     if (!id) return;
@@ -53,7 +51,7 @@ export class HomePageLogic {
     const nextState: TAppProps<EPage.Home> = {
       page: EPage.Home,
       pageProps: {
-        isLoading: false,
+        isLoading: AppState.isLoading,
         posts,
         paginationBarProps: {
           numberOfPages: ArticleDatabase.getArticlePaginationTotal({

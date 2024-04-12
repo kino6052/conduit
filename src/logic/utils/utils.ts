@@ -1,8 +1,8 @@
 import { TNavbarProps } from "../../components/Navbar/types";
 import { ETabVariant, TTabProps } from "../../components/Tab/types";
 import { EPage } from "../../types";
-import { IEvent } from "../../utils/events";
-import { RefreshSubject } from "../common.logic";
+import { EventSubject, IEvent } from "../../utils/events";
+import { RefreshSubject, refresh } from "../common.logic";
 import { AppState } from "../data/app";
 
 export const hasPressedEnter = (event: IEvent) => {
@@ -28,3 +28,16 @@ export const wait = async (interval: number) =>
       res(undefined);
     }, interval);
   });
+
+export async function handleAsyncAction<T>(action: Promise<T>) {
+  AppState.isLoading = true;
+  refresh();
+  action.then(() => {
+    AppState.isLoading = false;
+    refresh();
+    EventSubject.next({
+      slug: "",
+      type: "",
+    });
+  });
+}
