@@ -9,9 +9,10 @@ export const UserInfo: React.FC<TUserInfoProps> = ({
   date,
   username,
   className,
+  ...props
 }) => {
   return (
-    <Link id={username}>
+    <Link {...props}>
       <div className={getClassNames(["user-info", className], styles)}>
         <Icon icon="person" />
         <div className={styles.description}>

@@ -12,11 +12,12 @@ export const SignUpPage: React.FC<TSignUpPageProps> = ({
   passwordInputProps,
   usernameInputProps,
   buttonProps,
+  documentationLinkProps,
 }) => {
   return (
     <div className={styles.wrapper}>
       <Typography variant={ETypographyType.Heading1} value="Sign Up" />
-      <Link>
+      <Link {...documentationLinkProps}>
         <Typography value="Go to the documentation page" />
       </Link>
       <div className={styles.form}>

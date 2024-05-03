@@ -1,4 +1,4 @@
-import { TWithClassName } from "../../utils/types";
+import { TWithClassName, TWithClickHandler } from "../../utils/types";
 
 export type TUserInfoContentProps = {
   date: string;
@@ -6,4 +6,6 @@ export type TUserInfoContentProps = {
   imageSrc?: string;
 };
 
-export type TUserInfoProps = TWithClassName<TUserInfoContentProps>;
+export type TUserInfoProps = TWithClickHandler<
+  TWithClassName<TUserInfoContentProps>
+>;

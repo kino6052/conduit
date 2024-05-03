@@ -1,18 +1,14 @@
 import React from "react";
-import styles from "./styles.scss";
 import { ArticleBanner } from "../../components/Banner";
 import { Button } from "../../components/Button";
 import { CommentInput } from "../../components/Input";
-import { UserInfo } from "../../components/UserInfo";
-import { TArticlePageProps } from "./types";
-import { Typography } from "../../components/Typography";
 import { Tags } from "../../components/Tag";
-import { EArticlePageConstants } from "./constants";
-import { EUserInfoConstant } from "../../components/UserInfo/constants";
-import { EArticleConstant } from "../../components/Article/constants";
+import { Typography } from "../../components/Typography";
+import { UserInfo } from "../../components/UserInfo";
+import styles from "./styles.scss";
+import { TArticlePageProps } from "./types";
 
 export const ArticlePage: React.FC<TArticlePageProps> = ({
-  id,
   bannerProps,
   userInfoProps,
   followButtonProps,
@@ -30,26 +26,17 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
         <Tags tags={tags} />
         <div className={styles.comments}>
           <div className={styles.user}>
-            {userInfoProps && <UserInfo id={userInfoProps.username} {...userInfoProps} />}
-            <Button {...followButtonProps} slug={EUserInfoConstant.FollowUserButtonSlug} id={userInfoProps?.username || ''} />
-            <Button {...favoriteButtonProps} slug={EArticleConstant.LikeButtonSlug} id={id} />
+            {userInfoProps && <UserInfo {...userInfoProps} />}
+            <Button {...followButtonProps} />
+            <Button {...favoriteButtonProps} />
           </div>
           <CommentInput
             {...commentBoxProps}
-            inputProps={{
-              ...commentBoxProps.inputProps,
-              id: EArticlePageConstants.CommentInputId,
-            }}
-            buttonProps={
-              commentBoxProps.buttonProps && {
-                ...commentBoxProps.buttonProps,
-                id: EArticlePageConstants.SubmitCommentButtonId,
-              }
-            }
+            inputProps={commentBoxProps.inputProps}
+            buttonProps={commentBoxProps.buttonProps}
           />
-          {comments.map(({ iconProps, inputProps, id }) => (
+          {comments.map(({ iconProps, inputProps }) => (
             <CommentInput
-              id={id}
               iconProps={iconProps}
               inputProps={{
                 ...inputProps,

@@ -1,3 +1,4 @@
+import React from "react";
 import { TWithId } from "../../utils/types";
 
 export enum ETabVariant {
@@ -10,4 +11,5 @@ export type TTabProps = TWithId<{
   text: string;
   variant: ETabVariant;
   icon?: string;
+  onClick: React.MouseEventHandler;
 }>;

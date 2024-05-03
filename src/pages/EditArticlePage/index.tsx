@@ -3,7 +3,6 @@ import { Button } from "../../components/Button";
 import { EButtonVariant } from "../../components/Button/types";
 import { Input } from "../../components/Input/Input";
 import { Tags } from "../../components/Tag";
-import { ENewPostPageConstant } from "./constants";
 import styles from "./styles.scss";
 import { TEditArticlePageProps } from "./types";
 
@@ -17,20 +16,12 @@ export const EditArticlePage: React.FC<TEditArticlePageProps> = ({
   return (
     <div className={styles.wrapper}>
       <div className={styles["form-wrapper"]}>
-        <Input {...titleInputProps} id={ENewPostPageConstant.TitleInputId} />
-        <Input
-          {...articleInputProps}
-          isTextArea
-          id={ENewPostPageConstant.TextInputId}
-        />
-        <Input {...tagsInputProps} id={ENewPostPageConstant.TagsInputId} />
+        <Input {...titleInputProps} />
+        <Input {...articleInputProps} isTextArea />
+        <Input {...tagsInputProps} />
         <Tags tags={tags} />
       </div>
-      <Button
-        variant={EButtonVariant.Primary}
-        {...buttonProps}
-        id={ENewPostPageConstant.SubmitButtonId}
-      />
+      <Button variant={EButtonVariant.Primary} {...buttonProps} />
     </div>
   );
 };

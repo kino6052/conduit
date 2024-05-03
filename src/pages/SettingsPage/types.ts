@@ -1,11 +1,11 @@
-import { TButtonContentProps } from "../../components/Button/types";
-import { TInputContentProps } from "../../components/Input/types";
+import { TButtonProps } from "../../components/Button/types";
+import { TInputProps } from "../../components/Input/types";
 
 export type TSettingsPageProps = {
-  usernameInputProps: TInputContentProps;
-  passwordInputProps: TInputContentProps;
-  imageUrlInputProps: TInputContentProps;
-  bioInputProps: TInputContentProps;
-  buttonProps: TButtonContentProps;
-  logoutButtonProps: TButtonContentProps;
+  usernameInputProps: TInputProps;
+  passwordInputProps: TInputProps;
+  imageUrlInputProps: TInputProps;
+  bioInputProps: TInputProps;
+  buttonProps: TButtonProps;
+  logoutButtonProps: TButtonProps;
 };

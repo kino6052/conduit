@@ -1,15 +1,14 @@
 import { TArticleBannerProps } from "../../components/Banner/ArticleBanner/types";
-import { TButtonContentProps } from "../../components/Button/types";
+import { TButtonProps } from "../../components/Button/types";
 import { TCommentInputProps } from "../../components/Input/types";
 import { TTagContentProps } from "../../components/Tag/types";
-import { TUserInfoContentProps } from "../../components/UserInfo/types";
+import { TUserInfoProps } from "../../components/UserInfo/types";
 
 export type TArticlePageProps = {
-  id: string;
   bannerProps: TArticleBannerProps;
-  userInfoProps?: TUserInfoContentProps;
-  followButtonProps: TButtonContentProps;
-  favoriteButtonProps: TButtonContentProps;
+  userInfoProps?: TUserInfoProps;
+  followButtonProps: TButtonProps;
+  favoriteButtonProps: TButtonProps;
   commentBoxProps: TCommentInputProps;
   content: string;
   tags: TTagContentProps[];

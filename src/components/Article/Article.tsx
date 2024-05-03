@@ -6,32 +6,26 @@ import { Typography } from "../Typography";
 import { UserInfo } from "../UserInfo";
 
 import { EButtonVariant } from "../Button/types";
+import { ETypographyType } from "../Typography/types";
 import styles from "./style.scss";
 import { TArticleProps } from "./types";
-import { ETypographyType } from "../Typography/types";
-import { EArticleConstant } from "./constants";
 
 export const Article: React.FC<TArticleProps> = ({
   title,
   description,
   userInfoProps,
-  likes,
+  likeButtonProps,
   tags = [],
-  id,
+  linkProps,
 }) => {
   return (
     <div className={styles.wrapper}>
       <div className={styles.heading}>
-        {userInfoProps && <UserInfo id={userInfoProps.username} {...userInfoProps} />}
-        <Button
-          id={id}
-          slug={EArticleConstant.LikeButtonSlug}
-          text={String(likes)}
-          variant={EButtonVariant.Secondary}
-        />
+        {userInfoProps && <UserInfo {...userInfoProps} />}
+        <Button {...likeButtonProps} variant={EButtonVariant.Secondary} />
       </div>
       <div className={styles.content}>
-        <Link id={id} className={styles.link} slug={EArticleConstant.Slug}>
+        <Link {...linkProps} className={styles.link}>
           <Typography value={title} variant={ETypographyType.Heading2} />
           <Typography value={description} />
         </Link>

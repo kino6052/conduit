@@ -1,18 +1,15 @@
 import React from "react";
 import { Link } from ".";
-import { TWithId } from "../../utils/types";
-import { ELinkConstant } from "./constants";
+import { TWithClickHandler, TWithId } from "../../utils/types";
 
-export function withLink(slug?: string) {
-  return function<T>(WrappedComponent: React.FC<T>) {
-    const Component: React.FC<TWithId<T>> = (props) => {
-      return (
-        <Link id={props.id} slug={slug || ELinkConstant.LinkSlug}>
-          <WrappedComponent {...props} />
-        </Link>
-      );
-    };
-
-    return Component;
+export function withLink<T>(WrappedComponent: React.FC<T>) {
+  const Component: React.FC<TWithClickHandler<T>> = (props) => {
+    return (
+      <Link onClick={props.onClick}>
+        <WrappedComponent {...props} />
+      </Link>
+    );
   };
+
+  return Component;
 }

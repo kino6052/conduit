@@ -6,6 +6,7 @@ import { TPaginationBarProps } from "./types";
 export const PaginationBar: React.FC<TPaginationBarProps> = ({
   numberOfPages = 1,
   selected = 0,
+  onClick
 }) => {
   const array = new Array(numberOfPages).fill(null);
   return (
@@ -20,6 +21,7 @@ export const PaginationBar: React.FC<TPaginationBarProps> = ({
             value={value}
             key={id}
             isSelected={isSelected}
+            onClick={onClick}
           />
         );
       })}

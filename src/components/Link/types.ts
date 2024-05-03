@@ -1,7 +1,9 @@
-import { TWithClassName, TWithId } from "../../utils/types";
+import React from "react";
+import { TWithClassName, TWithClickHandler } from "../../utils/types";
 
-export type TLinkProps = TWithId<
+export type TLinkProps = TWithClickHandler<
   TWithClassName<{
     href?: string;
+    onClick: React.MouseEventHandler;
   }>
 >;

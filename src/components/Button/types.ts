@@ -1,4 +1,4 @@
-import { TWithId } from "../../utils/types";
+import { TWithClickHandler, TWithId } from "../../utils/types";
 
 export enum EButtonVariant {
   Warning = "warning",
@@ -17,10 +17,10 @@ export type TButtonConfigProps = {
   className: string;
 };
 
-export type TButtonContentProps = TWithId<{
+export type TButtonContentProps = {
   text: string;
   hasIcon?: boolean;
-}>;
+};
 
 export type TButtonProps = Partial<TButtonConfigProps> &
-  TButtonContentProps;
+  TWithClickHandler<TButtonContentProps>;
