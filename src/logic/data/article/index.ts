@@ -1,7 +1,7 @@
 import { uniqueId } from "lodash";
 import { TIdMap } from "../../../utils/types";
 import { DEFAULT_TIME } from "../../utils/verification";
-import { TArticle } from "./types";
+import { IArticleSource, TArticle } from "./types";
 import { EArticleDatabaseConstant } from "./constants";
 
 const DEFAULT_POST: TArticle = {
@@ -15,43 +15,32 @@ const DEFAULT_POST: TArticle = {
   comments: [],
 };
 
-export class ArticleDatabase {
-  private static articles: TIdMap<TArticle> = new Array(100)
-    .fill(null)
-    .map((_, i) => `${i}`)
-    .reduce((acc, id) => {
-      return {
-        ...acc,
-        [id]: { ...DEFAULT_POST, id, title: `${id}: ${DEFAULT_POST.title}` },
-      };
-    }, {} as TIdMap<TArticle>);
+export class ArticleDatabase implements IArticleSource {
+  public articles: TArticle[] = [DEFAULT_POST];
 
-  public static getArticleIds() {
+  public getArticleIds() {
     return Object.keys(this.articles);
   }
 
-  public static getDoesArticleExist(id: string) {
+  public getDoesArticleExist(id: string) {
     const ids = this.getArticleIds();
 
     return ids.includes(id);
   }
 
-  public static getArticleById(id: string) {
+  public getArticleById(id: string) {
     if (!this.getDoesArticleExist(id)) {
       throw new Error("Article does not exist");
     }
 
-    return this.articles[id];
+    return this.articles.find(({ id: _id }) => _id === id);
   }
 
-  public static getArticles() {
+  public getArticles() {
     return Object.values(this.articles);
   }
 
-  public static updateArticleById(
-    id: string,
-    partialArticle: Partial<TArticle>,
-  ) {
+  public updateArticleById(id: string, partialArticle: Partial<TArticle>) {
     const article = this.getArticleById(id);
 
     if (!article) return;
@@ -64,7 +53,7 @@ export class ArticleDatabase {
     return this.articles[id];
   }
 
-  public static publishArticle(article: TArticle) {
+  public publishArticle(article: TArticle) {
     if (this.getDoesArticleExist(article.id)) {
       throw new Error("Article already exists");
     }
@@ -72,13 +61,13 @@ export class ArticleDatabase {
     this.articles[article.id] = article;
   }
 
-  public static getArticlesByTag(tag: string) {
+  public getArticlesByTag(tag: string) {
     return this.getArticles().filter(
       (article) => !!article.tags.find((_tag) => _tag === tag),
     );
   }
 
-  public static getArticlePaginationTotal({
+  public getArticlePaginationTotal({
     tag,
     username,
   }: {
@@ -97,7 +86,7 @@ export class ArticleDatabase {
     );
   }
 
-  public static getArticlesByPagination({
+  public getArticlesByPagination({
     index = 0,
     articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
     tag,
@@ -127,13 +116,13 @@ export class ArticleDatabase {
       });
   }
 
-  public static getArticlesByUsername(username: string) {
+  public getArticlesByUsername(username: string) {
     return this.getArticles().filter(
       (article) => article.username === username,
     );
   }
 
-  public static getAllTags() {
+  public getAllTags() {
     return Array.from(
       new Set(
         this.getArticles()
@@ -143,7 +132,7 @@ export class ArticleDatabase {
     );
   }
 
-  public static getLikers(id: string) {
+  public getLikers(id: string) {
     const article = ArticleDatabase.getArticleById(id);
 
     if (!article) return [];
@@ -151,7 +140,7 @@ export class ArticleDatabase {
     return article.likers;
   }
 
-  public static updateLikers(id: string, likers: string[]) {
+  public updateLikers(id: string, likers: string[]) {
     const article = ArticleDatabase.getArticleById(id);
 
     if (!article) return;
@@ -159,7 +148,7 @@ export class ArticleDatabase {
     this.updateArticleById(id, { likers });
   }
 
-  public static likeArticleById(id: string, username: string) {
+  public likeArticleById(id: string, username: string) {
     const article = this.getArticleById(id);
 
     const likers = this.getLikers(article.id);
@@ -174,7 +163,7 @@ export class ArticleDatabase {
     this.updateLikers(id, nextLikers);
   }
 
-  public static addCommentById(id: string, comment: string, username: string) {
+  public addCommentById(id: string, comment: string, username: string) {
     const article = this.getArticleById(id);
 
     this.updateArticleById(id, {
@@ -191,7 +180,7 @@ export class ArticleDatabase {
     return this.getArticleById(id);
   }
 
-  public static removeArticleById(id: string) {
+  public removeArticleById(id: string) {
     const doesExist = this.getDoesArticleExist(id);
 
     if (doesExist) {

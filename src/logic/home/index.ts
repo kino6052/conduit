@@ -9,7 +9,7 @@ import {
   refresh,
 } from "../common.logic";
 import { AppState } from "../data/app";
-import { HomePageLogic } from "./logic";
+import { HomePage } from "./logic";
 
 const HomePageIncomingEventSubject = IncomingEventSubject.pipe(
   filter(() => AppState.currentPage === EPage.Home),
@@ -18,11 +18,11 @@ const HomePageIncomingEventSubject = IncomingEventSubject.pipe(
 merge(
   HomePageIncomingEventSubject.pipe(
     filter((event) => event.slug === ETagConstant.Slug),
-    tap(HomePageLogic.selectTag),
+    tap(HomePage.selectTag),
   ),
   HomePageIncomingEventSubject.pipe(
     filter((event) => event.slug === EPaginationButtonConstant.Slug),
-    tap(HomePageLogic.paginate),
+    tap(HomePage.paginate),
   ),
 )
   .pipe(tap(refresh))
@@ -30,6 +30,6 @@ merge(
 
 RefreshSubject.pipe(
   filter(() => AppState.currentPage === EPage.Home),
-  map(HomePageLogic.update),
+  map(HomePage.update),
   tap(propagateState),
 ).subscribe();

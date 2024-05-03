@@ -1,4 +1,5 @@
 import { Navbar } from ".";
+import { TNavbarProps } from "./types";
 
 export default {
   title: "Components/Navbar",
@@ -8,7 +9,10 @@ export default {
 export const Default = {
   args: {
     className: {},
-    tabText: "Settings",
-    tabText1: "Profile",
-  },
+    logo: {},
+    tabs: [
+      { id: "home", text: "Home" },
+      { id: "profile", text: "Profile" },
+    ],
+  } as TNavbarProps,
 };

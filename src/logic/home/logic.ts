@@ -1,77 +1,53 @@
-import { TArticleProps } from "../../components/Article/types";
-import { ETabType } from "../../components/Tabs/constants";
-import { EPage, TAppProps } from "../../types";
-import { findFirst } from "../../utils/array";
-import { IEvent } from "../../utils/events";
-import { AppState } from "../data/app";
-import { ArticleDatabase } from "../data/article";
-import { processArticle } from "../data/article/utils";
-import { provideNavbarProps } from "../navbar/utils";
-import { provideTabsProps } from "../tabs/utils";
+import { EPage } from "../../types";
+import { IArticleSource } from "../data/article/types";
+import { IApp, INavbar, ITab } from "../types";
 
-export class HomePageLogic {
-  static async selectTag(event: IEvent) {
-    const id = event.id;
+export class Tab implements ITab {
+  constructor(
+    public name: string,
+    public id: string,
+  ) {}
 
-    if (!id) return;
+  public isSelected: boolean = false;
+}
 
-    AppState.selectedTagId = id;
-    AppState.currentPage = EPage.Home;
-    AppState.currentPaginationTabIndex = 0;
+export class Navbar implements INavbar {
+  public tabs: ITab[] = [
+    new Tab(EPage.Home, "home"),
+    new Tab(EPage.Profile, "profile"),
+  ];
+
+  selectTab(page: EPage) {
+    this.selectedTab = page;
   }
 
-  static paginate(event: IEvent) {
-    const id = event.id;
+  constructor(public selectedTab: EPage) {
+    this.tabs.forEach((tab) => (tab.isSelected = tab.id === selectedTab));
+  }
+}
 
-    if (!id) return;
+export class PaginationBar {
+  private _currentPageNumber = 0;
+  public numberOfPages = 1;
 
-    AppState.currentPaginationTabIndex = Number(id);
+  public get currentPageNumber() {
+    return this._currentPageNumber;
   }
 
-  static update() {
-    const username = AppState.currentUserId;
-    const tag = AppState.selectedTagId;
-
-    console.warn({ AppState });
-
-    const posts = (
-      findFirst([
-        AppState.currentTab === ETabType.Personal &&
-          !!username &&
-          ArticleDatabase.getArticlesByUsername(username),
-        ArticleDatabase.getArticlesByPagination({
-          index: AppState.currentPaginationTabIndex,
-          tag,
-        }),
-      ]) ?? []
-    )
-      .filter(Boolean)
-      .map(processArticle) as TArticleProps[];
-
-    const nextState: TAppProps<EPage.Home> = {
-      page: EPage.Home,
-      pageProps: {
-        isLoading: AppState.isLoading,
-        posts,
-        paginationBarProps: {
-          numberOfPages: ArticleDatabase.getArticlePaginationTotal({
-            tag,
-            username:
-              AppState.currentTab === ETabType.Personal
-                ? AppState.currentUserId
-                : undefined,
-          }),
-          selected: AppState.currentPaginationTabIndex,
-        },
-        sidebarProps: {
-          tags: ArticleDatabase.getAllTags().map((id) => ({ id })),
-          title: "Popular Tags",
-        },
-        tabs: provideTabsProps(),
-      },
-      navbarProps: provideNavbarProps(),
-    };
-
-    return nextState;
+  public set currentPageNumber(currentPageNumber: number) {
+    Math.max(this.numberOfPages, currentPageNumber);
   }
+
+  constructor() {}
+}
+
+export class HomePage {
+  public tags = [];
+  public pagination = new PaginationBar();
+  public articles = [];
+
+  constructor(
+    private navbar: INavbar,
+    private articlesSource: IArticleSource,
+  ) {}
 }
