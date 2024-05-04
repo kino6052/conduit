@@ -1,6 +1,6 @@
 import { TNavbarProps } from "../../io/ui/view/components/Navbar/types";
 import { ETabVariant, TTabProps } from "../../io/ui/view/components/Tab/types";
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { AppState } from "../data/app";
 
 export const provideNavbarProps = (): TNavbarProps => {

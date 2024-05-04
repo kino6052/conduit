@@ -1,4 +1,4 @@
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { IArticleData, IArticleSource } from "../data/article/types";
 import { IApp, IAppState, IPage, ITab } from "../types";
 

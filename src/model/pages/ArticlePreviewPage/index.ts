@@ -20,6 +20,7 @@ export class ArticlePreviewPage {
     private articlesSource: IArticleSource,
   ) {
     this.state.isLoading = true;
+
     Promise.all([
       this.articlesSource.getArticles(),
       this.articlesSource.getAllTags(),

@@ -1,5 +1,5 @@
 import { TArticleProps } from "../../io/ui/view/components/Article/types";
-import { EPage, TAppProps } from "../../types";
+import { EPage, TAppProps } from "../../io/ui/view/types";
 import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";

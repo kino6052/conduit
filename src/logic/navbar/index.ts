@@ -1,6 +1,6 @@
 import { filter, tap } from "rxjs";
 import { ETabConstant } from "../../io/ui/view/components/Tab/constants";
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { IncomingEventSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { UserDatabase } from "../data/user";

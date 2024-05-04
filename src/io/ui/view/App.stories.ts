@@ -1,19 +1,11 @@
-import { App as AppComponent } from "./App";
 import { ResultingStateSubject } from "../../../logic/common.logic";
-import { ArticleDatabase } from "../../../logic/data/article";
-import { AppState, HomePage, getTabs } from "../../../logic/home/logic";
-import { UI } from "../store";
+import { initializeAppState } from "../../../model";
 import { EventSubject } from "../../../utils/events";
 import { withLogic } from "../../../utils/withLogic";
+import { UI } from "../store";
+import { App as AppComponent } from "./App";
 
-/** TODO: Move into app initialization (factory) */
-const state = new AppState();
-const articleSource = new ArticleDatabase();
-
-state.currentPage = new HomePage(state, articleSource);
-state.tabs = getTabs(state, articleSource);
-
-const ui = new UI(state);
+const ui = new UI(initializeAppState());
 
 export default {
   title: "Components/App",

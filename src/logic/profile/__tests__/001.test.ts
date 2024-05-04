@@ -5,7 +5,7 @@ import { ENavbarConstant } from "../../../io/ui/view/components/Navbar/constants
 import { ETabConstant } from "../../../io/ui/view/components/Tab/constants";
 import { DefaultAppProps } from "../../../data";
 import { ENewPostPageConstant } from "../../../io/ui/view/pages/EditArticlePage/constants";
-import { EPage } from "../../../types";
+import { EPage } from "../../../io/ui/view/types";
 import { ESignUpConstant } from "../../signUp/constants";
 
 describe("Profile", () => {

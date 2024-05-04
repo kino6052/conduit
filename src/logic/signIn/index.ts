@@ -1,5 +1,5 @@
 import { filter, tap } from "rxjs";
-import { EPage, TAppProps } from "../../types";
+import { EPage, TAppProps } from "../../io/ui/view/types";
 import { getEventTargetValue } from "../../utils/events";
 import {
   RefreshSubject,

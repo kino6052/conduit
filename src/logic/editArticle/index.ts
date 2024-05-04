@@ -5,7 +5,7 @@ import { EButtonConstants } from "../../io/ui/view/components/Button/constants";
 import { EInputConstants } from "../../io/ui/view/components/Input/Input/constants";
 import { ENewPostPageConstant } from "../../io/ui/view/pages/EditArticlePage/constants";
 import { DefaultData } from "../../io/ui/view/pages/EditArticlePage/data";
-import { EPage, TAppProps } from "../../types";
+import { EPage, TAppProps } from "../../io/ui/view/types";
 import { findFirst } from "../../utils/array";
 import { getEventTargetValue } from "../../utils/events";
 import {

@@ -1,7 +1,7 @@
 import { update } from "..";
 import { ETabConstant } from "../../io/ui/view/components/Tab/constants";
 import { DefaultAppProps } from "../../data";
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 
 describe("Navigation", () => {
   it("should visit sign in page when clicked ", async () => {

@@ -1,4 +1,4 @@
-import { EPage } from "../types";
+import { EPage } from "../io/ui/view/types";
 import { TPageMap } from "./app/map";
 
 export interface ITab {

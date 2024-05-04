@@ -1,6 +1,6 @@
 import { BehaviorSubject, Subject } from "rxjs";
 import { DefaultAppProps } from "../data";
-import { EPage, TAppProps } from "../types";
+import { EPage, TAppProps } from "../io/ui/view/types";
 import { IEvent } from "../utils/events";
 import { AppState } from "./data/app";
 

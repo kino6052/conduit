@@ -7,7 +7,7 @@ import { EUserInfoConstant } from "../../../io/ui/view/components/UserInfo/const
 import { DefaultAppProps } from "../../../data";
 import { EArticlePageConstants } from "../../../io/ui/view/pages/ArticlePage/constants";
 import { ENewPostPageConstant } from "../../../io/ui/view/pages/EditArticlePage/constants";
-import { EPage } from "../../../types";
+import { EPage } from "../../../io/ui/view/types";
 import { ArticleDatabase } from "../../data/article";
 import { ESignUpConstant } from "../../signUp/constants";
 

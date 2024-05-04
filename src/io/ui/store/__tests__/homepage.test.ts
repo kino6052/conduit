@@ -1,16 +1,11 @@
 import { UI } from "..";
-import { ArticleDatabase } from "../../logic/data/article";
-import { AppState, HomePage, getTabs } from "../../logic/home/logic";
-import { IAppState } from "../../logic/types";
+import { AppState, initializeAppState } from "../../../../model";
+import { IAppState } from "../../../../model/types";
 
-let state: IAppState = new AppState();
+let state: IAppState;
 
 beforeEach(() => {
-  state = new AppState();
-  const articleSource = new ArticleDatabase();
-
-  state.currentPage = new HomePage(state, articleSource);
-  state.tabs = getTabs(state, articleSource);
+  state = initializeAppState();
 });
 
 describe("Home Page", () => {

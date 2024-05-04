@@ -1,6 +1,6 @@
 import { TArticleProps } from "../../io/ui/view/components/Article/types";
 import { DefaultData as DefaultArticleData } from "../../io/ui/view/pages/ArticlePage/data";
-import { EPage, TAppProps } from "../../types";
+import { EPage, TAppProps } from "../../io/ui/view/types";
 import { AppState } from "../data/app";
 import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";

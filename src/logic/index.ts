@@ -1,4 +1,4 @@
-import { EPage, TAppProps } from "../types";
+import { EPage, TAppProps } from "../io/ui/view/types";
 import { IEvent } from "../utils/events";
 import { IncomingEventSubject, ResultingStateSubject } from "./common.logic";
 

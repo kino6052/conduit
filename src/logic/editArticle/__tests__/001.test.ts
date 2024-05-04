@@ -4,7 +4,7 @@ import { EInputConstants } from "../../../io/ui/view/components/Input/Input/cons
 import { ETabConstant } from "../../../io/ui/view/components/Tab/constants";
 import { DefaultAppProps } from "../../../data";
 import { ENewPostPageConstant } from "../../../io/ui/view/pages/EditArticlePage/constants";
-import { EPage } from "../../../types";
+import { EPage } from "../../../io/ui/view/types";
 import { ESignUpConstant } from "../../signUp/constants";
 
 describe("Edit Article", () => {

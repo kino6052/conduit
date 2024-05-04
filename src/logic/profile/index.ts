@@ -1,5 +1,5 @@
 import { filter, tap } from "rxjs";
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { IncomingEventSubject, RefreshSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ProfileLogic } from "./logic";

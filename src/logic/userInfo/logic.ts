@@ -1,4 +1,4 @@
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { IEvent } from "../../utils/events";
 import { AppState } from "../data/app";
 import { UserDatabase } from "../data/user";

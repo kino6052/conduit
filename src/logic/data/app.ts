@@ -1,5 +1,5 @@
 import { ETabType } from "../../io/ui/view/components/Tabs/constants";
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { ArticleDatabase } from "./article";
 
 export class AppState {

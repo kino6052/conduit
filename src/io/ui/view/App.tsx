@@ -7,8 +7,9 @@ import { ProfilePage } from "./pages/ProfilePage";
 import { SettingsPage } from "./pages/SettingsPage";
 import { SignInPage } from "./pages/SignInPage";
 import { SignUpPage } from "./pages/SignUpPage";
-import { EPage, TAppProps } from "../../../types";
+import { TAppProps } from "./types";
 import { pagesMap as pagesComponentMap } from "../../../utils/pagesMap";
+import { EPage } from "../../../model/pages/types";
 
 pagesComponentMap[EPage.Home] = HomePage;
 pagesComponentMap[EPage.Article] = ArticlePage;

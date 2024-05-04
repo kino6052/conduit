@@ -1,4 +1,4 @@
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { IArticleSource } from "../data/article/types";
 import { ArticlePage, HomePage } from "../home/logic";
 import { IAppState } from "../types";

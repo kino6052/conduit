@@ -4,7 +4,7 @@ import { EButtonConstants } from "../../io/ui/view/components/Button/constants";
 import { EInputConstants } from "../../io/ui/view/components/Input/Input/constants";
 import { EArticlePageConstants } from "../../io/ui/view/pages/ArticlePage/constants";
 
-import { EPage } from "../../types";
+import { EPage } from "../../io/ui/view/types";
 import { IncomingEventSubject, RefreshSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { updatePage } from "../utils/utils";
