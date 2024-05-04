@@ -1,4 +1,4 @@
-import { IArticleData, IArticleSource } from "../../data/ArticleSource/types";
+import { IArticleData, IArticleDAO } from "../../data/ArticleDAO/types";
 import { IAppState } from "../../types";
 import { EPage, IPage } from "../types";
 
@@ -7,11 +7,13 @@ export class ArticlePage implements IPage {
   public article: IArticleData | undefined;
 
   constructor(
-    articleId: string,
+    private articleId: string,
     public state: IAppState,
-    private articlesSource: IArticleSource,
-  ) {
-    this.articlesSource.getArticleById(articleId).then((article) => {
+    private articlesSource: IArticleDAO,
+  ) {}
+
+  public async initialize(): Promise<void> {
+    this.articlesSource.getArticleById(this.articleId).then((article) => {
       this.article = article;
     });
   }

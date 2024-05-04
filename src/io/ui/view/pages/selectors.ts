@@ -13,7 +13,9 @@ export const generateNavBarProps = (
       return {
         id: tab.id,
         onClick: () => {
-          tab.open();
+          tab.open().then(() => {
+            refresh?.();
+          });
           refresh?.();
         },
         text: tab.name,

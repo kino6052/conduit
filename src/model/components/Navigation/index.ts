@@ -1,23 +1,31 @@
-import { IArticleSource } from "../../data/ArticleSource/types";
+import { IArticleDAO } from "../../data/ArticleDAO/types";
 import { ArticlePage } from "../../pages/ArticlePage";
 import { HomePage } from "../../pages/ArticlePreviewPage/HomePage";
+import { IPage } from "../../pages/types";
 import { IAppState } from "../../types";
 import { ITab } from "../Tab/types";
 
-export const getTabs = (state: IAppState, articleSource: IArticleSource) => [
-  new NavigationTab("Home", "home", () => {
-    state.currentPage = new HomePage(state, articleSource);
-  }),
-  new NavigationTab("Article", "article", () => {
-    state.currentPage = new ArticlePage("", state, articleSource);
-  }),
+const changePage = async (page: IPage, state: IAppState) => {
+  state.isLoading = true;
+  state.currentPage = page;
+  await page.initialize();
+  state.isLoading = false;
+};
+
+export const getTabs = (state: IAppState, articleSource: IArticleDAO) => [
+  new NavigationTab("Home", "home", () =>
+    changePage(new HomePage(state, articleSource), state),
+  ),
+  new NavigationTab("Article", "article", () =>
+    changePage(new ArticlePage("", state, articleSource), state),
+  ),
 ];
 
 export class NavigationTab implements ITab {
   constructor(
     public name: string,
     public id: string,
-    public open: () => void,
+    public open: () => Promise<void>,
   ) {}
 
   public isSelected: boolean = false;

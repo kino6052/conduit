@@ -11,4 +11,5 @@ export enum EPage {
 
 export interface IPage {
   pageType: EPage;
+  initialize(): Promise<void>;
 }

@@ -15,3 +15,4 @@ export type TWithClickHandler<T> = T & { onClick: React.MouseEventHandler };
 export type TWithClassName<T> = T & { className?: string };
 export type TWithId<T> = T & { id: string; slug?: string };
 export type TIdMap<T> = { [id: string]: T };
+export type TWithOnMountHandler<T> = T & { onMount: () => void };

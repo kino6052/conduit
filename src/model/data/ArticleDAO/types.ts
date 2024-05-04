@@ -1,5 +1,3 @@
-import { TIdMap } from "../../../utils/types";
-
 export interface IArticleData {
   id: string;
   title: string;
@@ -15,7 +13,7 @@ export interface IArticleData {
   }[];
 }
 
-export interface IArticleSource {
+export interface IArticleDAO {
   // Article CRUD
   getArticleIds: () => Promise<string[]>;
 

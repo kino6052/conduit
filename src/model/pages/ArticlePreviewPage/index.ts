@@ -1,7 +1,7 @@
 import { IArticle } from "../../components/Article/types";
 import { Pagination } from "../../components/Pagination";
 import { ITab } from "../../components/Tab/types";
-import { IArticleData, IArticleSource } from "../../data/ArticleSource/types";
+import { IArticleDAO, IArticleData } from "../../data/ArticleDAO/types";
 import { IAppState } from "../../types";
 import { ArticlePage } from "../ArticlePage";
 import { HomePage } from "./HomePage";
@@ -17,11 +17,13 @@ export class ArticlePreviewPage {
 
   constructor(
     public state: IAppState,
-    private articlesSource: IArticleSource,
-  ) {
+    private articlesSource: IArticleDAO,
+  ) {}
+
+  public async initialize() {
     this.state.isLoading = true;
 
-    Promise.all([
+    return Promise.all([
       this.articlesSource.getArticles(),
       this.articlesSource.getAllTags(),
     ]).then(([articles, tags]) => {
@@ -45,6 +47,12 @@ export class ArticlePreviewPage {
       examineAuthor: () => {
         this.state.currentUsername = articleData.username;
         this.state.currentPage = new HomePage(this.state, this.articlesSource);
+      },
+      toggleLike: async () => {
+        await this.articlesSource.likeArticleById(
+          articleData.id,
+          this.state.currentUsername,
+        );
       },
     };
   }

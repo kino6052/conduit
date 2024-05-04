@@ -1,7 +1,7 @@
 import { uniqueId } from "lodash";
 import { DEFAULT_TIME } from "../../../logic/utils/verification";
 import { EArticleDatabaseConstant } from "./constants";
-import { IArticleData, IArticleSource } from "./types";
+import { IArticleData, IArticleDAO } from "./types";
 
 const DEFAULT_POST: IArticleData = {
   id: "post-1",
@@ -14,7 +14,7 @@ const DEFAULT_POST: IArticleData = {
   comments: [],
 };
 
-export class ArticleDatabase implements IArticleSource {
+export class ArticleDAOTestDouble implements IArticleDAO {
   private articles: IArticleData[] = [DEFAULT_POST];
 
   public async getArticleIds() {

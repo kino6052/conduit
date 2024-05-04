@@ -1,6 +1,4 @@
-import { ResultingStateSubject } from "../../../logic/common.logic";
 import { initializeAppState } from "../../../model";
-import { EventSubject } from "../../../utils/events";
 import { withLogic } from "../../../utils/withLogic";
 import { UI } from "../store";
 import { App as AppComponent } from "./App";
@@ -13,7 +11,5 @@ export default {
 };
 
 export const Default = {
-  args: ResultingStateSubject.getValue(),
+  args: {},
 };
-
-EventSubject.subscribe(console.warn);

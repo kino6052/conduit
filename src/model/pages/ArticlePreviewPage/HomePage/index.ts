@@ -1,12 +1,12 @@
 import { ArticlePreviewPage } from "..";
-import { IArticleSource } from "../../../data/ArticleSource/types";
+import { IArticleDAO } from "../../../data/ArticleDAO/types";
 import { IAppState } from "../../../types";
-import { EPage } from "../../types";
+import { EPage, IPage } from "../../types";
 
-export class HomePage extends ArticlePreviewPage {
+export class HomePage extends ArticlePreviewPage implements IPage {
   public pageType: EPage = EPage.Home;
 
-  constructor(state: IAppState, articlesSource: IArticleSource) {
+  constructor(state: IAppState, articlesSource: IArticleDAO) {
     super(state, articlesSource);
   }
 }

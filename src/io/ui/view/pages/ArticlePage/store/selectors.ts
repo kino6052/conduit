@@ -14,6 +14,13 @@ export const generateArticlePageProps = (
     navbarProps: generateNavBarProps(state, refresh),
     page: EPage.Article,
     pageProps: {
+      onMount: () => {
+        page.initialize().then(() => {
+          refresh?.();
+        });
+
+        refresh?.();
+      },
       bannerProps: {
         title: page.article?.title || "",
         canEdit: page.article?.username === state.currentUsername,

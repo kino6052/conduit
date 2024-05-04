@@ -1,6 +1,7 @@
 import { UI } from "..";
-import { AppState, initializeAppState } from "../../../../model";
+import { initializeAppState } from "../../../../model";
 import { IAppState } from "../../../../model/types";
+import { THomePageProps } from "../../view/pages/HomePage/types";
 
 let state: IAppState;
 
@@ -9,18 +10,8 @@ beforeEach(() => {
 });
 
 describe("Home Page", () => {
-  it("should", async () => {
+  it("should see initial state", async () => {
     let ui = UI.generateProps(state);
-
-    console.warn(ui);
-
-    const tab = ui.navbarProps.tabs.find(({ text }) =>
-      text.match(new RegExp("article", "i")),
-    );
-
-    await tab?.onClick();
-
-    ui = UI.generateProps(state);
 
     expect(ui).toMatchInlineSnapshot(`
 {
@@ -45,40 +36,57 @@ describe("Home Page", () => {
       },
     ],
   },
-  "page": "Article",
+  "page": "Home",
   "pageProps": {
-    "bannerProps": {
-      "canEdit": false,
-      "title": "",
-      "userInfoProps": {
-        "date": "",
-        "onClick": [Function],
-        "username": "",
-      },
-    },
-    "commentBoxProps": {
-      "iconProps": {
-        "icon": "favorite",
-      },
-      "inputProps": {
-        "onChange": [Function],
-        "placeholder": "Input",
-        "value": "",
-      },
-    },
-    "comments": [],
-    "content": "",
-    "favoriteButtonProps": {
+    "isLoading": false,
+    "paginationBarProps": {
+      "numberOfPages": 1,
       "onClick": [Function],
-      "text": "Like",
+      "selected": 0,
     },
-    "followButtonProps": {
-      "onClick": [Function],
-      "text": "Follow",
+    "posts": [
+      {
+        "comments": [],
+        "date": "Sat Mar 30 2024",
+        "description": "A good article, a really really good one",
+        "id": "post-1",
+        "likers": [],
+        "tags": [
+          "1",
+          "2",
+          "3",
+        ],
+        "title": "A good thing",
+        "username": "jane-lobster",
+      },
+    ],
+    "sidebarProps": {
+      "tags": [
+        "1",
+        "2",
+        "3",
+      ],
+      "title": "Popular tags",
     },
-    "tags": [],
+    "tabs": [],
   },
 }
 `);
+  });
+
+  it("should navigate to article", async () => {
+    let ui = UI.generateProps(state);
+
+    console.warn(ui);
+
+    const page = ui.pageProps as THomePageProps;
+
+    const post = page.posts[0];
+
+    await post.linkProps.onClick();
+
+    ui = UI.generateProps(state);
+
+    expect(ui).toMatchInlineSnapshot();
   });
 });
