@@ -15,11 +15,13 @@ export const generateArticlePageProps = (
     page: EPage.Article,
     pageProps: {
       onMount: () => {
-        page.initialize().then(() => {
+        const result = page.initialize().then(() => {
           refresh?.();
         });
 
         refresh?.();
+
+        return result;
       },
       bannerProps: {
         title: page.article?.title || "",

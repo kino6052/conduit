@@ -31,7 +31,7 @@ export class UserDAOTestDouble implements IUserDAO {
       return user;
     });
 
-    return this.findUserByName(partialUser.username || username);
+    return;
   }
 
   public async getFollowers(username: string) {

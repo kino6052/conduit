@@ -13,6 +13,10 @@ describe("Home Page", () => {
   it("should see initial state", async () => {
     let ui = UI.generateProps(state);
 
+    await (ui.pageProps as THomePageProps).onMount();
+
+    ui = UI.generateProps(state);
+
     expect(ui).toMatchInlineSnapshot(`
 {
   "navbarProps": {

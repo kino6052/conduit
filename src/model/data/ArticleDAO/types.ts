@@ -28,7 +28,12 @@ export interface IArticleDAO {
     partialArticle: Partial<IArticleData>,
   ) => Promise<IArticleData | undefined>;
 
-  publishArticle: (article: IArticleData) => Promise<void>;
+  publishArticle: (article: {
+    title: string;
+    description: string;
+    tags: string[];
+    username: string;
+  }) => Promise<void>;
 
   // Selectors
   getArticlesByTag: (tag: string) => Promise<IArticleData[]>;

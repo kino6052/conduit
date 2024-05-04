@@ -5,10 +5,12 @@ import { IUI } from "./types";
 import { generateHomePageProps } from "../view/pages/HomePage/store/selectors";
 import { generateArticlePageProps } from "../view/pages/ArticlePage/store/selectors";
 import { EPage } from "../../../model/pages/types";
+import { generateNewArticlePageProps } from "../view/pages/EditArticlePage/store/selectors";
 
 const propsMap = {
   [EPage.Home]: generateHomePageProps,
   [EPage.Article]: generateArticlePageProps,
+  [EPage.NewArticle]: generateNewArticlePageProps,
 };
 
 export class UI implements IUI {

@@ -63,12 +63,27 @@ export class ArticleDAOTestDouble implements IArticleDAO {
     return resultingArticle;
   }
 
-  public async publishArticle(article: IArticleData) {
-    if (await this.getDoesArticleExist(article.id)) {
-      throw new Error("Article already exists");
-    }
-
-    this.articles.unshift(article);
+  public async publishArticle({
+    title,
+    description,
+    tags,
+    username,
+  }: {
+    title: string;
+    description: string;
+    tags: string[];
+    username: string;
+  }) {
+    this.articles.unshift({
+      title,
+      description,
+      tags,
+      comments: [],
+      date: new Date(DEFAULT_TIME).toString(),
+      id: `post-${this.articles.length + 1}`,
+      likers: [],
+      username,
+    });
   }
 
   public async getArticlesByTag(tag: string) {

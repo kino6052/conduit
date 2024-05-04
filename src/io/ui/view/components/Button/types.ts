@@ -15,6 +15,7 @@ export type TButtonConfigProps = {
   variant: EButtonVariant;
   size: EButtonSize;
   className: string;
+  disabled?: boolean;
 };
 
 export type TButtonContentProps = {

@@ -13,12 +13,14 @@ export const generateHomePageProps = (
     navbarProps: generateNavBarProps(state, refresh),
     page: EPage.Home,
     pageProps: {
-      onMount: () => {
-        page.initialize().then(() => {
+      onMount: async () => {
+        const result = page.initialize().then(() => {
           refresh?.();
         });
 
         refresh?.();
+
+        return result;
       },
       paginationBarProps: {
         numberOfPages: (state.currentPage as HomePage).pagination.numberOfPages,
