@@ -1,9 +1,9 @@
 import { sequence } from "../..";
-import { EArticleConstant } from "../../../components/Article/constants";
-import { EButtonConstants } from "../../../components/Button/constants";
-import { EInputConstants } from "../../../components/Input/Input/constants";
+import { EArticleConstant } from "../../../io/ui/view/components/Article/constants";
+import { EButtonConstants } from "../../../io/ui/view/components/Button/constants";
+import { EInputConstants } from "../../../io/ui/view/components/Input/Input/constants";
 import { DefaultAppProps } from "../../../data";
-import { EArticlePageConstants } from "../../../pages/ArticlePage/constants";
+import { EArticlePageConstants } from "../../../io/ui/view/pages/ArticlePage/constants";
 import { ArticleDatabase } from "../../data/article";
 import { createUserSequence } from "../../utils/sequences";
 

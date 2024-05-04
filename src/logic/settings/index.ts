@@ -1,5 +1,5 @@
 import { ArgumentOutOfRangeError, filter, tap } from "rxjs";
-import { ESettingsPageConstant } from "../../pages/SettingsPage/constants";
+import { ESettingsPageConstant } from "../../io/ui/view/pages/SettingsPage/constants";
 import { EPage, TAppProps } from "../../types";
 import {
   IncomingEventSubject,

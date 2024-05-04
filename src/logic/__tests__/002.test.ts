@@ -1,5 +1,5 @@
 import { update } from "..";
-import { ETabConstant } from "../../components/Tab/constants";
+import { ETabConstant } from "../../io/ui/view/components/Tab/constants";
 import { DefaultAppProps } from "../../data";
 import { EPage } from "../../types";
 

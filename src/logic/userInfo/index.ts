@@ -1,5 +1,5 @@
 import { filter, tap } from "rxjs";
-import { EUserInfoConstant } from "../../components/UserInfo/constants";
+import { EUserInfoConstant } from "../../io/ui/view/components/UserInfo/constants";
 import { IncomingEventSubject } from "../common.logic";
 import { UserInfoLogic } from "./logic";
 

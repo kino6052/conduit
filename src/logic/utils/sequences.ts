@@ -1,7 +1,7 @@
-import { EButtonConstants } from "../../components/Button/constants";
-import { EInputConstants } from "../../components/Input/Input/constants";
-import { ETabConstant } from "../../components/Tab/constants";
-import { ENewPostPageConstant } from "../../pages/EditArticlePage/constants";
+import { EButtonConstants } from "../../io/ui/view/components/Button/constants";
+import { EInputConstants } from "../../io/ui/view/components/Input/Input/constants";
+import { ETabConstant } from "../../io/ui/view/components/Tab/constants";
+import { ENewPostPageConstant } from "../../io/ui/view/pages/EditArticlePage/constants";
 import { EPage } from "../../types";
 import { ESignUpConstant } from "../signUp/constants";
 

@@ -1,4 +1,7 @@
-import { ETabType, ETabsPanelConstant } from "../../components/Tabs/constants";
+import {
+  ETabType,
+  ETabsPanelConstant,
+} from "../../io/ui/view/components/Tabs/constants";
 import { IEvent } from "../../utils/events";
 import { AppState } from "../data/app";
 

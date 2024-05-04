@@ -1,8 +1,8 @@
 import { filter, tap } from "rxjs";
-import { EArticleBannerConstant } from "../../components/Banner/ArticleBanner/constants";
-import { EButtonConstants } from "../../components/Button/constants";
-import { EInputConstants } from "../../components/Input/Input/constants";
-import { EArticlePageConstants } from "../../pages/ArticlePage/constants";
+import { EArticleBannerConstant } from "../../io/ui/view/components/Banner/ArticleBanner/constants";
+import { EButtonConstants } from "../../io/ui/view/components/Button/constants";
+import { EInputConstants } from "../../io/ui/view/components/Input/Input/constants";
+import { EArticlePageConstants } from "../../io/ui/view/pages/ArticlePage/constants";
 
 import { EPage } from "../../types";
 import { IncomingEventSubject, RefreshSubject } from "../common.logic";

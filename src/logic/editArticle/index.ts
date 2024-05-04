@@ -1,10 +1,10 @@
 import { uniqueId } from "lodash";
 import { filter, tap } from "rxjs";
-import { TArticleProps } from "../../components/Article/types";
-import { EButtonConstants } from "../../components/Button/constants";
-import { EInputConstants } from "../../components/Input/Input/constants";
-import { ENewPostPageConstant } from "../../pages/EditArticlePage/constants";
-import { DefaultData } from "../../pages/EditArticlePage/data";
+import { TArticleProps } from "../../io/ui/view/components/Article/types";
+import { EButtonConstants } from "../../io/ui/view/components/Button/constants";
+import { EInputConstants } from "../../io/ui/view/components/Input/Input/constants";
+import { ENewPostPageConstant } from "../../io/ui/view/pages/EditArticlePage/constants";
+import { DefaultData } from "../../io/ui/view/pages/EditArticlePage/data";
 import { EPage, TAppProps } from "../../types";
 import { findFirst } from "../../utils/array";
 import { getEventTargetValue } from "../../utils/events";

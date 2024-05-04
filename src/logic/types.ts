@@ -17,10 +17,6 @@ export interface IAppState {
   tabs: ITab[];
 }
 
-export interface IPage {
-  pageType: EPage;
-}
-
 export interface IApp {
   pageMap: TPageMap;
   state: IAppState;

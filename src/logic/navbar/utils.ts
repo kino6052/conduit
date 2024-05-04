@@ -1,5 +1,5 @@
-import { TNavbarProps } from "../../components/Navbar/types";
-import { ETabVariant, TTabProps } from "../../components/Tab/types";
+import { TNavbarProps } from "../../io/ui/view/components/Navbar/types";
+import { ETabVariant, TTabProps } from "../../io/ui/view/components/Tab/types";
 import { EPage } from "../../types";
 import { AppState } from "../data/app";
 

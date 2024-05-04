@@ -1,10 +1,10 @@
 import { sequence } from "../..";
-import { EButtonConstants } from "../../../components/Button/constants";
-import { EInputConstants } from "../../../components/Input/Input/constants";
-import { ENavbarConstant } from "../../../components/Navbar/constants";
-import { ETabConstant } from "../../../components/Tab/constants";
+import { EButtonConstants } from "../../../io/ui/view/components/Button/constants";
+import { EInputConstants } from "../../../io/ui/view/components/Input/Input/constants";
+import { ENavbarConstant } from "../../../io/ui/view/components/Navbar/constants";
+import { ETabConstant } from "../../../io/ui/view/components/Tab/constants";
 import { DefaultAppProps } from "../../../data";
-import { ENewPostPageConstant } from "../../../pages/EditArticlePage/constants";
+import { ENewPostPageConstant } from "../../../io/ui/view/pages/EditArticlePage/constants";
 import { EPage } from "../../../types";
 import { ESignUpConstant } from "../../signUp/constants";
 

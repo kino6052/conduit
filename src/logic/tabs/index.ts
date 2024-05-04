@@ -1,5 +1,5 @@
 import { combineLatest, filter, tap } from "rxjs";
-import { ETabsPanelConstant } from "../../components/Tabs/constants";
+import { ETabsPanelConstant } from "../../io/ui/view/components/Tabs/constants";
 import { IncomingEventSubject, RefreshSubject, refresh } from "../common.logic";
 import { TabsLogic } from "./logic";
 

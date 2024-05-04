@@ -1,6 +1,9 @@
-import { ETabVariant, TTabProps } from "../../components/Tab/types";
-import { ETabType } from "../../components/Tabs/constants";
-import { GlobalFeedTab, YourFeedTab } from "../../components/Tabs/data";
+import { ETabVariant, TTabProps } from "../../io/ui/view/components/Tab/types";
+import { ETabType } from "../../io/ui/view/components/Tabs/constants";
+import {
+  GlobalFeedTab,
+  YourFeedTab,
+} from "../../io/ui/view/components/Tabs/data";
 import { AppState } from "../data/app";
 
 export const provideTabsProps = (): TTabProps[] => {

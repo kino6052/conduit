@@ -1,4 +1,4 @@
-import { ETabType } from "../../components/Tabs/constants";
+import { ETabType } from "../../io/ui/view/components/Tabs/constants";
 import { EPage } from "../../types";
 import { ArticleDatabase } from "./article";
 

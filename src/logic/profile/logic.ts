@@ -1,4 +1,4 @@
-import { TArticleProps } from "../../components/Article/types";
+import { TArticleProps } from "../../io/ui/view/components/Article/types";
 import { EPage, TAppProps } from "../../types";
 import { ResultingStateSubject } from "../common.logic";
 import { AppState } from "../data/app";

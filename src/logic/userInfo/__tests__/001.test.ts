@@ -1,5 +1,5 @@
 import { sequence } from "../..";
-import { EUserInfoConstant } from "../../../components/UserInfo/constants";
+import { EUserInfoConstant } from "../../../io/ui/view/components/UserInfo/constants";
 import { DefaultAppProps } from "../../../data";
 import { ArticleDatabase } from "../../data/article";
 

@@ -1,5 +1,5 @@
 import { sequence } from "../..";
-import { EArticleConstant } from "../../../components/Article/constants";
+import { EArticleConstant } from "../../../io/ui/view/components/Article/constants";
 import { DefaultAppProps } from "../../../data";
 import { ArticleDatabase } from "../../data/article";
 import { createUserSequence } from "../../utils/sequences";

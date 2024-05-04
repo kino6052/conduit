@@ -3,7 +3,7 @@ import { EPage } from "../../types";
 import { IncomingEventSubject, RefreshSubject } from "../common.logic";
 import { AppState } from "../data/app";
 import { ProfileLogic } from "./logic";
-import { EProfileBannerConstant } from "../../components/Banner/ProfileBanner/constants";
+import { EProfileBannerConstant } from "../../io/ui/view/components/Banner/ProfileBanner/constants";
 
 RefreshSubject.pipe(
   filter(() => AppState.currentPage === EPage.Profile),

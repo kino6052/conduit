@@ -1,6 +1,6 @@
 import { filter, map, merge, tap } from "rxjs";
-import { EPaginationButtonConstant } from "../../components/PaginationButton/constants";
-import { ETagConstant } from "../../components/Tag/constants";
+import { EPaginationButtonConstant } from "../../io/ui/view/components/PaginationButton/constants";
+import { ETagConstant } from "../../io/ui/view/components/Tag/constants";
 import { EPage } from "../../types";
 import {
   IncomingEventSubject,

@@ -1,12 +1,12 @@
-import { TArticlePageProps } from "./pages/ArticlePage/types";
-import { THomePageProps } from "./pages/HomePage/types";
-import { TEditArticlePageProps } from "./pages/EditArticlePage/types";
-import { TProfilePageProps } from "./pages/ProfilePage/types";
-import { TSettingsPageProps } from "./pages/SettingsPage/types";
-import { TSignInPageProps } from "./pages/SignInPage/types";
-import { TSignUpPageProps } from "./pages/SignUpPage/types";
-import { TUserInfoProps } from "./components/UserInfo/types";
-import { TNavbarProps } from "./components/Navbar/types";
+import { TArticlePageProps } from "./io/ui/view/pages/ArticlePage/types";
+import { THomePageProps } from "./io/ui/view/pages/HomePage/types";
+import { TEditArticlePageProps } from "./io/ui/view/pages/EditArticlePage/types";
+import { TProfilePageProps } from "./io/ui/view/pages/ProfilePage/types";
+import { TSettingsPageProps } from "./io/ui/view/pages/SettingsPage/types";
+import { TSignInPageProps } from "./io/ui/view/pages/SignInPage/types";
+import { TSignUpPageProps } from "./io/ui/view/pages/SignUpPage/types";
+import { TUserInfoProps } from "./io/ui/view/components/UserInfo/types";
+import { TNavbarProps } from "./io/ui/view/components/Navbar/types";
 
 export enum EPage {
   Home = "Home",
