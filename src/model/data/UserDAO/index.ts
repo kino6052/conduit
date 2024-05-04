@@ -69,13 +69,21 @@ export class UserDAOTestDouble implements IUserDAO {
     this.updateFollowers(id, nextLikers);
   }
 
-  public async registerNewUser(user: TUserInfo) {
+  public async registerNewUser(username: string, password: string) {
     const alreadyRegisteredUser = this.users.find((_user) => {
-      return _user.username === user.username;
+      return _user.username === username;
     });
 
     if (alreadyRegisteredUser) throw new Error("User already exists");
 
-    this.users.push(user);
+    this.users.push({
+      username,
+      password,
+      articleIds: [],
+      bio: "",
+      date: "",
+      favoriteArticleIds: [],
+      followers: [],
+    });
   }
 }

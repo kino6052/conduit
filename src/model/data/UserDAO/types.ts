@@ -1,6 +1,7 @@
 export type TUserInfo = {
   date: string;
   username: string;
+  bio: string;
   password?: string;
   imageSrc?: string;
   articleIds: string[];
@@ -22,5 +23,7 @@ export interface IUserDAO {
 
   followUserById(id: string, username: string): Promise<void>;
 
-  registerNewUser(user: TUserInfo): Promise<void>;
+  registerNewUser(username: string, password: string): Promise<void>;
+
+  login(username: string, password: string): Promise<void>;
 }
