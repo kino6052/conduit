@@ -18,7 +18,7 @@ import { ArticleDatabase } from "../data/article";
 import { UserDatabase } from "../data/user";
 import { updatePage } from "../utils/utils";
 import { processTags } from "./utils";
-import { TArticle } from "../data/article/types";
+import { IArticleData } from "../data/article/types";
 import { DEFAULT_TIME } from "../utils/verification";
 
 let titleInput = "";
@@ -133,7 +133,7 @@ IncomingEventSubject.pipe(
 
     if (!id || !userInfoProps) return;
 
-    const article: TArticle = {
+    const article: IArticleData = {
       id,
       title: titleInput,
       description: articleInput,

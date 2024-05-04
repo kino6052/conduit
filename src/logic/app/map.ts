@@ -1,15 +1,19 @@
 import { EPage } from "../../types";
 import { IArticleSource } from "../data/article/types";
-import { HomePage } from "../home/logic";
-import { INavbar } from "../types";
+import { ArticlePage, HomePage } from "../home/logic";
+import { IAppState } from "../types";
 
 export type TPageMap = {
   [EPage.Home]: HomePage;
 };
 
-export const providePagesMapWithDependencies = (dependencies: {
-  navbar: INavbar;
-  articleSource: IArticleSource;
-}): TPageMap => ({
-  [EPage.Home]: new HomePage(dependencies.navbar, dependencies.articleSource),
-});
+// export const providePagesMapWithDependencies = (dependencies: {
+//   state: IAppState;
+//   articleSource: IArticleSource;
+// }): TPageMap => ({
+//   [EPage.Home]: new HomePage(dependencies.state, dependencies.articleSource),
+//   [EPage.Article]: new ArticlePage(
+//     dependencies.state,
+//     dependencies.articleSource,
+//   ),
+// });

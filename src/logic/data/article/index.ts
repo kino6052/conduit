@@ -1,10 +1,10 @@
 import { uniqueId } from "lodash";
 import { TIdMap } from "../../../utils/types";
 import { DEFAULT_TIME } from "../../utils/verification";
-import { IArticleSource, TArticle } from "./types";
+import { IArticleSource, IArticleData } from "./types";
 import { EArticleDatabaseConstant } from "./constants";
 
-const DEFAULT_POST: TArticle = {
+const DEFAULT_POST: IArticleData = {
   id: "post-1",
   username: "jane-lobster",
   description: "A good article, a really really good one",
@@ -16,19 +16,19 @@ const DEFAULT_POST: TArticle = {
 };
 
 export class ArticleDatabase implements IArticleSource {
-  public articles: TArticle[] = [DEFAULT_POST];
+  private articles: IArticleData[] = [DEFAULT_POST];
 
-  public getArticleIds() {
+  public async getArticleIds() {
     return Object.keys(this.articles);
   }
 
-  public getDoesArticleExist(id: string) {
-    const ids = this.getArticleIds();
+  public async getDoesArticleExist(id: string) {
+    const ids = await this.getArticleIds();
 
     return ids.includes(id);
   }
 
-  public getArticleById(id: string) {
+  public async getArticleById(id: string) {
     if (!this.getDoesArticleExist(id)) {
       throw new Error("Article does not exist");
     }
@@ -36,38 +36,49 @@ export class ArticleDatabase implements IArticleSource {
     return this.articles.find(({ id: _id }) => _id === id);
   }
 
-  public getArticles() {
-    return Object.values(this.articles);
+  public async getArticles() {
+    return this.articles;
   }
 
-  public updateArticleById(id: string, partialArticle: Partial<TArticle>) {
-    const article = this.getArticleById(id);
+  public async getArticleIndex(articleId: string) {
+    return this.articles.findIndex((article) => article.id === articleId);
+  }
+
+  public async updateArticleById(
+    id: string,
+    partialArticle: Partial<IArticleData>,
+  ) {
+    const article = await this.getArticleById(id);
 
     if (!article) return;
 
-    this.articles[id] = {
-      ...this.articles[id],
+    const index = await this.getArticleIndex(id);
+
+    const resultingArticle = {
+      ...article,
       ...partialArticle,
     };
 
-    return this.articles[id];
+    this.articles.splice(index, 1, resultingArticle);
+
+    return resultingArticle;
   }
 
-  public publishArticle(article: TArticle) {
-    if (this.getDoesArticleExist(article.id)) {
+  public async publishArticle(article: IArticleData) {
+    if (await this.getDoesArticleExist(article.id)) {
       throw new Error("Article already exists");
     }
 
-    this.articles[article.id] = article;
+    this.articles.unshift(article);
   }
 
-  public getArticlesByTag(tag: string) {
-    return this.getArticles().filter(
+  public async getArticlesByTag(tag: string) {
+    return (await this.getArticles()).filter(
       (article) => !!article.tags.find((_tag) => _tag === tag),
     );
   }
 
-  public getArticlePaginationTotal({
+  public async getArticlePaginationTotal({
     tag,
     username,
   }: {
@@ -76,7 +87,7 @@ export class ArticleDatabase implements IArticleSource {
     tag?: string;
     username?: string;
   }) {
-    const articles = ArticleDatabase.getArticlesByPagination({
+    const articles = await this.getArticlesByPagination({
       articlesPerPage: Number.MAX_SAFE_INTEGER,
       tag,
       username,
@@ -86,7 +97,7 @@ export class ArticleDatabase implements IArticleSource {
     );
   }
 
-  public getArticlesByPagination({
+  public async getArticlesByPagination({
     index = 0,
     articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
     tag,
@@ -97,7 +108,7 @@ export class ArticleDatabase implements IArticleSource {
     tag?: string;
     username?: string;
   }) {
-    return this.getArticles()
+    return (await this.getArticles())
       .filter((article) => {
         if (!tag || !!username) return article;
 
@@ -116,42 +127,40 @@ export class ArticleDatabase implements IArticleSource {
       });
   }
 
-  public getArticlesByUsername(username: string) {
-    return this.getArticles().filter(
+  public async getArticlesByUsername(username: string) {
+    return (await this.getArticles()).filter(
       (article) => article.username === username,
     );
   }
 
-  public getAllTags() {
+  public async getAllTags() {
     return Array.from(
-      new Set(
-        this.getArticles()
-          .map((article) => article.tags)
-          .flat(),
-      ),
+      new Set((await this.getArticles()).map((article) => article.tags).flat()),
     );
   }
 
-  public getLikers(id: string) {
-    const article = ArticleDatabase.getArticleById(id);
+  public async getLikers(id: string) {
+    const article = await this.getArticleById(id);
 
     if (!article) return [];
 
     return article.likers;
   }
 
-  public updateLikers(id: string, likers: string[]) {
-    const article = ArticleDatabase.getArticleById(id);
+  public async updateLikers(id: string, likers: string[]) {
+    const article = await this.getArticleById(id);
 
     if (!article) return;
 
     this.updateArticleById(id, { likers });
   }
 
-  public likeArticleById(id: string, username: string) {
-    const article = this.getArticleById(id);
+  public async likeArticleById(id: string, username: string) {
+    const article = await this.getArticleById(id);
 
-    const likers = this.getLikers(article.id);
+    if (!article) return;
+
+    const likers = await this.getLikers(article.id);
 
     const hasLiked = likers.find((id) => id === username);
 
@@ -163,10 +172,12 @@ export class ArticleDatabase implements IArticleSource {
     this.updateLikers(id, nextLikers);
   }
 
-  public addCommentById(id: string, comment: string, username: string) {
-    const article = this.getArticleById(id);
+  public async addCommentById(id: string, comment: string, username: string) {
+    const article = await this.getArticleById(id);
 
-    this.updateArticleById(id, {
+    if (!article) return;
+
+    await this.updateArticleById(id, {
       comments: [
         {
           id: uniqueId(),
@@ -180,11 +191,12 @@ export class ArticleDatabase implements IArticleSource {
     return this.getArticleById(id);
   }
 
-  public removeArticleById(id: string) {
-    const doesExist = this.getDoesArticleExist(id);
+  public async removeArticleById(id: string) {
+    const index = await this.getArticleIndex(id);
+    const doesExist = index > 0;
 
     if (doesExist) {
-      delete this.articles[id];
+      this.articles.splice(index, 1);
     }
   }
 }

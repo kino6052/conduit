@@ -2,10 +2,10 @@ import { TArticleProps } from "../../../components/Article/types";
 import { AppState } from "../app";
 import { UserDatabase } from "../user";
 import { TUserInfo } from "../user/types";
-import { TArticle } from "./types";
+import { IArticleData } from "./types";
 
 export const processArticle = (
-  article: TArticle,
+  article: IArticleData,
 ): TArticleProps | undefined => {
   const user = UserDatabase.findUserByName(article.username);
 

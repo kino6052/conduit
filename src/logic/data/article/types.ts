@@ -1,6 +1,6 @@
 import { TIdMap } from "../../../utils/types";
 
-export type TArticle = {
+export interface IArticleData {
   id: string;
   title: string;
   description: string;
@@ -13,52 +13,57 @@ export type TArticle = {
     text: string;
     username?: string;
   }[];
-};
+}
 
 export interface IArticleSource {
   // Article CRUD
-  articles: TArticle[];
+  getArticleIds: () => Promise<string[]>;
 
-  getArticleIds: () => string[];
+  getDoesArticleExist: (id: string) => Promise<boolean>;
 
-  getDoesArticleExist: (id: string) => boolean;
+  getArticleById: (id: string) => Promise<IArticleData | undefined>;
 
-  getArticleById: (id: string) => TArticle | undefined;
+  getArticles: () => Promise<IArticleData[]>;
 
-  getArticles: () => TArticle[];
+  updateArticleById: (
+    id: string,
+    partialArticle: Partial<IArticleData>,
+  ) => Promise<IArticleData | undefined>;
 
-  updateArticleById: (id: string, partialArticle: Partial<TArticle>) => void;
-
-  publishArticle: (article: TArticle) => void;
+  publishArticle: (article: IArticleData) => Promise<void>;
 
   // Selectors
-  getArticlesByTag: (tag: string) => TArticle[];
+  getArticlesByTag: (tag: string) => Promise<IArticleData[]>;
 
   getArticlePaginationTotal: (input: {
     index?: number;
     articlesPerPage?: number;
     tag?: string;
     username?: string;
-  }) => number;
+  }) => Promise<number>;
 
   getArticlesByPagination: (input: {
     index?: number;
     articlesPerPage?: number;
     tag?: string;
     username?: string;
-  }) => TArticle[];
+  }) => Promise<IArticleData[]>;
 
-  getArticlesByUsername: (username: string) => TArticle[];
+  getArticlesByUsername: (username: string) => Promise<IArticleData[]>;
 
-  getAllTags: () => string[];
+  getAllTags: () => Promise<string[]>;
 
-  getLikers: (id: string) => string[];
+  getLikers: (id: string) => Promise<string[]>;
 
-  updateLikers: (id: string, likers: string[]) => void;
+  updateLikers: (id: string, likers: string[]) => Promise<void>;
 
-  likeArticleById: (id: string, username: string) => void;
+  likeArticleById: (id: string, username: string) => Promise<void>;
 
-  addCommentById: (id: string, comment: string, username: string) => TArticle;
+  addCommentById: (
+    id: string,
+    comment: string,
+    username: string,
+  ) => Promise<IArticleData | undefined>;
 
-  removeArticleById: (id: string) => void;
+  removeArticleById: (id: string) => Promise<void>;
 }
