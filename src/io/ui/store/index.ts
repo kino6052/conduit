@@ -1,16 +1,17 @@
 import { BehaviorSubject, tap } from "rxjs";
-import { IAppState } from "../../../logic/types";
 import { TAppProps } from "../view/types";
 import { IUI } from "./types";
 import { generateHomePageProps } from "../view/pages/HomePage/store/selectors";
 import { generateArticlePageProps } from "../view/pages/ArticlePage/store/selectors";
 import { EPage } from "../../../model/pages/types";
 import { generateNewArticlePageProps } from "../view/pages/EditArticlePage/store/selectors";
+import { IAppState } from "../../../model/types";
 
 const propsMap = {
   [EPage.Home]: generateHomePageProps,
   [EPage.Article]: generateArticlePageProps,
   [EPage.NewArticle]: generateNewArticlePageProps,
+  // TODO: Finilize
 };
 
 export class UI implements IUI {

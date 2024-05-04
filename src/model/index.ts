@@ -2,6 +2,8 @@ import { getTabs } from "./components/Navigation";
 import { ITab } from "./components/Tab/types";
 import { ArticleDAOTestDouble } from "./data/ArticleDAO";
 import { IArticleDAO } from "./data/ArticleDAO/types";
+import { UserDAOTestDouble } from "./data/UserDAO";
+import { IUserDAO } from "./data/UserDAO/types";
 import { HomePage } from "./pages/ArticlePreviewPage/HomePage";
 import { IPage } from "./pages/types";
 import { IAppState } from "./types";
@@ -18,12 +20,13 @@ export class AppState implements IAppState {
 }
 
 export const initializeAppState = (
-  articleSource: IArticleDAO = new ArticleDAOTestDouble(),
+  articleDao: IArticleDAO = new ArticleDAOTestDouble(),
+  userDao: IUserDAO = new UserDAOTestDouble(),
 ) => {
   const state = new AppState();
 
-  state.currentPage = new HomePage(state, articleSource);
-  state.tabs = getTabs(state, articleSource);
+  state.currentPage = new HomePage(state, articleDao);
+  state.tabs = getTabs(state, articleDao, userDao);
 
   return state;
 };

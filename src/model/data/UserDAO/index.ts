@@ -9,6 +9,7 @@ export class UserDAOTestDouble implements IUserDAO {
       date: "",
       favoriteArticleIds: [],
       followers: [],
+      bio: "",
     },
   ];
 
@@ -84,6 +85,12 @@ export class UserDAOTestDouble implements IUserDAO {
       date: "",
       favoriteArticleIds: [],
       followers: [],
+    });
+  }
+
+  public async login(username: string, password: string): Promise<boolean> {
+    return !!this.users.find((_user) => {
+      return _user.username === username;
     });
   }
 }
