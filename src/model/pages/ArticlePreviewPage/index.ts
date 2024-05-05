@@ -1,10 +1,10 @@
+import { Article } from "../../components/Article";
 import { IArticle } from "../../components/Article/types";
 import { Pagination } from "../../components/Pagination";
 import { ITab } from "../../components/Tab/types";
-import { IArticleDAO, IArticleData } from "../../data/ArticleDAO/types";
+import { IArticleDAO } from "../../data/ArticleDAO/types";
+import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
-import { ArticlePage } from "../ArticlePage";
-import { HomePage } from "./HomePage";
 
 /**
  * This class is needed because there are multiple pages that can preview articles
@@ -17,43 +17,23 @@ export class ArticlePreviewPage {
 
   constructor(
     public state: IAppState,
-    private articlesSource: IArticleDAO,
+    protected articleDao: IArticleDAO,
+    protected userDao: IUserDAO,
   ) {}
 
   public async initialize() {
     this.state.isLoading = true;
 
     return Promise.all([
-      this.articlesSource.getArticles(),
-      this.articlesSource.getAllTags(),
+      this.articleDao.getArticles(),
+      this.articleDao.getAllTags(),
     ]).then(([articles, tags]) => {
-      this.articles = articles.map(this.processArticleData.bind(this));
+      this.articles = articles.map(
+        (articleData) =>
+          new Article(articleData, this.state, this.articleDao, this.userDao),
+      );
       this.tags = tags;
       this.state.isLoading = false;
     });
-  }
-
-  private processArticleData(articleData: IArticleData): IArticle {
-    return {
-      ...articleData,
-      read: () => {
-        this.state.selectedArticleId = articleData.id;
-        this.state.currentPage = new ArticlePage(
-          articleData.id,
-          this.state,
-          this.articlesSource,
-        );
-      },
-      examineAuthor: () => {
-        this.state.currentUsername = articleData.username;
-        this.state.currentPage = new HomePage(this.state, this.articlesSource);
-      },
-      toggleLike: async () => {
-        await this.articlesSource.likeArticleById(
-          articleData.id,
-          this.state.currentUsername,
-        );
-      },
-    };
   }
 }

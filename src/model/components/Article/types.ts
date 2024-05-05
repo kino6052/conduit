@@ -1,7 +1,9 @@
 import { IArticleData } from "../../data/ArticleDAO/types";
+import { User } from "../User";
 
-export interface IArticle extends IArticleData {
-  read(): void;
-  examineAuthor(): void;
-  toggleLike(): void;
+export interface IArticle {
+  articleData: IArticleData;
+  read(): Promise<void>;
+  getAuthor(): Promise<User | undefined>;
+  toggleLike(): Promise<void>;
 }

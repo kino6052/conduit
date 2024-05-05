@@ -1,5 +1,6 @@
 import { changePage } from "../../components/Navigation";
 import { IArticleDAO } from "../../data/ArticleDAO/types";
+import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
 import { HomePage } from "../ArticlePreviewPage/HomePage";
 import { EPage, IPage } from "../types";
@@ -13,6 +14,7 @@ export class EditArticlePage implements IPage {
   constructor(
     public state: IAppState,
     private articlesSource: IArticleDAO,
+    private userDao: IUserDAO,
   ) {}
 
   public async initialize(): Promise<void> {
@@ -27,7 +29,10 @@ export class EditArticlePage implements IPage {
       username: this.state.currentUsername,
     });
 
-    await changePage(new HomePage(this.state, this.articlesSource), this.state);
+    await changePage(
+      new HomePage(this.state, this.articlesSource, this.userDao),
+      this.state,
+    );
   }
 
   public generateTags() {

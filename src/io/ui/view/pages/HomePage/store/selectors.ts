@@ -30,34 +30,35 @@ export const generateHomePageProps = (
         },
       },
       isLoading: false,
-      posts: page.articles.map(({ read, examineAuthor, tags, ...article }) => ({
-        ...article,
+      posts: page.articles.map((article) => ({
+        ...article.articleData,
         comments: [],
         tags: [],
-        hasLiked: article.likers.includes(state.currentUsername),
+        hasLiked: article.articleData.likers.includes(state.currentUsername),
         likeButtonProps: {
-          onClick: () => {
-            article.toggleLike();
+          onClick: async () => {
+            await article.toggleLike();
             refresh?.();
           },
-          text: "Like",
+          text: `${article.articleData.likers.length}`,
         },
         linkProps: {
           onClick: async () => {
-            read();
+            await article.read();
             refresh?.();
           },
         },
         userInfoProps: {
-          date: article.date,
-          username: article.username,
+          date: article.articleData.date,
+          username: article.articleData.username,
           onClick: async () => {
-            examineAuthor();
+            const author = await article.getAuthor();
+            await author?.examine();
             refresh?.();
           },
         },
         onClick: () => {
-          read();
+          article.read();
           refresh?.();
         },
       })),

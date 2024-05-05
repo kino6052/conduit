@@ -1,5 +1,4 @@
 import { uniqueId } from "lodash";
-import { DEFAULT_TIME } from "../../../logic/utils/verification";
 import { EArticleDatabaseConstant } from "./constants";
 import { IArticleData, IArticleDAO } from "./types";
 
@@ -10,7 +9,7 @@ const DEFAULT_POST: IArticleData = {
   likers: [],
   tags: ["1", "2", "3"],
   title: "A good thing",
-  date: new Date(DEFAULT_TIME).toDateString(),
+  date: new Date().toDateString(),
   comments: [],
 };
 
@@ -79,7 +78,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
       description,
       tags,
       comments: [],
-      date: new Date(DEFAULT_TIME).toString(),
+      date: new Date().toString(),
       id: `post-${this.articles.length + 1}`,
       likers: [],
       username,

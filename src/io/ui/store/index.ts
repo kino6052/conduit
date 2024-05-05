@@ -6,11 +6,13 @@ import { generateArticlePageProps } from "../view/pages/ArticlePage/store/select
 import { EPage } from "../../../model/pages/types";
 import { generateNewArticlePageProps } from "../view/pages/EditArticlePage/store/selectors";
 import { IAppState } from "../../../model/types";
+import { generateProfilePageProps } from "../view/pages/ProfilePage/store/selectors";
 
 const propsMap = {
   [EPage.Home]: generateHomePageProps,
   [EPage.Article]: generateArticlePageProps,
   [EPage.NewArticle]: generateNewArticlePageProps,
+  [EPage.Profile]: generateProfilePageProps,
   // TODO: Finilize
 };
 
