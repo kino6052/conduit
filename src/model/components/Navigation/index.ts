@@ -3,6 +3,8 @@ import { IUserDAO } from "../../data/UserDAO/types";
 import { HomePage } from "../../pages/ArticlePreviewPage/HomePage";
 import { NewArticlePage } from "../../pages/NewArticlePage";
 import { SettingsPage } from "../../pages/SettingsPage";
+import { SignInPage } from "../../pages/SignInPage";
+import { SignUpPage } from "../../pages/SignUpPage";
 import { EPage, IPage } from "../../pages/types";
 import { IAppState } from "../../types";
 import { ITab } from "../Tab/types";
@@ -29,10 +31,10 @@ export const getTabs = (
     changePage(new SettingsPage(state, articleDao, userDao), state),
   ),
   new NavigationTab("Sign In", EPage.SignIn, () =>
-    changePage(new SettingsPage(state, articleDao, userDao), state),
+    changePage(new SignInPage(state, articleDao, userDao), state),
   ),
   new NavigationTab("Sign Up", EPage.SignUp, () =>
-    changePage(new SettingsPage(state, articleDao, userDao), state),
+    changePage(new SignUpPage(state, articleDao, userDao), state),
   ),
 ];
 

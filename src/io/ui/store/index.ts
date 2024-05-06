@@ -7,13 +7,18 @@ import { EPage } from "../../../model/pages/types";
 import { generateNewArticlePageProps } from "../view/pages/EditArticlePage/store/selectors";
 import { IAppState } from "../../../model/types";
 import { generateProfilePageProps } from "../view/pages/ProfilePage/store/selectors";
+import { generateSettingsPageProps } from "../view/pages/SettingsPage/store/selectors";
+import { generateSignInPageProps } from "../view/pages/SignInPage/store/selectors";
+import { generateSignUpPageProps } from "../view/pages/SignUpPage/store/selectors";
 
 const propsMap = {
   [EPage.Home]: generateHomePageProps,
   [EPage.Article]: generateArticlePageProps,
   [EPage.NewArticle]: generateNewArticlePageProps,
   [EPage.Profile]: generateProfilePageProps,
-  [EPage.Settings]: 
+  [EPage.Settings]: generateSettingsPageProps,
+  [EPage.SignIn]: generateSignInPageProps,
+  [EPage.SignUp]: generateSignUpPageProps,
 };
 
 export class UI implements IUI {
