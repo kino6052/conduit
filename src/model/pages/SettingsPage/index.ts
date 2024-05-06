@@ -33,6 +33,8 @@ export class SettingsPage implements IPage {
   }
 
   public async saveChanges() {
+    this.state.isLoading = true;
+
     await this.userDao.updateUserByName(this.state.currentUsername, {
       username: this.username.value,
       password: this.password.value,
@@ -40,6 +42,20 @@ export class SettingsPage implements IPage {
       bio: this.bio.value,
     });
 
-    await changePage(new HomePage(this.state, this.articleDao), this.state);
+    await changePage(
+      new HomePage(this.state, this.articleDao, this.userDao),
+      this.state,
+    );
+
+    this.state.isLoading = false;
+  }
+
+  public async logout() {
+    this.state.currentUsername = "";
+
+    await changePage(
+      new HomePage(this.state, this.articleDao, this.userDao),
+      this.state,
+    );
   }
 }

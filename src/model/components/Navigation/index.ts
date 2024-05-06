@@ -1,6 +1,5 @@
 import { IArticleDAO } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
-import { ArticlePage } from "../../pages/ArticlePage";
 import { HomePage } from "../../pages/ArticlePreviewPage/HomePage";
 import { NewArticlePage } from "../../pages/NewArticlePage";
 import { SettingsPage } from "../../pages/SettingsPage";
@@ -21,10 +20,10 @@ export const getTabs = (
   userDao: IUserDAO,
 ) => [
   new NavigationTab("Home", EPage.Home, () =>
-    changePage(new HomePage(state, articleDao), state),
+    changePage(new HomePage(state, articleDao, userDao), state),
   ),
   new NavigationTab("New Article", EPage.NewArticle, () =>
-    changePage(new NewArticlePage(state, articleDao), state),
+    changePage(new NewArticlePage(state, articleDao, userDao), state),
   ),
   new NavigationTab("Settings", EPage.Settings, () =>
     changePage(new SettingsPage(state, articleDao, userDao), state),

@@ -13,7 +13,7 @@ const propsMap = {
   [EPage.Article]: generateArticlePageProps,
   [EPage.NewArticle]: generateNewArticlePageProps,
   [EPage.Profile]: generateProfilePageProps,
-  // TODO: Finilize
+  [EPage.Settings]: 
 };
 
 export class UI implements IUI {
