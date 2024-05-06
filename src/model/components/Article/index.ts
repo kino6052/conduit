@@ -1,6 +1,7 @@
 import { IArticleDAO, IArticleData } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
 import { ArticlePage } from "../../pages/ArticlePage";
+import { SignInPage } from "../../pages/SignInPage";
 import { IAppState } from "../../types";
 import { User } from "../User";
 import { IArticle } from "./types";
@@ -40,6 +41,15 @@ export class Article implements IArticle {
   }
 
   async toggleLike() {
+    if (!this.appState.currentUsername) {
+      this.appState.currentPage = new SignInPage(
+        this.appState,
+        this.articleDao,
+        this.userDao,
+      );
+      return;
+    }
+
     await this.articleDao.likeArticleById(
       this.articleData.id,
       this.appState.currentUsername,
