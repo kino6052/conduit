@@ -182,7 +182,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
       !hasLiked && username,
     ].filter(Boolean) as string[];
 
-    this.updateLikers(id, nextLikers);
+    await this.updateLikers(id, nextLikers);
   }
 
   public async addCommentById(id: string, comment: string, username: string) {

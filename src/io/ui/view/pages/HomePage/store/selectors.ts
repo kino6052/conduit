@@ -37,7 +37,9 @@ export const generateHomePageProps = (
         hasLiked: article.articleData.likers.includes(state.currentUsername),
         likeButtonProps: {
           onClick: async () => {
-            await article.toggleLike();
+            article.toggleLike().then(() => {
+              refresh?.();
+            });
             refresh?.();
           },
           text: `${article.articleData.likers.length}`,

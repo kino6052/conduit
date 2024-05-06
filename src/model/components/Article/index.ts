@@ -44,5 +44,13 @@ export class Article implements IArticle {
       this.articleData.id,
       this.appState.currentUsername,
     );
+
+    const articleData = await this.articleDao.getArticleById(
+      this.articleData.id,
+    );
+
+    if (!articleData) return;
+
+    this.articleData = articleData;
   }
 }

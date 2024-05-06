@@ -60,7 +60,7 @@ export interface IArticleDAO {
 
   updateLikers: (id: string, likers: string[]) => Promise<void>;
 
-  likeArticleById: (id: string, username: string) => Promise<void>;
+  likeArticleById: (id: string, username: string) => Promise<IArticleData>;
 
   addCommentById: (
     id: string,
