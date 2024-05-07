@@ -21,7 +21,10 @@ export class ProfilePage extends ArticlePreviewPage implements IPage {
       this.state.selectedUsername,
     );
 
-    if (!userInfo) return;
+    if (!userInfo) {
+      console.warn("No user info");
+      return;
+    }
 
     this.user = new User(userInfo, this.state, this.articleDao, this.userDao);
 
