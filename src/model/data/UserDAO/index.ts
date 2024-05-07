@@ -1,6 +1,8 @@
 import { IUserDAO, TUserInfo } from "./types";
 
 export class UserDAOTestDouble implements IUserDAO {
+  constructor() {}
+
   private users: TUserInfo[] = [
     {
       username: "jane-lobster",

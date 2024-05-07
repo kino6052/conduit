@@ -21,6 +21,7 @@ const propsMap = {
   [EPage.SignUp]: generateSignUpPageProps,
 };
 
+// TODO: Refactor to become ViewModel (but after tests are done)
 export class UI implements IUI {
   private PropsSubject = new BehaviorSubject<TAppProps<EPage> | undefined>(
     undefined,

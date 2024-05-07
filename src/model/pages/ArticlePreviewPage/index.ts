@@ -19,7 +19,11 @@ export class ArticlePreviewPage {
     public state: IAppState,
     protected articleDao: IArticleDAO,
     protected userDao: IUserDAO,
-  ) {}
+  ) {
+    if (!state) throw new Error("No state provided");
+    if (!articleDao) throw new Error("No article source provided");
+    if (!userDao) throw new Error("No user source provided");
+  }
 
   public async initialize() {
     this.state.isLoading = true;

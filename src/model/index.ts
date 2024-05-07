@@ -1,3 +1,4 @@
+import { uniqueId } from "lodash";
 import { getTabs } from "./components/Navigation";
 import { ITab } from "./components/Tab/types";
 import { ArticleDAOTestDouble } from "./data/ArticleDAO";
@@ -20,7 +21,10 @@ export class AppState implements IAppState {
 }
 
 export const initializeAppState = (
-  articleDao: IArticleDAO = new ArticleDAOTestDouble(),
+  articleDao: IArticleDAO = new ArticleDAOTestDouble(
+    () => new Date(0).toISOString(),
+    () => uniqueId("post"),
+  ),
   userDao: IUserDAO = new UserDAOTestDouble(),
 ) => {
   const state = new AppState();

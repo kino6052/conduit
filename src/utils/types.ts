@@ -11,7 +11,7 @@ export type RecursivePartial<T> = {
 };
 
 export type TWithChangeHandler<T> = T & { onChange: React.ChangeEventHandler };
-export type TWithClickHandler<T> = T & { onClick: React.MouseEventHandler };
+export type TWithClickHandler<T> = T & { onClick: () => Promise<void> };
 export type TWithClassName<T> = T & { className?: string };
 export type TWithId<T> = T & { id: string; slug?: string };
 export type TIdMap<T> = { [id: string]: T };

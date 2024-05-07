@@ -9,11 +9,16 @@ const DEFAULT_POST: IArticleData = {
   likers: [],
   tags: ["1", "2", "3"],
   title: "A good thing",
-  date: new Date().toDateString(),
+  date: "",
   comments: [],
 };
 
 export class ArticleDAOTestDouble implements IArticleDAO {
+  constructor(
+    private generateDate: () => string = () => new Date().toISOString(),
+    private generateId: () => string = () => uniqueId(),
+  ) {}
+
   private articles: IArticleData[] = [DEFAULT_POST];
 
   public async getArticleIds() {
@@ -78,8 +83,8 @@ export class ArticleDAOTestDouble implements IArticleDAO {
       description,
       tags,
       comments: [],
-      date: new Date().toString(),
-      id: `post-${this.articles.length + 1}`,
+      date: this.generateDate(),
+      id: this.generateId(),
       likers: [],
       username,
     });

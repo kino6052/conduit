@@ -2,9 +2,8 @@ import { UI } from "..";
 import { initializeAppState } from "../../../../model";
 import { EPage } from "../../../../model/pages/types";
 import { IAppState } from "../../../../model/types";
-import { TArticleProps } from "../../view/components/Article/types";
-import { TArticlePageProps } from "../../view/pages/ArticlePage/types";
 import { THomePageProps } from "../../view/pages/HomePage/types";
+import { TSignUpPageProps } from "../../view/pages/SignUpPage/types";
 import { TAppProps } from "../../view/types";
 
 let state: IAppState;
@@ -79,7 +78,7 @@ describe("Home Page", () => {
     "posts": [
       {
         "comments": [],
-        "date": "Mon May 06 2024",
+        "date": "",
         "description": "A good article, a really really good one",
         "hasLiked": false,
         "id": "post-1",
@@ -95,7 +94,7 @@ describe("Home Page", () => {
         "tags": [],
         "title": "A good thing",
         "userInfoProps": {
-          "date": "Mon May 06 2024",
+          "date": "",
           "onClick": [Function],
           "username": "jane-lobster",
         },
@@ -367,6 +366,198 @@ describe("Home Page", () => {
     },
     "tabs": [],
   },
+}
+`);
+  });
+
+  it("should sign in", async () => {
+    await ui.navbarProps.tabs[4].onClick();
+
+    ui = UI.generateProps(state, refresh);
+
+    await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
+      target: {
+        value: "username",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).passwordInputProps.onChange({
+      target: {
+        value: "password",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
+
+    ui = UI.generateProps(state, refresh);
+
+    await ui.pageProps.onMount();
+
+    ui = UI.generateProps(state, refresh);
+
+    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`10`);
+
+    expect(ui).toMatchInlineSnapshot(`
+{
+  "navbarProps": {
+    "logo": {
+      "onClick": [Function],
+    },
+    "tabs": [
+      {
+        "id": "Home",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Home",
+        "variant": "menu",
+      },
+      {
+        "id": "NewArticle",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "New Article",
+        "variant": "menu",
+      },
+      {
+        "id": "Settings",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Settings",
+        "variant": "menu",
+      },
+      {
+        "id": "SignIn",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Sign In",
+        "variant": "menu",
+      },
+      {
+        "id": "SignUp",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Sign Up",
+        "variant": "menu",
+      },
+    ],
+  },
+  "page": "Home",
+  "pageProps": {
+    "isLoading": false,
+    "onMount": [Function],
+    "paginationBarProps": {
+      "numberOfPages": 1,
+      "onClick": [Function],
+      "selected": 0,
+    },
+    "posts": [
+      {
+        "comments": [],
+        "date": "",
+        "description": "A good article, a really really good one",
+        "hasLiked": false,
+        "id": "post-1",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [],
+        "title": "A good thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
+    ],
+    "sidebarProps": {
+      "tags": [
+        {
+          "id": "1",
+          "onClick": [Function],
+        },
+        {
+          "id": "2",
+          "onClick": [Function],
+        },
+        {
+          "id": "3",
+          "onClick": [Function],
+        },
+      ],
+      "title": "Popular tags",
+    },
+    "tabs": [],
+  },
+}
+`);
+    await (ui.pageProps as THomePageProps).posts[0].likeButtonProps.onClick();
+
+    ui = UI.generateProps(state, refresh);
+
+    expect((ui.pageProps as THomePageProps).posts[0]).toMatchInlineSnapshot(`
+{
+  "comments": [],
+  "date": "",
+  "description": "A good article, a really really good one",
+  "hasLiked": true,
+  "id": "post-1",
+  "likeButtonProps": {
+    "onClick": [Function],
+    "text": "1",
+  },
+  "likers": [
+    "username",
+  ],
+  "linkProps": {
+    "onClick": [Function],
+  },
+  "onClick": [Function],
+  "tags": [],
+  "title": "A good thing",
+  "userInfoProps": {
+    "date": "",
+    "onClick": [Function],
+    "username": "jane-lobster",
+  },
+  "username": "jane-lobster",
+}
+`);
+
+    await (ui.pageProps as THomePageProps).posts[0].likeButtonProps.onClick();
+
+    ui = UI.generateProps(state, refresh);
+
+    expect((ui.pageProps as THomePageProps).posts[0]).toMatchInlineSnapshot(`
+{
+  "comments": [],
+  "date": "",
+  "description": "A good article, a really really good one",
+  "hasLiked": false,
+  "id": "post-1",
+  "likeButtonProps": {
+    "onClick": [Function],
+    "text": "0",
+  },
+  "likers": [],
+  "linkProps": {
+    "onClick": [Function],
+  },
+  "onClick": [Function],
+  "tags": [],
+  "title": "A good thing",
+  "userInfoProps": {
+    "date": "",
+    "onClick": [Function],
+    "username": "jane-lobster",
+  },
+  "username": "jane-lobster",
 }
 `);
   });

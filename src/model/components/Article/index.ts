@@ -47,6 +47,7 @@ export class Article implements IArticle {
         this.articleDao,
         this.userDao,
       );
+      console.warn("Not logged in");
       return;
     }
 
@@ -59,7 +60,12 @@ export class Article implements IArticle {
       this.articleData.id,
     );
 
-    if (!articleData) return;
+    if (!articleData) {
+      console.warn(`No article data for id ${this.articleData.id}`);
+      return;
+    }
+
+    console.warn(this.articleDao, articleData);
 
     this.articleData = articleData;
   }

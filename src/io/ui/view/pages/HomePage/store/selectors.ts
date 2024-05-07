@@ -37,10 +37,13 @@ export const generateHomePageProps = (
         hasLiked: article.articleData.likers.includes(state.currentUsername),
         likeButtonProps: {
           onClick: async () => {
-            article.toggleLike().then(() => {
+            const result = article.toggleLike().then(() => {
               refresh?.();
             });
+
             refresh?.();
+
+            return result;
           },
           text: `${article.articleData.likers.length}`,
         },
@@ -59,7 +62,7 @@ export const generateHomePageProps = (
             refresh?.();
           },
         },
-        onClick: () => {
+        onClick: async () => {
           article.read();
           refresh?.();
         },
@@ -67,7 +70,7 @@ export const generateHomePageProps = (
       sidebarProps: {
         tags: page.tags.map((tag) => ({
           id: tag,
-          onClick: () => {},
+          onClick: async () => {},
         })),
         title: "Popular tags",
       },

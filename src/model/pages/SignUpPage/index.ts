@@ -29,6 +29,9 @@ export class SignUpPage implements IPage {
 
     this.state.currentUsername = this.username.value;
 
-    await changePage(new HomePage(this.state, this.articleDao), this.state);
+    await changePage(
+      new HomePage(this.state, this.articleDao, this.userDao),
+      this.state,
+    );
   }
 }
