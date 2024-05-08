@@ -1,5 +1,4 @@
 import { uniqueId } from "lodash";
-import { getTabs } from "./components/Navigation";
 import { ITab } from "./components/Tab/types";
 import { ArticleDAOTestDouble } from "./data/ArticleDAO";
 import { IArticleDAO } from "./data/ArticleDAO/types";

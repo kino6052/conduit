@@ -1,7 +1,9 @@
+import { Subject, filter, take, tap } from "rxjs";
 import { UI } from "..";
 import { initializeAppState } from "../../../../model";
 import { EPage } from "../../../../model/pages/types";
 import { IAppState } from "../../../../model/types";
+import { checkEventual } from "../../../../utils/testing";
 import { THomePageProps } from "../../view/pages/HomePage/types";
 import { TSignUpPageProps } from "../../view/pages/SignUpPage/types";
 import { TAppProps } from "../../view/types";
@@ -9,14 +11,18 @@ import { TAppProps } from "../../view/types";
 let state: IAppState;
 let ui: TAppProps<EPage>;
 const refresh = jest.fn();
+const PropsSubject = new Subject<TAppProps<EPage>>();
 
 // TODO: Create "getEventualResult"
 beforeEach(async () => {
-  refresh.mockRestore();
   state = initializeAppState();
+  refresh.mockRestore();
+  refresh.mockImplementation(() => {
+    ui = UI.generateProps(state, refresh);
+    PropsSubject.next(ui);
+  });
   ui = UI.generateProps(state, refresh);
   await (ui.pageProps as THomePageProps).onMount();
-  ui = UI.generateProps(state, refresh);
 });
 
 describe("Home Page", () => {
@@ -318,8 +324,6 @@ describe("Home Page", () => {
   it("should sign in", async () => {
     await ui.navbarProps.tabs[2].onClick();
 
-    ui = UI.generateProps(state, refresh);
-
     await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
       target: {
         value: "username",
@@ -334,13 +338,12 @@ describe("Home Page", () => {
 
     await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
 
-    ui = UI.generateProps(state, refresh);
-
     await ui.pageProps.onMount();
 
-    ui = UI.generateProps(state, refresh);
-
-    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`10`);
+    ui = await checkEventual<TAppProps<EPage>>(
+      (result) => (result.pageProps as THomePageProps).posts.length > 0,
+      PropsSubject,
+    );
 
     expect(ui).toMatchInlineSnapshot(`
 {
@@ -430,8 +433,6 @@ describe("Home Page", () => {
 `);
     await (ui.pageProps as THomePageProps).posts[0].likeButtonProps.onClick();
 
-    ui = UI.generateProps(state, refresh);
-
     expect((ui.pageProps as THomePageProps).posts[0]).toMatchInlineSnapshot(`
 {
   "comments": [],
@@ -462,8 +463,6 @@ describe("Home Page", () => {
 `);
 
     await (ui.pageProps as THomePageProps).posts[0].likeButtonProps.onClick();
-
-    ui = UI.generateProps(state, refresh);
 
     expect((ui.pageProps as THomePageProps).posts[0]).toMatchInlineSnapshot(`
 {
