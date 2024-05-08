@@ -30,7 +30,6 @@ export const initializeAppState = (
   const state = new AppState();
 
   state.currentPage = new HomePage(state, articleDao, userDao);
-  state.tabs = getTabs(state, articleDao, userDao);
 
   return state;
 };

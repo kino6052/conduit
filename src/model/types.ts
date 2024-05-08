@@ -1,5 +1,4 @@
-import { ITab } from "./components/Tab/types";
-import { EPage, IPage } from "./pages/types";
+import { IPage } from "./pages/types";
 
 export interface IAppState {
   currentPage: IPage | undefined;
@@ -7,5 +6,4 @@ export interface IAppState {
   selectedUsername: string;
   selectedArticleId: string;
   isLoading: boolean;
-  tabs: ITab[];
 }

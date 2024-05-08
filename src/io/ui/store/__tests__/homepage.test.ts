@@ -10,6 +10,7 @@ let state: IAppState;
 let ui: TAppProps<EPage>;
 const refresh = jest.fn();
 
+// TODO: Create "getEventualResult"
 beforeEach(async () => {
   refresh.mockRestore();
   state = initializeAppState();
@@ -34,20 +35,6 @@ describe("Home Page", () => {
         "isActive": false,
         "onClick": [Function],
         "text": "Home",
-        "variant": "menu",
-      },
-      {
-        "id": "NewArticle",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "New Article",
-        "variant": "menu",
-      },
-      {
-        "id": "Settings",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "Settings",
         "variant": "menu",
       },
       {
@@ -148,20 +135,6 @@ describe("Home Page", () => {
         "variant": "menu",
       },
       {
-        "id": "NewArticle",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "New Article",
-        "variant": "menu",
-      },
-      {
-        "id": "Settings",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "Settings",
-        "variant": "menu",
-      },
-      {
         "id": "SignIn",
         "isActive": false,
         "onClick": [Function],
@@ -236,20 +209,6 @@ describe("Home Page", () => {
         "variant": "menu",
       },
       {
-        "id": "NewArticle",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "New Article",
-        "variant": "menu",
-      },
-      {
-        "id": "Settings",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "Settings",
-        "variant": "menu",
-      },
-      {
         "id": "SignIn",
         "isActive": false,
         "onClick": [Function],
@@ -312,20 +271,6 @@ describe("Home Page", () => {
         "variant": "menu",
       },
       {
-        "id": "NewArticle",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "New Article",
-        "variant": "menu",
-      },
-      {
-        "id": "Settings",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "Settings",
-        "variant": "menu",
-      },
-      {
         "id": "SignIn",
         "isActive": false,
         "onClick": [Function],
@@ -371,7 +316,7 @@ describe("Home Page", () => {
   });
 
   it("should sign in", async () => {
-    await ui.navbarProps.tabs[4].onClick();
+    await ui.navbarProps.tabs[2].onClick();
 
     ui = UI.generateProps(state, refresh);
 
@@ -423,20 +368,6 @@ describe("Home Page", () => {
         "isActive": false,
         "onClick": [Function],
         "text": "Settings",
-        "variant": "menu",
-      },
-      {
-        "id": "SignIn",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "Sign In",
-        "variant": "menu",
-      },
-      {
-        "id": "SignUp",
-        "isActive": false,
-        "onClick": [Function],
-        "text": "Sign Up",
         "variant": "menu",
       },
     ],

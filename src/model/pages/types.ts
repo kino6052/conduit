@@ -1,3 +1,5 @@
+import { ITab } from "../components/Tab/types";
+
 export enum EPage {
   Home = "Home",
   Article = "Article",
@@ -11,5 +13,6 @@ export enum EPage {
 
 export interface IPage {
   pageType: EPage;
+  tabs: ITab[];
   initialize(): Promise<void>;
 }

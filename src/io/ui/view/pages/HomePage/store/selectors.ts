@@ -10,7 +10,7 @@ export const generateHomePageProps = (
 ): TAppProps<EPage.Home> => {
   const page = state.currentPage as HomePage;
   return {
-    navbarProps: generateNavBarProps(state, refresh),
+    navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Home,
     pageProps: {
       onMount: async () => {

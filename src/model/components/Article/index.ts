@@ -20,6 +20,7 @@ export class Article implements IArticle {
       this.articleData.id,
       this.appState,
       this.articleDao,
+      this.userDao,
     );
   }
 

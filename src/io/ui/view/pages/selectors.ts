@@ -1,23 +1,16 @@
-import { IAppState } from "../../../../model/types";
+import { IPage } from "../../../../model/pages/types";
 import { ETabVariant } from "../components/Tab/types";
+import { getAsyncRefresh } from "../utils/utils";
 
-export const generateNavBarProps = (
-  state: IAppState,
-  refresh?: () => void,
-) => ({
+export const generateNavBarProps = (page: IPage, refresh?: () => void) => ({
   logo: {
-    onClick: () => alert("Test"),
+    onClick: getAsyncRefresh(page.tabs[0].open, refresh),
   },
   tabs:
-    state.tabs.map((tab) => {
+    page.tabs.map((tab) => {
       return {
         id: tab.id,
-        onClick: () => {
-          tab.open().then(() => {
-            refresh?.();
-          });
-          refresh?.();
-        },
+        onClick: getAsyncRefresh(tab.open, refresh),
         text: tab.name,
         variant: ETabVariant.Menu,
         isActive: tab.isSelected,

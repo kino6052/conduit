@@ -10,7 +10,7 @@ export const generateNewArticlePageProps = (
 ): TAppProps<EPage.NewArticle> => {
   const page = state.currentPage as NewArticlePage;
   return {
-    navbarProps: generateNavBarProps(state, refresh),
+    navbarProps: generateNavBarProps(page, refresh),
     page: EPage.NewArticle,
     pageProps: {
       onMount: async () => {

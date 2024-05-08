@@ -10,7 +10,7 @@ export const generateSettingsPageProps = (
 ): TAppProps<EPage.Settings> => {
   const page = state.currentPage as SettingsPage;
   return {
-    navbarProps: generateNavBarProps(state, refresh),
+    navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Settings,
     pageProps: {
       onMount: async () => {

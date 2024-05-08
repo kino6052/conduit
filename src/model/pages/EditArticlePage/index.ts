@@ -1,4 +1,5 @@
-import { changePage } from "../../components/Navigation";
+import { changePage, getTabs } from "../../components/Navigation";
+import { ITab } from "../../components/Tab/types";
 import { IArticleDAO } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
@@ -10,19 +11,22 @@ export class EditArticlePage implements IPage {
   public title: string = "";
   public article: string = "";
   public tags: string = "";
+  public tabs: ITab[] = [];
 
   constructor(
     public state: IAppState,
-    private articlesSource: IArticleDAO,
+    private articleDao: IArticleDAO,
     private userDao: IUserDAO,
-  ) {}
+  ) {
+    this.tabs = getTabs(this.state, this.articleDao, this.userDao);
+  }
 
   public async initialize(): Promise<void> {
     return;
   }
 
   public async publishArticle() {
-    await this.articlesSource.publishArticle({
+    await this.articleDao.publishArticle({
       description: this.article,
       tags: this.generateTags(),
       title: this.title,
@@ -30,7 +34,7 @@ export class EditArticlePage implements IPage {
     });
 
     await changePage(
-      new HomePage(this.state, this.articlesSource, this.userDao),
+      new HomePage(this.state, this.articleDao, this.userDao),
       this.state,
     );
   }

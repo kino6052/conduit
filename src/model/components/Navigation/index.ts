@@ -20,23 +20,28 @@ export const getTabs = (
   state: IAppState,
   articleDao: IArticleDAO,
   userDao: IUserDAO,
-) => [
-  new NavigationTab("Home", EPage.Home, () =>
-    changePage(new HomePage(state, articleDao, userDao), state),
-  ),
-  new NavigationTab("New Article", EPage.NewArticle, () =>
-    changePage(new NewArticlePage(state, articleDao, userDao), state),
-  ),
-  new NavigationTab("Settings", EPage.Settings, () =>
-    changePage(new SettingsPage(state, articleDao, userDao), state),
-  ),
-  new NavigationTab("Sign In", EPage.SignIn, () =>
-    changePage(new SignInPage(state, articleDao, userDao), state),
-  ),
-  new NavigationTab("Sign Up", EPage.SignUp, () =>
-    changePage(new SignUpPage(state, articleDao, userDao), state),
-  ),
-];
+) =>
+  [
+    new NavigationTab("Home", EPage.Home, () =>
+      changePage(new HomePage(state, articleDao, userDao), state),
+    ),
+    !!state.currentUsername &&
+      new NavigationTab("New Article", EPage.NewArticle, () =>
+        changePage(new NewArticlePage(state, articleDao, userDao), state),
+      ),
+    !!state.currentUsername &&
+      new NavigationTab("Settings", EPage.Settings, () =>
+        changePage(new SettingsPage(state, articleDao, userDao), state),
+      ),
+    !state.currentUsername &&
+      new NavigationTab("Sign In", EPage.SignIn, () =>
+        changePage(new SignInPage(state, articleDao, userDao), state),
+      ),
+    !state.currentUsername &&
+      new NavigationTab("Sign Up", EPage.SignUp, () =>
+        changePage(new SignUpPage(state, articleDao, userDao), state),
+      ),
+  ].filter(Boolean) as ITab[];
 
 export class NavigationTab implements ITab {
   constructor(

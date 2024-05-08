@@ -10,7 +10,7 @@ export const generateProfilePageProps = (
 ): TAppProps<EPage.Profile> => {
   const page = state.currentPage as ProfilePage;
   return {
-    navbarProps: generateNavBarProps(state, refresh),
+    navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Profile,
     pageProps: {
       onMount: async () => {

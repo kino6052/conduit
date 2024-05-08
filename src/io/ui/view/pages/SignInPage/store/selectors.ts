@@ -10,7 +10,7 @@ export const generateSignInPageProps = (
 ): TAppProps<EPage.SignIn> => {
   const page = state.currentPage as SignInPage;
   return {
-    navbarProps: generateNavBarProps(state, refresh),
+    navbarProps: generateNavBarProps(page, refresh),
     page: EPage.SignIn,
     pageProps: {
       onMount: async () => {

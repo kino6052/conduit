@@ -1,5 +1,6 @@
 import { Article } from "../../components/Article";
 import { IArticle } from "../../components/Article/types";
+import { getTabs } from "../../components/Navigation";
 import { Pagination } from "../../components/Pagination";
 import { ITab } from "../../components/Tab/types";
 import { IArticleDAO } from "../../data/ArticleDAO/types";
@@ -23,6 +24,7 @@ export class ArticlePreviewPage {
     if (!state) throw new Error("No state provided");
     if (!articleDao) throw new Error("No article source provided");
     if (!userDao) throw new Error("No user source provided");
+    this.tabs = getTabs(this.state, this.articleDao, this.userDao);
   }
 
   public async initialize() {

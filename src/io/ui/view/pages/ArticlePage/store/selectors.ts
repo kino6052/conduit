@@ -11,7 +11,7 @@ export const generateArticlePageProps = (
   const page = state.currentPage as ArticlePage;
 
   return {
-    navbarProps: generateNavBarProps(state, refresh),
+    navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Article,
     pageProps: {
       onMount: () => {
@@ -28,7 +28,7 @@ export const generateArticlePageProps = (
         canEdit: page.article?.username === state.currentUsername,
         userInfoProps: {
           date: page.article?.date ?? "",
-          onClick: () => {
+          onClick: async () => {
             alert("Click on the author");
           },
           username: page.article?.username ?? "",
@@ -50,13 +50,13 @@ export const generateArticlePageProps = (
       comments: [],
       content: page.article?.description ?? "",
       favoriteButtonProps: {
-        onClick: () => {
+        onClick: async () => {
           alert("Favorite");
         },
         text: "Like",
       },
       followButtonProps: {
-        onClick: () => {
+        onClick: async () => {
           alert("Follow");
         },
         text: "Follow",
