@@ -1,9 +1,10 @@
 import { Article } from "../../components/Article";
 import { IArticle } from "../../components/Article/types";
-import { getTabs } from "../../components/Navigation";
+import { getNavigationTabs } from "../../components/Navigation";
 import { Pagination } from "../../components/Pagination";
+import { ContentTab } from "../../components/Tab";
 import { ITab } from "../../components/Tab/types";
-import { IArticleDAO } from "../../data/ArticleDAO/types";
+import { IArticleDAO, IArticleData } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
 
@@ -12,9 +13,10 @@ import { IAppState } from "../../types";
  */
 export class ArticlePreviewPage {
   public tags: string[] = [];
-  public tabs: ITab[] = [];
+  public navigationTabs: ITab[] = [];
   public pagination = new Pagination();
   public articles: IArticle[] = [];
+  public tabs: ITab[] = [];
 
   constructor(
     public state: IAppState,
@@ -24,7 +26,37 @@ export class ArticlePreviewPage {
     if (!state) throw new Error("No state provided");
     if (!articleDao) throw new Error("No article source provided");
     if (!userDao) throw new Error("No user source provided");
-    this.tabs = getTabs(this.state, this.articleDao, this.userDao);
+
+    this.navigationTabs = getNavigationTabs(
+      this.state,
+      this.articleDao,
+      this.userDao,
+    );
+
+    this.tabs = [
+      new ContentTab("Global Feed", "global", async () => {
+        const articles = (await this.articleDao.getArticles()) ?? [];
+
+        this.articles = this.processArticles(articles);
+      }),
+
+      this.state.currentUsername &&
+        new ContentTab("Your Feed", "your", async () => {
+          const articles =
+            (await this.articleDao.getArticlesByUsername(
+              this.state.currentUsername,
+            )) ?? [];
+
+          this.articles = this.processArticles(articles);
+        }),
+    ].filter(Boolean) as ITab[];
+  }
+
+  private processArticles(articleData: IArticleData[]) {
+    return articleData.map(
+      (articleData) =>
+        new Article(articleData, this.state, this.articleDao, this.userDao),
+    );
   }
 
   public async initialize() {

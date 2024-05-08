@@ -13,6 +13,6 @@ export enum EPage {
 
 export interface IPage {
   pageType: EPage;
-  tabs: ITab[];
+  navigationTabs: ITab[];
   initialize(): Promise<void>;
 }

@@ -1,4 +1,4 @@
-import { getTabs } from "../../components/Navigation";
+import { getNavigationTabs } from "../../components/Navigation";
 import { ITab } from "../../components/Tab/types";
 import { IArticleData, IArticleDAO } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
@@ -8,7 +8,7 @@ import { EPage, IPage } from "../types";
 export class ArticlePage implements IPage {
   public pageType: EPage = EPage.Article;
   public article: IArticleData | undefined;
-  public tabs: ITab[];
+  public navigationTabs: ITab[];
 
   constructor(
     private articleId: string,
@@ -16,7 +16,11 @@ export class ArticlePage implements IPage {
     private articlesDao: IArticleDAO,
     private userDao: IUserDAO,
   ) {
-    this.tabs = getTabs(this.state, this.articlesDao, this.userDao);
+    this.navigationTabs = getNavigationTabs(
+      this.state,
+      this.articlesDao,
+      this.userDao,
+    );
   }
 
   public async initialize(): Promise<void> {

@@ -16,7 +16,7 @@ export const changePage = async (page: IPage, state: IAppState) => {
   state.isLoading = false;
 };
 
-export const getTabs = (
+export const getNavigationTabs = (
   state: IAppState,
   articleDao: IArticleDAO,
   userDao: IUserDAO,

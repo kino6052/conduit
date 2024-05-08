@@ -1,5 +1,5 @@
 import { Field } from "../../components/Field";
-import { changePage, getTabs } from "../../components/Navigation";
+import { changePage, getNavigationTabs } from "../../components/Navigation";
 import { ITab } from "../../components/Tab/types";
 import { IArticleDAO } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
@@ -11,14 +11,18 @@ export class SignInPage implements IPage {
   public pageType: EPage = EPage.SignIn;
   public username: Field<string> = new Field("");
   public password: Field<string> = new Field("");
-  public tabs: ITab[] = [];
+  public navigationTabs: ITab[] = [];
 
   constructor(
     public state: IAppState,
     private articleDao: IArticleDAO,
     private userDao: IUserDAO,
   ) {
-    this.tabs = getTabs(this.state, this.articleDao, this.userDao);
+    this.navigationTabs = getNavigationTabs(
+      this.state,
+      this.articleDao,
+      this.userDao,
+    );
   }
 
   public async initialize(): Promise<void> {

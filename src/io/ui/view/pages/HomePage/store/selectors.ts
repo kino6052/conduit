@@ -1,7 +1,9 @@
 import { HomePage } from "../../../../../../model/pages/ArticlePreviewPage/HomePage";
 import { EPage } from "../../../../../../model/pages/types";
 import { IAppState } from "../../../../../../model/types";
+import { ETabVariant } from "../../../components/Tab/types";
 import { TAppProps } from "../../../types";
+import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateHomePageProps = (
@@ -74,7 +76,13 @@ export const generateHomePageProps = (
         })),
         title: "Popular tags",
       },
-      tabs: [],
+      tabs: page.tabs.map((tab) => ({
+        id: tab.id,
+        isActive: tab.isSelected,
+        onClick: getAsyncRefresh(tab.open, refresh),
+        text: tab.name,
+        variant: ETabVariant.Default,
+      })),
     } as TAppProps<EPage.Home>["pageProps"],
   };
 };
