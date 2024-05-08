@@ -1,4 +1,4 @@
-import { Subject, filter, take, tap } from "rxjs";
+import { Subject } from "rxjs";
 import { UI } from "..";
 import { initializeAppState } from "../../../../model";
 import { EPage } from "../../../../model/pages/types";
@@ -13,7 +13,6 @@ let ui: TAppProps<EPage>;
 const refresh = jest.fn();
 const PropsSubject = new Subject<TAppProps<EPage>>();
 
-// TODO: Create "getEventualResult"
 beforeEach(async () => {
   state = initializeAppState();
   refresh.mockRestore();
