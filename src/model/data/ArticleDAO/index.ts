@@ -113,6 +113,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
   public async getArticlePaginationTotal({
     tag,
     username,
+    articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
   }: {
     index?: number;
     articlesPerPage?: number;
@@ -124,9 +125,10 @@ export class ArticleDAOTestDouble implements IArticleDAO {
       tag,
       username,
     });
-    return Math.ceil(
-      articles.length / EArticleDatabaseConstant.ArticlesPerPage,
-    );
+
+    console.warn({ articles: articles.length, articlesPerPage });
+
+    return Math.ceil(articles.length / articlesPerPage);
   }
 
   public async getArticlesByPagination({
@@ -140,9 +142,11 @@ export class ArticleDAOTestDouble implements IArticleDAO {
     tag?: string;
     username?: string;
   }) {
+    console.warn({ tag, username });
+
     return (await this.getArticles())
       .filter((article) => {
-        if (!tag || !!username) return article;
+        if (!tag) return article;
 
         return !!article.tags.find((_tag) => _tag === tag);
       })

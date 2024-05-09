@@ -27,7 +27,10 @@ export const generateHomePageProps = (
       posts: page.articles.map((article) => ({
         ...article.articleData,
         comments: [],
-        tags: [],
+        tags: article.articleData.tags.map((tag) => ({
+          id: tag,
+          onClick: getAsyncRefresh(() => page.selectTag(tag), refresh),
+        })),
         hasLiked: article.articleData.likers.includes(state.currentUsername),
         likeButtonProps: {
           onClick: getAsyncRefresh(article.toggleLike.bind(article), refresh),

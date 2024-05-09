@@ -88,7 +88,12 @@ describe("Home Page", () => {
           "onClick": [Function],
         },
         "onClick": [Function],
-        "tags": [],
+        "tags": [
+          {
+            "id": "1",
+            "onClick": [Function],
+          },
+        ],
         "title": "A good thing",
         "userInfoProps": {
           "date": "",
@@ -112,7 +117,12 @@ describe("Home Page", () => {
           "onClick": [Function],
         },
         "onClick": [Function],
-        "tags": [],
+        "tags": [
+          {
+            "id": "2",
+            "onClick": [Function],
+          },
+        ],
         "title": "A bad thing",
         "userInfoProps": {
           "date": "",
@@ -497,7 +507,12 @@ describe("Home Page", () => {
           "onClick": [Function],
         },
         "onClick": [Function],
-        "tags": [],
+        "tags": [
+          {
+            "id": "1",
+            "onClick": [Function],
+          },
+        ],
         "title": "A good thing",
         "userInfoProps": {
           "date": "",
@@ -521,7 +536,12 @@ describe("Home Page", () => {
           "onClick": [Function],
         },
         "onClick": [Function],
-        "tags": [],
+        "tags": [
+          {
+            "id": "2",
+            "onClick": [Function],
+          },
+        ],
         "title": "A bad thing",
         "userInfoProps": {
           "date": "",
@@ -583,7 +603,12 @@ describe("Home Page", () => {
     "onClick": [Function],
   },
   "onClick": [Function],
-  "tags": [],
+  "tags": [
+    {
+      "id": "1",
+      "onClick": [Function],
+    },
+  ],
   "title": "A good thing",
   "userInfoProps": {
     "date": "",
@@ -612,7 +637,12 @@ describe("Home Page", () => {
     "onClick": [Function],
   },
   "onClick": [Function],
-  "tags": [],
+  "tags": [
+    {
+      "id": "1",
+      "onClick": [Function],
+    },
+  ],
   "title": "A good thing",
   "userInfoProps": {
     "date": "",
@@ -746,7 +776,12 @@ describe("Home Page", () => {
         "onClick": [Function],
       },
       "onClick": [Function],
-      "tags": [],
+      "tags": [
+        {
+          "id": "1",
+          "onClick": [Function],
+        },
+      ],
       "title": "A good thing",
       "userInfoProps": {
         "date": "",
@@ -824,7 +859,12 @@ describe("Home Page", () => {
         "onClick": [Function],
       },
       "onClick": [Function],
-      "tags": [],
+      "tags": [
+        {
+          "id": "2",
+          "onClick": [Function],
+        },
+      ],
       "title": "A bad thing",
       "userInfoProps": {
         "date": "",

@@ -15,7 +15,7 @@ import { ETab } from "./constants";
 export class ArticlePreviewPage {
   public tags: string[] = [];
   public navigationTabs: ITab[] = [];
-  public pagination = new Pagination();
+  public pagination;
   public articles: IArticle[] = [];
   public tabs: ITab[] = [];
 
@@ -33,6 +33,8 @@ export class ArticlePreviewPage {
       this.articleDao,
       this.userDao,
     );
+
+    this.pagination = new Pagination(state, articleDao, userDao);
   }
 
   private async initializeTabs() {
@@ -91,17 +93,13 @@ export class ArticlePreviewPage {
         return;
       }
 
-      await this.initializeTabs();
+      await this.initialize(tag);
 
       this.tabs.push(new ContentTab(tag, ETab.Tag, async () => {}));
 
       this.tabs.forEach((tab) => {
         tab.isSelected = tab.id === ETab.Tag;
       });
-
-      this.articles = this.processArticles(
-        await this.articleDao.getArticlesByTag(tag),
-      );
     } catch (e) {
       console.error("Could not select tag");
     } finally {
@@ -109,18 +107,24 @@ export class ArticlePreviewPage {
     }
   }
 
-  public async initialize() {
+  public getSelectedTag() {
+    return this.tabs.find((tab) => tab.id === ETab.Tag)?.name;
+  }
+
+  public async initialize(tag?: string) {
     this.state.isLoading = true;
 
     return Promise.all([
-      this.articleDao.getArticles(),
       this.articleDao.getAllTags(),
       this.initializeTabs(),
-    ]).then(([articles, tags]) => {
-      this.articles = articles.map(
-        (articleData) =>
-          new Article(articleData, this.state, this.articleDao, this.userDao),
+      this.pagination.initialize(tag),
+    ]).then(async ([tags]) => {
+      this.articles = this.processArticles(
+        await this.articleDao.getArticlesByPagination({
+          tag,
+        }),
       );
+
       this.tags = tags;
       this.state.isLoading = false;
     });
