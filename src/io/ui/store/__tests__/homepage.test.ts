@@ -794,5 +794,83 @@ describe("Home Page", () => {
   ],
 }
 `);
+
+    await (ui.pageProps as THomePageProps).sidebarProps.tags[1].onClick();
+
+    expect((ui.pageProps as THomePageProps).posts.length).toBe(1);
+
+    expect(ui.pageProps).toMatchInlineSnapshot(`
+{
+  "isLoading": false,
+  "onMount": [Function],
+  "paginationBarProps": {
+    "numberOfPages": 1,
+    "onClick": [Function],
+    "selected": 0,
+  },
+  "posts": [
+    {
+      "comments": [],
+      "date": "",
+      "description": "A bad article, a really really bad one",
+      "hasLiked": false,
+      "id": "test-post-2",
+      "likeButtonProps": {
+        "onClick": [Function],
+        "text": "0",
+      },
+      "likers": [],
+      "linkProps": {
+        "onClick": [Function],
+      },
+      "onClick": [Function],
+      "tags": [],
+      "title": "A bad thing",
+      "userInfoProps": {
+        "date": "",
+        "onClick": [Function],
+        "username": "jane-lobster",
+      },
+      "username": "jane-lobster",
+    },
+  ],
+  "sidebarProps": {
+    "tags": [
+      {
+        "id": "1",
+        "onClick": [Function],
+      },
+      {
+        "id": "2",
+        "onClick": [Function],
+      },
+    ],
+    "title": "Popular tags",
+  },
+  "tabs": [
+    {
+      "id": "GlobalFeed",
+      "isActive": false,
+      "onClick": [Function],
+      "text": "Global Feed",
+      "variant": "default",
+    },
+    {
+      "id": "YourFeed",
+      "isActive": false,
+      "onClick": [Function],
+      "text": "Your Feed",
+      "variant": "default",
+    },
+    {
+      "id": "Tag",
+      "isActive": true,
+      "onClick": [Function],
+      "text": "2",
+      "variant": "default",
+    },
+  ],
+}
+`);
   });
 });

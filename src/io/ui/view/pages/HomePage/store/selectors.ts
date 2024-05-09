@@ -15,15 +15,7 @@ export const generateHomePageProps = (
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Home,
     pageProps: {
-      onMount: async () => {
-        const result = page.initialize().then(() => {
-          refresh?.();
-        });
-
-        refresh?.();
-
-        return result;
-      },
+      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
       paginationBarProps: {
         numberOfPages: (state.currentPage as HomePage).pagination.numberOfPages,
         selected: (state.currentPage as HomePage).pagination.currentPageNumber,
@@ -38,15 +30,7 @@ export const generateHomePageProps = (
         tags: [],
         hasLiked: article.articleData.likers.includes(state.currentUsername),
         likeButtonProps: {
-          onClick: async () => {
-            const result = article.toggleLike().then(() => {
-              refresh?.();
-            });
-
-            refresh?.();
-
-            return result;
-          },
+          onClick: getAsyncRefresh(article.toggleLike.bind(article), refresh),
           text: `${article.articleData.likers.length}`,
         },
         linkProps: {

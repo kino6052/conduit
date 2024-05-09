@@ -91,6 +91,8 @@ export class ArticlePreviewPage {
         return;
       }
 
+      await this.initializeTabs();
+
       this.tabs.push(new ContentTab(tag, ETab.Tag, async () => {}));
 
       this.tabs.forEach((tab) => {
