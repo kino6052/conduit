@@ -2,6 +2,7 @@ import { uniqueId } from "lodash";
 import { EArticleDatabaseConstant } from "./constants";
 import { IArticleData, IArticleDAO } from "./types";
 import { wait } from "../../../utils/time";
+import { EAppConstant } from "../../constants";
 
 const DEFAULT_POSTS: IArticleData[] = [
   {
@@ -16,6 +17,26 @@ const DEFAULT_POSTS: IArticleData[] = [
   },
   {
     id: "test-post-2",
+    username: "jane-lobster",
+    description: "A bad article, a really really bad one",
+    likers: [],
+    tags: ["2"],
+    title: "A bad thing",
+    date: "",
+    comments: [],
+  },
+  {
+    id: "test-post-3",
+    username: "jane-lobster",
+    description: "A bad article, a really really bad one",
+    likers: [],
+    tags: ["2"],
+    title: "A bad thing",
+    date: "",
+    comments: [],
+  },
+  {
+    id: "test-post-4",
     username: "jane-lobster",
     description: "A bad article, a really really bad one",
     likers: [],
@@ -113,7 +134,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
   public async getArticlePaginationTotal({
     tag,
     username,
-    articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
+    articlesPerPage = EAppConstant.ArticlesPerPage,
   }: {
     index?: number;
     articlesPerPage?: number;
@@ -126,14 +147,12 @@ export class ArticleDAOTestDouble implements IArticleDAO {
       username,
     });
 
-    console.warn({ articles: articles.length, articlesPerPage });
-
     return Math.ceil(articles.length / articlesPerPage);
   }
 
   public async getArticlesByPagination({
     index = 0,
-    articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
+    articlesPerPage = EAppConstant.ArticlesPerPage,
     tag,
     username,
   }: {

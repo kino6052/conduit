@@ -1,31 +1,43 @@
 import { EAppConstant } from "../../constants";
 import { IArticleDAO } from "../../data/ArticleDAO/types";
-import { IUserDAO } from "../../data/UserDAO/types";
-import { IAppState } from "../../types";
 
 export class Pagination {
-  private _currentPageNumber = 0;
-  public numberOfPages = 1;
+  public pages: {
+    select: () => Promise<void>;
+    isSelected: boolean;
+  }[] = [];
 
   public get currentPageNumber() {
-    return this._currentPageNumber;
+    return this.pages.find((page) => page.isSelected);
   }
 
-  public set currentPageNumber(currentPageNumber: number) {
-    this._currentPageNumber = Math.max(this.numberOfPages, currentPageNumber);
-  }
-
-  public async initialize(tag?: string, username?: string) {
-    this.numberOfPages = await this.articleDao.getArticlePaginationTotal({
+  public async initialize(tag?: string, username?: string, index?: number) {
+    const numberOfPages = await this.articleDao.getArticlePaginationTotal({
       articlesPerPage: EAppConstant.ArticlesPerPage,
       tag,
       username,
     });
+
+    this.pages = new Array(numberOfPages).fill(null).map((_page, i) => {
+      const page = {
+        isSelected: i === index,
+        select: async () => {
+          await this.onSelect(i);
+          this.pages = this.pages.map((page, _i) => {
+            return {
+              ...page,
+              isSelected: index === _i,
+            };
+          });
+        },
+      };
+
+      return page;
+    });
   }
 
   constructor(
-    private appState: IAppState,
+    private onSelect: (index: number) => Promise<void>,
     private articleDao: IArticleDAO,
-    private userDao: IUserDAO,
   ) {}
 }

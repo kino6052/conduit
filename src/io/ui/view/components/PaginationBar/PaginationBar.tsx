@@ -3,25 +3,17 @@ import { PaginationButton } from "../PaginationButton";
 import styles from "./style.scss";
 import { TPaginationBarProps } from "./types";
 
-export const PaginationBar: React.FC<TPaginationBarProps> = ({
-  numberOfPages = 1,
-  selected = 0,
-  onClick
-}) => {
-  const array = new Array(numberOfPages).fill(null);
+export const PaginationBar: React.FC<TPaginationBarProps> = ({ pages }) => {
   return (
     <div className={styles.wrapper}>
-      {array.map((_, i) => {
-        const isSelected = i === selected;
-        const id = String(i);
-        const value = String(i + 1);
+      {pages.map((page) => {
         return (
           <PaginationButton
-            id={id}
-            value={value}
-            key={id}
-            isSelected={isSelected}
-            onClick={onClick}
+            id={page.text}
+            value={page.text}
+            key={page.text}
+            isSelected={page.isSelected}
+            onClick={page.onClick}
           />
         );
       })}

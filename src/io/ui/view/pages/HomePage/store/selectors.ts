@@ -17,11 +17,12 @@ export const generateHomePageProps = (
     pageProps: {
       onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
       paginationBarProps: {
-        numberOfPages: (state.currentPage as HomePage).pagination.numberOfPages,
-        selected: (state.currentPage as HomePage).pagination.currentPageNumber,
-        onClick: () => {
-          console.warn("Click");
-        },
+        pages:
+          page.pagination?.pages.map((paginationPage, i) => ({
+            isSelected: paginationPage.isSelected,
+            onClick: getAsyncRefresh(paginationPage.select, refresh),
+            text: `${i}`,
+          })) ?? [],
       },
       isLoading: page.state.isLoading,
       posts: page.articles.map((article) => ({

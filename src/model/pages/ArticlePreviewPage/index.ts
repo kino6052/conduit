@@ -15,7 +15,7 @@ import { ETab } from "./constants";
 export class ArticlePreviewPage {
   public tags: string[] = [];
   public navigationTabs: ITab[] = [];
-  public pagination;
+  public pagination: Pagination | undefined;
   public articles: IArticle[] = [];
   public tabs: ITab[] = [];
 
@@ -33,8 +33,6 @@ export class ArticlePreviewPage {
       this.articleDao,
       this.userDao,
     );
-
-    this.pagination = new Pagination(state, articleDao, userDao);
   }
 
   private async initializeTabs() {
@@ -44,9 +42,7 @@ export class ArticlePreviewPage {
         ETab.GlobalFeed,
         async () => {
           this.state.isLoading = true; // TODO: Think about how to process loading;
-          const articles = (await this.articleDao.getArticles()) ?? [];
-
-          this.articles = this.processArticles(articles);
+          await this.initialize();
           this.selectTab(ETab.GlobalFeed);
           this.state.isLoading = false;
         },
@@ -56,12 +52,11 @@ export class ArticlePreviewPage {
       this.state.currentUsername &&
         new ContentTab("Your Feed", ETab.YourFeed, async () => {
           this.state.isLoading = true;
-          const articles =
-            (await this.articleDao.getArticlesByUsername(
-              this.state.currentUsername,
-            )) ?? [];
-
-          this.articles = this.processArticles(articles);
+          await this.initialize(
+            undefined,
+            undefined,
+            this.state.currentUsername,
+          );
           this.selectTab(ETab.YourFeed);
           this.state.isLoading = false;
         }),
@@ -111,17 +106,23 @@ export class ArticlePreviewPage {
     return this.tabs.find((tab) => tab.id === ETab.Tag)?.name;
   }
 
-  public async initialize(tag?: string) {
+  public async initialize(tag?: string, index = 0, username?: string) {
     this.state.isLoading = true;
+
+    this.pagination = new Pagination(async (_index) => {
+      await this.initialize(tag, _index);
+    }, this.articleDao);
 
     return Promise.all([
       this.articleDao.getAllTags(),
       this.initializeTabs(),
-      this.pagination.initialize(tag),
+      this.pagination.initialize(tag, undefined, index),
     ]).then(async ([tags]) => {
       this.articles = this.processArticles(
         await this.articleDao.getArticlesByPagination({
           tag,
+          index,
+          username,
         }),
       );
 

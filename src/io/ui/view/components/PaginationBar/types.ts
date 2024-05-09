@@ -1,7 +1,9 @@
 import React from "react";
 
 export type TPaginationBarProps = {
-  numberOfPages: number;
-  selected: number;
-  onClick: React.MouseEventHandler;
+  pages: {
+    text: string;
+    onClick: () => Promise<void>;
+    isSelected: boolean;
+  }[];
 };
