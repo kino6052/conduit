@@ -161,8 +161,6 @@ export class ArticleDAOTestDouble implements IArticleDAO {
     tag?: string;
     username?: string;
   }) {
-    console.warn({ tag, username });
-
     return (await this.getArticles())
       .filter((article) => {
         if (!tag) return article;

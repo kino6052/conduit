@@ -21,7 +21,7 @@ export const generateHomePageProps = (
           page.pagination?.pages.map((paginationPage, i) => ({
             isSelected: paginationPage.isSelected,
             onClick: getAsyncRefresh(paginationPage.select, refresh),
-            text: `${i}`,
+            text: `${i + 1}`,
           })) ?? [],
       },
       isLoading: page.state.isLoading,

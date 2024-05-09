@@ -68,9 +68,18 @@ describe("Home Page", () => {
     "isLoading": false,
     "onMount": [Function],
     "paginationBarProps": {
-      "numberOfPages": 1,
-      "onClick": [Function],
-      "selected": 0,
+      "pages": [
+        {
+          "isSelected": true,
+          "onClick": [Function],
+          "text": "1",
+        },
+        {
+          "isSelected": false,
+          "onClick": [Function],
+          "text": "2",
+        },
+      ],
     },
     "posts": [
       {
@@ -487,9 +496,18 @@ describe("Home Page", () => {
     "isLoading": false,
     "onMount": [Function],
     "paginationBarProps": {
-      "numberOfPages": 1,
-      "onClick": [Function],
-      "selected": 0,
+      "pages": [
+        {
+          "isSelected": true,
+          "onClick": [Function],
+          "text": "1",
+        },
+        {
+          "isSelected": false,
+          "onClick": [Function],
+          "text": "2",
+        },
+      ],
     },
     "posts": [
       {
@@ -685,9 +703,18 @@ describe("Home Page", () => {
   "isLoading": false,
   "onMount": [Function],
   "paginationBarProps": {
-    "numberOfPages": 1,
-    "onClick": [Function],
-    "selected": 0,
+    "pages": [
+      {
+        "isSelected": true,
+        "onClick": [Function],
+        "text": "1",
+      },
+      {
+        "isSelected": false,
+        "onClick": [Function],
+        "text": "2",
+      },
+    ],
   },
   "posts": [],
   "sidebarProps": {
@@ -749,16 +776,18 @@ describe("Home Page", () => {
 
     await (ui.pageProps as THomePageProps).sidebarProps.tags[0].onClick();
 
-    expect((ui.pageProps as THomePageProps).posts.length).toBe(1);
-
     expect(ui.pageProps).toMatchInlineSnapshot(`
 {
   "isLoading": false,
   "onMount": [Function],
   "paginationBarProps": {
-    "numberOfPages": 1,
-    "onClick": [Function],
-    "selected": 0,
+    "pages": [
+      {
+        "isSelected": true,
+        "onClick": [Function],
+        "text": "1",
+      },
+    ],
   },
   "posts": [
     {
@@ -832,16 +861,23 @@ describe("Home Page", () => {
 
     await (ui.pageProps as THomePageProps).sidebarProps.tags[1].onClick();
 
-    expect((ui.pageProps as THomePageProps).posts.length).toBe(1);
-
     expect(ui.pageProps).toMatchInlineSnapshot(`
 {
   "isLoading": false,
   "onMount": [Function],
   "paginationBarProps": {
-    "numberOfPages": 1,
-    "onClick": [Function],
-    "selected": 0,
+    "pages": [
+      {
+        "isSelected": true,
+        "onClick": [Function],
+        "text": "1",
+      },
+      {
+        "isSelected": false,
+        "onClick": [Function],
+        "text": "2",
+      },
+    ],
   },
   "posts": [
     {
@@ -850,6 +886,35 @@ describe("Home Page", () => {
       "description": "A bad article, a really really bad one",
       "hasLiked": false,
       "id": "test-post-2",
+      "likeButtonProps": {
+        "onClick": [Function],
+        "text": "0",
+      },
+      "likers": [],
+      "linkProps": {
+        "onClick": [Function],
+      },
+      "onClick": [Function],
+      "tags": [
+        {
+          "id": "2",
+          "onClick": [Function],
+        },
+      ],
+      "title": "A bad thing",
+      "userInfoProps": {
+        "date": "",
+        "onClick": [Function],
+        "username": "jane-lobster",
+      },
+      "username": "jane-lobster",
+    },
+    {
+      "comments": [],
+      "date": "",
+      "description": "A bad article, a really really bad one",
+      "hasLiked": false,
+      "id": "test-post-3",
       "likeButtonProps": {
         "onClick": [Function],
         "text": "0",
@@ -907,6 +972,145 @@ describe("Home Page", () => {
       "isActive": true,
       "onClick": [Function],
       "text": "2",
+      "variant": "default",
+    },
+  ],
+}
+`);
+  });
+
+  it("should paginate", async () => {
+    await ui.navbarProps.tabs[2].onClick();
+
+    await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
+      target: {
+        value: "username",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).passwordInputProps.onChange({
+      target: {
+        value: "password",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
+
+    await ui.pageProps.onMount();
+
+    ui = await checkEventual<TAppProps<EPage>>(
+      (result) => !result.pageProps.isLoading,
+      PropsSubject,
+    );
+
+    await (
+      ui.pageProps as THomePageProps
+    ).paginationBarProps.pages[1].onClick();
+
+    expect(ui.pageProps).toMatchInlineSnapshot(`
+{
+  "isLoading": false,
+  "onMount": [Function],
+  "paginationBarProps": {
+    "pages": [
+      {
+        "isSelected": false,
+        "onClick": [Function],
+        "text": "1",
+      },
+      {
+        "isSelected": true,
+        "onClick": [Function],
+        "text": "2",
+      },
+    ],
+  },
+  "posts": [
+    {
+      "comments": [],
+      "date": "",
+      "description": "A bad article, a really really bad one",
+      "hasLiked": false,
+      "id": "test-post-3",
+      "likeButtonProps": {
+        "onClick": [Function],
+        "text": "0",
+      },
+      "likers": [],
+      "linkProps": {
+        "onClick": [Function],
+      },
+      "onClick": [Function],
+      "tags": [
+        {
+          "id": "2",
+          "onClick": [Function],
+        },
+      ],
+      "title": "A bad thing",
+      "userInfoProps": {
+        "date": "",
+        "onClick": [Function],
+        "username": "jane-lobster",
+      },
+      "username": "jane-lobster",
+    },
+    {
+      "comments": [],
+      "date": "",
+      "description": "A bad article, a really really bad one",
+      "hasLiked": false,
+      "id": "test-post-4",
+      "likeButtonProps": {
+        "onClick": [Function],
+        "text": "0",
+      },
+      "likers": [],
+      "linkProps": {
+        "onClick": [Function],
+      },
+      "onClick": [Function],
+      "tags": [
+        {
+          "id": "2",
+          "onClick": [Function],
+        },
+      ],
+      "title": "A bad thing",
+      "userInfoProps": {
+        "date": "",
+        "onClick": [Function],
+        "username": "jane-lobster",
+      },
+      "username": "jane-lobster",
+    },
+  ],
+  "sidebarProps": {
+    "tags": [
+      {
+        "id": "1",
+        "onClick": [Function],
+      },
+      {
+        "id": "2",
+        "onClick": [Function],
+      },
+    ],
+    "title": "Popular tags",
+  },
+  "tabs": [
+    {
+      "id": "GlobalFeed",
+      "isActive": true,
+      "onClick": [Function],
+      "text": "Global Feed",
+      "variant": "default",
+    },
+    {
+      "id": "YourFeed",
+      "isActive": false,
+      "onClick": [Function],
+      "text": "Your Feed",
       "variant": "default",
     },
   ],
