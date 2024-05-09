@@ -1,6 +1,7 @@
 import { uniqueId } from "lodash";
 import { EArticleDatabaseConstant } from "./constants";
 import { IArticleData, IArticleDAO } from "./types";
+import { wait } from "../../../utils/time";
 
 const DEFAULT_POST: IArticleData = {
   id: "post-1",
@@ -40,6 +41,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
   }
 
   public async getArticles() {
+    await wait(500);
     return this.articles;
   }
 

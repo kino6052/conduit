@@ -13,6 +13,11 @@ let ui: TAppProps<EPage>;
 const refresh = jest.fn();
 const PropsSubject = new Subject<TAppProps<EPage>>();
 
+beforeAll(() => {
+  jest.useFakeTimers();
+  jest.spyOn(global, "setTimeout").mockImplementation(async (cb) => cb());
+});
+
 beforeEach(async () => {
   state = initializeAppState();
   refresh.mockRestore();
@@ -110,7 +115,15 @@ describe("Home Page", () => {
       ],
       "title": "Popular tags",
     },
-    "tabs": [],
+    "tabs": [
+      {
+        "id": "GlobalFeed",
+        "isActive": true,
+        "onClick": [Function],
+        "text": "Global Feed",
+        "variant": "default",
+      },
+    ],
   },
 }
 `);
@@ -320,6 +333,71 @@ describe("Home Page", () => {
 `);
   });
 
+  it("should navigate to the profile when you click on the author", async () => {
+    await (ui.pageProps as THomePageProps).posts[0].userInfoProps.onClick();
+
+    ui = UI.generateProps(state, refresh);
+
+    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`3`);
+    expect(ui).toMatchInlineSnapshot(`
+{
+  "navbarProps": {
+    "logo": {
+      "onClick": [Function],
+    },
+    "tabs": [
+      {
+        "id": "Home",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Home",
+        "variant": "menu",
+      },
+      {
+        "id": "SignIn",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Sign In",
+        "variant": "menu",
+      },
+      {
+        "id": "SignUp",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Sign Up",
+        "variant": "menu",
+      },
+    ],
+  },
+  "page": "Profile",
+  "pageProps": {
+    "bannerProps": {
+      "followButtonProps": {
+        "onClick": [Function],
+        "text": "Follow",
+      },
+      "userInfoProps": {
+        "date": "",
+        "username": "jane-lobster",
+      },
+    },
+    "onMount": [Function],
+    "paginationBarProps": {
+      "numberOfPages": 1,
+      "onClick": [Function],
+      "selected": 0,
+    },
+    "posts": [],
+    "sidebarProps": {
+      "tags": [],
+      "title": "Popular",
+    },
+    "tabs": [],
+  },
+}
+`);
+  });
+
   it("should sign in", async () => {
     await ui.navbarProps.tabs[2].onClick();
 
@@ -426,7 +504,22 @@ describe("Home Page", () => {
       ],
       "title": "Popular tags",
     },
-    "tabs": [],
+    "tabs": [
+      {
+        "id": "GlobalFeed",
+        "isActive": true,
+        "onClick": [Function],
+        "text": "Global Feed",
+        "variant": "default",
+      },
+      {
+        "id": "YourFeed",
+        "isActive": false,
+        "onClick": [Function],
+        "text": "Your Feed",
+        "variant": "default",
+      },
+    ],
   },
 }
 `);
@@ -487,6 +580,79 @@ describe("Home Page", () => {
     "username": "jane-lobster",
   },
   "username": "jane-lobster",
+}
+`);
+  });
+
+  it("should navigate between content tabs", async () => {
+    await ui.navbarProps.tabs[2].onClick();
+
+    await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
+      target: {
+        value: "username",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).passwordInputProps.onChange({
+      target: {
+        value: "password",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
+
+    await ui.pageProps.onMount();
+
+    ui = await checkEventual<TAppProps<EPage>>(
+      (result) => !result.pageProps.isLoading,
+      PropsSubject,
+    );
+
+    await (ui.pageProps as THomePageProps).tabs[1].onClick();
+
+    expect((ui.pageProps as THomePageProps)).toMatchInlineSnapshot(`
+{
+  "isLoading": false,
+  "onMount": [Function],
+  "paginationBarProps": {
+    "numberOfPages": 1,
+    "onClick": [Function],
+    "selected": 0,
+  },
+  "posts": [],
+  "sidebarProps": {
+    "tags": [
+      {
+        "id": "1",
+        "onClick": [Function],
+      },
+      {
+        "id": "2",
+        "onClick": [Function],
+      },
+      {
+        "id": "3",
+        "onClick": [Function],
+      },
+    ],
+    "title": "Popular tags",
+  },
+  "tabs": [
+    {
+      "id": "GlobalFeed",
+      "isActive": false,
+      "onClick": [Function],
+      "text": "Global Feed",
+      "variant": "default",
+    },
+    {
+      "id": "YourFeed",
+      "isActive": true,
+      "onClick": [Function],
+      "text": "Your Feed",
+      "variant": "default",
+    },
+  ],
 }
 `);
   });

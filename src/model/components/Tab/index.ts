@@ -5,7 +5,10 @@ export class ContentTab implements ITab {
     public name: string,
     public id: string,
     public open: () => Promise<void>,
-  ) {}
+    isSelected?: boolean,
+  ) {
+    this.isSelected = !!isSelected;
+  }
 
   public isSelected: boolean = false;
 }

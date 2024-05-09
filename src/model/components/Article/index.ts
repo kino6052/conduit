@@ -66,8 +66,6 @@ export class Article implements IArticle {
       return;
     }
 
-    console.warn(this.articleDao, articleData);
-
     this.articleData = articleData;
   }
 }

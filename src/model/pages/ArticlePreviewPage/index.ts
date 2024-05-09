@@ -7,6 +7,7 @@ import { ITab } from "../../components/Tab/types";
 import { IArticleDAO, IArticleData } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
+import { ETab } from "./constants";
 
 /**
  * This class is needed because there are multiple pages that can preview articles
@@ -34,20 +35,35 @@ export class ArticlePreviewPage {
     );
 
     this.tabs = [
-      new ContentTab("Global Feed", "global", async () => {
-        const articles = (await this.articleDao.getArticles()) ?? [];
+      new ContentTab(
+        "Global Feed",
+        ETab.GlobalFeed,
+        async () => {
+          this.state.isLoading = true; // TODO: Think about how to process loading;
+          const articles = (await this.articleDao.getArticles()) ?? [];
 
-        this.articles = this.processArticles(articles);
-      }),
+          this.articles = this.processArticles(articles);
+          this.tabs.forEach((tab) => {
+            tab.isSelected = tab.id === ETab.GlobalFeed;
+          });
+          this.state.isLoading = false;
+        },
+        true,
+      ),
 
       this.state.currentUsername &&
-        new ContentTab("Your Feed", "your", async () => {
+        new ContentTab("Your Feed", ETab.YourFeed, async () => {
+          this.state.isLoading = true;
           const articles =
             (await this.articleDao.getArticlesByUsername(
               this.state.currentUsername,
             )) ?? [];
 
           this.articles = this.processArticles(articles);
+          this.tabs.forEach((tab) => {
+            tab.isSelected = tab.id === ETab.YourFeed;
+          });
+          this.state.isLoading = false;
         }),
     ].filter(Boolean) as ITab[];
   }

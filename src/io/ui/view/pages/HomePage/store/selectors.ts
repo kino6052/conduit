@@ -31,7 +31,7 @@ export const generateHomePageProps = (
           console.warn("Click");
         },
       },
-      isLoading: false,
+      isLoading: page.state.isLoading,
       posts: page.articles.map((article) => ({
         ...article.articleData,
         comments: [],

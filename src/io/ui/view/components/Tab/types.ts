@@ -11,5 +11,5 @@ export type TTabProps = TWithId<{
   text: string;
   variant: ETabVariant;
   icon?: string;
-  onClick: React.MouseEventHandler;
+  onClick: () => Promise<void>;
 }>;
