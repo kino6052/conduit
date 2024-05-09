@@ -78,7 +78,7 @@ describe("Home Page", () => {
         "date": "",
         "description": "A good article, a really really good one",
         "hasLiked": false,
-        "id": "post-1",
+        "id": "test-post-1",
         "likeButtonProps": {
           "onClick": [Function],
           "text": "0",
@@ -97,6 +97,30 @@ describe("Home Page", () => {
         },
         "username": "jane-lobster",
       },
+      {
+        "comments": [],
+        "date": "",
+        "description": "A bad article, a really really bad one",
+        "hasLiked": false,
+        "id": "test-post-2",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [],
+        "title": "A bad thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
     ],
     "sidebarProps": {
       "tags": [
@@ -106,10 +130,6 @@ describe("Home Page", () => {
         },
         {
           "id": "2",
-          "onClick": [Function],
-        },
-        {
-          "id": "3",
           "onClick": [Function],
         },
       ],
@@ -467,7 +487,7 @@ describe("Home Page", () => {
         "date": "",
         "description": "A good article, a really really good one",
         "hasLiked": false,
-        "id": "post-1",
+        "id": "test-post-1",
         "likeButtonProps": {
           "onClick": [Function],
           "text": "0",
@@ -486,6 +506,30 @@ describe("Home Page", () => {
         },
         "username": "jane-lobster",
       },
+      {
+        "comments": [],
+        "date": "",
+        "description": "A bad article, a really really bad one",
+        "hasLiked": false,
+        "id": "test-post-2",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [],
+        "title": "A bad thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
     ],
     "sidebarProps": {
       "tags": [
@@ -495,10 +539,6 @@ describe("Home Page", () => {
         },
         {
           "id": "2",
-          "onClick": [Function],
-        },
-        {
-          "id": "3",
           "onClick": [Function],
         },
       ],
@@ -531,7 +571,7 @@ describe("Home Page", () => {
   "date": "",
   "description": "A good article, a really really good one",
   "hasLiked": true,
-  "id": "post-1",
+  "id": "test-post-1",
   "likeButtonProps": {
     "onClick": [Function],
     "text": "1",
@@ -562,7 +602,7 @@ describe("Home Page", () => {
   "date": "",
   "description": "A good article, a really really good one",
   "hasLiked": false,
-  "id": "post-1",
+  "id": "test-post-1",
   "likeButtonProps": {
     "onClick": [Function],
     "text": "0",
@@ -610,7 +650,7 @@ describe("Home Page", () => {
 
     await (ui.pageProps as THomePageProps).tabs[1].onClick();
 
-    expect((ui.pageProps as THomePageProps)).toMatchInlineSnapshot(`
+    expect(ui.pageProps as THomePageProps).toMatchInlineSnapshot(`
 {
   "isLoading": false,
   "onMount": [Function],
@@ -630,10 +670,6 @@ describe("Home Page", () => {
         "id": "2",
         "onClick": [Function],
       },
-      {
-        "id": "3",
-        "onClick": [Function],
-      },
     ],
     "title": "Popular tags",
   },
@@ -650,6 +686,109 @@ describe("Home Page", () => {
       "isActive": true,
       "onClick": [Function],
       "text": "Your Feed",
+      "variant": "default",
+    },
+  ],
+}
+`);
+  });
+
+  it("should navigate to tags", async () => {
+    await ui.navbarProps.tabs[2].onClick();
+
+    await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
+      target: {
+        value: "username",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).passwordInputProps.onChange({
+      target: {
+        value: "password",
+      },
+    });
+
+    await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
+
+    await ui.pageProps.onMount();
+
+    ui = await checkEventual<TAppProps<EPage>>(
+      (result) => !result.pageProps.isLoading,
+      PropsSubject,
+    );
+
+    await (ui.pageProps as THomePageProps).sidebarProps.tags[0].onClick();
+
+    expect((ui.pageProps as THomePageProps).posts.length).toBe(1);
+
+    expect(ui.pageProps).toMatchInlineSnapshot(`
+{
+  "isLoading": false,
+  "onMount": [Function],
+  "paginationBarProps": {
+    "numberOfPages": 1,
+    "onClick": [Function],
+    "selected": 0,
+  },
+  "posts": [
+    {
+      "comments": [],
+      "date": "",
+      "description": "A good article, a really really good one",
+      "hasLiked": false,
+      "id": "test-post-1",
+      "likeButtonProps": {
+        "onClick": [Function],
+        "text": "0",
+      },
+      "likers": [],
+      "linkProps": {
+        "onClick": [Function],
+      },
+      "onClick": [Function],
+      "tags": [],
+      "title": "A good thing",
+      "userInfoProps": {
+        "date": "",
+        "onClick": [Function],
+        "username": "jane-lobster",
+      },
+      "username": "jane-lobster",
+    },
+  ],
+  "sidebarProps": {
+    "tags": [
+      {
+        "id": "1",
+        "onClick": [Function],
+      },
+      {
+        "id": "2",
+        "onClick": [Function],
+      },
+    ],
+    "title": "Popular tags",
+  },
+  "tabs": [
+    {
+      "id": "GlobalFeed",
+      "isActive": false,
+      "onClick": [Function],
+      "text": "Global Feed",
+      "variant": "default",
+    },
+    {
+      "id": "YourFeed",
+      "isActive": false,
+      "onClick": [Function],
+      "text": "Your Feed",
+      "variant": "default",
+    },
+    {
+      "id": "Tag",
+      "isActive": true,
+      "onClick": [Function],
+      "text": "1",
       "variant": "default",
     },
   ],

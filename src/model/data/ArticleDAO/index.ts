@@ -3,16 +3,28 @@ import { EArticleDatabaseConstant } from "./constants";
 import { IArticleData, IArticleDAO } from "./types";
 import { wait } from "../../../utils/time";
 
-const DEFAULT_POST: IArticleData = {
-  id: "post-1",
-  username: "jane-lobster",
-  description: "A good article, a really really good one",
-  likers: [],
-  tags: ["1", "2", "3"],
-  title: "A good thing",
-  date: "",
-  comments: [],
-};
+const DEFAULT_POSTS: IArticleData[] = [
+  {
+    id: "test-post-1",
+    username: "jane-lobster",
+    description: "A good article, a really really good one",
+    likers: [],
+    tags: ["1"],
+    title: "A good thing",
+    date: "",
+    comments: [],
+  },
+  {
+    id: "test-post-2",
+    username: "jane-lobster",
+    description: "A bad article, a really really bad one",
+    likers: [],
+    tags: ["2"],
+    title: "A bad thing",
+    date: "",
+    comments: [],
+  },
+];
 
 export class ArticleDAOTestDouble implements IArticleDAO {
   constructor(
@@ -20,7 +32,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
     private generateId: () => string = () => uniqueId(),
   ) {}
 
-  private articles: IArticleData[] = [DEFAULT_POST];
+  private articles: IArticleData[] = DEFAULT_POSTS;
 
   public async getArticleIds() {
     return Object.keys(this.articles);

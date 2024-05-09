@@ -72,7 +72,7 @@ export const generateHomePageProps = (
       sidebarProps: {
         tags: page.tags.map((tag) => ({
           id: tag,
-          onClick: async () => {},
+          onClick: getAsyncRefresh(() => page.selectTag(tag), refresh),
         })),
         title: "Popular tags",
       },

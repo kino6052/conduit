@@ -33,7 +33,9 @@ export class ArticlePreviewPage {
       this.articleDao,
       this.userDao,
     );
+  }
 
+  private async initializeTabs() {
     this.tabs = [
       new ContentTab(
         "Global Feed",
@@ -43,9 +45,7 @@ export class ArticlePreviewPage {
           const articles = (await this.articleDao.getArticles()) ?? [];
 
           this.articles = this.processArticles(articles);
-          this.tabs.forEach((tab) => {
-            tab.isSelected = tab.id === ETab.GlobalFeed;
-          });
+          this.selectTab(ETab.GlobalFeed);
           this.state.isLoading = false;
         },
         true,
@@ -60,12 +60,19 @@ export class ArticlePreviewPage {
             )) ?? [];
 
           this.articles = this.processArticles(articles);
-          this.tabs.forEach((tab) => {
-            tab.isSelected = tab.id === ETab.YourFeed;
-          });
+          this.selectTab(ETab.YourFeed);
           this.state.isLoading = false;
         }),
     ].filter(Boolean) as ITab[];
+  }
+
+  private selectTab(id: ETab) {
+    this.tabs = this.tabs
+      .filter((tab) => tab.id !== ETab.Tag)
+      .map((tab) => {
+        tab.isSelected = tab.id === id;
+        return tab;
+      });
   }
 
   private processArticles(articleData: IArticleData[]) {
@@ -75,12 +82,38 @@ export class ArticlePreviewPage {
     );
   }
 
+  public async selectTag(tag: string) {
+    try {
+      this.state.isLoading = true;
+
+      if (!this.tags.includes(tag)) {
+        console.warn("Tag not found");
+        return;
+      }
+
+      this.tabs.push(new ContentTab(tag, ETab.Tag, async () => {}));
+
+      this.tabs.forEach((tab) => {
+        tab.isSelected = tab.id === ETab.Tag;
+      });
+
+      this.articles = this.processArticles(
+        await this.articleDao.getArticlesByTag(tag),
+      );
+    } catch (e) {
+      console.error("Could not select tag");
+    } finally {
+      this.state.isLoading = false;
+    }
+  }
+
   public async initialize() {
     this.state.isLoading = true;
 
     return Promise.all([
       this.articleDao.getArticles(),
       this.articleDao.getAllTags(),
+      this.initializeTabs(),
     ]).then(([articles, tags]) => {
       this.articles = articles.map(
         (articleData) =>

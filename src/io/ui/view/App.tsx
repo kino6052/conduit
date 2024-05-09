@@ -11,6 +11,8 @@ import { TAppProps } from "./types";
 import { pagesMap as pagesComponentMap } from "../../../utils/pagesMap";
 import { EPage } from "../../../model/pages/types";
 
+import styles from "./styles.scss";
+
 pagesComponentMap[EPage.Home] = HomePage;
 pagesComponentMap[EPage.Article] = ArticlePage;
 pagesComponentMap[EPage.NewArticle] = EditArticlePage;
