@@ -11,4 +11,5 @@ export type TProfilePageProps = TWithOnMountHandler<{
   sidebarProps: TSidebarProps;
   posts: TArticleProps[];
   paginationBarProps: TPaginationBarProps;
+  isLoading: boolean;
 }>;

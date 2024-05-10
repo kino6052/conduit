@@ -6,6 +6,7 @@ import { Sidebar } from "../../components/Sidebar";
 import { Tab } from "../../components/Tab/Tab";
 import styles from "./style.scss";
 import { TProfilePageProps } from "./types";
+import { Loader } from "../../components/Loader";
 
 export const ProfilePage: React.FC<TProfilePageProps> = ({
   bannerProps,
@@ -13,22 +14,28 @@ export const ProfilePage: React.FC<TProfilePageProps> = ({
   posts,
   tabs,
   paginationBarProps,
+  isLoading,
 }) => {
   return (
     <div className={styles.wrapper}>
       <ProfileBanner {...bannerProps} />
       <div className={styles.content}>
-        {tabs.length > 0 && (
-          <div className={styles.tabs}>
-            {tabs.map((tab) => (
-              <Tab {...tab} key={tab.id} />
+        {isLoading && <Loader />}
+        {!isLoading && (
+          <>
+            {tabs.length > 0 && (
+              <div className={styles.tabs}>
+                {tabs.map((tab) => (
+                  <Tab {...tab} key={tab.id} />
+                ))}
+              </div>
+            )}
+            {sidebarProps.tags.length > 0 && <Sidebar {...sidebarProps} />}
+            {posts.map((post) => (
+              <Post {...post} />
             ))}
-          </div>
+          </>
         )}
-        {sidebarProps.tags.length > 0 && <Sidebar {...sidebarProps} />}
-        {posts.map((post) => (
-          <Post {...post} />
-        ))}
       </div>
       <PaginationBar {...paginationBarProps} />
     </div>

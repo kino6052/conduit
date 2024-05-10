@@ -1,6 +1,7 @@
 import { HomePage } from "../../../../../../model/pages/ArticlePreviewPage/HomePage";
 import { EPage } from "../../../../../../model/pages/types";
 import { IAppState } from "../../../../../../model/types";
+import { generatePostsProps } from "../../../components/Article/selectors";
 import { ETabVariant } from "../../../components/Tab/types";
 import { TAppProps } from "../../../types";
 import { getAsyncRefresh } from "../../../utils/utils";
@@ -25,37 +26,7 @@ export const generateHomePageProps = (
           })) ?? [],
       },
       isLoading: page.state.isLoading,
-      posts: page.articles.map((article) => ({
-        ...article.articleData,
-        comments: [],
-        tags: article.articleData.tags.map((tag) => ({
-          id: tag,
-          onClick: getAsyncRefresh(() => page.selectTag(tag), refresh),
-        })),
-        hasLiked: article.articleData.likers.includes(state.currentUsername),
-        likeButtonProps: {
-          onClick: getAsyncRefresh(article.toggleLike.bind(article), refresh),
-          text: `${article.articleData.likers.length}`,
-        },
-        linkProps: {
-          onClick: async () => {
-            await article.read();
-            refresh?.();
-          },
-        },
-        userInfoProps: {
-          date: article.articleData.date,
-          username: article.articleData.username,
-          onClick: getAsyncRefresh(async () => {
-            const author = await article.getAuthor();
-            await author?.examine();
-          }, refresh),
-        },
-        onClick: async () => {
-          article.read();
-          refresh?.();
-        },
-      })),
+      posts: generatePostsProps(state, refresh),
       sidebarProps: {
         tags: page.tags.map((tag) => ({
           id: tag,

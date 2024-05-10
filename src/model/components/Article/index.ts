@@ -7,12 +7,30 @@ import { User } from "../User";
 import { IArticle } from "./types";
 
 export class Article implements IArticle {
+  public hasLiked: boolean;
+  public author: User;
+
   constructor(
     public articleData: IArticleData,
     private appState: IAppState,
     private articleDao: IArticleDAO,
     private userDao: IUserDAO,
-  ) {}
+  ) {
+    this.author = new User(
+      {
+        articleIds: [],
+        bio: "",
+        date: "",
+        favoriteArticleIds: [],
+        followers: [],
+        username: articleData.username,
+      },
+      this.appState,
+      this.articleDao,
+      this.userDao,
+    );
+    this.hasLiked = articleData.likers.includes(this.appState.currentUsername);
+  }
 
   async read() {
     this.appState.selectedArticleId = this.articleData.id;
@@ -40,6 +58,7 @@ export class Article implements IArticle {
         this.userDao,
       );
 
+      this.author = user;
       return user;
     } catch (e) {
       console.error(e);
@@ -74,5 +93,6 @@ export class Article implements IArticle {
     }
 
     this.articleData = articleData;
+    this.hasLiked = articleData.likers.includes(this.appState.currentUsername);
   }
 }

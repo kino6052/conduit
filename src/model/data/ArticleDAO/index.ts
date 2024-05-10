@@ -74,7 +74,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
   }
 
   public async getArticles() {
-    await wait(500);
+    await wait(100);
     return this.articles;
   }
 

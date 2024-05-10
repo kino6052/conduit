@@ -18,7 +18,7 @@ export class UserDAOTestDouble implements IUserDAO {
   ];
 
   public async findUserByName(username: string) {
-    await wait(500);
+    await wait(100);
     return this.users.find((user) => user.username === username);
   }
 

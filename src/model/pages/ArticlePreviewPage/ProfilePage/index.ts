@@ -28,7 +28,9 @@ export class ProfilePage extends ArticlePreviewPage implements IPage {
 
     this.user = new User(userInfo, this.state, this.articleDao, this.userDao);
 
-    this.isFollowing = await this.user.getIsFollowing();
+    await this.user.initialize();
+
+    this.isFollowing = this.user.isFollowing;
 
     return;
   }

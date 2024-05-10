@@ -219,6 +219,11 @@ describe("Home Page", () => {
       },
     },
     "commentBoxProps": {
+      "buttonProps": {
+        "disabled": false,
+        "onClick": [Function],
+        "text": "Submit",
+      },
       "iconProps": {
         "icon": "favorite",
       },
@@ -231,8 +236,10 @@ describe("Home Page", () => {
     "comments": [],
     "content": "",
     "favoriteButtonProps": {
+      "hasIcon": true,
       "onClick": [Function],
       "text": "Like",
+      "variant": "secondary",
     },
     "followButtonProps": {
       "onClick": [Function],
@@ -348,14 +355,17 @@ describe("Home Page", () => {
   "pageProps": {
     "bannerProps": {
       "followButtonProps": {
+        "disabled": false,
         "onClick": [Function],
         "text": "Follow",
       },
       "userInfoProps": {
         "date": "",
+        "imageSrc": "",
         "username": "jane-lobster",
       },
     },
+    "isLoading": false,
     "onMount": [Function],
     "paginationBarProps": {
       "pages": [
@@ -371,7 +381,66 @@ describe("Home Page", () => {
         },
       ],
     },
-    "posts": [],
+    "posts": [
+      {
+        "comments": [],
+        "date": "",
+        "description": "A good article, a really really good one",
+        "hasLiked": false,
+        "id": "test-post-1",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [
+          {
+            "id": "1",
+            "onClick": [Function],
+          },
+        ],
+        "title": "A good thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
+      {
+        "comments": [],
+        "date": "",
+        "description": "A bad article, a really really bad one",
+        "hasLiked": false,
+        "id": "test-post-2",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [
+          {
+            "id": "2",
+            "onClick": [Function],
+          },
+        ],
+        "title": "A bad thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
+    ],
     "sidebarProps": {
       "tags": [],
       "title": "Popular",
@@ -422,14 +491,17 @@ describe("Home Page", () => {
   "pageProps": {
     "bannerProps": {
       "followButtonProps": {
+        "disabled": false,
         "onClick": [Function],
         "text": "Follow",
       },
       "userInfoProps": {
         "date": "",
+        "imageSrc": "",
         "username": "jane-lobster",
       },
     },
+    "isLoading": false,
     "onMount": [Function],
     "paginationBarProps": {
       "pages": [
@@ -445,7 +517,66 @@ describe("Home Page", () => {
         },
       ],
     },
-    "posts": [],
+    "posts": [
+      {
+        "comments": [],
+        "date": "",
+        "description": "A good article, a really really good one",
+        "hasLiked": false,
+        "id": "test-post-1",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [
+          {
+            "id": "1",
+            "onClick": [Function],
+          },
+        ],
+        "title": "A good thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
+      {
+        "comments": [],
+        "date": "",
+        "description": "A bad article, a really really bad one",
+        "hasLiked": false,
+        "id": "test-post-2",
+        "likeButtonProps": {
+          "onClick": [Function],
+          "text": "0",
+        },
+        "likers": [],
+        "linkProps": {
+          "onClick": [Function],
+        },
+        "onClick": [Function],
+        "tags": [
+          {
+            "id": "2",
+            "onClick": [Function],
+          },
+        ],
+        "title": "A bad thing",
+        "userInfoProps": {
+          "date": "",
+          "onClick": [Function],
+          "username": "jane-lobster",
+        },
+        "username": "jane-lobster",
+      },
+    ],
     "sidebarProps": {
       "tags": [],
       "title": "Popular",

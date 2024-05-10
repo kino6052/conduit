@@ -10,6 +10,7 @@ export interface IArticleData {
     id: string;
     text: string;
     username?: string;
+    date?: string;
   }[];
 }
 
