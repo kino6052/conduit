@@ -24,3 +24,14 @@
 .white {
   color: var(--variable-collection-white);
 }
+
+.user {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}

@@ -8,7 +8,7 @@ export class Pagination {
   }[] = [];
 
   public get currentPageNumber() {
-    return this.pages.find((page) => page.isSelected);
+    return this.pages.findIndex((page) => page.isSelected) ?? 0;
   }
 
   public async initialize(tag?: string, username?: string, index?: number) {

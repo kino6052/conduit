@@ -27,8 +27,10 @@ export const ArticlePage: React.FC<TArticlePageProps> = ({
         <div className={styles.comments}>
           <div className={styles.user}>
             {userInfoProps && <UserInfo {...userInfoProps} />}
-            <Button {...followButtonProps} />
-            <Button {...favoriteButtonProps} />
+            <div className={styles.buttons}>
+              <Button {...followButtonProps} />
+              <Button {...favoriteButtonProps} />
+            </div>
           </div>
           <CommentInput
             {...commentBoxProps}

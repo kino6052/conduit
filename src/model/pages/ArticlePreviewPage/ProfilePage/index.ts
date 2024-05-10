@@ -14,24 +14,30 @@ export class ProfilePage extends ArticlePreviewPage implements IPage {
     super(state, articlesDao, userDao);
   }
 
-  public async initialize(): Promise<void> {
-    await super.initialize();
+  public async initialize(tag?: string, index = 0): Promise<void> {
+    try {
+      this.state.isLoading = true;
 
-    const userInfo = await this.userDao.findUserByName(
-      this.state.selectedUsername,
-    );
+      const userInfo = await this.userDao.findUserByName(
+        this.state.selectedUsername,
+      );
 
-    if (!userInfo) {
-      console.warn("No user info");
-      return;
+      if (!userInfo) {
+        console.warn("No user info");
+        return;
+      }
+
+      await super.initialize(tag, index, userInfo.username);
+
+      this.user = new User(userInfo, this.state, this.articleDao, this.userDao);
+
+      await this.user.initialize();
+
+      this.isFollowing = this.user.isFollowing;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.state.isLoading = false;
     }
-
-    this.user = new User(userInfo, this.state, this.articleDao, this.userDao);
-
-    await this.user.initialize();
-
-    this.isFollowing = this.user.isFollowing;
-
-    return;
   }
 }

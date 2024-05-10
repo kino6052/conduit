@@ -39,7 +39,10 @@ export const generateProfilePageProps = (
         pages:
           page.pagination?.pages.map((paginationPage, i) => ({
             isSelected: paginationPage.isSelected,
-            onClick: getAsyncRefresh(paginationPage.select, refresh),
+            onClick: getAsyncRefresh(
+              paginationPage.select.bind(paginationPage),
+              refresh,
+            ),
             text: `${i + 1}`,
           })) ?? [],
       },

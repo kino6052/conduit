@@ -107,16 +107,18 @@ export class ArticlePreviewPage {
   }
 
   public async initialize(tag?: string, index = 0, username?: string) {
+    console.warn({ tag, index, username });
     this.state.isLoading = true;
 
     this.pagination = new Pagination(async (_index) => {
-      await this.initialize(tag, _index);
+      console.warn({ _index });
+      await this.initialize(tag, _index, username);
     }, this.articleDao);
 
     return Promise.all([
       this.articleDao.getAllTags(),
       this.initializeTabs(),
-      this.pagination.initialize(tag, undefined, index),
+      this.pagination.initialize(tag, username, index),
     ]).then(async ([tags]) => {
       this.articles = this.processArticles(
         await this.articleDao.getArticlesByPagination({

@@ -22,13 +22,15 @@ export const ArticleBanner: React.FC<TArticleBannerProps> = ({
           variant={ETypographyType.Heading1}
           className={styles.white}
         />
-        <div>
+        <div className={styles.user}>
           {userInfoProps && <UserInfo {...userInfoProps} />}
-          {canEdit && editButtonProps && (
-            <Button {...editButtonProps} text="Edit" />
-          )}
-          {canEdit && deleteButtonProps && (
-            <Button {...deleteButtonProps} text="Delete" />
+          {canEdit && (
+            <div className={styles.buttons}>
+              {editButtonProps && <Button {...editButtonProps} text="Edit" />}
+              {deleteButtonProps && (
+                <Button {...deleteButtonProps} text="Delete" />
+              )}
+            </div>
           )}
         </div>
       </div>
