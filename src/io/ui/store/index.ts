@@ -15,6 +15,7 @@ const propsMap = {
   [EPage.Home]: generateHomePageProps,
   [EPage.Article]: generateArticlePageProps,
   [EPage.NewArticle]: generateNewArticlePageProps,
+  [EPage.EditArticle]: generateNewArticlePageProps,
   [EPage.Profile]: generateProfilePageProps,
   [EPage.Settings]: generateSettingsPageProps,
   [EPage.SignIn]: generateSignInPageProps,

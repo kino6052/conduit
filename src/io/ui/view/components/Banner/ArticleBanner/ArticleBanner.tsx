@@ -1,17 +1,18 @@
 import React from "react";
-import { Typography } from "../../Typography";
+import { getClassNames } from "../../../../../../utils/styles";
 import { Button } from "../../Button";
+import { Typography } from "../../Typography";
 import { ETypographyType } from "../../Typography/types";
+import { UserInfo } from "../../UserInfo";
 import styles from "./styles.scss";
 import { TArticleBannerProps } from "./types";
-import { UserInfo } from "../../UserInfo";
-import { getClassNames } from "../../../../../../utils/styles";
-import { EArticleBannerConstant } from "./constants";
 
 export const ArticleBanner: React.FC<TArticleBannerProps> = ({
   title,
   userInfoProps,
   canEdit,
+  editButtonProps,
+  deleteButtonProps,
 }) => {
   return (
     <div className={getClassNames(["wrapper", "article"], styles)}>
@@ -22,14 +23,12 @@ export const ArticleBanner: React.FC<TArticleBannerProps> = ({
           className={styles.white}
         />
         <div>
-          {userInfoProps && (
-            <UserInfo id={userInfoProps.username} {...userInfoProps} />
+          {userInfoProps && <UserInfo {...userInfoProps} />}
+          {canEdit && editButtonProps && (
+            <Button {...editButtonProps} text="Edit" />
           )}
-          {canEdit && (
-            <Button text="Edit" id={EArticleBannerConstant.EditButtonId} />
-          )}
-          {canEdit && (
-            <Button text="Delete" id={EArticleBannerConstant.RemoveButtonId} />
+          {canEdit && deleteButtonProps && (
+            <Button {...deleteButtonProps} text="Delete" />
           )}
         </div>
       </div>

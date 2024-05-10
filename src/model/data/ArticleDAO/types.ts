@@ -34,7 +34,7 @@ export interface IArticleDAO {
     description: string;
     tags: string[];
     username: string;
-  }) => Promise<void>;
+  }) => Promise<IArticleData>;
 
   // Selectors
   getArticlesByTag: (tag: string) => Promise<IArticleData[]>;

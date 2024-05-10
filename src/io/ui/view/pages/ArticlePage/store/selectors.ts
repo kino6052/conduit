@@ -28,6 +28,14 @@ export const generateArticlePageProps = (
             await author?.examine();
           }, refresh),
         },
+        editButtonProps: {
+          text: "",
+          onClick: getAsyncRefresh(page.edit.bind(page), refresh),
+        },
+        deleteButtonProps: {
+          text: "",
+          onClick: getAsyncRefresh(page.deleteArticle.bind(page), refresh),
+        },
       },
       tags: [],
       commentBoxProps: {

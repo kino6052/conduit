@@ -113,7 +113,7 @@ export class ArticleDAOTestDouble implements IArticleDAO {
     tags: string[];
     username: string;
   }) {
-    this.articles.unshift({
+    const article = {
       title,
       description,
       tags,
@@ -122,7 +122,11 @@ export class ArticleDAOTestDouble implements IArticleDAO {
       id: this.generateId(),
       likers: [],
       username,
-    });
+    };
+
+    this.articles.unshift(article);
+
+    return article;
   }
 
   public async getArticlesByTag(tag: string) {
@@ -245,11 +249,6 @@ export class ArticleDAOTestDouble implements IArticleDAO {
   }
 
   public async removeArticleById(id: string) {
-    const index = await this.getArticleIndex(id);
-    const doesExist = index > 0;
-
-    if (doesExist) {
-      this.articles.splice(index, 1);
-    }
+    this.articles = this.articles.filter(({ id: _id }) => id !== _id);
   }
 }

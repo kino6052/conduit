@@ -8,6 +8,8 @@ import { IArticleDAO } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
 import { HomePage } from "../ArticlePreviewPage/HomePage";
+import { EditArticlePage } from "../EditArticlePage";
+import { NewArticlePage } from "../NewArticlePage";
 import { SignInPage } from "../SignInPage";
 import { EPage, IPage } from "../types";
 
@@ -69,6 +71,32 @@ export class ArticlePage implements IPage {
       this.comment.errorMessage = "Something went wrong";
     } finally {
       this.comment.isDisabled = false;
+    }
+  }
+
+  public async edit() {
+    await changePage(
+      new EditArticlePage(
+        this.state,
+        this.articlesDao,
+        this.userDao,
+        this.article?.articleData,
+      ),
+      this.state,
+    );
+  }
+
+  public async deleteArticle() {
+    try {
+      if (!this.article) return;
+      await this.articlesDao.removeArticleById(this.article?.articleData.id);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await changePage(
+        new HomePage(this.state, this.articlesDao, this.userDao),
+        this.state,
+      );
     }
   }
 
