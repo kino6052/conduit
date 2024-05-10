@@ -14,6 +14,7 @@ export class UserDAOTestDouble implements IUserDAO {
       favoriteArticleIds: [],
       followers: [],
       bio: "",
+      imageSrc: "https://c.tenor.com/lhuFqfMRxvEAAAAd/tenor.gif",
     },
   ];
 

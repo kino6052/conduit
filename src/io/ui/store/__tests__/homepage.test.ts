@@ -361,7 +361,7 @@ describe("Home Page", () => {
       },
       "userInfoProps": {
         "date": "",
-        "imageSrc": "",
+        "imageSrc": "https://c.tenor.com/lhuFqfMRxvEAAAAd/tenor.gif",
         "username": "jane-lobster",
       },
     },
@@ -497,7 +497,7 @@ describe("Home Page", () => {
       },
       "userInfoProps": {
         "date": "",
-        "imageSrc": "",
+        "imageSrc": "https://c.tenor.com/lhuFqfMRxvEAAAAd/tenor.gif",
         "username": "jane-lobster",
       },
     },
