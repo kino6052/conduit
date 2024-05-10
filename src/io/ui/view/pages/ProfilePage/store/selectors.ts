@@ -2,6 +2,7 @@ import { ProfilePage } from "../../../../../../model/pages/ArticlePreviewPage/Pr
 import { EPage } from "../../../../../../model/pages/types";
 import { IAppState } from "../../../../../../model/types";
 import { TAppProps } from "../../../types";
+import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateProfilePageProps = (
@@ -36,9 +37,12 @@ export const generateProfilePageProps = (
         },
       },
       paginationBarProps: {
-        numberOfPages: 1,
-        onClick: () => {},
-        selected: 0,
+        pages:
+          page.pagination?.pages.map((paginationPage, i) => ({
+            isSelected: paginationPage.isSelected,
+            onClick: getAsyncRefresh(paginationPage.select, refresh),
+            text: `${i + 1}`,
+          })) ?? [],
       },
       posts: [], // TODO: Create common selector for posts
       sidebarProps: {

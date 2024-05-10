@@ -2,6 +2,7 @@ import { SignUpPage } from "../../../../../../model/pages/SignUpPage";
 import { EPage } from "../../../../../../model/pages/types";
 import { IAppState } from "../../../../../../model/types";
 import { TAppProps } from "../../../types";
+import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateSignUpPageProps = (
@@ -13,15 +14,7 @@ export const generateSignUpPageProps = (
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.SignUp,
     pageProps: {
-      onMount: async () => {
-        const result = page.initialize().then(() => {
-          refresh?.();
-        });
-
-        refresh?.();
-
-        return result;
-      },
+      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
       usernameInputProps: {
         onChange: async (e) => {
           page.username.value = e.target.value;
@@ -29,6 +22,8 @@ export const generateSignUpPageProps = (
         },
         placeholder: "Username",
         value: page.username.value,
+        disabled: state.isLoading,
+        error: page.username.errorMessage,
       },
       passwordInputProps: {
         onChange: async (e) => {
@@ -37,8 +32,10 @@ export const generateSignUpPageProps = (
         },
         placeholder: "Password",
         value: page.password.value,
+        disabled: state.isLoading,
+        error: page.password.errorMessage,
       },
-      documentationLinkProps: {
+      linkProps: {
         onClick: async (e) => {
           window.open(
             "https://www.google.com/search?q=do+a+barrel+roll",
@@ -47,14 +44,10 @@ export const generateSignUpPageProps = (
         },
       },
       buttonProps: {
-        onClick: async () => {
-          page.signUp().then(() => {
-            refresh?.();
-          });
-          refresh?.();
-        },
+        onClick: getAsyncRefresh(page.signUp.bind(page), refresh),
         text: "Sign Up",
-        disabled: !page.username || !page.password,
+        disabled:
+          state.isLoading || !page.username.value || !page.password.value, // TODO: Move in a method getIsDisabled()?
       },
     },
   };

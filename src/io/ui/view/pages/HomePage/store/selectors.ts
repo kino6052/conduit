@@ -46,11 +46,10 @@ export const generateHomePageProps = (
         userInfoProps: {
           date: article.articleData.date,
           username: article.articleData.username,
-          onClick: async () => {
+          onClick: getAsyncRefresh(async () => {
             const author = await article.getAuthor();
             await author?.examine();
-            refresh?.();
-          },
+          }, refresh),
         },
         onClick: async () => {
           article.read();

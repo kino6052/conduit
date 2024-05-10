@@ -13,7 +13,7 @@ let ui: TAppProps<EPage>;
 const refresh = jest.fn();
 const PropsSubject = new Subject<TAppProps<EPage>>();
 
-beforeAll(() => {
+beforeEach(() => {
   jest.useFakeTimers();
   jest.spyOn(global, "setTimeout").mockImplementation(async (cb) => cb());
 });
@@ -248,9 +248,6 @@ describe("Home Page", () => {
   it("should navigate to the sign in page when you try to like an article", async () => {
     await ui.pageProps.posts[0].likeButtonProps.onClick();
 
-    ui = UI.generateProps(state, refresh);
-
-    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`4`);
     expect(ui).toMatchInlineSnapshot(`
 {
   "navbarProps": {
@@ -284,7 +281,7 @@ describe("Home Page", () => {
   "page": "SignIn",
   "pageProps": {
     "buttonProps": {
-      "disabled": false,
+      "disabled": true,
       "onClick": [Function],
       "text": "Sign In",
     },
@@ -293,11 +290,15 @@ describe("Home Page", () => {
     },
     "onMount": [Function],
     "passwordInputProps": {
+      "disabled": false,
+      "error": "",
       "onChange": [Function],
       "placeholder": "Password",
       "value": "",
     },
     "usernameInputProps": {
+      "disabled": false,
+      "error": "",
       "onChange": [Function],
       "placeholder": "Username",
       "value": "",
@@ -312,7 +313,7 @@ describe("Home Page", () => {
 
     ui = UI.generateProps(state, refresh);
 
-    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`3`);
+    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`4`);
     expect(ui).toMatchInlineSnapshot(`
 {
   "navbarProps": {
@@ -357,9 +358,18 @@ describe("Home Page", () => {
     },
     "onMount": [Function],
     "paginationBarProps": {
-      "numberOfPages": 1,
-      "onClick": [Function],
-      "selected": 0,
+      "pages": [
+        {
+          "isSelected": true,
+          "onClick": [Function],
+          "text": "1",
+        },
+        {
+          "isSelected": false,
+          "onClick": [Function],
+          "text": "2",
+        },
+      ],
     },
     "posts": [],
     "sidebarProps": {
@@ -377,7 +387,7 @@ describe("Home Page", () => {
 
     ui = UI.generateProps(state, refresh);
 
-    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`3`);
+    expect(refresh.mock.calls.length).toMatchInlineSnapshot(`4`);
     expect(ui).toMatchInlineSnapshot(`
 {
   "navbarProps": {
@@ -422,9 +432,18 @@ describe("Home Page", () => {
     },
     "onMount": [Function],
     "paginationBarProps": {
-      "numberOfPages": 1,
-      "onClick": [Function],
-      "selected": 0,
+      "pages": [
+        {
+          "isSelected": true,
+          "onClick": [Function],
+          "text": "1",
+        },
+        {
+          "isSelected": false,
+          "onClick": [Function],
+          "text": "2",
+        },
+      ],
     },
     "posts": [],
     "sidebarProps": {
@@ -455,11 +474,6 @@ describe("Home Page", () => {
     await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
 
     await ui.pageProps.onMount();
-
-    ui = await checkEventual<TAppProps<EPage>>(
-      (result) => (result.pageProps as THomePageProps).posts.length > 0,
-      PropsSubject,
-    );
 
     expect(ui).toMatchInlineSnapshot(`
 {
@@ -689,10 +703,10 @@ describe("Home Page", () => {
 
     await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
 
-    await ui.pageProps.onMount();
+    ui.pageProps.onMount();
 
     ui = await checkEventual<TAppProps<EPage>>(
-      (result) => !result.pageProps.isLoading,
+      (result) => result.pageProps.posts.length > 0,
       PropsSubject,
     );
 
@@ -767,10 +781,10 @@ describe("Home Page", () => {
 
     await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
 
-    await ui.pageProps.onMount();
+    ui.pageProps.onMount();
 
     ui = await checkEventual<TAppProps<EPage>>(
-      (result) => !result.pageProps.isLoading,
+      (result) => !result.pageProps.isLoading && result.page === EPage.Home,
       PropsSubject,
     );
 
@@ -996,10 +1010,10 @@ describe("Home Page", () => {
 
     await (ui.pageProps as TSignUpPageProps).buttonProps.onClick();
 
-    await ui.pageProps.onMount();
+    ui.pageProps.onMount();
 
     ui = await checkEventual<TAppProps<EPage>>(
-      (result) => !result.pageProps.isLoading,
+      (result) => !result.pageProps.isLoading && result.page === EPage.Home,
       PropsSubject,
     );
 

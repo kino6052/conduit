@@ -25,20 +25,27 @@ export class Article implements IArticle {
   }
 
   async getAuthor() {
-    const userData = await this.userDao.findUserByName(
-      this.articleData.username,
-    );
+    try {
+      this.appState.isLoading = true;
+      const userData = await this.userDao.findUserByName(
+        this.articleData.username,
+      );
 
-    if (!userData) return;
+      if (!userData) return;
 
-    const user = new User(
-      userData,
-      this.appState,
-      this.articleDao,
-      this.userDao,
-    );
+      const user = new User(
+        userData,
+        this.appState,
+        this.articleDao,
+        this.userDao,
+      );
 
-    return user;
+      return user;
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.appState.isLoading = true;
+    }
   }
 
   async toggleLike() {

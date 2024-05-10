@@ -1,6 +1,7 @@
 import { Field } from "../../components/Field";
 import { changePage, getNavigationTabs } from "../../components/Navigation";
 import { ITab } from "../../components/Tab/types";
+import { EStatus } from "../../constants";
 import { IArticleDAO } from "../../data/ArticleDAO/types";
 import { IUserDAO } from "../../data/UserDAO/types";
 import { IAppState } from "../../types";
@@ -26,16 +27,38 @@ export class SignUpPage implements IPage {
   }
 
   public async signUp() {
-    await this.userDao.registerNewUser(
-      this.username.value,
-      this.password.value,
-    );
+    try {
+      this.state.isLoading = true;
+      const result = await this.userDao.registerNewUser(
+        this.username.value,
+        this.password.value,
+      );
 
-    this.state.currentUsername = this.username.value;
+      if (result.status === EStatus.Failure) {
+        result.errors?.forEach((error) => {
+          switch (error.field) {
+            case "username":
+              this.username.errorMessage = error.message;
+              break;
+            case "password":
+              this.password.errorMessage = error.message;
+              break;
+          }
+        });
 
-    await changePage(
-      new HomePage(this.state, this.articleDao, this.userDao),
-      this.state,
-    );
+        return;
+      }
+
+      this.state.currentUsername = this.username.value;
+
+      await changePage(
+        new HomePage(this.state, this.articleDao, this.userDao),
+        this.state,
+      );
+    } catch (e) {
+      console.error(e);
+    } finally {
+      this.state.isLoading = false;
+    }
   }
 }

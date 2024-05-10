@@ -15,16 +15,18 @@ export const HomePage: React.FC<THomePageProps> = ({
   paginationBarProps,
   isLoading,
 }) => {
-  if (isLoading) return <Loader />;
   return (
     <div className={styles.wrapper}>
       <DefaultBanner />
-      <div className={styles.content}>
-        <Tabs tabs={tabs} />
-        <Sidebar {...sidebarProps} />
-        {!isLoading && posts.map((post) => <Post {...post} key={post.id} />)}
-      </div>
-      <PaginationBar {...paginationBarProps} />
+      <>
+        <div className={styles.content}>
+          <Tabs tabs={tabs} />
+          {isLoading && <Loader />}
+          {!isLoading && <Sidebar {...sidebarProps} />}
+          {!isLoading && posts.map((post) => <Post {...post} key={post.id} />)}
+        </div>
+        <PaginationBar {...paginationBarProps} />
+      </>
     </div>
   );
 };

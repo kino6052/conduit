@@ -1,3 +1,5 @@
+import { EStatus } from "../../constants";
+
 export type TUserInfo = {
   date: string;
   username: string;
@@ -7,6 +9,14 @@ export type TUserInfo = {
   articleIds: string[];
   favoriteArticleIds: string[];
   followers: string[];
+};
+
+export type TResponse = {
+  status: EStatus;
+  errors?: {
+    field: string;
+    message: string;
+  }[];
 };
 
 export interface IUserDAO {
@@ -23,7 +33,7 @@ export interface IUserDAO {
 
   followUserById(id: string, username: string): Promise<void>;
 
-  registerNewUser(username: string, password: string): Promise<void>;
+  registerNewUser(username: string, password: string): Promise<TResponse>;
 
-  login(username: string, password: string): Promise<boolean>;
+  login(username: string, password: string): Promise<TResponse>;
 }

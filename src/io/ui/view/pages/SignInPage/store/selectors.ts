@@ -2,6 +2,7 @@ import { SignInPage } from "../../../../../../model/pages/SignInPage";
 import { EPage } from "../../../../../../model/pages/types";
 import { IAppState } from "../../../../../../model/types";
 import { TAppProps } from "../../../types";
+import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateSignInPageProps = (
@@ -13,15 +14,7 @@ export const generateSignInPageProps = (
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.SignIn,
     pageProps: {
-      onMount: async () => {
-        const result = page.initialize().then(() => {
-          refresh?.();
-        });
-
-        refresh?.();
-
-        return result;
-      },
+      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
       usernameInputProps: {
         onChange: async (e) => {
           page.username.value = e.target.value;
@@ -29,6 +22,8 @@ export const generateSignInPageProps = (
         },
         placeholder: "Username",
         value: page.username.value,
+        disabled: state.isLoading,
+        error: page.username.errorMessage,
       },
       passwordInputProps: {
         onChange: async (e) => {
@@ -37,6 +32,8 @@ export const generateSignInPageProps = (
         },
         placeholder: "Password",
         value: page.password.value,
+        disabled: state.isLoading,
+        error: page.password.errorMessage,
       },
       linkProps: {
         onClick: async (e) => {
@@ -47,14 +44,10 @@ export const generateSignInPageProps = (
         },
       },
       buttonProps: {
-        onClick: async () => {
-          page.signIn().then(() => {
-            refresh?.();
-          });
-          refresh?.();
-        },
+        onClick: getAsyncRefresh(page.signIn.bind(page), refresh),
         text: "Sign In",
-        disabled: !page.username || !page.password,
+        disabled:
+          state.isLoading || !page.username.value || !page.password.value, // TODO: Move in a method getIsDisabled()?
       },
     },
   };

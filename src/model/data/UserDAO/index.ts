@@ -1,4 +1,6 @@
-import { IUserDAO, TUserInfo } from "./types";
+import { wait } from "../../../utils/time";
+import { EStatus } from "../../constants";
+import { IUserDAO, TResponse, TUserInfo } from "./types";
 
 export class UserDAOTestDouble implements IUserDAO {
   constructor() {}
@@ -16,6 +18,7 @@ export class UserDAOTestDouble implements IUserDAO {
   ];
 
   public async findUserByName(username: string) {
+    await wait(500);
     return this.users.find((user) => user.username === username);
   }
 
@@ -73,11 +76,19 @@ export class UserDAOTestDouble implements IUserDAO {
   }
 
   public async registerNewUser(username: string, password: string) {
-    const alreadyRegisteredUser = this.users.find((_user) => {
-      return _user.username === username;
-    });
+    const alreadyRegisteredUser = await this.findUserByName(username);
 
-    if (alreadyRegisteredUser) throw new Error("User already exists");
+    if (alreadyRegisteredUser) {
+      return {
+        status: EStatus.Failure,
+        errors: [
+          {
+            field: "username",
+            message: "Username already taken",
+          },
+        ],
+      };
+    }
 
     this.users.push({
       username,
@@ -88,11 +99,28 @@ export class UserDAOTestDouble implements IUserDAO {
       favoriteArticleIds: [],
       followers: [],
     });
+
+    return {
+      status: EStatus.Success,
+    };
   }
 
-  public async login(username: string, password: string): Promise<boolean> {
-    return !!this.users.find((_user) => {
-      return _user.username === username;
-    });
+  public async login(username: string, password: string): Promise<TResponse> {
+    const user = await this.findUserByName(username);
+
+    if (!user || user.password !== password)
+      return {
+        status: EStatus.Failure,
+        errors: [
+          {
+            field: "password",
+            message: "Wrong username or password", // TODO: Use content
+          },
+        ],
+      };
+
+    return {
+      status: EStatus.Success,
+    };
   }
 }

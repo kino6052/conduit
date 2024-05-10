@@ -10,7 +10,15 @@ export type RecursivePartial<T> = {
       : T[P]; // NOTE: otherwise
 };
 
-export type TWithChangeHandler<T> = T & { onChange: React.ChangeEventHandler };
+export type TWithChangeHandler<T> = T & {
+  onChange: (event: {
+    target: {
+      value: string;
+      [key: string]: unknown;
+    };
+    [key: string]: unknown;
+  }) => Promise<void>;
+};
 export type TWithClickHandler<T> = T & { onClick: () => Promise<void> };
 export type TWithClassName<T> = T & { className?: string };
 export type TWithId<T> = T & { id: string; slug?: string };
