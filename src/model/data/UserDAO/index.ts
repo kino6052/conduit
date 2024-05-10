@@ -99,6 +99,7 @@ export class UserDAOTestDouble implements IUserDAO {
       date: "",
       favoriteArticleIds: [],
       followers: [],
+      imageSrc: "https://m.media-amazon.com/images/I/61f4m+gKf1L.jpg",
     });
 
     return {

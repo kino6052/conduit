@@ -45,6 +45,6 @@ export class EditArticlePage implements IPage {
 
   public generateTags() {
     const tags = new Set(this.tags.split(" "));
-    return Array.from(tags);
+    return Array.from(tags).filter(Boolean);
   }
 }
