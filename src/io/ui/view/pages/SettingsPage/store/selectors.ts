@@ -35,7 +35,7 @@ export const generateSettingsPageProps = (
           page.username.value = e.target.value;
           refresh?.();
         },
-        placeholder: "Let the world know about you",
+        placeholder: "Username",
         value: page.username.value,
       },
       passwordInputProps: {
@@ -43,7 +43,7 @@ export const generateSettingsPageProps = (
           page.password.value = e.target.value;
           refresh?.();
         },
-        placeholder: "Let the world know about you",
+        placeholder: "Password",
         value: page.password.value,
       },
       imageUrlInputProps: {
@@ -51,7 +51,7 @@ export const generateSettingsPageProps = (
           page.imageSrc.value = e.target.value;
           refresh?.();
         },
-        placeholder: "Let the world know about you",
+        placeholder: "Profile Picture URL",
         value: page.imageSrc.value,
       },
       buttonProps: {

@@ -5,8 +5,6 @@ import { Typography } from "../../Typography";
 import { ETypographyType } from "../../Typography/types";
 import styles from "./styles.scss";
 import { TProfileBannerProps } from "./types";
-import { EProfileBannerConstant } from "./constants";
-import { EUserInfoConstant } from "../../UserInfo/constants";
 
 export const ProfileBanner: React.FC<TProfileBannerProps> = ({
   userInfoProps: { username, imageSrc },
@@ -17,18 +15,14 @@ export const ProfileBanner: React.FC<TProfileBannerProps> = ({
       <div className={styles.content}>
         <div
           className={styles.image}
-          style={{ backgroundImage: imageSrc }}
+          style={{ backgroundImage: `url(${imageSrc})` }}
         ></div>
         <Typography
           value={username}
           variant={ETypographyType.Heading2}
           className={styles.white}
         />
-        <Button
-          {...followButtonProps}
-          slug={EUserInfoConstant.FollowUserButtonSlug}
-          id={username}
-        />
+        <Button {...followButtonProps} />
       </div>
     </div>
   );

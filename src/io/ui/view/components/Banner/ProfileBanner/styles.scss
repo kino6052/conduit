@@ -25,7 +25,9 @@
   background-color: var(--variable-collection-lightgrey);
   height: 132px;
   width: 132px;
-  border: 1px solid var(--variable-collection-white)
+  border: 1px solid var(--variable-collection-white);
+  background-size: contain;
+  background-position: center center;
 }
 
 .white {

@@ -27,6 +27,7 @@ export const generateProfilePageProps = (
         userInfoProps: {
           username: page.user?.userInfo.username ?? "",
           date: page.user?.userInfo.date ?? "",
+          imageSrc: page.user?.userInfo.imageSrc ?? "",
         },
         followButtonProps: {
           onClick: async () => {
