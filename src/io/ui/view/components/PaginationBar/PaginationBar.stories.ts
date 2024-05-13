@@ -1,4 +1,5 @@
 import { PaginationBar } from ".";
+import { TPaginationBarProps } from "./types";
 
 export default {
   title: "Components/PaginationBar",
@@ -8,5 +9,12 @@ export default {
 export const Default = {
   args: {
     className: {},
-  },
+    pages: [
+      {
+        isSelected: true,
+        onClick: async () => {},
+        text: "1",
+      },
+    ],
+  } as TPaginationBarProps,
 };

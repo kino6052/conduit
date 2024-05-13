@@ -6,7 +6,7 @@ import { App as AppComponent } from "./App";
 const ui = new UI(initializeAppState());
 
 export default {
-  title: "Components/App",
+  title: "Logic/App",
   component: withLogic(ui.onPropsChange.bind(ui))(AppComponent),
 };
 

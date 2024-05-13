@@ -21,7 +21,7 @@ state.currentPage = new ArticlePage(
 const ui = new UI(state);
 
 export default {
-  title: "Components/App/Articles",
+  title: "Logic/App/Articles",
   component: withLogic(ui.onPropsChange.bind(ui))(AppComponent),
 };
 

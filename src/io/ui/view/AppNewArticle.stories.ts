@@ -13,7 +13,7 @@ userDao.registerNewUser("username", "password");
 const ui = new UI(state);
 
 export default {
-  title: "Components/App/NewArticles",
+  title: "Logic/App/NewArticles",
   component: withLogic(ui.onPropsChange.bind(ui))(AppComponent),
 };
 
