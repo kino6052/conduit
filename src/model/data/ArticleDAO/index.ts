@@ -1,8 +1,7 @@
 import { uniqueId } from "lodash";
-import { EArticleDatabaseConstant } from "./constants";
-import { IArticleData, IArticleDAO } from "./types";
 import { wait } from "../../../utils/time";
 import { EAppConstant } from "../../constants";
+import { IArticleDAO, IArticleData } from "./types";
 
 const DEFAULT_POSTS: IArticleData[] = [
   {
@@ -49,8 +48,8 @@ const DEFAULT_POSTS: IArticleData[] = [
 
 export class ArticleDAOTestDouble implements IArticleDAO {
   constructor(
-    private generateDate: () => string = () => new Date().toISOString(),
-    private generateId: () => string = () => uniqueId(),
+    private generateDate: () => string,
+    private generateId: () => string,
   ) {}
 
   private articles: IArticleData[] = DEFAULT_POSTS;

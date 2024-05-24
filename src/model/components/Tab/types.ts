@@ -1,6 +1,8 @@
-export interface ITab {
+import { ISelectable } from "../types";
+
+export interface ITab extends ISelectable {
   name: string;
   id: string;
   isSelected: boolean;
-  open: () => Promise<void>;
+  select: () => Promise<void>;
 }

@@ -5,8 +5,12 @@ import { IArticleDAO } from "./data/ArticleDAO/types";
 import { UserDAOTestDouble } from "./data/UserDAO";
 import { IUserDAO } from "./data/UserDAO/types";
 import { HomePage } from "./pages/ArticlePreviewPage/HomePage";
-import { IPage } from "./pages/types";
+import { EPage, IPage } from "./pages/types";
 import { IAppState } from "./types";
+import { IViewModel, TPropsMap } from "../io/ui/view-model/types";
+import { ViewModel } from "../io/ui/view-model";
+import { generateHomePageProps } from "../io/ui/view/pages/HomePage/store/selectors";
+import { ArticlePage } from "../io/ui/view/pages/ArticlePage";
 
 export class AppState implements IAppState {
   currentPage: IPage | undefined;
@@ -16,19 +20,34 @@ export class AppState implements IAppState {
   selectedUsername: string = "";
   tabs: ITab[] = [];
 
-  constructor() {}
+  constructor(public articleDao: IArticleDAO, public userDao: IUserDAO) {}
 }
 
-export const initializeAppState = (
-  articleDao: IArticleDAO = new ArticleDAOTestDouble(
+// TODO: Create navigation service and just return page
+export const defaultComposeApp = (): IViewModel => {
+  const articleDao = new ArticleDAOTestDouble(
     () => new Date(0).toISOString(),
     () => uniqueId("post"),
-  ),
-  userDao: IUserDAO = new UserDAOTestDouble(),
-) => {
-  const state = new AppState();
+  )
 
-  state.currentPage = new HomePage(state, articleDao, userDao);
+  const userDao = new UserDAOTestDouble()
 
-  return state;
+  const userService = new UserService(userDao);
+  const articleService = new ArticleService(articleDao, userService);
+  
+  const navigationService = new NavigationService({
+    [EPage.Home]: () => new HomePage(articleService),
+    [EPage.Article]: () => new ArticlePage(articleService) 
+  });
+
+  return new ViewModel(navigationService, {
+    [EPage.Home]: generateHomePageProps,
+    [EPage.Article]: generateArticlePageProps,
+    [EPage.NewArticle]: generateNewArticlePageProps,
+    [EPage.EditArticle]: generateNewArticlePageProps,
+    [EPage.Profile]: generateProfilePageProps,
+    [EPage.Settings]: generateSettingsPageProps,
+    [EPage.SignIn]: generateSignInPageProps,
+    [EPage.SignUp]: generateSignUpPageProps,
+  })
 };

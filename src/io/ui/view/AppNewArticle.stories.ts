@@ -1,16 +1,16 @@
-import { initializeAppState } from "../../../model";
+import { defaultComposeApp } from "../../../model";
 import { ArticleDAOTestDouble } from "../../../model/data/ArticleDAO";
 import { UserDAOTestDouble } from "../../../model/data/UserDAO";
 import { ArticlePage } from "../../../model/pages/ArticlePage";
 import { withLogic } from "../../../utils/withLogic";
-import { UI } from "../store";
+import { ViewModel } from "../view-model";
 import { App as AppComponent } from "./App";
 
 const userDao = new UserDAOTestDouble();
 const articleDao = new ArticleDAOTestDouble();
-const state = initializeAppState(articleDao, userDao);
+const state = defaultComposeApp(articleDao, userDao);
 userDao.registerNewUser("username", "password");
-const ui = new UI(state);
+const ui = new ViewModel(state);
 
 export default {
   title: "Logic/App/NewArticles",

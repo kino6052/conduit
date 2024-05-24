@@ -1,13 +1,13 @@
-import { initializeAppState } from "../../../model";
+import { defaultComposeApp } from "../../../model";
 import { withLogic } from "../../../utils/withLogic";
-import { UI } from "../store";
+import { ViewModel } from "../view-model";
 import { App as AppComponent } from "./App";
 
-const ui = new UI(initializeAppState());
+const viewModel = new ViewModel(defaultComposeApp());
 
 export default {
   title: "Logic/App",
-  component: withLogic(ui.onPropsChange.bind(ui))(AppComponent),
+  component: withLogic(viewModel.onPropsChange.bind(viewModel))(AppComponent),
 };
 
 export const Default = {

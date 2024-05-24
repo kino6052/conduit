@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
-import { UI } from "..";
-import { initializeAppState } from "../../../../model";
+import { ViewModel } from "..";
+import { defaultComposeApp } from "../../../../model";
 import { EPage } from "../../../../model/pages/types";
 import { IAppState } from "../../../../model/types";
 import { checkEventual } from "../../../../utils/testing";
@@ -19,19 +19,19 @@ beforeEach(() => {
 });
 
 beforeEach(async () => {
-  state = initializeAppState();
+  state = defaultComposeApp();
   refresh.mockRestore();
   refresh.mockImplementation(() => {
-    ui = UI.generateProps(state, refresh);
+    ui = ViewModel.generateProps(state, refresh);
     PropsSubject.next(ui);
   });
-  ui = UI.generateProps(state, refresh);
+  ui = ViewModel.generateProps(state, refresh);
   await (ui.pageProps as THomePageProps).onMount();
 });
 
 describe("Home Page", () => {
   it("should see initial state", async () => {
-    ui = UI.generateProps(state, refresh);
+    ui = ViewModel.generateProps(state, refresh);
     expect(refresh.mock.calls.length).toMatchInlineSnapshot(`2`);
     expect(ui).toMatchInlineSnapshot(`
 {
@@ -174,7 +174,7 @@ describe("Home Page", () => {
 
     await post.linkProps.onClick();
 
-    ui = UI.generateProps(state, refresh);
+    ui = ViewModel.generateProps(state, refresh);
 
     expect(refresh.mock.calls.length).toMatchInlineSnapshot(`3`);
     expect(ui).toMatchInlineSnapshot(`
@@ -211,6 +211,14 @@ describe("Home Page", () => {
   "pageProps": {
     "bannerProps": {
       "canEdit": false,
+      "deleteButtonProps": {
+        "onClick": [Function],
+        "text": "",
+      },
+      "editButtonProps": {
+        "onClick": [Function],
+        "text": "",
+      },
       "title": "",
       "userInfoProps": {
         "date": "",
@@ -318,7 +326,7 @@ describe("Home Page", () => {
   it("should navigate to the profile when you click on the author", async () => {
     await (ui.pageProps as THomePageProps).posts[0].userInfoProps.onClick();
 
-    ui = UI.generateProps(state, refresh);
+    ui = ViewModel.generateProps(state, refresh);
 
     expect(refresh.mock.calls.length).toMatchInlineSnapshot(`4`);
     expect(ui).toMatchInlineSnapshot(`
@@ -454,7 +462,7 @@ describe("Home Page", () => {
   it("should navigate to the profile when you click on the author", async () => {
     await (ui.pageProps as THomePageProps).posts[0].userInfoProps.onClick();
 
-    ui = UI.generateProps(state, refresh);
+    ui = ViewModel.generateProps(state, refresh);
 
     expect(refresh.mock.calls.length).toMatchInlineSnapshot(`4`);
     expect(ui).toMatchInlineSnapshot(`
@@ -843,23 +851,12 @@ describe("Home Page", () => {
 
     await (ui.pageProps as THomePageProps).tabs[1].onClick();
 
-    expect(ui.pageProps as THomePageProps).toMatchInlineSnapshot(`
+    expect((ui.pageProps as THomePageProps)).toMatchInlineSnapshot(`
 {
   "isLoading": false,
   "onMount": [Function],
   "paginationBarProps": {
-    "pages": [
-      {
-        "isSelected": true,
-        "onClick": [Function],
-        "text": "1",
-      },
-      {
-        "isSelected": false,
-        "onClick": [Function],
-        "text": "2",
-      },
-    ],
+    "pages": [],
   },
   "posts": [],
   "sidebarProps": {

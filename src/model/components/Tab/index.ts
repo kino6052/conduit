@@ -1,13 +1,16 @@
 import { ITab } from "../Tab/types";
 
 export class ContentTab implements ITab {
+  select: () => Promise<void>;
+
   constructor(
     public name: string,
     public id: string,
-    public open: () => Promise<void>,
+    select: (id: string) => Promise<void>,
     isSelected?: boolean,
   ) {
     this.isSelected = !!isSelected;
+    this.select = async () => select(id);
   }
 
   public isSelected: boolean = false;

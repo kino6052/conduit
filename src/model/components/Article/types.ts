@@ -1,11 +1,9 @@
 import { IArticleData } from "../../data/ArticleDAO/types";
-import { User } from "../User";
+import { Control } from "../Control";
 
 export interface IArticle {
-  author: User;
-  hasLiked: boolean;
   articleData: IArticleData;
-  read(): Promise<void>;
-  getAuthor(): Promise<User | undefined>;
-  toggleLike(): Promise<void>;
+  authorControl: Control;
+  likeControl: Control;
+  read: () => Promise<void>;
 }

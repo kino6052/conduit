@@ -1,6 +1,6 @@
 import { Subject } from "rxjs";
-import { UI } from "..";
-import { initializeAppState } from "../../../../model";
+import { ViewModel } from "..";
+import { defaultComposeApp } from "../../../../model";
 import { EPage } from "../../../../model/pages/types";
 import { IAppState } from "../../../../model/types";
 import { checkEventual } from "../../../../utils/testing";
@@ -19,13 +19,13 @@ beforeAll(() => {
 });
 
 beforeEach(async () => {
-  state = initializeAppState();
+  state = defaultComposeApp();
   refresh.mockRestore();
   refresh.mockImplementation(() => {
-    ui = UI.generateProps(state, refresh);
+    ui = ViewModel.generateProps(state, refresh);
     PropsSubject.next(ui);
   });
-  ui = UI.generateProps(state, refresh);
+  ui = ViewModel.generateProps(state, refresh);
   await (ui.pageProps as THomePageProps).onMount();
 });
 

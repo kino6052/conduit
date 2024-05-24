@@ -20,8 +20,8 @@ export const generatePostsProps = (state: IAppState, refresh?: () => void) => {
         })),
         hasLiked: article.articleData.likers.includes(state.currentUsername),
         likeButtonProps: {
-          onClick: getAsyncRefresh(article.toggleLike.bind(article), refresh),
-          text: `${article.articleData.likers.length}`,
+          onClick: getAsyncRefresh(async () => article.likeControl.onActivate?.bind(article)(), refresh),
+          text: article.likeControl.text,
         },
         linkProps: {
           onClick: async () => {
