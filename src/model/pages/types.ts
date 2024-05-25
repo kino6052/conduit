@@ -1,6 +1,8 @@
-import { ITab } from "../components/Tab/types";
+import { ISelector } from "../components/Selector/types";
+import { TTab } from "../components/Tab/types";
 
 export enum EPage {
+  Loading = "Loading",
   Home = "Home",
   Article = "Article",
   NewArticle = "NewArticle",
@@ -13,6 +15,6 @@ export enum EPage {
 
 export interface IPage {
   pageType: EPage;
-  navigationTabs: ITab[];
-  initialize(): Promise<void>;
+  navigationTabs: ISelector<TTab>;
+  isLoading: boolean;
 }

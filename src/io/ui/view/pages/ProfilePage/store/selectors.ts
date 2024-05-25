@@ -1,22 +1,22 @@
 import { ProfilePage } from "../../../../../../model/pages/ArticlePreviewPage/ProfilePage";
 import { EPage } from "../../../../../../model/pages/types";
-import { IAppState } from "../../../../../../model/types";
+import { INavigationService } from "../../../../../../model/services/NavigationService/types";
 import { generatePostsProps } from "../../../components/Article/selectors";
 import { TAppProps } from "../../../types";
 import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateProfilePageProps = (
-  state: IAppState,
+  navigationService: INavigationService,
   refresh?: () => void,
 ): TAppProps<EPage.Profile> => {
-  const page = state.currentPage as ProfilePage;
+  const page = navigationService.currentPage as ProfilePage;
   return {
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Profile,
     pageProps: {
-      isLoading: state.isLoading,
-      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
+      isLoading: page.isLoading,
+      onMount: async () => {},
       bannerProps: {
         userInfoProps: {
           username: page.user?.userInfo.username ?? "",
@@ -25,19 +25,16 @@ export const generateProfilePageProps = (
         },
         followButtonProps: {
           onClick: getAsyncRefresh(
-            async () =>
-              page.user?.toggleFollowBy.bind(page.user)(
-                page.state.currentUsername,
-              ),
+            async () => {}, // NOTE: Needs a control
             refresh,
           ),
-          text: page.user?.isFollowing ? "Unfollow" : "Follow",
-          disabled: state.isLoading,
+          text: "Needs control",
+          disabled: true,
         },
       },
       paginationBarProps: {
         pages:
-          page.pagination?.pages.map((paginationPage, i) => ({
+          page.pagination?.items.map((paginationPage, i) => ({
             isSelected: paginationPage.isSelected,
             onClick: getAsyncRefresh(
               paginationPage.select.bind(paginationPage),
@@ -46,7 +43,7 @@ export const generateProfilePageProps = (
             text: `${i + 1}`,
           })) ?? [],
       },
-      posts: generatePostsProps(state, refresh),
+      posts: generatePostsProps(page.articles, refresh),
       sidebarProps: {
         tags: [],
         title: "Popular",

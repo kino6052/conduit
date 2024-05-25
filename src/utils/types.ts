@@ -24,3 +24,6 @@ export type TWithClassName<T> = T & { className?: string };
 export type TWithId<T> = T & { id: string; slug?: string };
 export type TIdMap<T> = { [id: string]: T };
 export type TWithOnMountHandler<T> = T & { onMount: () => Promise<void> };
+
+export type OverrideProps<T, TOverridden> = Omit<T, keyof TOverridden> &
+  TOverridden;

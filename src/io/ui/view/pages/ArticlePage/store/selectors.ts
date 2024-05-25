@@ -89,7 +89,9 @@ export const generateArticlePageProps = (
       },
       followButtonProps: {
         onClick: getAsyncRefresh(async () => {
-          await page.article?.author.toggleFollowBy(state.currentUsername);
+          await page.article?.authorControl.toggleFollowBy(
+            state.currentUsername,
+          );
         }, refresh),
         text: page.article?.author?.isFollowing ? "Unfollow" : "Follow",
       },

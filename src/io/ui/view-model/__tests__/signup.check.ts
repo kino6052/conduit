@@ -1,9 +1,8 @@
 import { Subject } from "rxjs";
 import { ViewModel } from "..";
-import { defaultComposeApp } from "../../../../model";
+import { defaultComposeApp } from "../../../..";
 import { EPage } from "../../../../model/pages/types";
 import { IAppState } from "../../../../model/types";
-import { checkEventual } from "../../../../utils/testing";
 import { THomePageProps } from "../../view/pages/HomePage/types";
 import { TSignUpPageProps } from "../../view/pages/SignUpPage/types";
 import { TAppProps } from "../../view/types";
@@ -29,19 +28,19 @@ beforeEach(async () => {
   await (ui.pageProps as THomePageProps).onMount();
 });
 
-describe("Sign In Page", () => {
-  it("should not be able to sign in with an unregistered user", async () => {
-    await ui.navbarProps.tabs[1].onClick();
+describe("Sign Up Page", () => {
+  it("should not be able to register a duplicate account", async () => {
+    await ui.navbarProps.tabs[2].onClick();
 
     await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
       target: {
-        value: "username",
+        value: "jane-lobster",
       },
     });
 
     await (ui.pageProps as TSignUpPageProps).passwordInputProps.onChange({
       target: {
-        value: "password",
+        value: "123",
       },
     });
 
@@ -79,12 +78,12 @@ describe("Sign In Page", () => {
       },
     ],
   },
-  "page": "SignIn",
+  "page": "SignUp",
   "pageProps": {
     "buttonProps": {
       "disabled": false,
       "onClick": [Function],
-      "text": "Sign In",
+      "text": "Sign Up",
     },
     "linkProps": {
       "onClick": [Function],
@@ -92,35 +91,35 @@ describe("Sign In Page", () => {
     "onMount": [Function],
     "passwordInputProps": {
       "disabled": false,
-      "error": "Wrong username or password",
+      "error": "",
       "onChange": [Function],
       "placeholder": "Password",
-      "value": "password",
+      "value": "123",
     },
     "usernameInputProps": {
       "disabled": false,
-      "error": "",
+      "error": "Username already taken",
       "onChange": [Function],
       "placeholder": "Username",
-      "value": "username",
+      "value": "jane-lobster",
     },
   },
 }
 `);
   });
 
-  it("should be able to sign in with a registered user", async () => {
-    await ui.navbarProps.tabs[1].onClick();
+  it("should be able to register a unique user", async () => {
+    await ui.navbarProps.tabs[2].onClick();
 
     await (ui.pageProps as TSignUpPageProps).usernameInputProps.onChange({
       target: {
-        value: "jane-lobster",
+        value: "username",
       },
     });
 
     await (ui.pageProps as TSignUpPageProps).passwordInputProps.onChange({
       target: {
-        value: "123456",
+        value: "password",
       },
     });
 

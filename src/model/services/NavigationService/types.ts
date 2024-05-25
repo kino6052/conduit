@@ -2,7 +2,9 @@ import { EPage, IPage } from "../../pages/types";
 
 export interface INavigationService {
   currentPage: IPage | undefined;
-  navigate: (page: EPage) => Promise<void>;
+  navigate: (
+    page: Exclude<EPage, EPage.Article | EPage.Profile>,
+  ) => Promise<void>;
   navigateToUserProfile: (username: string) => Promise<void>;
   navigateToArticle: (id: string) => Promise<void>;
 }

@@ -1,5 +1,8 @@
-import { ISelectable } from "../types";
+import { TSelectable } from "../types";
 
-export interface ISelector {
-  items: ISelectable[];
+export interface ISelector<T extends Record<string, unknown>> {
+  items: TSelectable<T>[];
+  getSelectedItem(): TSelectable<T> | undefined;
+  getSelectedIndex(): number;
+  unselectAll(): void;
 }

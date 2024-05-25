@@ -4,14 +4,14 @@ import { getAsyncRefresh } from "../utils/utils";
 
 export const generateNavBarProps = (page: IPage, refresh?: () => void) => ({
   logo: {
-    onClick: getAsyncRefresh(page.navigationTabs[0].open, refresh),
+    onClick: getAsyncRefresh(page.navigationTabs.items[0]?.select, refresh),
   },
   tabs:
-    page.navigationTabs.map((tab) => {
+    page.navigationTabs?.items?.map((tab) => {
       return {
         id: tab.id,
-        onClick: getAsyncRefresh(tab.open, refresh),
-        text: tab.name,
+        onClick: getAsyncRefresh(tab.select, refresh),
+        text: tab.id,
         variant: ETabVariant.Menu,
         isActive: tab.isSelected,
       };

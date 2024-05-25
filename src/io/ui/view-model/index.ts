@@ -2,15 +2,18 @@ import { BehaviorSubject, tap } from "rxjs";
 import { EPage, IPage } from "../../../model/pages/types";
 import { TAppProps } from "../view/types";
 import { IViewModel, TPropsMap } from "./types";
+import { INavigationService } from "../../../model/services/NavigationService/types";
 
-
-// TODO: Refactor to become ViewModel (but after tests are done)
+/** The model of view of the entire application */
 export class ViewModel implements IViewModel {
   private PropsSubject = new BehaviorSubject<TAppProps<EPage> | undefined>(
     undefined,
   );
 
-  constructor(private propsMap: TPropsMap, private navigationService: INavigationService) {
+  constructor(
+    private propsMap: TPropsMap,
+    private navigationService: INavigationService,
+  ) {
     this.refresh();
   }
 
@@ -25,15 +28,24 @@ export class ViewModel implements IViewModel {
    * This is the pure function that generates props from the store.
    * This is what is required for testing
    */
-  public generateProps(
-    page: IPage,
-    refresh?: () => void,
-  ): TAppProps<EPage> {
-    return this.propsMap[page.pageType](page, refresh);
+  public generateProps(page: IPage, refresh?: () => void) {
+    const result = this.propsMap[page.pageType]?.(
+      this.navigationService,
+      refresh,
+    ) as TAppProps<EPage> | undefined;
+    return result;
   }
 
-  refresh() {
-    const nextProps = this.generateProps(this.navigationService.currentPage, this.refresh.bind(this));
+  public refresh() {
+    if (!this.navigationService.currentPage) {
+      console.error("No current page");
+      return;
+    }
+
+    const nextProps = this.generateProps(
+      this.navigationService.currentPage,
+      this.refresh.bind(this),
+    );
 
     this.PropsSubject.next(nextProps);
   }

@@ -1,39 +1,32 @@
-import { ISelectable } from "../../types";
+import { filterBoolean } from "../../../../utils/array";
+import { TSelectable } from "../../types";
 import { ISelector } from "../types";
 
-export class ExclusiveSelector implements ISelector {
-  private cb: (selected: ISelectable) => void = () => {};
-  private items: ISelectable[] = [];
-
-  constructor(num: number, cb: (selected: ISelectable) => void) {
-    this.items = items.map((item, index) => ({
-      ...item,
-      isSelected: false,
-      select: async () => {
-        this.select(index);
-      },
-    }));
-
-    this.cb = cb;
-  }
-  x;
+export class ExclusiveSelector<T extends Record<string, unknown>>
+  implements ISelector<T>
+{
+  private cb: (selected: TSelectable<T>, index: number) => Promise<void> =
+    async () => {};
+  public items: TSelectable<T>[] = [];
 
   constructor(
-    items: { name: string; id: string }[],
-    cb: (selected: ISelectable) => void,
+    items: T[],
+    cb: (selected: TSelectable<T>, index: number) => Promise<void>,
+    preselectedIndex?: number,
   ) {
     this.items = items.map((item, index) => ({
+      isSelected:
+        typeof preselectedIndex === "number" && index === preselectedIndex,
       ...item,
-      isSelected: false,
       select: async () => {
-        this.select(index);
+        await this.select(index);
       },
     }));
 
     this.cb = cb;
   }
 
-  private select(index: number) {
+  private async select(index: number) {
     this.items = this.items.map((item, _index) => ({
       ...item,
       isSelected: index === _index,
@@ -42,11 +35,22 @@ export class ExclusiveSelector implements ISelector {
     const item = this.items.find(({ isSelected }) => isSelected);
 
     if (item) {
-      this.cb(item);
+      await this.cb(item, index);
     }
   }
 
   getSelectedItem() {
     return this.items.find((item) => item.isSelected);
+  }
+
+  getSelectedIndex() {
+    return this.items.findIndex((item) => item.isSelected);
+  }
+
+  unselectAll(): void {
+    this.items = this.items.map((item) => ({
+      ...item,
+      isSelected: false,
+    }));
   }
 }

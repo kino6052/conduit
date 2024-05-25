@@ -1,4 +1,5 @@
 import { EPage } from "../../../model/pages/types";
+import { TWithOnMountHandler } from "../../../utils/types";
 import { TNavbarProps } from "./components/Navbar/types";
 import { TArticlePageProps } from "./pages/ArticlePage/types";
 import { TEditArticlePageProps } from "./pages/EditArticlePage/types";
@@ -17,10 +18,12 @@ export type TPagePropsMap = {
   [EPage.Profile]: TProfilePageProps;
   [EPage.SignUp]: TSignUpPageProps;
   [EPage.SignIn]: TSignInPageProps;
+  [EPage.Loading]: TWithOnMountHandler<{}>;
 };
 
 export type TAppProps<T extends EPage> = {
   page: T;
-  navbarProps: TNavbarProps;
+  navbarProps?: TNavbarProps;
   pageProps: TPagePropsMap[T];
+  onMount?: () => Promise<void>;
 };

@@ -3,16 +3,22 @@ import { IArticleService } from "../../../services/ArticleService/types";
 
 export class LikeControl extends Control {
   constructor(
-    text: string,
+    public likes: number,
     articleId: string,
     private articleService: IArticleService,
   ) {
-    super(text, async () => this.toggleLike(articleId));
+    super("", async () => this.toggleLike(articleId));
+    this.text = this.getText();
+  }
+
+  private getText() {
+    return `${this.likes}`;
   }
 
   private async toggleLike(articleId: string) {
     this.isDisabled = true;
-    await this.articleService.likeArticleById(articleId);
+    this.likes = await this.articleService.likeArticleById(articleId);
+    this.text = this.getText();
     this.isDisabled = false;
   }
 }

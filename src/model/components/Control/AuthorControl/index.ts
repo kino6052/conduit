@@ -8,7 +8,7 @@ export class AuthorControl extends Control {
   ) {
     super(username, async () => {
       this.isDisabled = true;
-      this.articleService.examineAuthor(username);
+      await this.articleService.examineAuthor(username);
       this.isDisabled = false;
     });
   }

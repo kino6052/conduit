@@ -1,7 +1,4 @@
 import { Article } from "../../../components/Article";
-import { ExclusiveSelector } from "../../../components/Selector/ExclusiveSelector";
-import { ContentTab } from "../../../components/Tab";
-import { ITab } from "../../../components/Tab/types";
 import { EAppConstant } from "../../../constants";
 import { IArticleDAO } from "../../../data/ArticleDAO/types";
 import { ETab } from "../../../pages/ArticlePreviewPage/constants";
@@ -35,53 +32,14 @@ export class SimpleArticleService implements IArticleService {
         username,
       }),
     ]).then(([tags, numberOfPages, articles]) => ({
-      tags: this.mapTags(tags),
-      pagination: new ExclusiveSelector(
-        new Array(numberOfPages).fill(0).map((_, index) => ({
-          isSelected: index === pageIndex,
-          select: async () => {
-            await this.getDataForPagination(index, tag, username);
-          },
-          id: `${index}`,
-        })),
-      ),
-      articles: articles.map((articleData) => new Article(articleData, this)),
-      tabs: this.mapTabs(tag),
+      tags,
+      numberOfPages,
+      articles: articles.map((a) => new Article(a, this)),
     }));
   }
 
-  private mapTags(tag: string, tags: string[]) {
-    return new ExclusiveSelector(
-      tags.map((_tag) => ({
-        isSelected: _tag === tag,
-        select: async () => {
-          this.getDataForPagination(0, _tag);
-        },
-        id: _tag,
-      })),
-    );
-  }
-
-  private mapTabs(tag?: string) {
-    return new ExclusiveSelector(
-      [
-        new ContentTab(
-          "Global Feed",
-          ETab.GlobalFeed,
-          this.selectTab.bind(this),
-          true,
-        ),
-
-        this.userService.currentUser &&
-          new ContentTab("Your Feed", ETab.YourFeed, this.selectTab.bind(this)),
-
-        tag && new ContentTab(tag, ETab.Tag, async () => {}),
-      ].filter(Boolean) as ITab[],
-    );
-  }
-
   public async examineAuthor(username: string) {
-    this.navigationService.navigateToUserProfile(username);
+    await this.navigationService.navigateToUserProfile(username);
   }
 
   public async likeArticleById(id: string) {
@@ -89,10 +47,12 @@ export class SimpleArticleService implements IArticleService {
 
     if (!username) {
       await this.navigationService.navigate(EPage.SignIn);
-      return;
+      return 0;
     }
 
     await this.articleDao.likeArticleById(id, username);
+    const article = await this.articleDao.getArticleById(id);
+    return article?.likers.length ?? 0;
   }
 
   public async readArticle(articleId: string) {
@@ -100,16 +60,18 @@ export class SimpleArticleService implements IArticleService {
   }
 
   public async selectTab(tabId: ETab) {
-    if (tabId === ETab.YourFeed)
-      return this.getDataForPagination(
+    if (tabId === ETab.YourFeed) {
+      await this.getDataForPagination(
         0,
         undefined,
         this.userService.currentUser,
       );
+      return;
+    }
     this.getDataForPagination();
   }
 
   public async selectTag(tag: string) {
-    return this.getDataForPagination(0, tag);
+    await this.getDataForPagination(0, tag);
   }
 }

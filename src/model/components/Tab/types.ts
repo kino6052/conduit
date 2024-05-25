@@ -1,8 +1,6 @@
-import { ISelectable } from "../types";
+import { TSelectable } from "../types";
 
-export interface ITab extends ISelectable {
-  name: string;
+export type TTab = TSelectable<{
   id: string;
-  isSelected: boolean;
-  select: () => Promise<void>;
-}
+  text: string;
+}>;

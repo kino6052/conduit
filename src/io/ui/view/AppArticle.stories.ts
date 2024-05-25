@@ -1,4 +1,4 @@
-import { defaultComposeApp } from "../../../model";
+import { defaultComposeApp } from "../../..";
 import { ArticleDAOTestDouble } from "../../../model/data/ArticleDAO";
 import { UserDAOTestDouble } from "../../../model/data/UserDAO";
 import { ArticlePage } from "../../../model/pages/ArticlePage";

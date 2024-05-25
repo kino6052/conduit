@@ -13,11 +13,11 @@ export const generateHomePageProps = (
 ): TAppProps<EPage.Home> => {
   const page = navigationService.currentPage as HomePage;
 
-  return {
+  const next = {
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Home,
     pageProps: {
-      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
+      onMount: async () => {},
       paginationBarProps: {
         pages:
           page.pagination?.items.map((paginationPage, i) => ({
@@ -27,21 +27,27 @@ export const generateHomePageProps = (
           })) ?? [],
       },
       isLoading: page.isLoading,
-      posts: generatePostsProps(navigationService, refresh),
+      posts: generatePostsProps(page.articles, refresh),
       sidebarProps: {
-        tags: page.tags.items.map((tag) => ({
-          id: tag.id,
-          onClick: getAsyncRefresh(tag.select.bind(tag), refresh),
-        })),
+        tags: page.tags?.items.map((tag) => {
+          return {
+            id: tag.id,
+            onClick: getAsyncRefresh(tag.select, refresh),
+          };
+        }),
         title: "Popular tags",
       },
-      tabs: page.tabs.items.map((tab) => ({
+      tabs: page.tabs?.items.map((tab) => ({
         id: tab.id,
         isActive: tab.isSelected,
         onClick: getAsyncRefresh(tab.select, refresh),
-        text: tab.name,
+        text: tab.text,
         variant: ETabVariant.Default,
       })),
     } as TAppProps<EPage.Home>["pageProps"],
   };
+
+  console.warn({ next });
+
+  return next;
 };

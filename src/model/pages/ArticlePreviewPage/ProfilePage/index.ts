@@ -1,43 +1,39 @@
 import { ArticlePreviewPage } from "..";
-import { User } from "../../../components/User";
-import { IArticleDAO } from "../../../data/ArticleDAO/types";
-import { IUserDAO } from "../../../data/UserDAO/types";
-import { IAppState } from "../../../types";
+import { IUser } from "../../../components/User/types";
+import { IArticleService } from "../../../services/ArticleService/types";
+import { INavigationService } from "../../../services/NavigationService/types";
+import { IUserService } from "../../../services/UserService/types";
 import { EPage, IPage } from "../../types";
 
 export class ProfilePage extends ArticlePreviewPage implements IPage {
   public pageType: EPage = EPage.Profile;
-  public user: User | undefined;
+  public user: IUser | undefined;
   public isFollowing: boolean = false;
 
-  constructor(state: IAppState, articlesDao: IArticleDAO, userDao: IUserDAO) {
-    super(state, articlesDao, userDao);
+  private constructor(
+    articleService: IArticleService,
+    navigationService: INavigationService,
+    private userService: IUserService,
+  ) {
+    super(articleService, navigationService);
   }
 
-  public async initialize(tag?: string, index = 0): Promise<void> {
-    try {
-      this.state.isLoading = true;
+  public static async create(
+    username: string,
+    articleService: IArticleService,
+    navigationService: INavigationService,
+    userService: IUserService,
+  ) {
+    const page = new ProfilePage(
+      articleService,
+      navigationService,
+      userService,
+    );
 
-      const userInfo = await this.userDao.findUserByName(
-        this.state.selectedUsername,
-      );
+    await page.initialize({ username });
 
-      if (!userInfo) {
-        console.warn("No user info");
-        return;
-      }
+    page.user = await page.userService.getUserProfile(username);
 
-      await super.initialize(tag, index, userInfo.username);
-
-      this.user = new User(userInfo, this.state, this.articleDao, this.userDao);
-
-      await this.user.initialize();
-
-      this.isFollowing = this.user.isFollowing;
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.state.isLoading = false;
-    }
+    return page;
   }
 }

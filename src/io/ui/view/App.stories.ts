@@ -1,9 +1,8 @@
-import { defaultComposeApp } from "../../../model";
+import { defaultComposeApp } from "../../../utils";
 import { withLogic } from "../../../utils/withLogic";
-import { ViewModel } from "../view-model";
 import { App as AppComponent } from "./App";
 
-const viewModel = new ViewModel(defaultComposeApp());
+const viewModel = defaultComposeApp();
 
 export default {
   title: "Logic/App",

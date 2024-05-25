@@ -1,6 +1,4 @@
 import { IArticle } from "../../components/Article/types";
-import { ISelector } from "../../components/Selector/types";
-import { ITab } from "../../components/Tab/types";
 import { ETab } from "../../pages/ArticlePreviewPage/constants";
 
 /** Purpose: Connects page with data */
@@ -13,10 +11,9 @@ export interface IArticleService {
     tags: string[];
     articles: IArticle[];
     numberOfPages: number;
-    tabs: { id: string; name: string }[];
   }>;
 
-  likeArticleById: (id: string) => Promise<void>;
+  likeArticleById: (id: string) => Promise<number>;
 
   examineAuthor: (username: string) => Promise<void>;
 

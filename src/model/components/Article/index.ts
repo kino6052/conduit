@@ -19,7 +19,7 @@ export class Article implements IArticle {
     );
 
     this.likeControl = new LikeControl(
-      `${articleData.likers.length}`,
+      articleData.likers.length,
       articleData.id,
       articleService,
     );
