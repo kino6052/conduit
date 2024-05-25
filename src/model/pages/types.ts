@@ -15,6 +15,6 @@ export enum EPage {
 
 export interface IPage {
   pageType: EPage;
-  navigationTabs: ISelector<TTab>;
-  isLoading: boolean;
+  navigationTabs?: ISelector<TTab>;
+  isLoading?: boolean;
 }

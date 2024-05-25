@@ -47,7 +47,5 @@ export const generateHomePageProps = (
     } as TAppProps<EPage.Home>["pageProps"],
   };
 
-  console.warn({ next });
-
   return next;
 };

@@ -19,7 +19,8 @@ export const propsMap = {
   [EPage.Profile]: generateProfilePageProps,
 };
 
-/** To be used only in the entry point of the application as this is the ultimate detail */
+/** To be used only in the entry point of the application as
+ * this is the ultimate detail (i.e. the dirtiest part) */
 export const defaultComposeApp = (): IViewModel => {
   const articleDao = new ArticleDAOTestDouble(
     () => new Date(0).toISOString(),

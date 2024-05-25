@@ -12,7 +12,6 @@ import { SignInPage } from "./pages/SignInPage";
 import { SignUpPage } from "./pages/SignUpPage";
 import { TAppProps } from "./types";
 
-
 pagesComponentMap[EPage.Home] = HomePage;
 pagesComponentMap[EPage.Article] = ArticlePage;
 pagesComponentMap[EPage.NewArticle] = EditArticlePage;
@@ -29,8 +28,6 @@ export function App<T extends EPage>(props: TAppProps<T>): JSX.Element | null {
     pageProps,
     navbarProps,
   } = props; 
-  
-  console.warn(props)
   
   const Page = pagesComponentMap[page] as React.FC<typeof pageProps>;
 
