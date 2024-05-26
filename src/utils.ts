@@ -18,11 +18,13 @@ import { NewArticlePage } from "./model/pages/NewArticlePage";
 import { SettingsPage } from "./model/pages/SettingsPage";
 import { SignInPage } from "./model/pages/SignInPage";
 import { SignUpPage } from "./model/pages/SignUpPage";
+import { generateArticlePageProps } from "./io/ui/view/pages/ArticlePage/store/selectors";
 
 export const propsMap = {
   [EPage.Home]: generateHomePageProps,
   [EPage.Loading]: generateLoadingPageProps,
   [EPage.Profile]: generateProfilePageProps,
+  [EPage.Article]: generateArticlePageProps,
 };
 
 /** To be used only in the entry point of the application as

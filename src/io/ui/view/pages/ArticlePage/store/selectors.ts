@@ -1,40 +1,42 @@
 import { ArticlePage } from "../../../../../../model/pages/ArticlePage";
 import { EPage } from "../../../../../../model/pages/types";
-import { IAppState } from "../../../../../../model/types";
+import { INavigationService } from "../../../../../../model/services/NavigationService/types";
 import { EButtonVariant } from "../../../components/Button/types";
 import { TAppProps } from "../../../types";
 import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateArticlePageProps = (
-  state: IAppState,
+  navigationService: INavigationService,
   refresh?: () => void,
 ): TAppProps<EPage.Article> => {
-  const page = state.currentPage as ArticlePage;
+  const page = navigationService.currentPage as ArticlePage;
 
   return {
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Article,
     pageProps: {
-      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
       bannerProps: {
         title: page.article?.articleData.title || "",
-        canEdit: page.article?.articleData.username === state.currentUsername,
+        canEdit: !page.editControl?.isDisabled,
         userInfoProps: {
           date: page.article?.articleData.date ?? "",
           username: page.article?.articleData.username ?? "",
-          onClick: getAsyncRefresh(async () => {
-            const author = await page.article?.getAuthor();
-            await author?.examine();
-          }, refresh),
+          onClick: getAsyncRefresh(async () => page.article?.read(), refresh),
         },
         editButtonProps: {
           text: "",
-          onClick: getAsyncRefresh(page.edit.bind(page), refresh),
+          onClick: getAsyncRefresh(
+            async () => page.editControl?.onActivate?.(),
+            refresh,
+          ),
         },
         deleteButtonProps: {
           text: "",
-          onClick: getAsyncRefresh(page.deleteArticle.bind(page), refresh),
+          onClick: getAsyncRefresh(
+            async () => page.deleteControl?.onActivate?.(),
+            refresh,
+          ),
         },
       },
       tags: [],
@@ -51,9 +53,12 @@ export const generateArticlePageProps = (
           value: page.comment.value,
         },
         buttonProps: {
-          text: page.submitCommentControl.text,
-          onClick: getAsyncRefresh(page.publishComment.bind(page), refresh),
-          disabled: page.submitCommentControl.isDisabled,
+          text: page.submitCommentControl?.text ?? "",
+          onClick: getAsyncRefresh(
+            async () => page.submitCommentControl?.onActivate?.(),
+            refresh,
+          ),
+          disabled: page.submitCommentControl?.isDisabled,
         },
       },
       comments:
@@ -71,29 +76,22 @@ export const generateArticlePageProps = (
           userInfoProps: {
             date: "",
             username: comment.username ?? "",
-            onClick: getAsyncRefresh(async () => {
-              const author = await page.article?.getAuthor();
-              await author?.examine();
-            }, refresh),
+            onClick: getAsyncRefresh(async () => {}, refresh),
           },
         })) ?? [],
       content: page.article?.articleData.description ?? "",
       favoriteButtonProps: {
         onClick: getAsyncRefresh(
-          async () => page.article?.toggleLike.bind(page.article)(),
+          async () => page.article?.likeControl.onActivate?.(),
           refresh,
         ),
-        text: page.article?.hasLiked ? "Unlike" : "Like",
+        text: page.article?.likeControl.text ?? "",
         hasIcon: true,
         variant: EButtonVariant.Secondary,
       },
       followButtonProps: {
-        onClick: getAsyncRefresh(async () => {
-          await page.article?.authorControl.toggleFollowBy(
-            state.currentUsername,
-          );
-        }, refresh),
-        text: page.article?.author?.isFollowing ? "Unfollow" : "Follow",
+        onClick: getAsyncRefresh(async () => {}, refresh),
+        text: "",
       },
     },
   };

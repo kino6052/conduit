@@ -5,7 +5,7 @@ import { TCommentInputProps } from "../../components/Input/types";
 import { TTagContentProps } from "../../components/Tag/types";
 import { TUserInfoProps } from "../../components/UserInfo/types";
 
-export type TArticlePageProps = TWithOnMountHandler<{
+export type TArticlePageProps = {
   bannerProps: TArticleBannerProps;
   userInfoProps?: TUserInfoProps;
   followButtonProps: TButtonProps;
@@ -14,4 +14,4 @@ export type TArticlePageProps = TWithOnMountHandler<{
   content: string;
   tags: TTagContentProps[];
   comments: TCommentInputProps[];
-}>;
+};
