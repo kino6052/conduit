@@ -1,9 +1,9 @@
 import { IArticleData } from "../../data/ArticleDAO/types";
-import { Control } from "../Control";
+import { IControl } from "../Control/types";
 
 export interface IArticle {
   articleData: IArticleData;
-  authorControl: Control;
-  likeControl: Control;
+  authorControl: IControl;
+  likeControl: IControl;
   read: () => Promise<void>;
 }

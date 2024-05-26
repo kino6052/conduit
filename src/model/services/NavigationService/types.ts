@@ -6,5 +6,5 @@ export interface INavigationService {
     page: Exclude<EPage, EPage.Article | EPage.Profile>,
   ) => Promise<void>;
   navigateToUserProfile: (username: string) => Promise<void>;
-  navigateToArticle: (id: string) => Promise<void>;
+  navigateToArticle: (id: string, isEditing?: boolean) => Promise<void>;
 }

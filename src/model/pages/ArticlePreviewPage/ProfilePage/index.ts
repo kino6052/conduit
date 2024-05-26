@@ -1,14 +1,16 @@
 import { ArticlePreviewPage } from "..";
+import { IControl } from "../../../components/Control/types";
 import { IUser } from "../../../components/User/types";
 import { IArticleService } from "../../../services/ArticleService/types";
 import { INavigationService } from "../../../services/NavigationService/types";
 import { IUserService } from "../../../services/UserService/types";
 import { EPage, IPage } from "../../types";
+import { FollowControl } from "./FollowControl";
 
 export class ProfilePage extends ArticlePreviewPage implements IPage {
   public pageType: EPage = EPage.Profile;
   public user: IUser | undefined;
-  public isFollowing: boolean = false;
+  public followControl?: IControl;
 
   private constructor(
     articleService: IArticleService,
@@ -33,6 +35,13 @@ export class ProfilePage extends ArticlePreviewPage implements IPage {
     await page.initialize({ username });
 
     page.user = await page.userService.getUserProfile(username);
+
+    if (!page.user) {
+      navigationService.navigate(EPage.Home);
+      return;
+    }
+
+    page.followControl = new FollowControl(page.user);
 
     return page;
   }

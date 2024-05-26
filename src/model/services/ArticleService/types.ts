@@ -3,6 +3,12 @@ import { ETab } from "../../pages/ArticlePreviewPage/constants";
 
 /** Purpose: Connects page with data */
 export interface IArticleService {
+  submitComment(value: string, id: string): Promise<void>;
+
+  delete(id: string): Promise<void>;
+
+  prepareArticle(articleId: string): Promise<IArticle | undefined>;
+
   getDataForPagination: (
     pageIndex?: number,
     tag?: string,

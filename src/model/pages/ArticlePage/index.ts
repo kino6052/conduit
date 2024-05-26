@@ -1,119 +1,73 @@
-import { Article } from "../../components/Article";
 import { IArticle } from "../../components/Article/types";
 import { Control } from "../../components/Control";
+import { IControl } from "../../components/Control/types";
 import { Field } from "../../components/Field";
-import { changePage, getNavigationTabs } from "../../components/Navigation";
-import { ITab } from "../../components/Tab/types";
-import { IArticleDAO } from "../../data/ArticleDAO/types";
-import { IUserDAO } from "../../data/UserDAO/types";
-import { IAppState } from "../../types";
-import { HomePage } from "../ArticlePreviewPage/HomePage";
-import { EditArticlePage } from "../EditArticlePage";
-import { NewArticlePage } from "../NewArticlePage";
-import { SignInPage } from "../SignInPage";
+import { getNavigationTabs } from "../../components/Navigation";
+import { ExclusiveSelector } from "../../components/Selector/ExclusiveSelector";
+import { TTab } from "../../components/Tab/types";
+import { IArticleService } from "../../services/ArticleService/types";
+import { INavigationService } from "../../services/NavigationService/types";
 import { EPage, IPage } from "../types";
 
 export class ArticlePage implements IPage {
   public pageType: EPage = EPage.Article;
   public article: IArticle | undefined;
-  public navigationTabs: ITab[];
+
+  public navigationTabs: ExclusiveSelector<TTab>;
+
   public comment = new Field<string>("");
-  public submitCommentControl = new Control("Submit");
 
-  constructor(
-    private articleId: string,
-    public state: IAppState,
-    private articlesDao: IArticleDAO,
-    private userDao: IUserDAO,
+  public editControl: IControl | undefined;
+  public deleteControl: IControl | undefined;
+  public submitCommentControl: IControl | undefined;
+
+  protected constructor(
+    protected articleService: IArticleService,
+    protected navigationService: INavigationService,
   ) {
-    this.navigationTabs = getNavigationTabs(
-      this.state,
-      this.articlesDao,
-      this.userDao,
-    );
+    if (!articleService) throw new Error("No article service provided");
+    if (!navigationService) throw new Error("No navigation service provided");
+
+    this.navigationTabs = getNavigationTabs(navigationService);
   }
 
-  public async publishComment() {
-    try {
-      this.comment.isDisabled = true;
+  static async create(
+    articleId: string,
+    articleService: IArticleService,
+    navigationService: INavigationService,
+  ) {
+    const page = new ArticlePage(articleService, navigationService);
 
-      if (!this.state.currentUsername) {
-        await changePage(
-          new SignInPage(this.state, this.articlesDao, this.userDao),
-          this.state,
-        );
-        return;
-      }
+    await page.initialize(articleId);
 
-      const article = this.article;
-
-      if (!article) {
-        await changePage(
-          new HomePage(this.state, this.articlesDao, this.userDao),
-          this.state,
-        );
-        return;
-      }
-
-      if (!this.comment.value) {
-        return;
-      }
-
-      await this.articlesDao.addCommentById(
-        article.articleData.id,
-        this.comment.value,
-        this.state.currentUsername,
-      );
-
-      await this.initialize();
-    } catch (e) {
-      console.error(e);
-      this.comment.errorMessage = "Something went wrong";
-    } finally {
-      this.comment.isDisabled = false;
-    }
+    return page;
   }
 
-  public async edit() {
-    await changePage(
-      new EditArticlePage(
-        this.state,
-        this.articlesDao,
-        this.userDao,
-        this.article?.articleData,
-      ),
-      this.state,
-    );
-  }
+  public async initialize(articleId: string): Promise<void> {
+    this.article = await this.articleService.prepareArticle(articleId);
 
-  public async deleteArticle() {
-    try {
-      if (!this.article) return;
-      await this.articlesDao.removeArticleById(this.article?.articleData.id);
-    } catch (e) {
-      console.error(e);
-    } finally {
-      await changePage(
-        new HomePage(this.state, this.articlesDao, this.userDao),
-        this.state,
-      );
-    }
-  }
+    this.editControl = new Control("Change", async () => {
+      const id = this.article?.articleData.id;
+      if (!id) return;
+      this.navigationService.navigateToArticle(id, true);
+    });
 
-  public async initialize(): Promise<void> {
+    this.deleteControl = new Control("Delete", async () => {
+      const id = this.article?.articleData.id;
+      if (!id) return;
+      await this.articleService.delete(id);
+    });
+
+    this.submitCommentControl = new Control("Submit", async () => {
+      const id = this.article?.articleData.id;
+      if (!id) return;
+      await this.articleService.submitComment(this.comment.value, id);
+    });
+
     this.submitCommentControl.isDisabled = true;
     this.comment = new Field<string>("", async () => {
+      if (!this.submitCommentControl) return;
       this.submitCommentControl.isDisabled = !this.comment.value;
-    });
-    this.articlesDao.getArticleById(this.articleId).then(async (article) => {
-      if (!article) return;
-      this.article = new Article(
-        article,
-        this.state,
-        this.articlesDao,
-        this.userDao,
-      );
-      await this.article.getAuthor();
     });
   }
 }

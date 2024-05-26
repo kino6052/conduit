@@ -18,18 +18,12 @@ export class SimpleUserService implements IUserService {
 
     if (!userInfo) return;
 
-    const isFollowedByUs =
-      !!this.currentUser && !!userInfo?.followers.includes(this.currentUser);
+    const user = new User(userInfo, this, this.navigationService);
 
-    return new User(
-      isFollowedByUs,
-      this.toggleFollowBy.bind(this),
-      userInfo,
-      this.navigationService,
-    );
+    return user;
   }
 
-  async toggleFollowBy(username: string) {
+  async toggleFollow(username: string) {
     try {
       if (!this.currentUser) {
         await this.navigationService.navigate(EPage.SignIn);
@@ -44,10 +38,11 @@ export class SimpleUserService implements IUserService {
           (follower) => follower !== username,
         );
         await this.userDao.updateFollowers(username, nextFollowers);
-        return;
+        return false;
       }
 
       await this.userDao.followUserById(username, username);
+      return true;
     } catch (e) {
       console.error(e);
     }

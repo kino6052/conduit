@@ -3,6 +3,6 @@ import { TUserInfo } from "../../data/UserDAO/types";
 export interface IUser {
   isFollowedByUs: boolean;
   userInfo: TUserInfo;
-  toggleFollowBy: (username: string) => Promise<void>;
+  toggleFollowBy: () => Promise<void>;
   examine: () => Promise<void>;
 }

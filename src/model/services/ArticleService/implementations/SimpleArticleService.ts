@@ -1,4 +1,5 @@
 import { Article } from "../../../components/Article";
+import { IArticle } from "../../../components/Article/types";
 import { EAppConstant } from "../../../constants";
 import { IArticleDAO } from "../../../data/ArticleDAO/types";
 import { ETab } from "../../../pages/ArticlePreviewPage/constants";
@@ -13,6 +14,33 @@ export class SimpleArticleService implements IArticleService {
     private navigationService: INavigationService,
     private userService: IUserService,
   ) {}
+
+  public async submitComment(value: string, articleId: string) {
+    if (!this.userService.currentUser) {
+      this.navigationService.navigate(EPage.SignIn);
+      return;
+    }
+
+    if (!value) {
+      return;
+    }
+
+    await this.articleDao.addCommentById(
+      articleId,
+      value,
+      this.userService.currentUser,
+    );
+  }
+
+  public async delete(id: string) {
+    try {
+      await this.articleDao.removeArticleById(id);
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await this.navigationService.navigate(EPage.Home);
+    }
+  }
 
   async getDataForPagination(
     pageIndex?: number,
@@ -73,5 +101,17 @@ export class SimpleArticleService implements IArticleService {
 
   public async selectTag(tag: string) {
     await this.getDataForPagination(0, tag);
+  }
+
+  public async prepareArticle(
+    articleId: string,
+  ): Promise<IArticle | undefined> {
+    const articleData = await this.articleDao.getArticleById(articleId);
+    if (!articleData) {
+      this.navigationService.navigate(EPage.Home);
+      return;
+    }
+    const article = new Article(articleData, this);
+    return article;
   }
 }

@@ -38,8 +38,7 @@ export const defaultComposeApp = (): IViewModel => {
   );
 
   navigationService.constructors = {
-    [EPage.Home]: () =>
-      HomePage.create(articleService, navigationService, userService),
+    [EPage.Home]: () => HomePage.create(articleService, navigationService),
     [EPage.Profile]: (username: string) =>
       ProfilePage.create(
         username,
