@@ -12,6 +12,8 @@ import { HomePage } from "./model/pages/ArticlePreviewPage/HomePage";
 import { ViewModel } from "./io/ui/view-model";
 import { ProfilePage } from "./model/pages/ArticlePreviewPage/ProfilePage";
 import { generateProfilePageProps } from "./io/ui/view/pages/ProfilePage/store/selectors";
+import { ArticlePage } from "./model/pages/ArticlePage";
+import { EditArticlePage } from "./model/pages/EditArticlePage";
 
 export const propsMap = {
   [EPage.Home]: generateHomePageProps,
@@ -46,6 +48,10 @@ export const defaultComposeApp = (): IViewModel => {
         navigationService,
         userService,
       ),
+    [EPage.Article]: (articleId: string) =>
+      ArticlePage.create(articleId, articleService, navigationService),
+    [EPage.EditArticle]: (articleId: string) =>
+      EditArticlePage.create(articleId, articleService, navigationService),
   };
 
   const viewModel = new ViewModel(propsMap, navigationService);
