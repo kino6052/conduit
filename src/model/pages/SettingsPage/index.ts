@@ -1,10 +1,11 @@
+import { Control } from "../../components/Control";
+import { IControl } from "../../components/Control/types";
 import { Field } from "../../components/Field";
-import { changePage, getNavigationTabs } from "../../components/Navigation";
-import { ITab } from "../../components/Tab/types";
-import { IArticleDAO } from "../../data/ArticleDAO/types";
-import { IUserDAO } from "../../data/UserDAO/types";
-import { IAppState } from "../../types";
-import { HomePage } from "../ArticlePreviewPage/HomePage";
+import { getNavigationTabs } from "../../components/Navigation";
+import { ExclusiveSelector } from "../../components/Selector/ExclusiveSelector";
+import { TTab } from "../../components/Tab/types";
+import { INavigationService } from "../../services/NavigationService/types";
+import { IUserService } from "../../services/UserService/types";
 import { EPage, IPage } from "../types";
 
 export class SettingsPage implements IPage {
@@ -13,57 +14,49 @@ export class SettingsPage implements IPage {
   public password: Field<string> = new Field("");
   public imageSrc: Field<string> = new Field("");
   public bio: Field<string> = new Field("");
-  public navigationTabs: ITab[] = [];
+  public navigationTabs: ExclusiveSelector<TTab>;
 
-  constructor(
-    public state: IAppState,
-    private articleDao: IArticleDAO,
-    private userDao: IUserDAO,
+  public saveControl: IControl;
+  public logoutControl: IControl;
+
+  private constructor(
+    public userService: IUserService,
+    public navigationService: INavigationService,
   ) {
-    this.navigationTabs = getNavigationTabs(
-      this.state,
-      this.articleDao,
-      this.userDao,
-    );
-  }
+    this.navigationTabs = getNavigationTabs(navigationService);
 
-  public async initialize(): Promise<void> {
-    const user = await this.userDao.findUserByName(this.state.currentUsername);
-
-    if (!user) return;
-
-    this.username = new Field(user.username);
-    this.password = new Field(user.password ?? "");
-    this.imageSrc = new Field(user.imageSrc ?? "");
-    this.bio = new Field(user.bio ?? "");
-
-    return;
-  }
-
-  public async saveChanges() {
-    this.state.isLoading = true;
-
-    await this.userDao.updateUserByName(this.state.currentUsername, {
-      username: this.username.value,
-      password: this.password.value,
-      imageSrc: this.imageSrc.value,
-      bio: this.bio.value,
+    this.saveControl = new Control("Save", async () => {
+      await this.userService.updateUser(
+        this.username.value,
+        this.password.value,
+        this.imageSrc.value,
+        this.bio.value,
+      );
     });
 
-    await changePage(
-      new HomePage(this.state, this.articleDao, this.userDao),
-      this.state,
-    );
-
-    this.state.isLoading = false;
+    this.logoutControl = new Control("Save", async () => {
+      await this.userService.logout();
+    });
   }
 
-  public async logout() {
-    this.state.currentUsername = "";
+  public static async create(
+    userService: IUserService,
+    navigationService: INavigationService,
+  ) {
+    const user = await userService.getCurrentUser();
 
-    await changePage(
-      new HomePage(this.state, this.articleDao, this.userDao),
-      this.state,
-    );
+    const page = new SettingsPage(userService, navigationService);
+
+    if (!user) {
+      await navigationService.navigate(EPage.Home);
+      return page;
+    }
+
+    page.username.value = user.userInfo.username;
+    page.password.value = "";
+    page.imageSrc.value = user.userInfo.imageSrc ?? "";
+    page.bio.value = user.userInfo.bio ?? "";
+
+    return page;
   }
 }

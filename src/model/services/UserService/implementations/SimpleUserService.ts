@@ -50,13 +50,47 @@ export class SimpleUserService implements IUserService {
 
   async signIn(username: string, password: string) {
     const response = await this.userDao.login(username, password);
-
     if (response.errors) return response;
-
     this.currentUser = username;
+    await this.navigationService.navigate(EPage.Home);
+    return response;
+  }
+
+  public async signUp(username: string, password: string) {
+    const response = await this.userDao.registerNewUser(username, password);
+    if (response.errors) return response;
+    this.currentUser = username;
+    await this.navigationService.navigate(EPage.Home);
+    return response;
+  }
+
+  public async getCurrentUser() {
+    if (!this.currentUser) return;
+    const userInfo = await this.userDao.findUserByName(this.currentUser);
+    if (!userInfo) return;
+    return new User(userInfo, this, this.navigationService);
+  }
+
+  public async updateUser(
+    username: string,
+    password: string,
+    imageSrc: string,
+    bio: string,
+  ) {
+    if (!this.currentUser) return;
+    await this.userDao.updateUserByName(this.currentUser, {
+      username,
+      password,
+      imageSrc,
+      bio,
+    });
 
     await this.navigationService.navigate(EPage.Home);
+  }
 
-    return response;
+  public async logout() {
+    this.currentUser = "";
+
+    await this.navigationService.navigate(EPage.Home);
   }
 }

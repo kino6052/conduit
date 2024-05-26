@@ -14,6 +14,7 @@ export class SimpleNavigationService implements INavigationService {
       }>,
       Partial<{
         [EPage.Article]: (articleId: string) => Promise<IPage>;
+        [EPage.EditArticle]: (articleId: string) => Promise<IPage>;
         [EPage.Profile]: (username: string) => Promise<IPage>;
       }>
     >,
