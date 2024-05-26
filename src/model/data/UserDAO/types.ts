@@ -14,9 +14,8 @@ export type TUserInfo = {
 export type TResponse = {
   status: EStatus;
   errors?: {
-    field: string;
-    message: string;
-  }[];
+    [field: string]: string;
+  };
 };
 
 export interface IUserDAO {

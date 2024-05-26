@@ -82,12 +82,9 @@ export class UserDAOTestDouble implements IUserDAO {
     if (alreadyRegisteredUser) {
       return {
         status: EStatus.Failure,
-        errors: [
-          {
-            field: "username",
-            message: "Username already taken",
-          },
-        ],
+        errors: {
+          username: "Username already taken",
+        },
       };
     }
 
@@ -113,12 +110,9 @@ export class UserDAOTestDouble implements IUserDAO {
     if (!user || user.password !== password)
       return {
         status: EStatus.Failure,
-        errors: [
-          {
-            field: "password",
-            message: "Wrong username or password", // TODO: Use content
-          },
-        ],
+        errors: {
+          password: "wrong username or password",
+        },
       };
 
     return {

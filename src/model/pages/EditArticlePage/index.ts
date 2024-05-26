@@ -1,70 +1,62 @@
-import { changePage, getNavigationTabs } from "../../components/Navigation";
-import { ITab } from "../../components/Tab/types";
-import { IArticleDAO, IArticleData } from "../../data/ArticleDAO/types";
-import { IUserDAO } from "../../data/UserDAO/types";
-import { IAppState } from "../../types";
-import { HomePage } from "../ArticlePreviewPage/HomePage";
+import { Control } from "../../components/Control";
+import { IControl } from "../../components/Control/types";
+import { Field } from "../../components/Field";
+import { getNavigationTabs } from "../../components/Navigation";
+import { ExclusiveSelector } from "../../components/Selector/ExclusiveSelector";
+import { TTab } from "../../components/Tab/types";
+import { IArticleService } from "../../services/ArticleService/types";
+import { INavigationService } from "../../services/NavigationService/types";
 import { EPage, IPage } from "../types";
 
 export class EditArticlePage implements IPage {
   public pageType: EPage = EPage.EditArticle;
-  public title: string = "";
-  public article: string = "";
-  public tags: string = "";
-  public navigationTabs: ITab[] = [];
+  public title = new Field<string>("");
+  public article = new Field<string>("");
+  public tags = new Field<string>("");
+  public navigationTabs: ExclusiveSelector<TTab>;
+  public submitControl: IControl;
 
-  constructor(
-    public state: IAppState,
-    private articleDao: IArticleDAO,
-    private userDao: IUserDAO,
-    private articleData?: IArticleData,
+  protected constructor(
+    public articleId: string,
+    private articleService: IArticleService,
+    private navigationService: INavigationService,
   ) {
-    this.navigationTabs = getNavigationTabs(
-      this.state,
-      this.articleDao,
-      this.userDao,
+    this.navigationTabs = getNavigationTabs(this.navigationService);
+
+    this.submitControl = new Control("Submit", async () => {
+      await this.articleService.publish(
+        articleId,
+        this.title.value,
+        this.article.value,
+        this.generateTags(),
+      );
+    });
+  }
+
+  public static async create(
+    articleId: string,
+    articleService: IArticleService,
+    navigationService: INavigationService,
+  ) {
+    const article = await articleService.prepareArticle(articleId);
+
+    const page = new EditArticlePage(
+      articleId,
+      articleService,
+      navigationService,
     );
 
-    if (articleData) {
-      this.title = articleData.title;
-      this.article = articleData.description;
-      this.tags = articleData.tags.join(" ");
+    if (article?.articleData) {
+      page.title.value = article.articleData.title;
+      page.article.value = article.articleData.description;
+      page.tags.value = article.articleData.tags.join(" ");
     }
-  }
 
-  public async initialize(): Promise<void> {
-    return;
-  }
-
-  public async publishArticle() {
-    try {
-      if (this.articleData) {
-        await this.articleDao.updateArticleById(this.articleData.id, {
-          title: this.title,
-          description: this.article,
-          tags: this.generateTags(),
-        });
-        return;
-      }
-
-      await this.articleDao.publishArticle({
-        description: this.article,
-        tags: this.generateTags(),
-        title: this.title,
-        username: this.state.currentUsername,
-      });
-    } catch (e) {
-      console.error(e);
-    } finally {
-      await changePage(
-        new HomePage(this.state, this.articleDao, this.userDao),
-        this.state,
-      );
-    }
+    return page;
   }
 
   public generateTags() {
-    const tags = new Set(this.tags.split(" "));
+    const tags = new Set(this.tags.value.split(" "));
     return Array.from(tags).filter(Boolean);
   }
 }

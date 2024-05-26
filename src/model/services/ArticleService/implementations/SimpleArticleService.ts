@@ -15,6 +15,39 @@ export class SimpleArticleService implements IArticleService {
     private userService: IUserService,
   ) {}
 
+  public async publish(
+    articleId: string,
+    title: string,
+    description: string,
+    tags: string[],
+  ) {
+    try {
+      const articleData = await this.articleDao.getArticleById(articleId);
+
+      if (articleData) {
+        await this.articleDao.updateArticleById(articleData.id, {
+          title,
+          description,
+          tags,
+        });
+        return;
+      }
+
+      if (!this.userService.currentUser) return;
+
+      await this.articleDao.publishArticle({
+        description,
+        tags,
+        title,
+        username: this.userService.currentUser,
+      });
+    } catch (e) {
+      console.error(e);
+    } finally {
+      await this.navigationService.navigate(EPage.Home);
+    }
+  }
+
   public async submitComment(value: string, articleId: string) {
     if (!this.userService.currentUser) {
       this.navigationService.navigate(EPage.SignIn);

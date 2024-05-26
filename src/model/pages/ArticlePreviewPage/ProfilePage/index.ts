@@ -38,7 +38,7 @@ export class ProfilePage extends ArticlePreviewPage implements IPage {
 
     if (!page.user) {
       navigationService.navigate(EPage.Home);
-      return;
+      return page;
     }
 
     page.followControl = new FollowControl(page.user);

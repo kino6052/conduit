@@ -47,4 +47,16 @@ export class SimpleUserService implements IUserService {
       console.error(e);
     }
   }
+
+  async signIn(username: string, password: string) {
+    const response = await this.userDao.login(username, password);
+
+    if (response.errors) return response;
+
+    this.currentUser = username;
+
+    await this.navigationService.navigate(EPage.Home);
+
+    return response;
+  }
 }

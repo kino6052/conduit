@@ -1,67 +1,37 @@
+import { Control } from "../../components/Control";
+import { IControl } from "../../components/Control/types";
 import { Field } from "../../components/Field";
-import { changePage, getNavigationTabs } from "../../components/Navigation";
-import { ITab } from "../../components/Tab/types";
-import { EStatus } from "../../constants";
-import { IArticleDAO } from "../../data/ArticleDAO/types";
-import { IUserDAO } from "../../data/UserDAO/types";
-import { IAppState } from "../../types";
-import { HomePage } from "../ArticlePreviewPage/HomePage";
+import { getNavigationTabs } from "../../components/Navigation";
+import { ExclusiveSelector } from "../../components/Selector/ExclusiveSelector";
+import { TTab } from "../../components/Tab/types";
+import { INavigationService } from "../../services/NavigationService/types";
+import { IUserService } from "../../services/UserService/types";
 import { EPage, IPage } from "../types";
 
 export class SignInPage implements IPage {
   public pageType: EPage = EPage.SignIn;
   public username: Field<string> = new Field("");
   public password: Field<string> = new Field("");
-  public navigationTabs: ITab[] = [];
+  public navigationTabs: ExclusiveSelector<TTab>;
+
+  public submitControl: IControl;
 
   constructor(
-    public state: IAppState,
-    private articleDao: IArticleDAO,
-    private userDao: IUserDAO,
+    private userService: IUserService,
+    private navigationService: INavigationService,
   ) {
-    this.navigationTabs = getNavigationTabs(
-      this.state,
-      this.articleDao,
-      this.userDao,
-    );
-  }
+    this.navigationTabs = getNavigationTabs(this.navigationService);
 
-  public async initialize(): Promise<void> {
-    return;
-  }
-
-  public async signIn() {
-    try {
-      this.state.isLoading = true;
-      const { status, errors } = await this.userDao.login(
+    this.submitControl = new Control("Submit", async () => {
+      const response = await this.userService.signIn(
         this.username.value,
         this.password.value,
       );
 
-      if (status === EStatus.Failure) {
-        errors?.forEach((error) => {
-          switch (error.field) {
-            case "username":
-              this.username.errorMessage = error.message;
-              break;
-            case "password":
-              this.password.errorMessage = error.message;
-              break;
-          }
-        });
-        return;
+      if (response.errors) {
+        this.username.errorMessage = response.errors["username"];
+        this.password.errorMessage = response.errors["password"];
       }
-
-      this.state.currentUsername = this.username.value;
-
-      await changePage(
-        new HomePage(this.state, this.articleDao, this.userDao),
-        this.state,
-      );
-    } catch (e) {
-      console.error(e);
-    } finally {
-      this.state.isLoading = false;
-    }
+    });
   }
 }
