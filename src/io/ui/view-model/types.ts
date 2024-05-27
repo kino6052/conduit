@@ -1,10 +1,9 @@
 import { EPage, IPage } from "../../../model/pages/types";
-import { INavigationService } from "../../../model/services/NavigationService/types";
 import { TAppProps } from "../view/types";
 
 export type TPropsMap = Partial<{
   [K in EPage]: (
-    navigationService: INavigationService,
+    page: IPage,
     refresh?: () => void,
   ) => TAppProps<K>;
 }>;

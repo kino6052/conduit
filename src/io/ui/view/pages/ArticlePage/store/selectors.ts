@@ -1,40 +1,39 @@
 import { ArticlePage } from "../../../../../../model/pages/ArticlePage";
-import { EPage } from "../../../../../../model/pages/types";
-import { INavigationService } from "../../../../../../model/services/NavigationService/types";
+import { EPage, IPage } from "../../../../../../model/pages/types";
 import { EButtonVariant } from "../../../components/Button/types";
 import { TAppProps } from "../../../types";
 import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateArticlePageProps = (
-  navigationService: INavigationService,
+  page: IPage,
   refresh?: () => void,
 ): TAppProps<EPage.Article> => {
-  const page = navigationService.currentPage as ArticlePage;
+  const _page = page as ArticlePage;
 
   return {
-    navbarProps: generateNavBarProps(page, refresh),
+    navbarProps: generateNavBarProps(_page, refresh),
     page: EPage.Article,
     pageProps: {
       bannerProps: {
-        title: page.article?.articleData.title || "",
-        canEdit: !page.editControl?.isDisabled,
+        title: _page.article?.articleData.title || "",
+        canEdit: !_page.editControl?.isDisabled,
         userInfoProps: {
-          date: page.article?.articleData.date ?? "",
-          username: page.article?.articleData.username ?? "",
-          onClick: getAsyncRefresh(async () => page.article?.read(), refresh),
+          date: _page.article?.articleData.date ?? "",
+          username: _page.article?.articleData.username ?? "",
+          onClick: getAsyncRefresh(async () => _page.article?.read(), refresh),
         },
         editButtonProps: {
           text: "",
           onClick: getAsyncRefresh(
-            async () => page.editControl?.onActivate?.(),
+            async () => _page.editControl?.onActivate?.(),
             refresh,
           ),
         },
         deleteButtonProps: {
           text: "",
           onClick: getAsyncRefresh(
-            async () => page.deleteControl?.onActivate?.(),
+            async () => _page.deleteControl?.onActivate?.(),
             refresh,
           ),
         },
@@ -46,23 +45,23 @@ export const generateArticlePageProps = (
         },
         inputProps: {
           onChange: async (e) => {
-            page.comment.value = e.target.value ?? "";
+            _page.comment.value = e.target.value ?? "";
             refresh?.();
           },
           placeholder: "Input",
-          value: page.comment.value,
+          value: _page.comment.value,
         },
         buttonProps: {
-          text: page.submitCommentControl?.text ?? "",
+          text: _page.submitCommentControl?.text ?? "",
           onClick: getAsyncRefresh(
-            async () => page.submitCommentControl?.onActivate?.(),
+            async () => _page.submitCommentControl?.onActivate?.(),
             refresh,
           ),
-          disabled: page.submitCommentControl?.isDisabled,
+          disabled: _page.submitCommentControl?.isDisabled,
         },
       },
       comments:
-        page.article?.articleData.comments.map((comment) => ({
+        _page.article?.articleData.comments.map((comment) => ({
           iconProps: {
             icon: "favorite",
             text: comment?.username,
@@ -79,13 +78,13 @@ export const generateArticlePageProps = (
             onClick: getAsyncRefresh(async () => {}, refresh),
           },
         })) ?? [],
-      content: page.article?.articleData.description ?? "",
+      content: _page.article?.articleData.description ?? "",
       favoriteButtonProps: {
         onClick: getAsyncRefresh(
-          async () => page.article?.likeControl.onActivate?.(),
+          async () => _page.article?.likeControl.onActivate?.(),
           refresh,
         ),
-        text: page.article?.likeControl.text ?? "",
+        text: _page.article?.likeControl.text ?? "",
         hasIcon: true,
         variant: EButtonVariant.Secondary,
       },

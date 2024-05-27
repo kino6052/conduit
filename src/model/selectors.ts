@@ -1,10 +1,10 @@
 import { TAppProps } from "../io/ui/view/types";
 import { getAsyncRefresh } from "../io/ui/view/utils/utils";
-import { EPage } from "./pages/types";
+import { EPage, IPage } from "./pages/types";
 import { INavigationService } from "./services/NavigationService/types";
 
 export const generateLoadingPageProps = (
-  navigationService: INavigationService,
+  page: IPage,
   refresh?: () => void,
 ): TAppProps<EPage.Loading> => ({
   page: EPage.Loading,

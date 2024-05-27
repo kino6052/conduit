@@ -30,7 +30,7 @@ export class ViewModel implements IViewModel {
    */
   public generateProps(page: IPage, refresh?: () => void) {
     const result = this.propsMap[page.pageType]?.(
-      this.navigationService,
+      page,
       refresh,
     ) as TAppProps<EPage> | undefined;
     return result;

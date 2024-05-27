@@ -1,6 +1,5 @@
 import { HomePage } from "../../../../../../model/pages/ArticlePreviewPage/HomePage";
-import { EPage } from "../../../../../../model/pages/types";
-import { INavigationService } from "../../../../../../model/services/NavigationService/types";
+import { EPage, IPage } from "../../../../../../model/pages/types";
 import { generatePostsProps } from "../../../components/Article/selectors";
 import { ETabVariant } from "../../../components/Tab/types";
 import { TAppProps } from "../../../types";
@@ -8,28 +7,26 @@ import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateHomePageProps = (
-  navigationService: INavigationService,
+  page: IPage,
   refresh?: () => void,
 ): TAppProps<EPage.Home> => {
-  const page = navigationService.currentPage as HomePage;
-
-  const next = {
-    navbarProps: generateNavBarProps(page, refresh),
+  const _page = page as HomePage
+  return {
+    navbarProps: generateNavBarProps(_page, refresh),
     page: EPage.Home,
     pageProps: {
-      onMount: async () => {},
       paginationBarProps: {
         pages:
-          page.pagination?.items.map((paginationPage, i) => ({
+          _page.pagination?.items.map((paginationPage, i) => ({
             isSelected: paginationPage.isSelected,
             onClick: getAsyncRefresh(paginationPage.select, refresh),
             text: `${i + 1}`,
           })) ?? [],
       },
-      isLoading: page.isLoading,
-      posts: generatePostsProps(page.articles, refresh),
+      isLoading: _page.isLoading,
+      posts: generatePostsProps(_page.articles, refresh),
       sidebarProps: {
-        tags: page.tags?.items.map((tag) => {
+        tags: _page.tags?.items.map((tag) => {
           return {
             id: tag.id,
             onClick: getAsyncRefresh(tag.select, refresh),
@@ -37,7 +34,7 @@ export const generateHomePageProps = (
         }),
         title: "Popular tags",
       },
-      tabs: page.tabs?.items.map((tab) => ({
+      tabs: _page.tabs?.items.map((tab) => ({
         id: tab.id,
         isActive: tab.isSelected,
         onClick: getAsyncRefresh(tab.select, refresh),
@@ -46,6 +43,4 @@ export const generateHomePageProps = (
       })),
     } as TAppProps<EPage.Home>["pageProps"],
   };
-
-  return next;
 };
