@@ -1,7 +1,7 @@
-import { TAppProps } from "../details/ui/view/types";
-import { getAsyncRefresh } from "../details/ui/view/utils/utils";
-import { EPage, IPage } from "./pages/types";
-import { INavigationService } from "./services/NavigationService/types";
+import { TAppProps } from "./types";
+import { getAsyncRefresh } from "./utils/utils";
+import { EPage, IPage } from "../../../app/pages/types";
+import { INavigationService } from "../../../app/services/NavigationService/types";
 
 export const generateLoadingPageProps = (
   page: IPage,
