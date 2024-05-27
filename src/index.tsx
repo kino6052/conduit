@@ -1,5 +1,5 @@
-import { render } from "./io/ui/view";
-import { defaultComposeApp } from "./utils";
+import { render } from "./details/ui/view";
+import { defaultComposeApp } from "./app";
 
 const viewModel = defaultComposeApp();
 

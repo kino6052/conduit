@@ -1,5 +1,5 @@
-import { TAppProps, TPagePropsMap } from "../io/ui/view/types";
-import { EPage } from "../model/pages/types";
+import { TAppProps, TPagePropsMap } from "../details/ui/view/types";
+import { EPage } from "../app/pages/types";
 
 export type TPageMap = {
   [key in EPage]: React.FC<TPagePropsMap[key]>;
