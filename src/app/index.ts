@@ -22,6 +22,8 @@ import { SimpleUserService } from "./services/UserService/implementations/Simple
 import { ViewModel } from "./view-model";
 import { IViewModel } from "./view-model/types";
 import { generateSignInPageProps } from "../details/ui/view/pages/SignInPage/store/selectors";
+import { generateSignUpPageProps } from "../details/ui/view/pages/SignUpPage/store/selectors";
+import { generateNewArticlePageProps } from "../details/ui/view/pages/EditArticlePage/store/selectors";
 
 /** To be used only in the entry point of the application as
  * this is the ultimate detail (i.e. the dirtiest part) */
@@ -33,7 +35,9 @@ export const defaultComposeApp = (): IViewModel => {
     [EPage.Article]: generateArticlePageProps,
     [EPage.Settings]: generateSettingsPageProps,
     [EPage.SignIn]: generateSignInPageProps,
-    // [EPage.SignUp]: generateSignUpPageProps
+    [EPage.SignUp]: generateSignUpPageProps,
+    [EPage.NewArticle]: generateNewArticlePageProps,
+    [EPage.EditArticle]: generateNewArticlePageProps,
   };
 
   const articleDao = new ArticleDAOTestDouble(
@@ -70,8 +74,9 @@ export const defaultComposeApp = (): IViewModel => {
     [EPage.EditArticle]: (articleId: string) =>
       EditArticlePage.create(articleId, articleService, navigationService),
     [EPage.NewArticle]: () =>
-      NewArticlePage.create("", articleService, navigationService),
-    [EPage.Settings]: () => SettingsPage.create(userService, navigationService),
+      EditArticlePage.create("", articleService, navigationService),
+    [EPage.Settings]: async () =>
+      SettingsPage.create(userService, navigationService),
     [EPage.SignIn]: async () => new SignInPage(userService, navigationService),
     [EPage.SignUp]: async () => new SignUpPage(userService, navigationService),
   };

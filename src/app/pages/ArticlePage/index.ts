@@ -49,7 +49,7 @@ export class ArticlePage implements IPage {
     this.editControl = new Control("Change", async () => {
       const id = this.article?.articleData.id;
       if (!id) return;
-      this.navigationService.navigateToArticle(id, true);
+      await this.navigationService.navigateToArticle(id, true);
     });
 
     this.deleteControl = new Control("Delete", async () => {

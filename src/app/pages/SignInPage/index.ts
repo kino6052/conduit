@@ -10,28 +10,45 @@ import { EPage, IPage } from "../types";
 
 export class SignInPage implements IPage {
   public pageType: EPage = EPage.SignIn;
-  public username: Field<string> = new Field("");
-  public password: Field<string> = new Field("");
+  public username: Field<string>;
+  public password: Field<string>;
   public navigationTabs: ExclusiveSelector<TTab>;
 
   public submitControl: IControl;
 
   constructor(
-    private userService: IUserService,
-    private navigationService: INavigationService,
+    protected userService: IUserService,
+    protected navigationService: INavigationService,
   ) {
     this.navigationTabs = getNavigationTabs(this.navigationService);
 
-    this.submitControl = new Control("Submit", async () => {
-      const response = await this.userService.signIn(
-        this.username.value,
-        this.password.value,
-      );
+    this.submitControl = new Control("Submit", this.onSubmit.bind(this));
+    this.submitControl.isDisabled = true;
 
-      if (response.errors) {
-        this.username.errorMessage = response.errors["username"];
-        this.password.errorMessage = response.errors["password"];
-      }
-    });
+    this.username = new Field("", this.validate.bind(this));
+    this.password = new Field("", this.validate.bind(this));
+  }
+
+  protected async validate() {
+    const isValid = Boolean(this.password.value && this.username.value);
+    this.submitControl.isDisabled = !isValid;
+  }
+
+  protected async onSubmit() {
+    this.username.isDisabled = true;
+    this.password.isDisabled = true;
+
+    const response = await this.userService.signIn(
+      this.username.value,
+      this.password.value,
+    );
+
+    if (response.errors) {
+      this.username.errorMessage = response.errors["username"];
+      this.password.errorMessage = response.errors["password"];
+    }
+
+    this.username.isDisabled = false;
+    this.password.isDisabled = false;
   }
 }

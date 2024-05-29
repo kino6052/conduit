@@ -1,39 +1,38 @@
 import { SignUpPage } from "../../../../../../app/pages/SignUpPage";
-import { EPage } from "../../../../../../app/pages/types";
-import { IAppState } from "../../../../../../app/types";
+import { EPage, IPage } from "../../../../../../app/pages/types";
 import { TAppProps } from "../../../types";
 import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateSignUpPageProps = (
-  state: IAppState,
+  page: IPage,
   refresh?: () => void,
 ): TAppProps<EPage.SignUp> => {
-  const page = state.currentPage as SignUpPage;
+  const _page = page as SignUpPage;
   return {
-    navbarProps: generateNavBarProps(page, refresh),
+    navbarProps: generateNavBarProps(_page, refresh),
     page: EPage.SignUp,
     pageProps: {
-      onMount: getAsyncRefresh(page.initialize.bind(page), refresh),
+      onMount: async () => {},
       usernameInputProps: {
         onChange: async (e) => {
-          page.username.value = e.target.value;
+          _page.username.value = e.target.value;
           refresh?.();
         },
         placeholder: "Username",
-        value: page.username.value,
-        disabled: state.isLoading,
-        error: page.username.errorMessage,
+        value: _page.username.value,
+        disabled: _page.username.isDisabled,
+        error: _page.username.errorMessage,
       },
       passwordInputProps: {
         onChange: async (e) => {
-          page.password.value = e.target.value;
+          _page.password.value = e.target.value;
           refresh?.();
         },
         placeholder: "Password",
-        value: page.password.value,
-        disabled: state.isLoading,
-        error: page.password.errorMessage,
+        value: _page.password.value,
+        disabled: _page.password.isDisabled,
+        error: _page.password.errorMessage,
       },
       linkProps: {
         onClick: async (e) => {
@@ -44,10 +43,12 @@ export const generateSignUpPageProps = (
         },
       },
       buttonProps: {
-        onClick: getAsyncRefresh(page.signUp.bind(page), refresh),
+        onClick: getAsyncRefresh(
+          async () => _page.submitControl.onActivate?.(),
+          refresh,
+        ),
         text: "Sign Up",
-        disabled:
-          state.isLoading || !page.username.value || !page.password.value, // TODO: Move in a method getIsDisabled()?
+        disabled: _page.submitControl.isDisabled,
       },
     },
   };

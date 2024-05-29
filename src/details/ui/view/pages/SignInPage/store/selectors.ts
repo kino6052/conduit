@@ -21,7 +21,7 @@ export const generateSignInPageProps = (
         },
         placeholder: "Username",
         value: _page.username.value,
-        disabled: _page.submitControl.isDisabled,
+        disabled: _page.username.isDisabled,
         error: _page.username.errorMessage,
       },
       passwordInputProps: {
@@ -31,7 +31,7 @@ export const generateSignInPageProps = (
         },
         placeholder: "Password",
         value: _page.password.value,
-        disabled: _page.submitControl.isDisabled,
+        disabled: _page.password.isDisabled,
         error: _page.password.errorMessage,
       },
       linkProps: {

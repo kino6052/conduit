@@ -10,7 +10,7 @@ export const generateNavBarProps = (page: IPage, refresh?: () => void) => ({
     page.navigationTabs?.items?.map((tab) => {
       return {
         id: tab.id,
-        onClick: getAsyncRefresh(tab.select, refresh),
+        onClick: getAsyncRefresh(tab.select.bind(tab), refresh),
         text: tab.id,
         variant: ETabVariant.Menu,
         isActive: tab.isSelected,

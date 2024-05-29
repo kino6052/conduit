@@ -38,7 +38,8 @@ export class EditArticlePage implements IPage {
     articleService: IArticleService,
     navigationService: INavigationService,
   ) {
-    const article = await articleService.prepareArticle(articleId);
+    const article =
+      !!articleId && (await articleService.prepareArticle(articleId));
 
     const page = new EditArticlePage(
       articleId,
@@ -46,7 +47,7 @@ export class EditArticlePage implements IPage {
       navigationService,
     );
 
-    if (article?.articleData) {
+    if (article && article?.articleData) {
       page.title.value = article.articleData.title;
       page.article.value = article.articleData.description;
       page.tags.value = article.articleData.tags.join(" ");

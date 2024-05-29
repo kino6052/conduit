@@ -1,59 +1,58 @@
 import { SettingsPage } from "../../../../../../app/pages/SettingsPage";
-import { EPage } from "../../../../../../app/pages/types";
-import { IAppState } from "../../../../../../app/types";
+import { EPage, IPage } from "../../../../../../app/pages/types";
 import { TAppProps } from "../../../types";
 import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateSettingsPageProps = (
-  state: IAppState,
+  page: IPage,
   refresh?: () => void,
 ): TAppProps<EPage.Settings> => {
-  const page = state.currentPage as SettingsPage;
+  const _page = page as SettingsPage;
   return {
-    navbarProps: generateNavBarProps(page, refresh),
+    navbarProps: generateNavBarProps(_page, refresh),
     page: EPage.Settings,
     pageProps: {
       onMount: async () => {},
       bioInputProps: {
         onChange: async (e) => {
-          page.bio.value = e.target.value;
+          _page.bio.value = e.target.value;
           refresh?.();
         },
         placeholder: "Let the world know about you",
-        value: page.bio.value,
+        value: _page.bio.value,
       },
       usernameInputProps: {
         onChange: async (e) => {
-          page.username.value = e.target.value;
+          _page.username.value = e.target.value;
           refresh?.();
         },
         placeholder: "Username",
-        value: page.username.value,
+        value: _page.username.value,
       },
       passwordInputProps: {
         onChange: async (e) => {
-          page.password.value = e.target.value;
+          _page.password.value = e.target.value;
           refresh?.();
         },
         placeholder: "Password",
-        value: page.password.value,
+        value: _page.password.value,
       },
       imageUrlInputProps: {
         onChange: async (e) => {
-          page.imageSrc.value = e.target.value;
+          _page.imageSrc.value = e.target.value;
           refresh?.();
         },
         placeholder: "Profile Picture URL",
-        value: page.imageSrc.value,
+        value: _page.imageSrc.value,
       },
       buttonProps: {
-        onClick: getAsyncRefresh(async () => page.saveControl.onActivate?.(), refresh),
+        onClick: getAsyncRefresh(async () => _page.saveControl.onActivate?.(), refresh),
         text: "Save",
-        disabled: page.saveControl.isDisabled,
+        disabled: _page.saveControl.isDisabled,
       },
       logoutButtonProps: {
-        onClick: getAsyncRefresh(async () => page.logoutControl.onActivate?.(), refresh),
+        onClick: getAsyncRefresh(async () => _page.logoutControl.onActivate?.(), refresh),
         text: "Logout",
       },
     },

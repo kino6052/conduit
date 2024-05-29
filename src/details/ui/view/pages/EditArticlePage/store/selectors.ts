@@ -1,64 +1,49 @@
 import { NewArticlePage } from "../../../../../../app/pages/NewArticlePage";
-import { EPage } from "../../../../../../app/pages/types";
-import { IAppState } from "../../../../../../app/types";
+import { EPage, IPage } from "../../../../../../app/pages/types";
 import { TAppProps } from "../../../types";
+import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateNewArticlePageProps = (
-  state: IAppState,
+  page: IPage,
   refresh?: () => void,
 ): TAppProps<EPage.NewArticle> => {
-  const page = state.currentPage as NewArticlePage;
+  const _page = page as NewArticlePage;
   return {
-    navbarProps: generateNavBarProps(page, refresh),
+    navbarProps: generateNavBarProps(_page, refresh),
     page: EPage.NewArticle,
     pageProps: {
-      onMount: async () => {
-        const result = page.initialize().then(() => {
-          refresh?.();
-        });
-
-        refresh?.();
-
-        return result;
-      },
-      isLoading: state.isLoading,
+      onMount: async () => {},
       articleInputProps: {
         onChange: async (e) => {
-          page.article = e.target.value;
+          _page.article.value = e.target.value;
           refresh?.();
         },
         placeholder: "Write your article",
-        value: page.article,
+        value: _page.article.value,
         isTextArea: true,
       },
       buttonProps: {
-        onClick: async () => {
-          const result = page.publishArticle().then(() => {
-            refresh?.();
-          });
-          refresh?.();
-          return result;
-        },
+        onClick: getAsyncRefresh(async () => _page.submitControl.onActivate?.(), refresh),
         text: "Publish",
-        disabled: !page.article || !page.title,
+        disabled: !_page.article || !_page.title,
       },
-      tags: page.generateTags().map((tag) => ({ id: tag, onClick: () => {} })),
+      tags: _page.generateTags().map((tag) => ({ id: tag, onClick: async () => {} })),
       tagsInputProps: {
         onChange: async (e) => {
-          page.tags = e.target.value;
+          _page.tags.value = e.target.value;
           refresh?.();
         },
         placeholder: "Tags",
-        value: page.tags,
+        value: _page.tags.value,
       },
       titleInputProps: {
         onChange: async (e) => {
-          page.title = e.target.value;
+          _page.title.value = e.target.value;
           refresh?.();
         },
         placeholder: "Title",
-        value: page.title,
+        value: _page.title.value,
       },
     },
   };
