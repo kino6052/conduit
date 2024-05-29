@@ -1,4 +1,4 @@
-import { EPage } from "../../../app/pages/types";
+import { EPage } from "../../app/entities/pages/types";
 import { TWithOnMountHandler } from "../../utils/types";
 import { TNavbarProps } from "./components/Navbar/types";
 import { TArticlePageProps } from "./pages/ArticlePage/types";
