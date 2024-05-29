@@ -1,7 +1,6 @@
-import React from "react";
-import ReactDOMClient from "react-dom/client";
-import { PageDefaultScreen } from "./screens/PageDefaultScreen";
+import { defaultComposeApp } from "./details";
+import { render } from "./details/view";
 
-const app = document.getElementById("app");
-const root = ReactDOMClient.createRoot(app);
-root.render(<PageDefaultScreen />);
+const viewModel = defaultComposeApp();
+
+render(viewModel.onPropsChange.bind(viewModel));

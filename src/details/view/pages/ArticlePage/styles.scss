@@ -1,0 +1,33 @@
+.wrapper {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  align-items: center;
+}
+
+.content {
+  display: flex;
+  flex-direction: column;
+  margin-top: 24px;
+  gap: 16px;
+  max-width: 800px;
+  width: 100%;
+}
+
+.comments {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  gap: 24px;
+}
+
+.user {
+  display: flex;
+  gap: 12px;
+}
+
+.buttons {
+  display: flex;
+  gap: 8px;
+}

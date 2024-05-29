@@ -1,0 +1,24 @@
+.wrapper {
+  display: inline-flex;
+  align-items: center;
+  border-radius: 64px;
+  display: inline-flex;
+  justify-content: center;
+  min-height: 24px;
+  min-width: 24px;
+  position: relative;
+  overflow: hidden;
+  gap: 8px;
+}
+
+.icon {
+  font-family: "Material Icons", Helvetica;
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0;
+  line-height: normal;
+  position: relative;
+  white-space: nowrap;
+  width: fit-content;
+  color: var(--variable-collection-green);
+}

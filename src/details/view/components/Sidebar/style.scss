@@ -1,0 +1,15 @@
+.wrapper {
+  border: 1px solid;
+  border-color: var(--variable-collection-grey);
+  border-radius: var(--variable-collection-radius);
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  padding: 16px;
+  position: relative;
+  width: 100%;
+}
+
+.content {
+  width: 100%;
+}

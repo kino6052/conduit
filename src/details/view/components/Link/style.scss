@@ -1,0 +1,12 @@
+.link {
+  padding: 0;
+  margin: 0;
+  cursor: pointer;
+
+  &:hover {
+    a, p, b, li, span {
+      text-decoration: underline;
+      text-decoration-color: var(--variable-collection-grey);
+    }
+  }
+}

@@ -1,0 +1,26 @@
+.wrapper {
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+  padding: 48px;
+}
+
+.green {
+  align-items: center;
+  background-color: var(--variable-collection-green);
+}
+
+.content {
+  gap: 8px;
+  max-width: 800px;
+  width: 100%;
+  display: flex;
+  width: 100%;
+  flex-direction: column;
+  align-items: center;
+}
+
+.white {
+  color: var(--variable-collection-white);
+}
