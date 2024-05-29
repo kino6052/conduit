@@ -1,4 +1,4 @@
-import { defaultComposeApp } from "../composition-root";
+import { defaultComposeApp } from "..";
 import { withLogic } from "../../utils/withLogic";
 import { App as AppComponent } from "./App";
 

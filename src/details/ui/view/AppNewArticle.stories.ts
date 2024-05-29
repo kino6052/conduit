@@ -1,9 +1,9 @@
-import { SimpleArticleDao } from "../data/SimpleArticleDao";
-import { SimpleUserDao } from "../data/SimpleUserDao";
-import { withLogic } from "../../utils/withLogic";
-import { ViewModel } from "../../app/view-model";
+import { SimpleArticleDao } from "../../data/SimpleArticleDao";
+import { SimpleUserDao } from "../../data/SimpleUserDao";
+import { withLogic } from "../../../utils/withLogic";
+import { ViewModel } from "../../../app/view-model";
 import { App as AppComponent } from "./App";
-import { defaultComposeApp } from "..";
+import { defaultComposeApp } from "../..";
 
 const userDao = new SimpleUserDao();
 const articleDao = new SimpleArticleDao();

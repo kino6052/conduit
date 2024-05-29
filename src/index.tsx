@@ -1,4 +1,4 @@
-import { defaultComposeApp } from "./details/composition-root";
+import { defaultComposeApp } from "./details";
 import { render } from "./details/view";
 
 const viewModel = defaultComposeApp();
