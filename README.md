@@ -99,18 +99,18 @@ So we will always have an opportunity to refactor as long as tests pass.
 The last and the coolest part will be the ability to delay very hard decision about technology for storage and other IO as far into the future as possible, thus allowing us to keep our pace and implement features, while knowing that we still have time make an educated decision based on our app and stakeholder needs.
 
 __Pros & Cons__
-	- Pros
-		○ Legacy-proof
-		○ Easy-to-learn
-			§ This approach builds on top of a lot of established practices like OOP, MVVM and Component Composition
-		○ Natural programming style
-	- Cons
-		○ Requires you to form a coherent conceptual understanding of your application
-			§ You will have to doubt, rethink and refactor
-			§ There is no set algorithm for creating model, you will have to experiment until it fits your needs
-		○ Simplify and optimize model
-			§ While View and IO could be optimized separately,
-			§ It requires you to make sure your model is as simple as possible
+- Pros
+  - Legacy-proof
+  - Easy-to-learn
+    - This approach builds on top of a lot of established practices like OOP, MVVM and Component Composition
+  - Natural programming style
+- Cons
+  - Requires you to form a coherent conceptual understanding of your application
+    - You will have to doubt, rethink and refactor
+    - There is no set algorithm for creating model, you will have to experiment until it fits your needs
+  - Simplify and optimize model
+    - While View and IO could be optimized separately,
+    - It requires you to make sure your model is as simple as possible
 
 ### Conclusion
 
