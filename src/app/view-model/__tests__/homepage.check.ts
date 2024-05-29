@@ -4,9 +4,9 @@ import { defaultComposeApp } from "../../..";
 import { EPage } from "../../pages/types";
 import { IAppState } from "../../types";
 import { checkEventual } from "../../../utils/testing";
-import { THomePageProps } from "../../../details/ui/view/pages/HomePage/types";
-import { TSignUpPageProps } from "../../../details/ui/view/pages/SignUpPage/types";
-import { TAppProps } from "../../../details/ui/view/types";
+import { THomePageProps } from "../../../details/view/pages/HomePage/types";
+import { TSignUpPageProps } from "../../../details/view/pages/SignUpPage/types";
+import { TAppProps } from "../../../details/view/types";
 
 let state: IAppState;
 let ui: TAppProps<EPage>;

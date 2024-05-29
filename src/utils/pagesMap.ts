@@ -1,4 +1,4 @@
-import { TAppProps, TPagePropsMap } from "../details/ui/view/types";
+import { TAppProps, TPagePropsMap } from "../details/view/types";
 import { EPage } from "../app/pages/types";
 
 export type TPageMap = {

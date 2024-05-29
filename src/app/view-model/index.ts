@@ -1,8 +1,8 @@
 import { BehaviorSubject, tap } from "rxjs";
-import { EPage, IPage } from "../pages/types";
-import { TAppProps } from "../../details/ui/view/types";
+import { TAppProps } from "../../details/view/types";
 import { IViewModel, TPropsMap } from "./types";
-import { INavigationService } from "../services/NavigationService/types";
+import { INavigationService } from "../interfaces/services/NavigationService/types";
+import { EPage, IPage } from "../entities/pages/types";
 
 /** The model of view of the entire application */
 export class ViewModel implements IViewModel {
@@ -29,10 +29,9 @@ export class ViewModel implements IViewModel {
    * This is what is required for testing
    */
   public generateProps(page: IPage, refresh?: () => void) {
-    const result = this.propsMap[page.pageType]?.(
-      page,
-      refresh,
-    ) as TAppProps<EPage> | undefined;
+    const result = this.propsMap[page.pageType]?.(page, refresh) as
+      | TAppProps<EPage>
+      | undefined;
     return result;
   }
 
