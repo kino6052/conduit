@@ -2,6 +2,7 @@ import { SettingsPage } from "../../../../../../app/pages/SettingsPage";
 import { EPage } from "../../../../../../app/pages/types";
 import { IAppState } from "../../../../../../app/types";
 import { TAppProps } from "../../../types";
+import { getAsyncRefresh } from "../../../utils/utils";
 import { generateNavBarProps } from "../../selectors";
 
 export const generateSettingsPageProps = (
@@ -13,15 +14,7 @@ export const generateSettingsPageProps = (
     navbarProps: generateNavBarProps(page, refresh),
     page: EPage.Settings,
     pageProps: {
-      onMount: async () => {
-        const result = page.initialize().then(() => {
-          refresh?.();
-        });
-
-        refresh?.();
-
-        return result;
-      },
+      onMount: async () => {},
       bioInputProps: {
         onChange: async (e) => {
           page.bio.value = e.target.value;
@@ -55,22 +48,12 @@ export const generateSettingsPageProps = (
         value: page.imageSrc.value,
       },
       buttonProps: {
-        onClick: async () => {
-          page.saveChanges().then(() => {
-            refresh?.();
-          });
-          refresh?.();
-        },
+        onClick: getAsyncRefresh(async () => page.saveControl.onActivate?.(), refresh),
         text: "Save",
-        disabled: !page.username || !page.password,
+        disabled: page.saveControl.isDisabled,
       },
       logoutButtonProps: {
-        onClick: async () => {
-          page.logout().then(() => {
-            refresh?.();
-          });
-          refresh?.();
-        },
+        onClick: getAsyncRefresh(async () => page.logoutControl.onActivate?.(), refresh),
         text: "Logout",
       },
     },

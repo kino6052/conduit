@@ -21,10 +21,7 @@ export const generatePostsProps = (
         text: article.likeControl.text,
       },
       linkProps: {
-        onClick: async () => {
-          await article.read();
-          refresh?.();
-        },
+        onClick: getAsyncRefresh(article.read.bind(article), refresh),
       },
       userInfoProps: {
         date: article.articleData.date,
@@ -34,10 +31,7 @@ export const generatePostsProps = (
           refresh,
         ),
       },
-      onClick: async () => {
-        article.read();
-        refresh?.();
-      },
+      onClick: getAsyncRefresh(article.read.bind(article), refresh),
     })) ?? []
   );
 };

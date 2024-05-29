@@ -3,15 +3,15 @@ import { IUser } from "../../../components/User/types";
 import { IUserDAO } from "../../../data/UserDAO/types";
 import { EPage } from "../../../pages/types";
 import { INavigationService } from "../../NavigationService/types";
+import { IUserContext } from "../../UserContext/types";
 import { IUserService } from "../types";
 
 export class SimpleUserService implements IUserService {
   constructor(
     private userDao: IUserDAO,
     private navigationService: INavigationService,
+    private userContext: IUserContext,
   ) {}
-
-  currentUser: string | undefined = "";
 
   async getUserProfile(username: string): Promise<IUser | undefined> {
     const userInfo = await this.userDao.findUserByName(username);
@@ -25,7 +25,7 @@ export class SimpleUserService implements IUserService {
 
   async toggleFollow(username: string) {
     try {
-      if (!this.currentUser) {
+      if (!this.userContext.currentUsername) {
         await this.navigationService.navigate(EPage.SignIn);
         return;
       }
@@ -51,7 +51,7 @@ export class SimpleUserService implements IUserService {
   async signIn(username: string, password: string) {
     const response = await this.userDao.login(username, password);
     if (response.errors) return response;
-    this.currentUser = username;
+    this.userContext.currentUsername = username;
     await this.navigationService.navigate(EPage.Home);
     return response;
   }
@@ -59,14 +59,20 @@ export class SimpleUserService implements IUserService {
   public async signUp(username: string, password: string) {
     const response = await this.userDao.registerNewUser(username, password);
     if (response.errors) return response;
-    this.currentUser = username;
+    this.userContext.currentUsername = username;
     await this.navigationService.navigate(EPage.Home);
     return response;
   }
 
+  public get currentUser() {
+    return this.userContext.currentUsername;
+  }
+
   public async getCurrentUser() {
-    if (!this.currentUser) return;
-    const userInfo = await this.userDao.findUserByName(this.currentUser);
+    if (!this.userContext.currentUsername) return;
+    const userInfo = await this.userDao.findUserByName(
+      this.userContext.currentUsername,
+    );
     if (!userInfo) return;
     return new User(userInfo, this, this.navigationService);
   }
@@ -77,8 +83,8 @@ export class SimpleUserService implements IUserService {
     imageSrc: string,
     bio: string,
   ) {
-    if (!this.currentUser) return;
-    await this.userDao.updateUserByName(this.currentUser, {
+    if (!this.userContext.currentUsername) return;
+    await this.userDao.updateUserByName(this.userContext.currentUsername, {
       username,
       password,
       imageSrc,
@@ -89,7 +95,7 @@ export class SimpleUserService implements IUserService {
   }
 
   public async logout() {
-    this.currentUser = "";
+    this.userContext.currentUsername = "";
 
     await this.navigationService.navigate(EPage.Home);
   }

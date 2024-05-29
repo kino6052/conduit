@@ -40,7 +40,7 @@ export function App<T extends EPage>(props: TAppProps<T>): JSX.Element | null {
 
   return (
     <>
-      <Navbar {...navbarProps} />
+      {navbarProps && <Navbar {...navbarProps} />}
       <Page {...pageProps} />
     </>
   );

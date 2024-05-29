@@ -7,4 +7,5 @@ export interface INavigationService {
   ) => Promise<void>;
   navigateToUserProfile: (username: string) => Promise<void>;
   navigateToArticle: (id: string, isEditing?: boolean) => Promise<void>;
+  getNavigationTabs: () => EPage[];
 }

@@ -1,5 +1,6 @@
 import { OverrideProps } from "../../../../utils/types";
 import { EPage, IPage } from "../../../pages/types";
+import { IUserContext } from "../../UserContext/types";
 import { INavigationService } from "../types";
 
 export class SimpleNavigationService implements INavigationService {
@@ -18,6 +19,7 @@ export class SimpleNavigationService implements INavigationService {
         [EPage.Profile]: (username: string) => Promise<IPage>;
       }>
     >,
+    private userContext: IUserContext,
   ) {}
 
   async navigate(page: Exclude<EPage, EPage.Article | EPage.Profile>) {
@@ -35,5 +37,17 @@ export class SimpleNavigationService implements INavigationService {
   async navigateToUserProfile(username: string) {
     this.currentPage = { pageType: EPage.Loading };
     this.currentPage = await this.constructors.Profile?.(username);
+  }
+
+  getNavigationTabs() {
+    const isLoggedIn = !!this.userContext.currentUsername;
+
+    return [
+      EPage.Home,
+      isLoggedIn && EPage.NewArticle,
+      isLoggedIn && EPage.Settings,
+      !isLoggedIn && EPage.SignIn,
+      !isLoggedIn && EPage.SignUp,
+    ].filter(Boolean) as EPage[];
   }
 }

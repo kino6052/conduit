@@ -1,4 +1,9 @@
 import { uniqueId } from "lodash";
+import { generateArticlePageProps } from "../details/ui/view/pages/ArticlePage/store/selectors";
+import { generateHomePageProps } from "../details/ui/view/pages/HomePage/store/selectors";
+import { generateProfilePageProps } from "../details/ui/view/pages/ProfilePage/store/selectors";
+import { generateSettingsPageProps } from "../details/ui/view/pages/SettingsPage/store/selectors";
+import { generateLoadingPageProps } from "../details/ui/view/selectors";
 import { ArticleDAOTestDouble } from "./data/ArticleDAO";
 import { UserDAOTestDouble } from "./data/UserDAO";
 import { ArticlePage } from "./pages/ArticlePage";
@@ -12,22 +17,38 @@ import { SignUpPage } from "./pages/SignUpPage";
 import { EPage } from "./pages/types";
 import { SimpleArticleService } from "./services/ArticleService/implementations/SimpleArticleService";
 import { SimpleNavigationService } from "./services/NavigationService/implementations/SimpleNavigationService";
+import { IUserContext } from "./services/UserContext/types";
 import { SimpleUserService } from "./services/UserService/implementations/SimpleUserService";
 import { ViewModel } from "./view-model";
-import { IViewModel, TPropsMap } from "./view-model/types";
-
+import { IViewModel } from "./view-model/types";
+import { generateSignInPageProps } from "../details/ui/view/pages/SignInPage/store/selectors";
 
 /** To be used only in the entry point of the application as
  * this is the ultimate detail (i.e. the dirtiest part) */
-export const defaultComposeApp = (propsMap: TPropsMap): IViewModel => {
+export const defaultComposeApp = (): IViewModel => {
+  const propsMap = {
+    [EPage.Home]: generateHomePageProps,
+    [EPage.Loading]: generateLoadingPageProps,
+    [EPage.Profile]: generateProfilePageProps,
+    [EPage.Article]: generateArticlePageProps,
+    [EPage.Settings]: generateSettingsPageProps,
+    [EPage.SignIn]: generateSignInPageProps,
+    // [EPage.SignUp]: generateSignUpPageProps
+  };
+
   const articleDao = new ArticleDAOTestDouble(
     () => new Date(0).toISOString(),
     () => uniqueId("post"),
   );
 
+  const userContext = {} as IUserContext;
   const userDao = new UserDAOTestDouble();
-  const navigationService = new SimpleNavigationService({});
-  const userService = new SimpleUserService(userDao, navigationService);
+  const navigationService = new SimpleNavigationService({}, userContext);
+  const userService = new SimpleUserService(
+    userDao,
+    navigationService,
+    userContext,
+  );
 
   const articleService = new SimpleArticleService(
     articleDao,
