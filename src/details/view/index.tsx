@@ -1,4 +1,4 @@
-import { IViewModel } from "../../app/view-model/types";
+import { IViewModel } from "../view-model/types";
 import { withLogic } from "../../utils/withLogic";
 import { App } from "./App";
 

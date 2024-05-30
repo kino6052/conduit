@@ -1,8 +1,8 @@
 import { BehaviorSubject, tap } from "rxjs";
-import { TAppProps } from "../../details/view/types";
+import { TAppProps } from "../view/types";
 import { IViewModel, TPropsMap } from "./types";
-import { INavigationService } from "../interfaces/services/NavigationService/types";
-import { EPage, IPage } from "../entities/pages/types";
+import { INavigationService } from "../../app/interfaces/services/NavigationService/types";
+import { EPage, IPage } from "../../app/entities/pages/types";
 
 /** The model of view of the entire application */
 export class ViewModel implements IViewModel {

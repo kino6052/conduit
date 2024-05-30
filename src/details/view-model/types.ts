@@ -1,5 +1,5 @@
-import { TAppProps } from "../../details/view/types";
-import { EPage, IPage } from "../entities/pages/types";
+import { TAppProps } from "../view/types";
+import { EPage, IPage } from "../../app/entities/pages/types";
 
 export type TPropsMap = Partial<{
   [K in EPage]: (page: IPage, refresh?: () => void) => TAppProps<K>;

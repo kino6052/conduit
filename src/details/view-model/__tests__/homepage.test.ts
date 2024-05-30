@@ -2,8 +2,8 @@ import { Subject } from "rxjs";
 import { ViewModel } from "..";
 import { defaultComposeApp } from "../../..";
 import { EPage } from "../../pages/types";
-import { THomePageProps } from "../../../details/view/pages/HomePage/types";
-import { TAppProps } from "../../../details/view/types";
+import { THomePageProps } from "../../view/pages/HomePage/types";
+import { TAppProps } from "../../view/types";
 import { IViewModel } from "../types";
 
 let viewModel: IViewModel;
