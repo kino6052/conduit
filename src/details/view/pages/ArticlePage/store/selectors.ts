@@ -35,6 +35,7 @@ export const generateArticlePageProps = (
         },
         deleteButtonProps: _page.deleteControl && {
           text: _page.deleteControl?.text ?? "",
+          disabled: _page.deleteControl?.isDisabled,
           onClick: getAsyncRefresh(
             async () => _page.deleteControl?.onActivate?.(),
             refresh,
