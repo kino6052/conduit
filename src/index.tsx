@@ -3,4 +3,4 @@ import { render } from "./details/view";
 
 const viewModel = defaultComposeApp();
 
-render(viewModel.onPropsChange.bind(viewModel));
+render(viewModel);
