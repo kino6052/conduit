@@ -1,5 +1,5 @@
-import { IArticle } from "../../components/Article/types";
-import { ETab } from "../../pages/ArticlePreviewPage/constants";
+import { IArticle } from "../../../entities/components/Article/types";
+import { ETab } from "../../../entities/pages/ArticlePreviewPage/constants";
 
 /** Purpose: Connects page with data */
 export interface IArticleService {
