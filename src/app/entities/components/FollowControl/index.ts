@@ -1,5 +1,5 @@
-import { Control } from "../../../../components/Control";
-import { IUser } from "../../../../components/User/types";
+import { Control } from "../Control";
+import { IUser } from "../User/types";
 import { EFollowControlText } from "./constants";
 
 export class FollowControl extends Control {
@@ -14,7 +14,7 @@ export class FollowControl extends Control {
 
   private setText(isFollowing: boolean) {
     this.text = isFollowing
-      ? EFollowControlText.Follow
-      : EFollowControlText.Unfollow;
+      ? EFollowControlText.Unfollow
+      : EFollowControlText.Follow;
   }
 }

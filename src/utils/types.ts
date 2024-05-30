@@ -1,5 +1,3 @@
-import React from "react";
-
 export type RecursivePartial<T> = {
   [P in keyof T]?: T[P] extends (infer U)[]
     ? RecursivePartial<U>[] // NOTE: when value is array

@@ -1,4 +1,4 @@
-import { TUserInfo } from "../../data/UserDAO/types";
+import { TUserInfo } from "../../../interfaces/data/UserDAO/types";
 
 export interface IUser {
   isFollowedByUs: boolean;

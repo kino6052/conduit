@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { withBehaviorlessMemo } from "../../../../utils/withBehaviorlessMemo";
 import { Sidebar as _Sidebar } from "./Sidebar";
 
-export const Sidebar = memo(_Sidebar);
+export const Sidebar = withBehaviorlessMemo(_Sidebar);

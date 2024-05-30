@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { withBehaviorlessMemo } from "../../../../utils/withBehaviorlessMemo";
 import { Article as _Post } from "./Article";
 
-export const Post = memo(_Post);
+export const Post = withBehaviorlessMemo(_Post);

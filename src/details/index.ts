@@ -69,7 +69,12 @@ export const defaultComposeApp = (): IViewModel => {
         userService,
       ),
     [EPage.Article]: (articleId: string) =>
-      ArticlePage.create(articleId, articleService, navigationService),
+      ArticlePage.create(
+        articleId,
+        articleService,
+        navigationService,
+        userService,
+      ),
     [EPage.EditArticle]: (articleId: string) =>
       EditArticlePage.create(articleId, articleService, navigationService),
     [EPage.NewArticle]: () =>

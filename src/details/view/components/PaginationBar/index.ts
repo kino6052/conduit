@@ -1,4 +1,4 @@
-import { memo } from "react";
+import { withBehaviorlessMemo } from "../../../../utils/withBehaviorlessMemo";
 import { PaginationBar as _PaginationButton } from "./PaginationBar";
 
-export const PaginationBar = memo(_PaginationButton);
+export const PaginationBar = withBehaviorlessMemo(_PaginationButton);

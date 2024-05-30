@@ -1,6 +1,6 @@
-import { memo } from "react";
-import { Tag as _Tag } from "./Tag";
+export { Tag } from "./Tag";
 
-export { Tags } from "./Tags";
+import { withBehaviorlessMemo } from "../../../../utils/withBehaviorlessMemo";
+import { Tags as _Tags } from "./Tags";
 
-export const Tag = memo(_Tag);
+export const Tags = withBehaviorlessMemo(_Tags);
