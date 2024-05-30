@@ -50,7 +50,7 @@ export class SimpleArticleService implements IArticleService {
 
   public async submitComment(value: string, articleId: string) {
     if (!this.userService.currentUser) {
-      this.navigationService.navigate(EPage.SignIn);
+      await this.navigationService.navigate(EPage.SignIn);
       return;
     }
 
@@ -65,8 +65,19 @@ export class SimpleArticleService implements IArticleService {
     );
   }
 
+  private async isAllowedToCUD(articleId: string) {
+    const articleData = await this.articleDao.getArticleById(articleId);
+    const isSameUser =
+      this.userService.currentUser &&
+      articleData?.username === this.userService.currentUser;
+    return isSameUser;
+  }
+
   public async delete(id: string) {
     try {
+      if (!this.isAllowedToCUD(id)) {
+        throw new Error("Not allowed");
+      }
       await this.articleDao.removeArticleById(id);
     } catch (e) {
       console.error(e);

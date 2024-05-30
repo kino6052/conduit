@@ -23,15 +23,15 @@ export const generateArticlePageProps = (
           username: _page.article?.articleData.username ?? "",
           onClick: getAsyncRefresh(async () => _page.article?.read(), refresh),
         },
-        editButtonProps: {
-          text: "",
+        editButtonProps: _page.editControl && {
+          text: _page.editControl?.text ?? "",
           onClick: getAsyncRefresh(
             async () => _page.editControl?.onActivate?.(),
             refresh,
           ),
         },
-        deleteButtonProps: {
-          text: "",
+        deleteButtonProps: _page.deleteControl && {
+          text: _page.deleteControl?.text ?? "",
           onClick: getAsyncRefresh(
             async () => _page.deleteControl?.onActivate?.(),
             refresh,
@@ -89,8 +89,12 @@ export const generateArticlePageProps = (
         variant: EButtonVariant.Secondary,
       },
       followButtonProps: {
-        onClick: getAsyncRefresh(async () => {}, refresh),
-        text: "",
+        onClick: getAsyncRefresh(
+          async () => _page.followControl?.onActivate?.(),
+          refresh,
+        ),
+        disabled: _page.followControl?.isDisabled,
+        text: _page.followControl?.text ?? "",
       },
     },
   };

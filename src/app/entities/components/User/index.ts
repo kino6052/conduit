@@ -1,6 +1,7 @@
 import { TUserInfo } from "../../../interfaces/data/UserDAO/types";
 import { INavigationService } from "../../../interfaces/services/NavigationService/types";
 import { IUserService } from "../../../interfaces/services/UserService/types";
+import { EPage } from "../../pages/types";
 import { IUser } from "./types";
 
 export class User implements IUser {
@@ -14,12 +15,13 @@ export class User implements IUser {
     this.isFollowedByUs =
       !!userService.currentUser &&
       !!userInfo?.followers.includes(userService.currentUser);
+
+    console.warn({ userInfo });
   }
 
   public async toggleFollowBy() {
-    if (!this.userService.currentUser) return;
-    const isFollowedByUs = this.userService.toggleFollow(
-      this.userService.currentUser,
+    const isFollowedByUs = await this.userService.toggleFollow(
+      this.userInfo.username,
     );
     this.isFollowedByUs = !!isFollowedByUs;
   }

@@ -25,8 +25,6 @@ pagesComponentMap[EPage.Loading] = Loader;
 export function App<T extends EPage>(props: TAppProps<T>): JSX.Element | null {
   const { page, pageProps, navbarProps } = props;
 
-  console.warn({ pagesComponentMap, page });
-
   const Page = pagesComponentMap[page] as React.FC<typeof pageProps>;
 
   if (!Page) {

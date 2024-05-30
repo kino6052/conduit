@@ -26,7 +26,6 @@ export class Article implements IArticle {
   }
 
   async read() {
-    console.warn(this);
     await this.articleService.readArticle(this.articleData.id);
   }
 }

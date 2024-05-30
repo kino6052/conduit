@@ -25,23 +25,23 @@ export class SimpleUserService implements IUserService {
 
   async toggleFollow(username: string) {
     try {
-      if (!this.userContext.currentUsername) {
+      const us = this.userContext.currentUsername;
+
+      if (!us) {
         await this.navigationService.navigate(EPage.SignIn);
         return;
       }
 
       const followers = await this.userDao.getFollowers(username);
-      const isFollowing = followers.includes(username);
+      const isFollowing = followers.includes(us);
 
       if (isFollowing) {
-        const nextFollowers = followers.filter(
-          (follower) => follower !== username,
-        );
+        const nextFollowers = followers.filter((follower) => follower !== us);
         await this.userDao.updateFollowers(username, nextFollowers);
         return false;
       }
 
-      await this.userDao.followUserById(username, username);
+      await this.userDao.followUserById(username, us);
       return true;
     } catch (e) {
       console.error(e);

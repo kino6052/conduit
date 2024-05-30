@@ -26,7 +26,6 @@ export class SimpleNavigationService implements INavigationService {
     const _constructor = this.constructors[page];
     if (!_constructor) throw new Error(`No constructor for ${page}`);
     this.currentPage = { pageType: EPage.Loading };
-    console.warn({ page, _constructor });
     this.currentPage = await _constructor();
   }
 
