@@ -4,7 +4,8 @@
   width: 100%;
   align-items: flex-end;
   max-width: 500px;
-  margin: 0 auto;;
+  margin: 0 auto;
+  gap: 8px;
 }
 
 .form-wrapper {
@@ -13,4 +14,9 @@
   flex-direction: column;
   gap: 16px;
   width: 100%;
+}
+
+.button-wrapper {
+  display: flex;
+  gap: 8px;
 }

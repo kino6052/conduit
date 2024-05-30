@@ -1,4 +1,4 @@
-import { IArticle } from "../../../../../../app/components/Article/types";
+import { IArticle } from "../../../../../app/entities/components/Article/types";
 import { getAsyncRefresh } from "../../../utils/utils";
 
 export const generatePostsProps = (
@@ -11,7 +11,7 @@ export const generatePostsProps = (
       comments: [],
       tags: article.articleData.tags.map((tag) => ({
         id: tag,
-        onClick: getAsyncRefresh(async () => {}, refresh),
+        onClick: async () => {},
       })),
       likeButtonProps: {
         onClick: getAsyncRefresh(

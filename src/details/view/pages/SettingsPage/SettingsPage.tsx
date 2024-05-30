@@ -21,8 +21,10 @@ export const SettingsPage: React.FC<TSettingsPageProps> = ({
         <Input {...imageUrlInputProps} />
         <Input {...bioInputProps} isTextArea />
       </div>
-      <Button variant={EButtonVariant.Primary} {...buttonProps} />
-      <Button variant={EButtonVariant.Secondary} {...logoutButtonProps} />
+      <div className={styles["button-wrapper"]}>
+        <Button variant={EButtonVariant.Primary} {...buttonProps} />
+        <Button variant={EButtonVariant.Secondary} {...logoutButtonProps} />
+      </div>
     </div>
   );
 };

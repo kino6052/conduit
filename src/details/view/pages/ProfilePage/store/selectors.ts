@@ -24,11 +24,11 @@ export const generateProfilePageProps = (
         },
         followButtonProps: {
           onClick: getAsyncRefresh(
-            async () => {}, // NOTE: Needs a control
+            async () => _page.followControl?.onActivate?.(),
             refresh,
           ),
-          text: "Needs control",
-          disabled: true,
+          text: _page.followControl?.text ?? "",
+          disabled: _page.followControl?.isDisabled,
         },
       },
       paginationBarProps: {
