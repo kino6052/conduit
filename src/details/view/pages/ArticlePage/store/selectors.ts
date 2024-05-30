@@ -21,7 +21,10 @@ export const generateArticlePageProps = (
         userInfoProps: {
           date: _page.article?.articleData.date ?? "",
           username: _page.article?.articleData.username ?? "",
-          onClick: getAsyncRefresh(async () => _page.article?.read(), refresh),
+          onClick: getAsyncRefresh(
+            async () => _page.article?.authorControl.onActivate?.(),
+            refresh,
+          ),
         },
         editButtonProps: _page.editControl && {
           text: _page.editControl?.text ?? "",
