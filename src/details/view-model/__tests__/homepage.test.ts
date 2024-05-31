@@ -15,6 +15,7 @@ const PropsSubject = new BehaviorSubject<TAppProps<EPage> | undefined>(
 
 beforeEach(() => {
   jest.useFakeTimers();
+  // @ts-ignore
   jest.spyOn(global, "setTimeout").mockImplementation(async (cb) => cb());
 });
 
@@ -32,11 +33,11 @@ beforeEach(async () => {
 describe("Home Page Model", () => {
   it("should navigate to user profile", async () => {
     await checkEventual(
-      (props) => (props.pageProps as THomePageProps).posts.length > 0,
+      (props) => (props?.pageProps as THomePageProps).posts.length > 0,
       PropsSubject,
     );
     (ui as TAppProps<EPage.Home>).pageProps.posts[0].userInfoProps.onClick?.();
-    await checkEventual((props) => props.page === EPage.Profile, PropsSubject);
+    await checkEventual((props) => props?.page === EPage.Profile, PropsSubject);
     expect(ui.page).toMatchInlineSnapshot(`"Profile"`);
   });
 });

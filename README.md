@@ -59,26 +59,20 @@ Develop the application logic using the MVVM pattern and TDD. Write tests to def
 
 ```js
 // Example test
-test('MyComponent renders correctly', () => {
-  render(<MyComponent title="Test Title" />);
-  expect(screen.getByText('Test Title')).toBeInTheDocument();
+it("should navigate to user profile", async () => {
+  await checkEventual(
+    (props) => (props?.pageProps as THomePageProps).posts.length > 0,
+    PropsSubject,
+  );
+  (ui as TAppProps<EPage.Home>).pageProps.posts[0].userInfoProps.onClick?.();
+  await checkEventual((props) => props?.page === EPage.Profile, PropsSubject);
+  expect(ui.page).toMatchInlineSnapshot(`"Profile"`);
 });
 ```
 
 #### Step 4: Connecting to IO
 
 Delay decisions about storage and other IO as long as possible to keep development flexible and adaptable.
-
-```js
-// Example service using DI
-class ArticleService {
-  constructor(private apiClient) {}
-
-  async fetchArticles() {
-    return this.apiClient.get('/articles');
-  }
-}
-```
 
 ### Pros & Cons
 
