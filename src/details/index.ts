@@ -8,7 +8,10 @@ import { SimpleUserService } from "./services/SimpleUserService";
 import { ViewModel } from "./view-model";
 import { IViewModel } from "./view-model/types";
 import { generateArticlePageProps } from "./view/pages/ArticlePage/store/selectors";
-import { generateNewArticlePageProps } from "./view/pages/EditArticlePage/store/selectors";
+import {
+  generateEditArticlePageProps,
+  generateNewArticlePageProps,
+} from "./view/pages/EditArticlePage/store/selectors";
 import { generateHomePageProps } from "./view/pages/HomePage/store/selectors";
 import { generateProfilePageProps } from "./view/pages/ProfilePage/store/selectors";
 import { generateSettingsPageProps } from "./view/pages/SettingsPage/store/selectors";
@@ -36,7 +39,7 @@ export const defaultComposeApp = (): IViewModel => {
     [EPage.SignIn]: generateSignInPageProps,
     [EPage.SignUp]: generateSignUpPageProps,
     [EPage.NewArticle]: generateNewArticlePageProps,
-    [EPage.EditArticle]: generateNewArticlePageProps,
+    [EPage.EditArticle]: generateEditArticlePageProps,
   };
 
   const articleDAO = SimpleArticleDAO.create(

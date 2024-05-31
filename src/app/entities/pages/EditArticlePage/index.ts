@@ -14,7 +14,7 @@ export class EditArticlePage implements IPage {
   public article = new Field<string>("");
   public tags = new Field<string>("");
   public navigationTabs: ExclusiveSelector<TTab>;
-  public submitControl: IControl;
+  public submitControl: IControl | undefined;
 
   protected constructor(
     public articleId: string,
@@ -22,15 +22,6 @@ export class EditArticlePage implements IPage {
     private navigationService: INavigationService,
   ) {
     this.navigationTabs = getNavigationTabs(this.navigationService);
-
-    this.submitControl = new Control("Submit", async () => {
-      await this.articleService.publish(
-        articleId,
-        this.title.value,
-        this.article.value,
-        this.generateTags(),
-      );
-    });
   }
 
   public static async create(
@@ -46,6 +37,15 @@ export class EditArticlePage implements IPage {
       articleService,
       navigationService,
     );
+
+    page.submitControl = new Control("Submit", async () => {
+      await articleService.publish(
+        articleId,
+        page.title.value,
+        page.article.value,
+        page.generateTags(),
+      );
+    });
 
     if (article && article?.articleData) {
       page.title.value = article.articleData.title;

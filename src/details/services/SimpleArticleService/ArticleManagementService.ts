@@ -18,15 +18,17 @@ export class ArticleManagementService implements IArticleManagementService {
     tags: string[],
   ): Promise<void> {
     try {
-      const articleData = await this.articleDao.getArticleById(articleId);
+      if (articleId) {
+        const articleData = await this.articleDao.getArticleById(articleId);
 
-      if (articleData) {
-        await this.articleDao.updateArticleById(articleData.id, {
-          title,
-          description,
-          tags,
-        });
-        return;
+        if (articleData) {
+          await this.articleDao.updateArticleById(articleData.id, {
+            title,
+            description,
+            tags,
+          });
+          return;
+        }
       }
 
       if (!this.userService.currentUser) return;
