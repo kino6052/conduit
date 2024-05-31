@@ -1,14 +1,14 @@
 import { Control } from "..";
-import { IArticleService } from "../../../../interfaces/services/ArticleService/types";
+import { IAuthorExaminationService } from "../../../../interfaces/services/ArticleService/types";
 
 export class AuthorControl extends Control {
   constructor(
     username: string,
-    private articleService: IArticleService,
+    private authorExaminationService: IAuthorExaminationService,
   ) {
     super(username, async () => {
       this.isDisabled = true;
-      await this.articleService.examineAuthor(username);
+      await this.authorExaminationService.examineAuthor(username);
       this.isDisabled = false;
     });
   }

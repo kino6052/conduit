@@ -1,8 +1,7 @@
 import { IArticle } from "../../../entities/components/Article/types";
 import { ETab } from "../../../entities/pages/ArticlePreviewPage/constants";
-
-/** Purpose: Connects page with data */
-export interface IArticleService {
+import { IArticleData } from "../../data/ArticleDAO/types";
+export interface IArticleManagementService {
   publish(
     articleId: string,
     title: string,
@@ -10,12 +9,19 @@ export interface IArticleService {
     tags: string[],
   ): Promise<void>;
 
-  submitComment(value: string, id: string): Promise<void>;
-
   delete(id: string): Promise<void>;
+}
 
+export interface IArticlePreparationService {
   prepareArticle(articleId: string): Promise<IArticle | undefined>;
+  prepareArticleSync(articleData: IArticleData): IArticle;
+}
 
+export interface IArticleCommentService {
+  submitComment(value: string, id: string): Promise<void>;
+}
+
+export interface IArticlePaginationService {
   getDataForPagination: (
     pageIndex?: number,
     tag?: string,
@@ -25,14 +31,30 @@ export interface IArticleService {
     articles: IArticle[];
     numberOfPages: number;
   }>;
-
-  likeArticleById: (id: string) => Promise<number>;
-
-  examineAuthor: (username: string) => Promise<void>;
-
-  readArticle: (articleId: string) => Promise<void>;
-
-  selectTab: (tabId: ETab) => Promise<void>;
-
-  selectTag: (tag: string) => Promise<void>;
 }
+
+export interface IArticleLikeService {
+  likeArticleById(id: string): Promise<number>;
+}
+
+export interface ITabTagSelectionService {
+  selectTab(tabId: ETab): Promise<void>;
+  selectTag(tag: string): Promise<void>;
+}
+
+export interface IAuthorExaminationService {
+  examineAuthor(username: string): Promise<void>;
+}
+
+export interface IArticleReadingService {
+  readArticle(articleId: string): Promise<void>;
+}
+
+export type IArticleService = IArticleManagementService &
+  IArticleCommentService &
+  IArticlePreparationService &
+  IArticlePaginationService &
+  IArticleLikeService &
+  IAuthorExaminationService &
+  IArticleReadingService &
+  ITabTagSelectionService;

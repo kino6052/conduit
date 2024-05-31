@@ -1,5 +1,9 @@
 import { IArticleData } from "../../../interfaces/data/ArticleDAO/types";
-import { IArticleService } from "../../../interfaces/services/ArticleService/types";
+import {
+  IArticleLikeService,
+  IArticleReadingService,
+  IAuthorExaminationService,
+} from "../../../interfaces/services/ArticleService/types";
 import { AuthorControl } from "../Control/AuthorControl";
 import { LikeControl } from "../Control/LikeControl";
 import { IControl } from "../Control/types";
@@ -14,17 +18,19 @@ export class Article implements IArticle {
 
   constructor(
     public articleData: IArticleData,
-    private articleService: IArticleService,
+    private authorExaminationService: IAuthorExaminationService,
+    private articleLikeService: IArticleLikeService,
+    private articleReadingService: IArticleReadingService,
   ) {
     this.authorControl = new AuthorControl(
       articleData.username,
-      articleService,
+      this.authorExaminationService,
     );
 
     this.likeControl = new LikeControl(
       articleData.likers.length,
       articleData.id,
-      articleService,
+      this.articleLikeService,
     );
 
     this.tags = new ExclusiveSelector(
@@ -34,6 +40,6 @@ export class Article implements IArticle {
   }
 
   async read() {
-    await this.articleService.readArticle(this.articleData.id);
+    await this.articleReadingService.readArticle(this.articleData.id);
   }
 }

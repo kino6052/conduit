@@ -1,6 +1,6 @@
 import { uniqueId } from "lodash";
-import { SimpleArticleDao } from "./data/SimpleArticleDao";
-import { SimpleUserDao } from "./data/SimpleUserDao";
+import { SimpleArticleDAO } from "./data/SimpleArticleDao";
+import { SimpleUserDAO } from "./data/SimpleUserDao";
 import { SimpleArticleService } from "./services/SimpleArticleService";
 import { SimpleNavigationService } from "./services/SimpleNavigationService";
 import { IUserContext } from "../app/interfaces/services/UserContext/types";
@@ -39,13 +39,13 @@ export const defaultComposeApp = (): IViewModel => {
     [EPage.EditArticle]: generateNewArticlePageProps,
   };
 
-  const articleDao = new SimpleArticleDao(
+  const articleDAO = SimpleArticleDAO.create(
     () => new Date(0).toISOString(),
     () => uniqueId("post"),
   );
 
   const userContext = {} as IUserContext;
-  const userDao = new SimpleUserDao();
+  const userDao = SimpleUserDAO.create();
   const navigationService = new SimpleNavigationService({}, userContext);
   const userService = new SimpleUserService(
     userDao,
@@ -53,11 +53,11 @@ export const defaultComposeApp = (): IViewModel => {
     userContext,
   );
 
-  const articleService = new SimpleArticleService(
-    articleDao,
+  const articleService = SimpleArticleService.create({
+    articleDAO,
     navigationService,
     userService,
-  );
+  });
 
   navigationService.constructors = {
     [EPage.Home]: () => HomePage.create(articleService, navigationService),

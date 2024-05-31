@@ -1,11 +1,11 @@
 import { Control } from "..";
-import { IArticleService } from "../../../../interfaces/services/ArticleService/types";
+import { IArticleLikeService } from "../../../../interfaces/services/ArticleService/types";
 
 export class LikeControl extends Control {
   constructor(
     public likes: number,
     articleId: string,
-    private articleService: IArticleService,
+    private articleLikeService: IArticleLikeService,
   ) {
     super("", async () => this.toggleLike(articleId));
     this.text = this.getText();
@@ -17,7 +17,7 @@ export class LikeControl extends Control {
 
   private async toggleLike(articleId: string) {
     this.isDisabled = true;
-    this.likes = await this.articleService.likeArticleById(articleId);
+    this.likes = await this.articleLikeService.likeArticleById(articleId);
     this.text = this.getText();
     this.isDisabled = false;
   }
