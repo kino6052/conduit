@@ -18,7 +18,6 @@ export class EditArticlePage implements IPage {
 
   protected constructor(
     public articleId: string,
-    private articleService: IArticleService,
     private navigationService: INavigationService,
   ) {
     this.navigationTabs = getNavigationTabs(this.navigationService);
@@ -32,11 +31,7 @@ export class EditArticlePage implements IPage {
     const article =
       !!articleId && (await articleService.prepareArticle(articleId));
 
-    const page = new EditArticlePage(
-      articleId,
-      articleService,
-      navigationService,
-    );
+    const page = new EditArticlePage(articleId, navigationService);
 
     page.submitControl = new Control("Submit", async () => {
       await articleService.publish(
