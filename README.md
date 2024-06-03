@@ -1,5 +1,7 @@
 # Conduit - Clean Code MVVM with React & TypeScript
 
+[codebase.show](https://codebase.show/projects/realworld)
+
 Welcome! This implementation of the Conduit app adheres to Clean Code principles (by Bob Martin) and Dependency Injection (by Steven van Deursen).
 
 ## Getting Started
