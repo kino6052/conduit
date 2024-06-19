@@ -2,6 +2,7 @@ import {
   IArticleCRUD,
   IArticleSelectors,
 } from "../../../app/interfaces/data/ArticleDAO/types";
+import { EArticleDatabaseConstant } from "./constants";
 
 export class ArticleSelectors implements IArticleSelectors {
   constructor(private articleCRUD: IArticleCRUD) {}
@@ -15,7 +16,7 @@ export class ArticleSelectors implements IArticleSelectors {
   public async getArticlePaginationTotal({
     tag,
     username,
-    articlesPerPage = 10,
+    articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
   }: {
     index?: number;
     articlesPerPage?: number;
@@ -32,7 +33,7 @@ export class ArticleSelectors implements IArticleSelectors {
 
   public async getArticlesByPagination({
     index = 0,
-    articlesPerPage = 10,
+    articlesPerPage = EArticleDatabaseConstant.ArticlesPerPage,
     tag,
     username,
   }: {
