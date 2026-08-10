@@ -36,8 +36,8 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 
 ### 3. Writing & owning articles
 
-- [ ] A new article can be written: a title, a short summary, and a full body.
-- [ ] Tags can be attached to an article while writing it.
+- [x] A new article can be written: a title, a short summary, and a full body. (→ `writeArticle`, `src/essence/write.ts`)
+- [x] Tags can be attached to an article while writing it. (→ `writeArticle`, `src/essence/write.ts`)
 - [ ] An article can later be edited by the person who wrote it.
 - [ ] An article can be removed by the person who wrote it.
 - [ ] Editing/removing is only ever available on your own article — it's not offered on anyone else's.
