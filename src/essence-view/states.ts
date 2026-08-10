@@ -1,4 +1,5 @@
 import { createInitialState, TArticle, TState } from "../essence/state";
+import { writeArticle } from "../essence/write";
 
 // A curated list of essential scenarios to preview, bare-bone-storybook
 // style. Not essence itself — a fixture set for manually verifying the
@@ -57,5 +58,21 @@ export const namedStates: TNamedState[] = [
   {
     name: "A favorited article",
     state: { ...createInitialState(), articles: [grounding] },
+  },
+  {
+    // Built through the real essence action, not a hand-written fixture —
+    // previewing this is how we check writeArticle's shape without
+    // clicking through the editor form.
+    name: "Freshly published article (by you)",
+    state: writeArticle(
+      { ...createInitialState(), articles: [welcome, grounding] },
+      {
+        title: "My First Post",
+        summary: "Just published this.",
+        body: "Written through the essence, not the UI.",
+        tags: ["first-post"],
+        createdAt: "2026-02-01",
+      },
+    ),
   },
 ];
