@@ -22,17 +22,17 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 
 ### 1. Article feed & discovery
 
-- [ ] A list of articles is visible to anyone, without needing to be an author of anything.
-- [ ] Each article in the list shows enough to decide whether to open it: title, short summary, author's name, publish date, tags, and how many people have favorited it.
-- [ ] The list can be narrowed down to articles carrying a specific tag. ⚠️ (treated tags as essence — they're a primary, on-screen way articles are found)
+- [x] A list of articles is visible to anyone, without needing to be an author of anything. (→ `selectVisibleArticles`, `src/essence/feed.ts`)
+- [x] Each article in the list shows enough to decide whether to open it: title, short summary, author's name, publish date, tags, and how many people have favorited it. (→ `TArticle`, `src/essence/state.ts`)
+- [x] The list can be narrowed down to articles carrying a specific tag. ⚠️ (treated tags as essence — they're a primary, on-screen way articles are found) (→ `selectVisibleArticles`, `src/essence/feed.ts`)
 - [ ] There is a way to reach articles beyond the first batch shown (the list is browsable, not capped at one screenful). ⚠️ (the *concept* of "there's more, and you can get to it" is essence; the exact mechanism — pages, infinite scroll, "load more" — is accident, see Part 2)
-- [ ] The feed has two lenses: everything (global), and only the authors you follow (personal).
+- [x] The feed has two lenses: everything (global), and only the authors you follow (personal). (→ `selectVisibleArticles`, `src/essence/feed.ts`)
 
 ### 2. Reading an article
 
-- [ ] A single article can be opened to read its full content, beyond the preview.
-- [ ] The author is visibly attributed on the article.
-- [ ] The article's tags are visible.
+- [x] A single article can be opened to read its full content, beyond the preview. (→ `selectArticle`, `src/essence/article.ts`)
+- [x] The author is visibly attributed on the article. (→ `TArticle.authorName`, `src/essence/state.ts`)
+- [x] The article's tags are visible. (→ `TArticle.tags`, `src/essence/state.ts`)
 
 ### 3. Writing & owning articles
 
@@ -44,8 +44,8 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 
 ### 4. Interacting with an article
 
-- [ ] An article can be marked as a favorite, and unmarked.
-- [ ] The favorite count on an article is visible.
+- [x] An article can be marked as a favorite, and unmarked. (→ `toggleFavorite`, `src/essence/favorite.ts`)
+- [x] The favorite count on an article is visible. (→ `TArticle.favoritesCount`, kept in sync by `toggleFavorite`)
 - [ ] A comment can be written on an article.
 - [ ] Existing comments are visible under the article, each attributed to who wrote it.
 - [ ] A comment can be removed by the person who wrote it — and only by them.
@@ -55,11 +55,11 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 - [ ] One author can follow another.
 - [ ] Following can be undone.
 - [ ] Whether you currently follow someone is visible wherever you'd see them.
-- [ ] Who you follow determines what shows up in your personal feed (→ ties to §1).
+- [x] Who you follow determines what shows up in your personal feed (→ ties to §1). (→ `selectVisibleArticles` reads `followedAuthors`, `src/essence/feed.ts` — but nothing populates `followedAuthors` yet, since follow/unfollow itself isn't built)
 
 ### 6. The acting identity ("you")
 
-- [ ] At any moment, the app knows who is reading/writing/favoriting/following/commenting — a "you," distinct from everyone else. Without this, "your feed," "your article," "your comment," and "who you follow" are meaningless.
+- [x] At any moment, the app knows who is reading/writing/favoriting/following/commenting — a "you," distinct from everyone else. Without this, "your feed," "your article," "your comment," and "who you follow" are meaningless. (→ `TState.name`, `src/essence/state.ts`)
 - [ ] Everything you create or mark is recognizably yours: articles you wrote, comments you posted, articles you favorited, authors you follow.
 - [ ] **Explicitly excluded from essence** (per the README's own worked example): *how* that identity gets established, proven, or changed — signing up, signing in, sessions, changing your name/bio/photo — is machinery, not identity itself. Only the fact that a "you" exists and things are attributed to it is essence.
 
