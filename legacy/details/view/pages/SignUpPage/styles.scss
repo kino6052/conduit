@@ -1,0 +1,19 @@
+.wrapper {
+  padding-top: 32px;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 500px;
+  margin: 0 auto;;
+  gap: 16px;
+  align-items: center;
+}
+
+.form {
+  padding: 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+  align-items: center;
+}
