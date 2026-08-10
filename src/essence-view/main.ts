@@ -1,39 +1,23 @@
-import { createInitialState, TArticle, TFilterName, TState } from "../essence/state";
+import { TFilterName, TState } from "../essence/state";
 import { toggleFavorite } from "../essence/favorite";
 import { toggleFollow } from "../essence/follow";
 import { renderFeed } from "./feed";
+import { renderSidebar } from "./sidebar";
+import { namedStates } from "./states";
 
-// Sample data so there's something to click when the page opens.
-// This is not essence — just a seed for manual verification, since
-// "write a new article" isn't built yet (checklist §3).
-const demoArticles: TArticle[] = [
-  {
-    title: "Welcome to Conduit",
-    summary: "A place to share your knowledge.",
-    body: "The essence of a Medium clone, built test-first.",
-    tags: ["welcome", "conduit"],
-    authorName: "alice",
-    createdAt: "2026-01-01",
-    favoritesCount: 2,
-    isFavorite: false,
-  },
-  {
-    title: "Grounding software in perception",
-    summary: "Why essence comes before accident.",
-    body: "If it isn't perceivable, it isn't essence.",
-    tags: ["philosophy"],
-    authorName: "bob",
-    createdAt: "2026-01-05",
-    favoritesCount: 5,
-    isFavorite: true,
-  },
-];
-
-let state: TState = { ...createInitialState(), articles: demoArticles };
+let activeStateName = namedStates[0].name;
+let state: TState = namedStates[0].state;
 
 function render(): void {
-  const root = document.getElementById("app");
-  if (root) root.innerHTML = renderFeed(state);
+  const sidebar = document.getElementById("sidebar");
+  const app = document.getElementById("app");
+  if (sidebar) {
+    sidebar.innerHTML = renderSidebar(
+      namedStates.map((named) => named.name),
+      activeStateName,
+    );
+  }
+  if (app) app.innerHTML = renderFeed(state);
 }
 
 function handleClick(event: Event): void {
@@ -41,9 +25,14 @@ function handleClick(event: Event): void {
   const actionEl = event.target.closest<HTMLElement>("[data-action]");
   if (!actionEl) return;
 
-  const { action, title, authorName, tag, filterName } = actionEl.dataset;
+  const { action, title, authorName, tag, filterName, stateName } = actionEl.dataset;
 
-  if (action === "toggle-favorite" && title) {
+  if (action === "select-state" && stateName) {
+    const named = namedStates.find((candidate) => candidate.name === stateName);
+    if (!named) return;
+    activeStateName = named.name;
+    state = named.state;
+  } else if (action === "toggle-favorite" && title) {
     state = toggleFavorite(state, title);
   } else if (action === "toggle-follow" && authorName) {
     state = toggleFollow(state, authorName);
