@@ -87,7 +87,9 @@ export const namedStates: TNamedState[] = [
     // Also built through real essence actions -- previews the detail view
     // (article.ts): full body, tags, comments attributed to their authors,
     // and since it's authored by "you" (the default identity), the
-    // edit/delete controls that isMine gates.
+    // edit/delete controls that isMine gates. Two comments -- one alice's,
+    // one your own -- so the delete-comment control's isMine gate shows up
+    // both ways (hidden on alice's, visible on yours) in the same preview.
     name: "An article with comments (owned by you)",
     state: (() => {
       const withArticle = writeArticle(createInitialState(), {
@@ -97,15 +99,19 @@ export const namedStates: TNamedState[] = [
         tags: ["first-post"],
         createdAt: "2026-02-01",
       });
-      // Write the comment as alice, then switch back to your own identity --
-      // shows the comment attributed to someone else, on your own article.
-      const withComment = writeComment(
+      const withAlicesComment = writeComment(
         { ...withArticle, name: "alice" },
         "My First Post",
         "Nice one!",
         "2026-02-02",
       );
-      return { ...withComment, name: "you" };
+      const withYourComment = writeComment(
+        { ...withAlicesComment, name: "you" },
+        "My First Post",
+        "Thanks for reading!",
+        "2026-02-03",
+      );
+      return withYourComment;
     })(),
     openArticleTitle: "My First Post",
   },

@@ -15,14 +15,7 @@ export function renderArticleDetail(
   <button data-action="delete-article" data-title="${article.title}">Delete Article</button>`
     : "";
 
-  const commentsHtml = comments
-    .map(
-      (comment) => `<li>
-    <p>${comment.body}</p>
-    <span>${comment.authorName}</span>
-  </li>`,
-    )
-    .join("");
+  const commentsHtml = comments.map((comment) => renderComment(comment, state)).join("");
 
   return `<article>
   <h1>${article.title}</h1>
@@ -38,4 +31,16 @@ export function renderArticleDetail(
     <button type="submit">Post Comment</button>
   </form>
 </article>`;
+}
+
+function renderComment(comment: TComment, state: TState): string {
+  const deleteControl = isMine(comment, state)
+    ? `<button data-action="delete-comment" data-article-title="${comment.articleTitle}" data-author-name="${comment.authorName}" data-body="${comment.body}" data-created-at="${comment.createdAt}">Delete Comment</button>`
+    : "";
+
+  return `<li>
+    <p>${comment.body}</p>
+    <span>${comment.authorName}</span>
+    ${deleteControl}
+  </li>`;
 }

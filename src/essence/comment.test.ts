@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
-import { createInitialState } from "./state";
-import { writeComment, selectComments } from "./comment";
+import { createInitialState, TComment } from "./state";
+import { writeComment, selectComments, deleteComment } from "./comment";
 
 describe("writeComment", () => {
   it("adds a comment, authored by you", () => {
@@ -51,5 +51,31 @@ describe("selectComments", () => {
     expect(selectComments(state, "A")).toEqual([
       { articleTitle: "A", authorName: "alice", body: "Nice!", createdAt: "2026-01-01" },
     ]);
+  });
+});
+
+describe("deleteComment", () => {
+  const comment: TComment = {
+    articleTitle: "A",
+    authorName: "you",
+    body: "Nice!",
+    createdAt: "2026-01-01",
+  };
+
+  it("removes the comment", () => {
+    const state = { ...createInitialState(), comments: [comment] };
+
+    const next = deleteComment(state, comment);
+
+    expect(next.comments).toEqual([]);
+  });
+
+  it("leaves every other comment untouched", () => {
+    const other: TComment = { ...comment, body: "A different comment" };
+    const state = { ...createInitialState(), comments: [comment, other] };
+
+    const next = deleteComment(state, comment);
+
+    expect(next.comments).toEqual([other]);
   });
 });

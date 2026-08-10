@@ -37,6 +37,23 @@ describe("renderArticleDetail", () => {
     expect(html).toContain("bob");
   });
 
+  it("renders a delete control on a comment you wrote", () => {
+    const state = { ...createInitialState(), name: "bob" };
+
+    const html = renderArticleDetail(article, [comment], state);
+
+    expect(html).toContain(`data-action="delete-comment"`);
+    expect(html).toContain(`data-body="Great read!"`);
+  });
+
+  it("hides the delete control on someone else's comment", () => {
+    const state = { ...createInitialState(), name: "someone-else" };
+
+    const html = renderArticleDetail(article, [comment], state);
+
+    expect(html).not.toContain("delete-comment");
+  });
+
   it("renders a form to post a new comment", () => {
     const html = renderArticleDetail(article, [], createInitialState());
 

@@ -1,5 +1,6 @@
-import { TArticle, TState } from "./state";
+import { TState } from "./state";
 
-export function isMine(article: TArticle, state: TState): boolean {
-  return article.authorName === state.name;
+// Works on anything attributed to an author -- an article, a comment.
+export function isMine({ authorName }: { authorName: string }, state: TState): boolean {
+  return authorName === state.name;
 }

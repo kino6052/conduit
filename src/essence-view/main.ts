@@ -4,7 +4,7 @@ import { toggleFollow } from "../essence/follow";
 import { writeArticle } from "../essence/write";
 import { deleteArticle } from "../essence/delete";
 import { selectArticle } from "../essence/article";
-import { writeComment, selectComments } from "../essence/comment";
+import { writeComment, selectComments, deleteComment } from "../essence/comment";
 import { renderFeed } from "./feed";
 import { renderSidebar } from "./sidebar";
 import { renderEditor } from "./editor";
@@ -70,7 +70,8 @@ function handleClick(event: Event): void {
   const actionEl = event.target.closest<HTMLElement>("[data-action]");
   if (!actionEl) return;
 
-  const { action, title, authorName, tag, filterName, stateName } = actionEl.dataset;
+  const { action, title, authorName, tag, filterName, stateName, articleTitle, body, createdAt } =
+    actionEl.dataset;
 
   if (action === "select-state" && stateName) {
     const named = namedStates.find((candidate) => candidate.name === stateName);
@@ -97,6 +98,8 @@ function handleClick(event: Event): void {
   } else if (action === "post-comment" && actionEl instanceof HTMLFormElement) {
     event.preventDefault();
     postCommentFromForm(actionEl);
+  } else if (action === "delete-comment" && articleTitle && authorName && body && createdAt) {
+    state = deleteComment(state, { articleTitle, authorName, body, createdAt });
   } else {
     return;
   }
