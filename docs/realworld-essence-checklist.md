@@ -47,7 +47,7 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 - [x] An article can be marked as a favorite, and unmarked. (→ `toggleFavorite`, `src/essence/favorite.ts`)
 - [x] The favorite count on an article is visible. (→ `TArticle.favoritesCount`, kept in sync by `toggleFavorite`)
 - [x] A comment can be written on an article. (→ `writeComment`, `src/essence/comment.ts`)
-- [ ] Existing comments are visible under the article, each attributed to who wrote it.
+- [x] Existing comments are visible under the article, each attributed to who wrote it. (→ `selectComments`, `src/essence/comment.ts`)
 - [ ] A comment can be removed by the person who wrote it — and only by them.
 
 ### 5. Following authors

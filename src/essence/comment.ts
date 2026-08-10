@@ -10,3 +10,7 @@ export function writeComment(
 
   return { ...state, comments: [...state.comments, comment] };
 }
+
+export function selectComments(state: TState, articleTitle: string): TComment[] {
+  return state.comments.filter((comment) => comment.articleTitle === articleTitle);
+}

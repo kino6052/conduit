@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState } from "./state";
-import { writeComment } from "./comment";
+import { writeComment, selectComments } from "./comment";
 
 describe("writeComment", () => {
   it("adds a comment, authored by you", () => {
@@ -35,5 +35,21 @@ describe("writeComment", () => {
 
     expect(next.comments).toHaveLength(2);
     expect(next.comments[0].body).toBe("Existing comment");
+  });
+});
+
+describe("selectComments", () => {
+  it("returns only the comments for the given article", () => {
+    const state = {
+      ...createInitialState(),
+      comments: [
+        { articleTitle: "A", authorName: "alice", body: "Nice!", createdAt: "2026-01-01" },
+        { articleTitle: "B", authorName: "bob", body: "Great!", createdAt: "2026-01-02" },
+      ],
+    };
+
+    expect(selectComments(state, "A")).toEqual([
+      { articleTitle: "A", authorName: "alice", body: "Nice!", createdAt: "2026-01-01" },
+    ]);
   });
 });
