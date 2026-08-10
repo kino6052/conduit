@@ -40,7 +40,7 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 - [x] Tags can be attached to an article while writing it. (→ `writeArticle`, `src/essence/write.ts`)
 - [x] An article can later be edited by the person who wrote it. (→ `editArticle`, `src/essence/edit.ts`)
 - [x] An article can be removed by the person who wrote it. (→ `deleteArticle`, `src/essence/delete.ts`)
-- [ ] Editing/removing is only ever available on your own article — it's not offered on anyone else's.
+- [x] Editing/removing is only ever available on your own article — it's not offered on anyone else's. (→ `isMine`, `src/essence/ownership.ts`)
 
 ### 4. Interacting with an article
 
@@ -60,7 +60,7 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 ### 6. The acting identity ("you")
 
 - [x] At any moment, the app knows who is reading/writing/favoriting/following/commenting — a "you," distinct from everyone else. Without this, "your feed," "your article," "your comment," and "who you follow" are meaningless. (→ `TState.name`, `src/essence/state.ts`)
-- [ ] Everything you create or mark is recognizably yours: articles you wrote, comments you posted, articles you favorited, authors you follow.
+- [ ] Everything you create or mark is recognizably yours: articles you wrote, comments you posted, articles you favorited, authors you follow. (3 of 4 done: `isMine` for articles, `TArticle.isFavorite`, `isFollowing`. Blocked on comments not existing yet.)
 - [ ] **Explicitly excluded from essence** (per the README's own worked example): *how* that identity gets established, proven, or changed — signing up, signing in, sessions, changing your name/bio/photo — is machinery, not identity itself. Only the fact that a "you" exists and things are attributed to it is essence.
 
 ---
