@@ -18,7 +18,7 @@ framework-free, and only then wrap it in whatever accidents the moment calls for
 - **[`src/essence/`](src/essence)** — the essence itself. Pure state, pure logic, pure
   selectors/actions. No framework, no DOM, no network, no styling — if it isn't perceivable
   on screen, it doesn't belong here. Dependency-free by default; the checklist explains why.
-- **[`src/essence-view/`](src/essence-view)** — a bare, unstyled, *interactive* HTML rendering
+- **[`src/essence-view/`](src/essence-view)** — a bare, unstyled, _interactive_ HTML rendering
   of the essence, plus a storybook-style sidebar for jumping between named states. This exists
   so the essence stays grounded in something you can actually click, not just typed data and
   green tests. See [`src/essence-view/README.md`](src/essence-view/README.md).
@@ -57,7 +57,7 @@ bun run essence-view    # serve src/essence-view at http://localhost:4321
 
 #### Step 1: Capture the essence as a minimal, necessary-and-sufficient checklist
 
-If something can be removed without changing what the app *is*, it's not essence — it's
+If something can be removed without changing what the app _is_, it's not essence — it's
 accident. The app needs a list of articles with titles; without that, it isn't an app about
 sharing and discovering articles. A login form can be removed entirely without changing that
 identity. Grounded in the screen, we don't care how — or whether — users log in; we care about
@@ -99,7 +99,7 @@ steps, in order, no exceptions:
 4. **Run coverage.** `bun run test:branches` — every branch, not just every line, since a
    line can execute while only ever taking one of its paths. Anything under 100% means either
    a missing test or dead code; both get fixed before moving on.
-5. **Run the essence view and verify by hand.** `bun run essence-view`, open
+5. **Update the essence view and verify by hand.** `bun run essence-view`, open
    `http://localhost:4321`, and actually click the thing you just built. A passing test proves
    the logic; clicking a real button proves it's grounded in something perceivable. Every
    essence capability should end its cycle with something to click, not just an assertion —
