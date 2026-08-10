@@ -25,7 +25,6 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 - [x] A list of articles is visible to anyone, without needing to be an author of anything. (→ `selectVisibleArticles`, `src/essence/feed.ts`)
 - [x] Each article in the list shows enough to decide whether to open it: title, short summary, author's name, publish date, tags, and how many people have favorited it. (→ `TArticle`, `src/essence/state.ts`)
 - [x] The list can be narrowed down to articles carrying a specific tag. ⚠️ (treated tags as essence — they're a primary, on-screen way articles are found) (→ `selectVisibleArticles`, `src/essence/feed.ts`)
-- [ ] There is a way to reach articles beyond the first batch shown (the list is browsable, not capped at one screenful). ⚠️ (the *concept* of "there's more, and you can get to it" is essence; the exact mechanism — pages, infinite scroll, "load more" — is accident, see Part 2)
 - [x] The feed has two lenses: everything (global), and only the authors you follow (personal). (→ `selectVisibleArticles`, `src/essence/feed.ts`)
 
 ### 2. Reading an article
@@ -121,8 +120,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 These were classified using the manifesto's test without a direct answer from you — flag any that should flip:
 
 1. **Tags as a filter** — treated as essence (an on-screen way articles are discovered), separate from the "popular tags" widget (accident, a shortcut to that filter).
-2. **"There's more articles than fit on screen"** — treated the *concept* as essence, the *mechanism* (pagination vs. infinite scroll) as accident.
-3. **Article "summary/short description" vs. full body** — treated as essence (it's what lets someone decide whether to open an article from the list); could be argued as accident if you consider a title alone sufficient.
-4. **Markdown rendering** — treated the formatting *technology* as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
+2. **Article "summary/short description" vs. full body** — treated as essence (it's what lets someone decide whether to open an article from the list); could be argued as accident if you consider a title alone sufficient.
+3. **Markdown rendering** — treated the formatting *technology* as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
 
-Already settled by you: **follow/personal feed → essence**, **comments → essence**, **dedicated profile page → accident**.
+Already settled by you: **follow/personal feed → essence**, **comments → essence**, **dedicated profile page → accident**, **pagination → accident entirely** (not even the underlying concept of "there's more, and a way to get to it" is essence — the feed showing whatever it shows is sufficient; reaching the rest is purely a delivery-mechanism concern, see Part 2).
