@@ -1,130 +1,144 @@
-# Empirically Grounded App with React & TypeScript
+# Conduit — An Empirically Grounded App
 
 [codebase.show](https://codebase.show/projects/realworld)
 
-Welcome! This implementation of the Conduit app that follows Empirically Grounded Software principles adheres to Clean Code principles (by Bob Martin) and Dependency Injection (by Steven van Deursen).
+This is a build of the [RealWorld/Conduit](https://github.com/realworld-apps/realworld) spec
+following **Empirically Grounded Software** principles — see
+[`docs/empirical-software-manifesto.md`](docs/empirical-software-manifesto.md). The short
+version: every piece of software is **substance** (the essence — what it means to the user)
+wrapped in **accidents** (the machinery that delivers it — frameworks, databases, styling,
+routing). Accidents are swappable; the essence is not. We build the essence first, keep it
+framework-free, and only then wrap it in whatever accidents the moment calls for.
+
+## Project layout
+
+- **[`docs/`](docs)** — the philosophy, and the living
+  [essence checklist](docs/realworld-essence-checklist.md) that drives what gets built next
+  (essence items and accident items, kept explicitly separate).
+- **[`src/essence/`](src/essence)** — the essence itself. Pure state, pure logic, pure
+  selectors/actions. No framework, no DOM, no network, no styling — if it isn't perceivable
+  on screen, it doesn't belong here. Dependency-free by default; the checklist explains why.
+- **[`src/essence-view/`](src/essence-view)** — a bare, unstyled, *interactive* HTML rendering
+  of the essence, plus a storybook-style sidebar for jumping between named states. This exists
+  so the essence stays grounded in something you can actually click, not just typed data and
+  green tests. See [`src/essence-view/README.md`](src/essence-view/README.md).
+- **[`legacy/`](legacy)** — the prior React/Parcel/Storybook implementation. Kept for
+  reference only; it predates the essence/accident split and isn't wired into the current
+  toolchain (its dependencies aren't installed).
 
 ## Getting Started
 
-> **Prerequisite:** Install [NodeJS](https://nodejs.org/en/) on your system.
-
-To install dependencies:
+> **Prerequisite:** Install [Bun](https://bun.sh).
 
 ```bash
-npm install
+bun install
 ```
 
-## Storybook
-
-To view your Storybook:
-
 ```bash
-npm run storybook
-```
-
-Storybook will be accessible at [http://localhost:6006/](http://localhost:6006/).
-
-To build Storybook for release:
-
-```bash
-npm run build-storybook
+bun run test            # run the essence + essence-view tests
+bun run test:coverage   # bun's own function/line coverage
+bun run test:branches   # branch coverage via vitest+istanbul, fails under 100%
+bun run essence-view    # serve src/essence-view at http://localhost:4321
 ```
 
 ## Development Approach
 
 ### Key Principles
 
-- **Essence Preserving**: Ensures that the essence is preserved
-- **Empirically Grounded**: Entities are meaningful and perceivable, and are the source of truth
-- **Testable**: Ensure all components can be easily tested.
-- **Scalable**: Design with scalability in mind.
-- **Maintainable**: Follow SOLID principles for maintainability.
-- **Dependency Inversion**: Use DI to defer decisions about tools and frameworks.
-- **Outside-in Development**: Develop starting from the user interface (UI) and working inwards.
-- **Test-Driven Development (TDD)**: Write tests before implementing functionality.
+- **Essence Preserving**: the essence is protected from the accidents that deliver it.
+- **Empirically Grounded**: entities are meaningful and perceivable, and are the source of truth.
+- **Accident-Agnostic**: the essence carries no framework, no styling, and — by default — no
+  dependencies at all. Frameworks are chosen later, for the accidents, not the essence.
+- **Testable**: every branch of every essence function is covered — not just every line.
+- **Outside-in, TDD**: nothing is written before a failing test asks for it.
+- **Dependency Inversion**: storage, IO, and frameworks are deferred as long as possible.
 
 ### Steps
 
-#### Step 1: Capture the essence as minimal necessary and sufficient (essential) visual representation
+#### Step 1: Capture the essence as a minimal, necessary-and-sufficient checklist
 
-Create a minimal representation of what the app is.
-If something can be removed without altering what the app is - it is not its essence, it is its "accident" - something that could be removed without altering the identity.
+If something can be removed without changing what the app *is*, it's not essence — it's
+accident. The app needs a list of articles with titles; without that, it isn't an app about
+sharing and discovering articles. A login form can be removed entirely without changing that
+identity. Grounded in the screen, we don't care how — or whether — users log in; we care about
+the ability to read and write articles and interact with them. That's the essence.
 
-For example: the app needs to show list of articles with titles - without it the app isn't an app about sharing and discovering articles. Login form, however, can be removed entirely without altering the essence. Somebody might argue - but without login you can't have users, users are essence of the app - yes and no - we are building with grounding in the screen - from the screen reference frame we don't care how users are logged in or handled or even if they exist. The app identity is preservedwe care about ability to read and write articles and interact with them. That is the essence. Profile change is not part of the apps essence either - because if you can't change user name the app identity is preserved.
+Captured as a thorough, living checklist:
+[`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md) — essence and
+accidents listed separately, each essence box linking to the code that proves it.
 
-Capture the essence as a thorough living check list.
+#### Step 2: Convert the essence to state
 
-#### Step 2: Convert this essence to state
+A plain, typed object representing the perceivable essence — see
+[`src/essence/state.ts`](src/essence/state.ts). Field names are held to the same bar as
+everything else: if a name doesn't refer to something a user could point at on screen, it
+doesn't belong (no reified `id`s, no `isMine` flags standing in for a comparison anyone could
+make themselves).
 
-Create an object that will represent the perceivable essence of the app.
+#### Step 3: MVVM & TDD — the loop, every cycle
 
-#### Step 3: MVVM & TDD
+Every change to `src/essence` (and its view in `src/essence-view`) goes through the same six
+steps, in order, no exceptions:
 
-Develop the essential version of the application logic using the MVVM pattern and TDD. Write tests to define the model's behavior and ensure all logic is encapsulated in the ViewModel.
-
-```js
-// Example test
-it("should navigate to user profile", async () => {
-  const props = mapStateToProps(state);
-  (props as TAppProps<EPage.Home>).posts[0].onClick?.();
-  await checkEventual((state) => state.page === 'article', PropsSubject);
-  expect(props.page.title).toMatchInlineSnapshot(`"Article"`);
-});
-```
-
-**Pair every cycle with a bare-bone, interactive HTML view.** Typed state and
-passing tests are not, by themselves, grounded in perception — you can't
-point at them. Alongside `src/essence` (pure state/logic/view-model, no
-framework), `src/essence-view` renders that state as unstyled HTML — plain
-functions of the form `(state) => string`, no CSS, no framework — and
-`src/essence-view/main.ts` is a small composition root that wires real DOM
-clicks straight to the essence actions (`toggleFavorite`, `toggleFollow`,
-etc.) and re-renders. It's the "Essence-in-Docs" idea
-([`docs/metaphysics-of-cose.essence-in-docs.md`](docs/metaphysics-of-cose.essence-in-docs.md))
-applied to this repo instead of a ticket.
-
-After each red/green/refactor cycle, run it and click through the change by
-hand:
-
-```bash
-bun run essence-view
-# open http://localhost:4321 — refresh after any change, no build step to remember
-```
-
-Every essence capability should have a corresponding element in the view by
-the time its cycle is done — a button, a toggle, something clickable — not
-just a passing test.
+1. **Write a failing test (red).** State the behavior as an assertion before any
+   implementation exists, and confirm it actually fails — not just that the module is
+   missing.
+   ```ts
+   // src/essence/favorite.test.ts
+   it("marks an unfavorited article as a favorite, and counts it", () => {
+     const state = { ...createInitialState(), articles: [article] };
+     const next = toggleFavorite(state, article.title);
+     expect(next.articles[0].isFavorite).toBe(true);
+     expect(next.articles[0].favoritesCount).toBe(1);
+   });
+   ```
+2. **Make it pass (green).** The smallest implementation that satisfies the assertion —
+   nothing speculative, nothing for a case no test has asked for yet.
+3. **Refactor.** With the safety net in place, clean up naming and duplication. If nothing
+   needs to change, say so — "nothing to refactor" is a valid outcome, not a skipped step.
+4. **Run coverage.** `bun run test:branches` — every branch, not just every line, since a
+   line can execute while only ever taking one of its paths. Anything under 100% means either
+   a missing test or dead code; both get fixed before moving on.
+5. **Run the essence view and verify by hand.** `bun run essence-view`, open
+   `http://localhost:4321`, and actually click the thing you just built. A passing test proves
+   the logic; clicking a real button proves it's grounded in something perceivable. Every
+   essence capability should end its cycle with something to click, not just an assertion —
+   and where relevant, a new named state in `src/essence-view/states.ts` so the scenario stays
+   reachable from the sidebar later.
+6. **Commit.** One cycle, one commit, message states what red/green/refactor produced and
+   confirms coverage and manual verification both passed.
 
 #### Step 4: Connecting to IO
 
-create an extended version of mapStateToProps that takes dependencies.
+Delay decisions about storage and other IO as long as possible. Define the essence of any
+dependency as an interface first; only the composition root (`src/essence-view/main.ts` today)
+knows about a concrete implementation. Develop those implementations with TDD, same as
+anything else.
 
-Delay decisions about storage and other IO as long as possible to keep development flexible and adaptable.
-Define the essence of dependendencies (their essence is capture in interfaces). Develop and connect those essential representations in the composition root of the app.
+#### Step 5: Capture non-essential features and add them
 
-Use TDD to develop them
-
-#### Step 5: Capture non-essential features of the app and add them
-
-Keep your essential representation separate from the full non-essential app
-
-Non-essential app extends the implementations of the essential part
-
-Write those non-essential part in TDD fashion but no need to compose all dependencies, non-essential parts can be developed in isolation from the rest
+Keep the essential representation separate from the full, non-essential app. The
+non-essential app extends the essential implementation rather than replacing it, and can be
+developed and tested in isolation — it doesn't need every dependency composed to make
+progress.
 
 ### Pros & Cons
 
 **Pros:**
 
-- Legacy-proof and adaptable.
-- Builds on established practices like OOP, MVVM, and Component Composition.
-- Encourages a natural programming style.
+- Legacy-proof and adaptable — the essence doesn't know what framework it'll be wrapped in.
+- Builds on established practices: MVVM, TDD, dependency inversion.
+- Every essence claim is checkable: a checklist box, a test, and a clickable state, all
+  pointing at each other.
 
 **Cons:**
 
-- Requires a coherent conceptual understanding of the application.
-- Necessitates ongoing refactoring and optimization.
+- Requires a coherent conceptual understanding of the application up front.
+- Necessitates ongoing refactoring as the checklist grows.
 
 ## Conclusion
 
-This approach ensures your applications are adaptable and maintainable, avoiding the pitfalls of being tied to specific frameworks. By adhering to these principles, you can develop scalable and testable applications that stand the test of time.
+The essence is the part of this app that doesn't change when the framework does. Everything
+in `src/essence` and `src/essence-view` is built to stay that way: framework-free, fully
+tested down to the branch, and — critically — always one click away from being checked by a
+human, not just a test runner.
