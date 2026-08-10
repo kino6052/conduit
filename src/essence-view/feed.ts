@@ -26,7 +26,7 @@ function renderArticlePreview(article: TArticle, state: TState): string {
   const following = isFollowing(state, article.authorName);
 
   return `<li>
-  <h2>${article.title}</h2>
+  <h2><button data-action="open-article" data-title="${article.title}">${article.title}</button></h2>
   <p>${article.summary}</p>
   <span>${article.authorName}</span>
   <button data-action="toggle-follow" data-author-name="${article.authorName}">${following ? "Unfollow" : "Follow"}</button>

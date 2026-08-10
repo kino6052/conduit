@@ -70,4 +70,12 @@ describe("renderFeed", () => {
     expect(html).toContain(`data-action="set-filter" data-filter-name="global"`);
     expect(html).toContain(`data-action="set-filter" data-filter-name="personal"`);
   });
+
+  it("renders the title as an open-article control, so an article can be read in full", () => {
+    const state = { ...createInitialState(), articles: [article] };
+
+    const html = renderFeed(state);
+
+    expect(html).toContain(`data-action="open-article" data-title="Real World"`);
+  });
 });

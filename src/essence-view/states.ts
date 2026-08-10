@@ -1,5 +1,6 @@
 import { createInitialState, TArticle, TState } from "../essence/state";
 import { writeArticle } from "../essence/write";
+import { writeComment } from "../essence/comment";
 
 // A curated list of essential scenarios to preview, bare-bone-storybook
 // style. Not essence itself — a fixture set for manually verifying the
@@ -27,7 +28,14 @@ const grounding: TArticle = {
   isFavorite: true,
 };
 
-export type TNamedState = { name: string; state: TState };
+export type TNamedState = {
+  name: string;
+  state: TState;
+  // Which article's detail view (article.ts) should already be open when
+  // this state is previewed, if any — lets the detail view (comments,
+  // edit/delete controls) be previewed without clicking through the feed.
+  openArticleTitle?: string;
+};
 
 export const namedStates: TNamedState[] = [
   {
@@ -74,5 +82,31 @@ export const namedStates: TNamedState[] = [
         createdAt: "2026-02-01",
       },
     ),
+  },
+  {
+    // Also built through real essence actions -- previews the detail view
+    // (article.ts): full body, tags, comments attributed to their authors,
+    // and since it's authored by "you" (the default identity), the
+    // edit/delete controls that isMine gates.
+    name: "An article with comments (owned by you)",
+    state: (() => {
+      const withArticle = writeArticle(createInitialState(), {
+        title: "My First Post",
+        summary: "Just published this.",
+        body: "Written through the essence, not the UI.",
+        tags: ["first-post"],
+        createdAt: "2026-02-01",
+      });
+      // Write the comment as alice, then switch back to your own identity --
+      // shows the comment attributed to someone else, on your own article.
+      const withComment = writeComment(
+        { ...withArticle, name: "alice" },
+        "My First Post",
+        "Nice one!",
+        "2026-02-02",
+      );
+      return { ...withComment, name: "you" };
+    })(),
+    openArticleTitle: "My First Post",
   },
 ];
