@@ -52,10 +52,10 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 
 ### 5. Following authors
 
-- [ ] One author can follow another.
-- [ ] Following can be undone.
-- [ ] Whether you currently follow someone is visible wherever you'd see them.
-- [x] Who you follow determines what shows up in your personal feed (→ ties to §1). (→ `selectVisibleArticles` reads `followedAuthors`, `src/essence/feed.ts` — but nothing populates `followedAuthors` yet, since follow/unfollow itself isn't built)
+- [x] One author can follow another. (→ `toggleFollow`, `src/essence/follow.ts`)
+- [x] Following can be undone. (→ `toggleFollow`, `src/essence/follow.ts` — same action, toggled)
+- [x] Whether you currently follow someone is visible wherever you'd see them. (→ `isFollowing`, `src/essence/follow.ts`)
+- [x] Who you follow determines what shows up in your personal feed (→ ties to §1). (→ `selectVisibleArticles` reads `followedAuthors`, `src/essence/feed.ts`, now populated by `toggleFollow`)
 
 ### 6. The acting identity ("you")
 
