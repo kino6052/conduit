@@ -10,7 +10,7 @@ describe("writeComment", () => {
 
     expect(next.comments).toEqual([
       {
-        articleSlug: "Some Article",
+        articleTitle: "Some Article",
         authorName: "you",
         body: "Great post!",
         createdAt: "2026-01-10",
@@ -23,7 +23,7 @@ describe("writeComment", () => {
       ...createInitialState(),
       comments: [
         {
-          articleSlug: "Other Article",
+          articleTitle: "Other Article",
           authorName: "bob",
           body: "Existing comment",
           createdAt: "2026-01-01",

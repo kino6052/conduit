@@ -19,7 +19,9 @@ export type TArticle = {
 
 export type TComment = {
   // we don't use id because it can be calculated from properties here
-  articleSlug: string;
+  // and articleTitle, not articleSlug -- a slug is a routing accident,
+  // the title is what you actually see
+  articleTitle: string;
   authorName: string;
   body: string;
   createdAt: string;

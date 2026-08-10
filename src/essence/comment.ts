@@ -2,11 +2,11 @@ import { TComment, TState } from "./state";
 
 export function writeComment(
   state: TState,
-  articleSlug: string,
+  articleTitle: string,
   body: string,
   createdAt: string,
 ): TState {
-  const comment: TComment = { articleSlug, authorName: state.name, body, createdAt };
+  const comment: TComment = { articleTitle, authorName: state.name, body, createdAt };
 
   return { ...state, comments: [...state.comments, comment] };
 }
