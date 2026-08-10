@@ -10,6 +10,12 @@ wrapped in **accidents** (the machinery that delivers it — frameworks, databas
 routing). Accidents are swappable; the essence is not. We build the essence first, keep it
 framework-free, and only then wrap it in whatever accidents the moment calls for.
 
+**Status:** the essence is complete — every checkable item in
+[`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md) is checked off,
+each pointing at the `src/essence` code and `src/essence-view` rendering that prove it. 45
+tests, branch coverage 30/30 (100%). Next up is Step 5: layering accidents (auth, settings,
+pagination, markdown rendering, styling) on top of the now-stable essence.
+
 ## Project layout
 
 - **[`docs/`](docs)** — the philosophy, and the living
