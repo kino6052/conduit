@@ -72,6 +72,29 @@ it("should navigate to user profile", async () => {
 });
 ```
 
+**Pair every cycle with a bare-bone, interactive HTML view.** Typed state and
+passing tests are not, by themselves, grounded in perception — you can't
+point at them. Alongside `src/essence` (pure state/logic/view-model, no
+framework), `src/essence-view` renders that state as unstyled HTML — plain
+functions of the form `(state) => string`, no CSS, no framework — and
+`src/essence-view/main.ts` is a small composition root that wires real DOM
+clicks straight to the essence actions (`toggleFavorite`, `toggleFollow`,
+etc.) and re-renders. It's the "Essence-in-Docs" idea
+([`docs/metaphysics-of-cose.essence-in-docs.md`](docs/metaphysics-of-cose.essence-in-docs.md))
+applied to this repo instead of a ticket.
+
+After each red/green/refactor cycle, run it and click through the change by
+hand:
+
+```bash
+bun run essence-view
+# open http://localhost:4321 — refresh after any change, no build step to remember
+```
+
+Every essence capability should have a corresponding element in the view by
+the time its cycle is done — a button, a toggle, something clickable — not
+just a passing test.
+
 #### Step 4: Connecting to IO
 
 create an extended version of mapStateToProps that takes dependencies.

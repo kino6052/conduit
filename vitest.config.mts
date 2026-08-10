@@ -11,11 +11,13 @@ export default defineConfig({
     },
   },
   test: {
-    include: ["src/essence/**/*.test.ts"],
+    include: ["src/**/*.test.ts"],
     coverage: {
       provider: "istanbul",
-      include: ["src/essence/**/*.ts"],
-      exclude: ["src/essence/**/*.test.ts"],
+      include: ["src/**/*.ts"],
+      // Composition roots (DOM wiring, event listeners) aren't unit-tested —
+      // same precedent as docs/code-example.md's createCompositionRoot.
+      exclude: ["src/**/*.test.ts", "src/essence-view/main.ts"],
       reporter: ["text", "json-summary"],
     },
   },

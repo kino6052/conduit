@@ -3,9 +3,10 @@
   "version": "1.0.0",
   "description": "the essence",
   "scripts": {
-    "test": "bun test src/essence",
-    "test:coverage": "bun test src/essence --coverage",
-    "test:branches": "node scripts/branch-coverage.mjs"
+    "test": "bun test src",
+    "test:coverage": "bun test src --coverage",
+    "test:branches": "node scripts/branch-coverage.mjs",
+    "essence-view": "bun scripts/serve-essence-view.ts"
   },
   "dependencies": {},
   "devDependencies": {

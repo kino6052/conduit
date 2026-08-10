@@ -1,5 +1,5 @@
 #!/usr/bin/env node
-// Reports branch coverage for src/essence, and fails the process if any
+// Reports branch coverage for everything under src/, and fails the process if any
 // branch is uncovered. Bun's own `--coverage` only tracks functions/lines,
 // so this drives vitest + istanbul (see vitest.config.mts) to get real
 // per-branch numbers, then reads the json-summary it writes.
@@ -36,7 +36,7 @@ const rows = Object.entries(files).map(([file, data]) => ({
   pct: data.branches.pct,
 }));
 
-console.log("\nBranch coverage — src/essence");
+console.log("\nBranch coverage — src");
 console.log("------------------------------------------------");
 for (const row of rows) {
   const label = `${row.covered}/${row.total}`.padEnd(7);
