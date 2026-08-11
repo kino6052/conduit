@@ -59,6 +59,54 @@ bun run essence-view    # serve src/essence-view at http://localhost:4321
 - **Outside-in, TDD**: nothing is written before a failing test asks for it.
 - **Dependency Inversion**: storage, IO, and frameworks are deferred as long as possible.
 
+### The essential contract — why accidents depend on essence, not the other way around
+
+Essence never imports anything from `src/essence-view`, `src/app`, or `src/accidents` — that
+direction is checked, not assumed (grep `src/essence` for those paths; there are none). But the
+*other* direction is where most designs quietly go wrong: an accident depending on essence
+should depend on the smallest, most generic contract that satisfies what it actually does — not
+on essence's specific vocabulary. This applies to every kind of accident, not just the view — a
+database, an API client, anything at the boundary.
+
+Compare two ways to shape a form's props:
+
+```ts
+// Coupled to the domain
+type TArticleFormProps = { onSubmitArticle: (draft: TDraftArticle) => void };
+
+// Coupled to nothing but "a form that hands back values"
+type TFormProps = { onSubmit: (values: Record<string, string>) => void };
+```
+
+`onSubmitArticle` bakes essence vocabulary — "submitting an article" — directly into a view
+component's contract. The moment `writeArticle` is renamed, reshaped, or the whole idea of
+"articles" is replaced by something else, the *view* has to change too, even though nothing
+about how forms are drawn or clicked has changed. Essence and the view are now welded together
+by a name, not by behavior — exactly the "fat interface" Interface Segregation warns about (see
+[`docs/solid-in-this-repo.md`](docs/solid-in-this-repo.md)), just moved to the other end of the
+dependency arrow.
+
+A generic prop couples to nothing. A button that takes `{ label, onClick }` doesn't know or care
+*what* happens when it's clicked — favoriting an article, submitting a form, closing a dialog
+are all the same shape to it. Something has to translate "the user favorited this article" into
+"call this `onClick`" — but that translation belongs in exactly one place: the composition root
+/ view-model compiler (`src/app/view-model.ts`, `src/app/composition-root.ts`), which is the
+one part of the system explicitly allowed to know about both essence and the view at once.
+Everywhere else, the dependency points one way, same as essence's own DIP rule, just mirrored:
+essence knows nothing below it; pure view components should know as little as possible about
+what's above them.
+
+**The test:** if renaming or restructuring something in `src/essence` would force a rename
+inside a presentational component or a storage adapter, the contract between them wasn't
+essential — it was borrowed vocabulary. Shape the contract like the *interaction* (click,
+submit, label, list), not like the domain, and let the one composition root carry the meaning.
+
+This is a standard to hold new code to, not a claim that everything here already meets it —
+`src/app/components.ts`'s `ArticlePreview` currently takes `onFavoriteClick`/`onFollowClick`
+rather than fully generic button props, which is a step toward this but not the purest form of
+it. Worth tightening in a future cycle; noted here rather than silently left as the model to
+copy.
+
 ### Steps
 
 #### Step 1: Capture the essence as a minimal, necessary-and-sufficient checklist
