@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TArticle, TState } from "../essence/state";
-import { compileFeedViewModel } from "./view-model";
+import { compileFeedViewModel, onWriteArticle } from "./view-model";
 
 const article: TArticle = {
   title: "A",
@@ -93,5 +93,21 @@ describe("compileFeedViewModel", () => {
     viewModel.articlePreviewProps[0].onOpenClick();
 
     expect(opened).toBe("A");
+  });
+});
+
+describe("onWriteArticle", () => {
+  it("adds a new article via essence, authored by you", () => {
+    const { getState, setState } = makeStore(createInitialState());
+
+    onWriteArticle(
+      { title: "New Post", summary: "s", body: "b", tags: ["x"], createdAt: "2026-01-01" },
+      getState,
+      setState,
+    );
+
+    expect(getState().articles).toHaveLength(1);
+    expect(getState().articles[0].title).toBe("New Post");
+    expect(getState().articles[0].authorName).toBe(getState().name);
   });
 });

@@ -8,9 +8,9 @@
 import React, { useEffect, useState } from "react";
 import { BehaviorSubject, skip } from "rxjs";
 import { createInitialState, TState } from "../essence/state";
-import { compileFeedViewModel } from "./view-model";
+import { compileFeedViewModel, onWriteArticle, TArticleSubmission } from "./view-model";
 import { compileArticleDetailViewModel } from "./article-view-model";
-import { Feed, ArticleDetail } from "./components";
+import { Feed, ArticleDetail, Editor } from "./components";
 
 export function createCompositionRoot() {
   const store = new BehaviorSubject<TState>(createInitialState());
@@ -39,9 +39,20 @@ export function createCompositionRoot() {
       ? compileArticleDetailViewModel(state, openArticleTitle, getState, setState)
       : undefined;
 
+    // Current time is IO -- it belongs at the composition root, not inside
+    // the pure Editor component or the pure onWriteArticle action runner.
+    const handlePublish = (submission: TArticleSubmission): void => {
+      onWriteArticle(
+        { ...submission, createdAt: new Date().toISOString().slice(0, 10) },
+        getState,
+        setState,
+      );
+    };
+
     return React.createElement(
       React.Fragment,
       null,
+      React.createElement(Editor, { onPublish: handlePublish }),
       React.createElement(Feed, feedViewModel),
       articleViewModel ? React.createElement(ArticleDetail, articleViewModel) : null,
     );

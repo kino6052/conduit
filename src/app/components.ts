@@ -5,7 +5,7 @@
 // asserting (see vitest.config.mts's coverage exclude for why).
 
 import React from "react";
-import { TArticlePreviewProps, TFeedViewModel } from "./view-model";
+import { TArticlePreviewProps, TFeedViewModel, TEditorProps } from "./view-model";
 import { TArticleDetailViewModel } from "./article-view-model";
 
 export function ArticlePreview(props: TArticlePreviewProps) {
@@ -40,6 +40,39 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
       ...props.tags.map((tag) => React.createElement("li", { key: tag }, tag)),
     ),
     React.createElement("button", { onClick: props.onFavoriteClick }, props.favoriteLabel),
+  );
+}
+
+export function Editor(props: TEditorProps) {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    const tags = String(data.get("tags") ?? "")
+      .split(",")
+      .map((tag) => tag.trim())
+      .filter(Boolean);
+
+    props.onPublish({
+      title: String(data.get("title") ?? ""),
+      summary: String(data.get("summary") ?? ""),
+      body: String(data.get("body") ?? ""),
+      tags,
+    });
+
+    event.currentTarget.reset();
+  };
+
+  return React.createElement(
+    "form",
+    { onSubmit: handleSubmit },
+    React.createElement("input", { name: "title", placeholder: "Article Title" }),
+    React.createElement("input", { name: "summary", placeholder: "What's this article about?" }),
+    React.createElement("textarea", {
+      name: "body",
+      placeholder: "Write your article (in markdown)",
+    }),
+    React.createElement("input", { name: "tags", placeholder: "Enter tags" }),
+    React.createElement("button", { type: "submit" }, "Publish Article"),
   );
 }
 

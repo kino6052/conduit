@@ -7,6 +7,7 @@ import { TArticle, TState } from "../essence/state";
 import { selectVisibleArticles } from "../essence/feed";
 import { toggleFavorite } from "../essence/favorite";
 import { isFollowing, toggleFollow } from "../essence/follow";
+import { writeArticle, TDraftArticle } from "../essence/write";
 
 export type TGetState = () => TState;
 export type TSetState = (next: TState) => void;
@@ -27,6 +28,14 @@ export const onToggleFollow = (
   setState: TSetState,
 ): void => {
   setState(toggleFollow(getState(), authorName));
+};
+
+export const onWriteArticle = (
+  draft: TDraftArticle,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState(writeArticle(getState(), draft));
 };
 
 export type TFavoriteFollowProps = {
@@ -83,6 +92,14 @@ function compileArticlePreviewProps(
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }
+
+// The editor has no state-derived props -- it's always a blank form -- so
+// there's nothing to compile, just a shape for what it can hand back.
+export type TArticleSubmission = Omit<TDraftArticle, "createdAt">;
+
+export type TEditorProps = {
+  onPublish: (submission: TArticleSubmission) => void;
+};
 
 export function compileFeedViewModel(
   state: TState,
