@@ -15,9 +15,18 @@ export default defineConfig({
     coverage: {
       provider: "istanbul",
       include: ["src/**/*.ts"],
-      // Composition roots (DOM wiring, event listeners) aren't unit-tested —
-      // same precedent as docs/code-example.md's createCompositionRoot.
-      exclude: ["src/**/*.test.ts", "src/essence-view/main.ts"],
+      // Composition roots (DOM/React wiring, event listeners) and pure
+      // presentational components aren't unit-tested — same precedent as
+      // docs/code-example.md's createCompositionRoot and Square/Board/Game.
+      // Currently 0-branch anyway (coverage.all reports them as vacuous
+      // 100%), but excluded explicitly so that stays true by policy, not
+      // by accident, if they ever grow a conditional.
+      exclude: [
+        "src/**/*.test.ts",
+        "src/essence-view/main.ts",
+        "src/app/composition-root.ts",
+        "src/app/components.ts",
+      ],
       reporter: ["text", "json-summary"],
     },
   },

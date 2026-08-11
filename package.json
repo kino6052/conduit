@@ -8,8 +8,14 @@
     "test:branches": "node scripts/branch-coverage.mjs",
     "essence-view": "bun scripts/serve-essence-view.ts"
   },
-  "dependencies": {},
+  "dependencies": {
+    "react": "^19.2.8",
+    "react-dom": "^19.2.8",
+    "rxjs": "^7.8.2"
+  },
   "devDependencies": {
+    "@types/react": "^19.2.18",
+    "@types/react-dom": "^19.2.4",
     "@vitest/coverage-istanbul": "^4.1.10",
     "vitest": "^4.1.10"
   }

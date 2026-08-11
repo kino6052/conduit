@@ -1,0 +1,53 @@
+import { describe, expect, it } from "bun:test";
+import { createInitialState, TArticle, TState } from "../essence/state";
+import { compileFeedViewModel } from "./view-model";
+
+const article: TArticle = {
+  title: "A",
+  summary: "s",
+  body: "b",
+  tags: ["x"],
+  authorName: "alice",
+  createdAt: "2026-01-01",
+  favoritesCount: 0,
+  isFavorite: false,
+};
+
+function makeStore(initial: TState) {
+  let current = initial;
+  const getState = () => current;
+  const setState = (next: TState) => {
+    current = next;
+  };
+  return { getState, setState };
+}
+
+describe("compileFeedViewModel", () => {
+  it("produces one preview per visible article, with a favorite label", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState);
+
+    expect(viewModel.articlePreviewProps).toHaveLength(1);
+    expect(viewModel.articlePreviewProps[0].title).toBe("A");
+    expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Favorite (0)");
+  });
+
+  it("onFavoriteClick toggles the article's favorite state through essence", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    viewModel.articlePreviewProps[0].onFavoriteClick();
+
+    expect(getState().articles[0].isFavorite).toBe(true);
+  });
+
+  it("labels the favorite button Unfavorite once favorited", () => {
+    const favorited: TArticle = { ...article, isFavorite: true, favoritesCount: 1 };
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [favorited] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState);
+
+    expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Unfavorite (1)");
+  });
+});
