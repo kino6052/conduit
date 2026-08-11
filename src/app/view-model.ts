@@ -29,16 +29,36 @@ export const onToggleFollow = (
   setState(toggleFollow(getState(), authorName));
 };
 
-export type TArticlePreviewProps = {
+export type TFavoriteFollowProps = {
+  favoriteLabel: string;
+  onFavoriteClick: () => void;
+  followLabel: string;
+  onFollowClick: () => void;
+};
+
+// Shared by the feed preview and the article detail (article-view-model.ts)
+// -- favoriting/following an article looks and behaves identically in both
+// places, so this is compiled once rather than duplicated per view.
+export function compileFavoriteFollowProps(
+  article: TArticle,
+  state: TState,
+  getState: TGetState,
+  setState: TSetState,
+): TFavoriteFollowProps {
+  return {
+    favoriteLabel: `${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})`,
+    onFavoriteClick: () => onToggleFavorite(article.title, getState, setState),
+    followLabel: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
+    onFollowClick: () => onToggleFollow(article.authorName, getState, setState),
+  };
+}
+
+export type TArticlePreviewProps = TFavoriteFollowProps & {
   title: string;
   summary: string;
   authorName: string;
   createdAt: string;
   tags: string[];
-  favoriteLabel: string;
-  onFavoriteClick: () => void;
-  followLabel: string;
-  onFollowClick: () => void;
 };
 
 export type TFeedViewModel = {
@@ -57,10 +77,7 @@ function compileArticlePreviewProps(
     authorName: article.authorName,
     createdAt: article.createdAt,
     tags: article.tags,
-    favoriteLabel: `${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})`,
-    onFavoriteClick: () => onToggleFavorite(article.title, getState, setState),
-    followLabel: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
-    onFollowClick: () => onToggleFollow(article.authorName, getState, setState),
+    ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }
 
