@@ -9,6 +9,7 @@ import { toggleFavorite } from "../essence/favorite";
 import { isFollowing, toggleFollow } from "../essence/follow";
 import { writeArticle, TDraftArticle } from "../essence/write";
 import { writeComment } from "../essence/comment";
+import { deleteArticle } from "../essence/delete";
 
 export type TGetState = () => TState;
 export type TSetState = (next: TState) => void;
@@ -47,6 +48,14 @@ export const onWriteComment = (
   setState: TSetState,
 ): void => {
   setState(writeComment(getState(), articleTitle, body, createdAt));
+};
+
+export const onDeleteArticle = (
+  title: string,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState(deleteArticle(getState(), title));
 };
 
 export type TFavoriteFollowProps = {

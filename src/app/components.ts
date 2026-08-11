@@ -111,6 +111,13 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
         { className: "btn btn-accent", onClick: props.onFavoriteClick },
         props.favoriteLabel,
       ),
+      props.isOwnArticle
+        ? React.createElement(
+            "button",
+            { className: "btn btn-danger", onClick: props.onDeleteClick },
+            "Delete Article",
+          )
+        : null,
     ),
     CommentForm(props.onCommentClick),
     React.createElement(

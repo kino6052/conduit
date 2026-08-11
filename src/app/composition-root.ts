@@ -50,12 +50,23 @@ export function createCompositionRoot() {
       onWriteArticle({ ...draft, createdAt: getCreatedAt() }, getState, setState);
     };
 
+    // Composes two concerns the view-model can't see at once: essence
+    // (delete the article) and navigation (stop viewing something that no
+    // longer exists). Overrides the view-model's own onDeleteClick, which
+    // only knows the essence half.
+    const handleDelete = (): void => {
+      articleViewModel?.onDeleteClick();
+      setOpenArticleTitle(null);
+    };
+
     return React.createElement(
       React.Fragment,
       null,
       React.createElement(Editor, { onClick: handlePublish }),
       React.createElement(Feed, feedViewModel),
-      articleViewModel ? React.createElement(ArticleDetail, articleViewModel) : null,
+      articleViewModel
+        ? React.createElement(ArticleDetail, { ...articleViewModel, onDeleteClick: handleDelete })
+        : null,
     );
   };
 }

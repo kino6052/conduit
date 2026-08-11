@@ -107,4 +107,49 @@ describe("compileArticleDetailViewModel", () => {
       },
     ]);
   });
+
+  it("marks the article as yours when you wrote it", () => {
+    const mine: TArticle = { ...article, authorName: "you" };
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [mine] });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+
+    expect(viewModel?.isOwnArticle).toBe(true);
+  });
+
+  it("does not mark the article as yours when someone else wrote it", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+
+    expect(viewModel?.isOwnArticle).toBe(false);
+  });
+
+  it("onDeleteClick removes the article through essence", () => {
+    const mine: TArticle = { ...article, authorName: "you" };
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [mine] });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+    viewModel?.onDeleteClick();
+
+    expect(getState().articles).toEqual([]);
+  });
 });

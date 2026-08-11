@@ -4,12 +4,14 @@
 import { TState } from "../essence/state";
 import { selectArticle } from "../essence/article";
 import { selectComments } from "../essence/comment";
+import { isMine } from "../essence/ownership";
 import {
   TGetState,
   TSetState,
   TFavoriteFollowProps,
   compileFavoriteFollowProps,
   onWriteComment,
+  onDeleteArticle,
 } from "./view-model";
 
 export type TCommentProps = {
@@ -24,6 +26,8 @@ export type TArticleDetailViewModel = TFavoriteFollowProps & {
   authorName: string;
   commentProps: TCommentProps[];
   onCommentClick: (body: string) => void;
+  isOwnArticle: boolean;
+  onDeleteClick: () => void;
 };
 
 export function compileArticleDetailViewModel(
@@ -47,6 +51,8 @@ export function compileArticleDetailViewModel(
     })),
     onCommentClick: (body: string) =>
       onWriteComment(article.title, body, getCreatedAt(), getState, setState),
+    isOwnArticle: isMine(article, state),
+    onDeleteClick: () => onDeleteArticle(article.title, getState, setState),
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }

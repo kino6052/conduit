@@ -118,6 +118,11 @@ h2 {
   color: var(--color-accent);
 }
 
+.btn-danger {
+  border-color: var(--color-danger);
+  color: var(--color-danger);
+}
+
 /* feed / cards -- matches legacy's Article component (white, grey border, radius 8) */
 .feed {
   list-style: none;
