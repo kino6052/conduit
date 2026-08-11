@@ -1,0 +1,214 @@
+/* Styling is accident, not essence -- src/essence and src/app/view-model.ts
+   know nothing about this file. Values (colors, fonts, radius) are pulled
+   from legacy/'s design tokens (legacy/styleguide.css,
+   legacy/.storybook/preview-head.html, and the component .scss files under
+   legacy/details/view/components) rather than invented fresh, so this
+   still reads as "Conduit" and not a random redesign. */
+
+@import url("https://fonts.googleapis.com/css?family=Titillium+Web:700,600|Source+Sans+Pro:400,600");
+
+:root {
+  --color-text: #333333; /* legacy --variable-collection-black */
+  --color-accent: #61bb61; /* legacy --variable-collection-green */
+  --color-border: #aaaaaa; /* legacy --variable-collection-grey */
+  --color-surface-muted: #f5f5f5; /* legacy --variable-collection-lightgrey */
+  --color-danger: #bb6161; /* legacy --variable-collection-warning */
+  --color-surface: #ffffff; /* legacy --variable-collection-white */
+  --radius: 8px; /* legacy --variable-collection-radius */
+}
+
+* {
+  box-sizing: border-box;
+  -webkit-font-smoothing: antialiased;
+}
+
+html,
+body {
+  margin: 0;
+  padding: 0;
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  font-size: 16px;
+  color: var(--color-text);
+  background-color: var(--color-surface-muted);
+}
+
+a {
+  text-decoration: none;
+}
+
+button:focus-visible {
+  outline: 2px solid #4a90e2;
+}
+
+.page {
+  max-width: 800px;
+  margin: 0 auto;
+  padding: 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 24px;
+}
+
+h1,
+h2 {
+  font-family: "Titillium Web", Helvetica, Arial, sans-serif;
+  margin: 0;
+  color: var(--color-text);
+}
+
+h1 {
+  font-size: 32px;
+  font-weight: 700;
+}
+
+h2 {
+  font-size: 22px;
+  font-weight: 600;
+}
+
+/* form -- matches legacy's Input component (grey border, radius 8, 12px padding) */
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+}
+
+.form input,
+.form textarea {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px;
+  font-family: inherit;
+  font-size: 16px;
+  width: 100%;
+}
+
+.form textarea {
+  min-height: 128px;
+  resize: vertical;
+}
+
+/* buttons -- matches legacy's Button component (grey border, radius 8, lightgrey hover) */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  padding: 8px 16px;
+  border-radius: var(--radius);
+  border: 2px solid var(--color-border);
+  background-color: var(--color-surface);
+  color: var(--color-text);
+  font-family: "Source Sans Pro", Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.btn-accent {
+  border-color: var(--color-accent);
+  color: var(--color-accent);
+}
+
+/* feed / cards -- matches legacy's Article component (white, grey border, radius 8) */
+.feed {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.card {
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 16px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.card-title {
+  background: none;
+  border: none;
+  padding: 0;
+  font: inherit;
+  cursor: pointer;
+  text-align: left;
+}
+
+.card-title:hover {
+  color: var(--color-accent);
+}
+
+.summary {
+  color: var(--color-text);
+  margin: 0;
+}
+
+/* author/date row -- matches legacy's UserInfo (green username, grey date) */
+.meta {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 13px;
+}
+
+.meta .author {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
+.meta .date {
+  color: var(--color-border);
+}
+
+.tag-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+}
+
+/* tag pill -- matches legacy's Tag component */
+.tag {
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 4px 12px;
+  font-size: 12.8px;
+  font-weight: 600;
+  color: var(--color-border);
+  background: none;
+  cursor: pointer;
+}
+
+.tag:hover {
+  background-color: var(--color-surface-muted);
+}
+
+.actions {
+  display: flex;
+  gap: 8px;
+}
+
+.body {
+  white-space: pre-wrap;
+}
+
+/* comments -- matches legacy's CommentInput (lightgrey controls strip) */
+.comment {
+  border-top: 1px solid var(--color-border);
+  padding-top: 8px;
+}

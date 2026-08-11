@@ -17,6 +17,12 @@ Bun.serve({
       return new Response(Bun.file(new URL("index.html", appDir)));
     }
 
+    if (pathname === "/styles.css") {
+      return new Response(Bun.file(new URL("styles.css", appDir)), {
+        headers: { "Content-Type": "text/css" },
+      });
+    }
+
     if (pathname === "/main.js") {
       const result = await Bun.build({
         entrypoints: [fileURLToPath(new URL("main.ts", appDir))],
