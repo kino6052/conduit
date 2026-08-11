@@ -5,16 +5,23 @@
 // (src/essence), the view-model compiler, and the view components all
 // finally meet -- nowhere else in this tree do they know about each other.
 
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { BehaviorSubject, skip } from "rxjs";
 import { createInitialState, TState } from "../essence/state";
 import { TDraftArticle } from "../essence/write";
+import { createHashNavigation } from "../accidents/navigation-hash";
 import { compileFeedViewModel, onWriteArticle } from "./view-model";
 import { compileArticleDetailViewModel } from "./article-view-model";
 import { Feed, ArticleDetail, Editor } from "./components";
 
 export function createCompositionRoot() {
   const store = new BehaviorSubject<TState>(createInitialState());
+  // Which article is open is navigation, not essence -- decided when
+  // essence-view/main.ts's activeArticleTitle first drew that line. Backed
+  // by the URL (src/accidents/navigation-hash.ts) rather than plain
+  // component state, so back/forward and page refresh behave like a real
+  // app. Created once here, same as the essence store above.
+  const navigation = createHashNavigation();
 
   const getState = (): TState => store.getValue();
   const setState = (next: TState): void => store.next(next);
@@ -30,16 +37,16 @@ export function createCompositionRoot() {
 
   return function App() {
     const state = useSharedState();
-    // Which article is open is navigation, not essence -- same call
-    // essence-view/main.ts's activeArticleTitle already made. Local React
-    // state, not routed through the essence store.
-    const [openArticleTitle, setOpenArticleTitle] = useState<string | null>(null);
+    const openArticleTitle = useSyncExternalStore(
+      navigation.subscribe,
+      navigation.getOpenArticleTitle,
+    );
 
     // Current time is IO -- it belongs at the composition root, not inside
     // any pure view-model function or presentational component.
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
-    const feedViewModel = compileFeedViewModel(state, getState, setState, setOpenArticleTitle);
+    const feedViewModel = compileFeedViewModel(state, getState, setState, navigation.openArticle);
     const articleViewModel = openArticleTitle
       ? compileArticleDetailViewModel(state, openArticleTitle, getState, setState, getCreatedAt)
       : undefined;
@@ -56,7 +63,7 @@ export function createCompositionRoot() {
     // only knows the essence half.
     const handleDelete = (): void => {
       articleViewModel?.onDeleteClick();
-      setOpenArticleTitle(null);
+      navigation.closeArticle();
     };
 
     return React.createElement(

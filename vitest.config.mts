@@ -27,6 +27,7 @@ export default defineConfig({
         "src/app/composition-root.ts",
         "src/app/components.ts",
         "src/app/main.ts",
+        "src/accidents/navigation-hash.ts",
       ],
       reporter: ["text", "json-summary"],
     },
