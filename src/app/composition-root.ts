@@ -35,21 +35,19 @@ export function createCompositionRoot() {
     // state, not routed through the essence store.
     const [openArticleTitle, setOpenArticleTitle] = useState<string | null>(null);
 
+    // Current time is IO -- it belongs at the composition root, not inside
+    // any pure view-model function or presentational component.
+    const getCreatedAt = () => new Date().toISOString().slice(0, 10);
+
     const feedViewModel = compileFeedViewModel(state, getState, setState, setOpenArticleTitle);
     const articleViewModel = openArticleTitle
-      ? compileArticleDetailViewModel(state, openArticleTitle, getState, setState)
+      ? compileArticleDetailViewModel(state, openArticleTitle, getState, setState, getCreatedAt)
       : undefined;
 
-    // Current time is IO -- it belongs at the composition root, not inside
-    // the pure Editor component or the pure onWriteArticle action runner.
     // "handlePublish" carries domain meaning deliberately -- this is the
     // one place allowed to know a click means "publish an article".
     const handlePublish = (draft: Omit<TDraftArticle, "createdAt">): void => {
-      onWriteArticle(
-        { ...draft, createdAt: new Date().toISOString().slice(0, 10) },
-        getState,
-        setState,
-      );
+      onWriteArticle({ ...draft, createdAt: getCreatedAt() }, getState, setState);
     };
 
     return React.createElement(

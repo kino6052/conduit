@@ -11,7 +11,7 @@
 
 import React from "react";
 import { TArticlePreviewProps, TFeedViewModel, TEditorProps } from "./view-model";
-import { TArticleDetailViewModel } from "./article-view-model";
+import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 
 function TagList(tags: string[], onTagClick?: (tag: string) => void) {
   return React.createElement(
@@ -65,6 +65,31 @@ export function ArticlePreview(props: TArticlePreviewProps) {
   );
 }
 
+function Comment(props: TCommentProps) {
+  return React.createElement(
+    "li",
+    { className: "comment" },
+    React.createElement("p", null, props.body),
+    React.createElement("span", { className: "author" }, props.authorName),
+  );
+}
+
+function CommentForm(onClick: (body: string) => void) {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    onClick(String(data.get("body") ?? ""));
+    event.currentTarget.reset();
+  };
+
+  return React.createElement(
+    "form",
+    { className: "form", onSubmit: handleSubmit },
+    React.createElement("textarea", { name: "body", placeholder: "Write a comment..." }),
+    React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Post Comment"),
+  );
+}
+
 export function ArticleDetail(props: TArticleDetailViewModel) {
   return React.createElement(
     "article",
@@ -85,6 +110,14 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
         "button",
         { className: "btn btn-accent", onClick: props.onFavoriteClick },
         props.favoriteLabel,
+      ),
+    ),
+    CommentForm(props.onCommentClick),
+    React.createElement(
+      "ul",
+      { className: "feed" },
+      ...props.commentProps.map((comment, index) =>
+        React.createElement(Comment, { key: index, ...comment }),
       ),
     ),
   );

@@ -8,6 +8,7 @@ import { selectVisibleArticles } from "../essence/feed";
 import { toggleFavorite } from "../essence/favorite";
 import { isFollowing, toggleFollow } from "../essence/follow";
 import { writeArticle, TDraftArticle } from "../essence/write";
+import { writeComment } from "../essence/comment";
 
 export type TGetState = () => TState;
 export type TSetState = (next: TState) => void;
@@ -36,6 +37,16 @@ export const onWriteArticle = (
   setState: TSetState,
 ): void => {
   setState(writeArticle(getState(), draft));
+};
+
+export const onWriteComment = (
+  articleTitle: string,
+  body: string,
+  createdAt: string,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState(writeComment(getState(), articleTitle, body, createdAt));
 };
 
 export type TFavoriteFollowProps = {

@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { createInitialState, TArticle, TState } from "../essence/state";
+import { createInitialState, TArticle, TComment, TState } from "../essence/state";
 import { compileArticleDetailViewModel } from "./article-view-model";
 
 const article: TArticle = {
@@ -22,11 +22,13 @@ function makeStore(initial: TState) {
   return { getState, setState };
 }
 
+const getCreatedAt = () => "2026-01-05";
+
 describe("compileArticleDetailViewModel", () => {
   it("compiles the full article: body, tags, author, favorite/follow labels", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState);
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
 
     expect(viewModel?.body).toBe("The full body text.");
     expect(viewModel?.tags).toEqual(["react"]);
@@ -43,6 +45,7 @@ describe("compileArticleDetailViewModel", () => {
       "Nonexistent",
       getState,
       setState,
+      getCreatedAt,
     );
 
     expect(viewModel).toBeUndefined();
@@ -51,11 +54,57 @@ describe("compileArticleDetailViewModel", () => {
   it("onFavoriteClick and onFollowClick act through essence, same as the feed's", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState);
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
     viewModel?.onFavoriteClick();
     viewModel?.onFollowClick();
 
     expect(getState().articles[0].isFavorite).toBe(true);
     expect(getState().followedAuthors).toEqual(["alice"]);
+  });
+
+  it("includes comments, each attributed to who wrote them", () => {
+    const comment: TComment = {
+      articleTitle: "Real World",
+      authorName: "bob",
+      body: "Nice!",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeStore({
+      ...createInitialState(),
+      articles: [article],
+      comments: [comment],
+    });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+
+    expect(viewModel?.commentProps).toEqual([{ body: "Nice!", authorName: "bob" }]);
+  });
+
+  it("onCommentClick posts a comment through essence, dated by getCreatedAt", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+    viewModel?.onCommentClick("Great post!");
+
+    expect(getState().comments).toEqual([
+      {
+        articleTitle: "Real World",
+        authorName: getState().name,
+        body: "Great post!",
+        createdAt: "2026-01-05",
+      },
+    ]);
   });
 });
