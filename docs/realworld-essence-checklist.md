@@ -84,7 +84,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 ### Presentation & delivery of the feed
 
 - [x] The exact "more than fits on screen" mechanism — numbered pages, infinite scroll, a "load more" button (→ `paginate`, `src/accidents/pagination.ts` — chose numbered pages)
-- [ ] Visual layout: banner, sidebar placement, card design, spacing, colors, fonts, icons
+- [x] Visual layout: card design, spacing, colors, fonts (→ `src/app/styles.css`, values pulled from `legacy/`'s design tokens: Titillium Web/Source Sans Pro fonts, the green/grey/lightgrey palette, 8px radius). No banner or sidebar built yet — src/app doesn't have those views.
 - [ ] A "popular tags" browsing widget as a discovery shortcut (a convenience on top of tag filtering, not the filtering capability itself)
 
 ### Presentation of an article
