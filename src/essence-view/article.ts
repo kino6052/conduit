@@ -28,7 +28,7 @@ export function renderArticleDetail(
   <ul>${commentsHtml}</ul>
   <form data-action="post-comment" data-article-title="${article.title}">
     <textarea name="body" placeholder="Write a comment..."></textarea>
-    <button type="submit">Post Comment</button>
+    <button type="button">Post Comment</button>
   </form>
 </article>`;
 }

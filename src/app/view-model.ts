@@ -94,11 +94,11 @@ function compileArticlePreviewProps(
 }
 
 // The editor has no state-derived props -- it's always a blank form -- so
-// there's nothing to compile, just a shape for what it can hand back.
-export type TArticleSubmission = Omit<TDraftArticle, "createdAt">;
-
+// there's nothing to compile, just a shape for what it can hand back. No
+// separate "submission" type: reuse essence's own TDraftArticle, minus
+// createdAt (that's IO, added by the composition root, not the click).
 export type TEditorProps = {
-  onPublish: (submission: TArticleSubmission) => void;
+  onClick: (draft: Omit<TDraftArticle, "createdAt">) => void;
 };
 
 export function compileFeedViewModel(

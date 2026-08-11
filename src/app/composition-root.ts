@@ -8,7 +8,8 @@
 import React, { useEffect, useState } from "react";
 import { BehaviorSubject, skip } from "rxjs";
 import { createInitialState, TState } from "../essence/state";
-import { compileFeedViewModel, onWriteArticle, TArticleSubmission } from "./view-model";
+import { TDraftArticle } from "../essence/write";
+import { compileFeedViewModel, onWriteArticle } from "./view-model";
 import { compileArticleDetailViewModel } from "./article-view-model";
 import { Feed, ArticleDetail, Editor } from "./components";
 
@@ -41,9 +42,11 @@ export function createCompositionRoot() {
 
     // Current time is IO -- it belongs at the composition root, not inside
     // the pure Editor component or the pure onWriteArticle action runner.
-    const handlePublish = (submission: TArticleSubmission): void => {
+    // "handlePublish" carries domain meaning deliberately -- this is the
+    // one place allowed to know a click means "publish an article".
+    const handlePublish = (draft: Omit<TDraftArticle, "createdAt">): void => {
       onWriteArticle(
-        { ...submission, createdAt: new Date().toISOString().slice(0, 10) },
+        { ...draft, createdAt: new Date().toISOString().slice(0, 10) },
         getState,
         setState,
       );
@@ -52,7 +55,7 @@ export function createCompositionRoot() {
     return React.createElement(
       React.Fragment,
       null,
-      React.createElement(Editor, { onPublish: handlePublish }),
+      React.createElement(Editor, { onClick: handlePublish }),
       React.createElement(Feed, feedViewModel),
       articleViewModel ? React.createElement(ArticleDetail, articleViewModel) : null,
     );

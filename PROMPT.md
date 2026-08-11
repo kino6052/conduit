@@ -88,6 +88,16 @@ Composition roots (`*/composition-root.ts`, `*/main.ts`) and pure presentational
 - One file per perceivable capability in `src/essence`: `favorite.ts` is favoriting,
   `follow.ts` is following, `comment.ts` is commenting. Don't merge unrelated capabilities into
   one file, and don't split one capability across files.
+- **"Submit" is a reification too.** Nobody submits a form — a user clicks a button. "Submit"
+  is HTML/HTTP vocabulary for a browser mechanism, not anything perceivable. A view component's
+  *exposed* contract should say `onClick`, not `onSubmit`/`onSubmitArticle`/`onPublish`. See
+  README's "The essential contract" section for the full argument.
+- **A tool's own reification is fine — as long as it doesn't leak.** React's DOM event really
+  is named `onSubmit`; a native button's attribute really is `type="submit"`. Using those
+  *inside* a component's own implementation is fine — don't fork vocabulary a library already
+  committed to. The rule is about the boundary: whatever the component *exposes* to its caller
+  (its props type) must be grounded, even if its internal wiring isn't. Guard the boundary, not
+  every line inside it.
 
 ## The checklist is not optional bookkeeping
 

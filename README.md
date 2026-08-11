@@ -117,12 +117,19 @@ essential — it was borrowed vocabulary. Shape the contract like the *interacti
 label, list), not like the domain and not like the delivery mechanism (submit, request,
 response), and let the one composition root carry the meaning.
 
+**A tool's own reification is allowed to exist — just not to leak.** React's DOM event is
+literally named `onSubmit`; an HTML button's native attribute is literally `type="submit"`.
+Renaming those away would just mean maintaining a fork of vocabulary React and HTML already
+committed to — pointless. The rule is about the *boundary*: `src/app/components.ts`'s `Editor`
+uses React's `onSubmit`/`handleSubmit`/`type="submit"` entirely inside its own implementation,
+and that's fine, because nothing outside the component ever sees those names. What the
+component *exposes* — `TEditorProps` — is `onClick`, grounded, with no `onSubmit` in sight.
+Guard the boundary, not every line inside it.
+
 This is a standard to hold new code to, not a claim that everything here already meets it —
-`src/app/components.ts`'s `ArticlePreview` currently takes `onFavoriteClick`/`onFollowClick`
-rather than fully generic button props, and its `Editor` still carries `onSubmit`/`handleSubmit`
-internally, an `onPublish` prop, and a `TArticleSubmission` type — the exact reifications this
-section argues against. These are steps toward the standard, not the standard itself. Worth
-tightening in a future cycle; noted here rather than silently left as the model to copy.
+`ArticlePreview` still takes `onFavoriteClick`/`onFollowClick` rather than fully generic button
+props. That one's a real gap, not a guarded internal detail; worth tightening in a future
+cycle, noted here rather than silently left as the model to copy.
 
 ### Steps
 

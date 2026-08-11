@@ -44,6 +44,11 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
 }
 
 export function Editor(props: TEditorProps) {
+  // onSubmit/type="submit" below are React's/HTML's own vocabulary, used
+  // entirely inside this component's implementation -- fine, per the
+  // "guard the boundary" rule (README, "The essential contract"). What
+  // this component exposes to its caller is TEditorProps.onClick, grounded,
+  // no "submit" in sight.
   const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
@@ -52,7 +57,7 @@ export function Editor(props: TEditorProps) {
       .map((tag) => tag.trim())
       .filter(Boolean);
 
-    props.onPublish({
+    props.onClick({
       title: String(data.get("title") ?? ""),
       summary: String(data.get("summary") ?? ""),
       body: String(data.get("body") ?? ""),
