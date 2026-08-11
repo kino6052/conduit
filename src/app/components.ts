@@ -6,16 +6,34 @@
 
 import React from "react";
 import { TArticlePreviewProps, TFeedViewModel } from "./view-model";
+import { TArticleDetailViewModel } from "./article-view-model";
 
 export function ArticlePreview(props: TArticlePreviewProps) {
   return React.createElement(
     "li",
     null,
-    React.createElement("h2", null, props.title),
+    React.createElement("h2", { onClick: props.onOpenClick }, props.title),
     React.createElement("p", null, props.summary),
     React.createElement("span", null, props.authorName),
     React.createElement("button", { onClick: props.onFollowClick }, props.followLabel),
     React.createElement("span", null, props.createdAt),
+    React.createElement(
+      "ul",
+      null,
+      ...props.tags.map((tag) => React.createElement("li", { key: tag }, tag)),
+    ),
+    React.createElement("button", { onClick: props.onFavoriteClick }, props.favoriteLabel),
+  );
+}
+
+export function ArticleDetail(props: TArticleDetailViewModel) {
+  return React.createElement(
+    "article",
+    null,
+    React.createElement("h1", null, props.title),
+    React.createElement("p", null, props.body),
+    React.createElement("span", null, props.authorName),
+    React.createElement("button", { onClick: props.onFollowClick }, props.followLabel),
     React.createElement(
       "ul",
       null,

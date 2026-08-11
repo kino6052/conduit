@@ -59,6 +59,7 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
   authorName: string;
   createdAt: string;
   tags: string[];
+  onOpenClick: () => void;
 };
 
 export type TFeedViewModel = {
@@ -70,6 +71,7 @@ function compileArticlePreviewProps(
   state: TState,
   getState: TGetState,
   setState: TSetState,
+  onOpenArticle: (title: string) => void,
 ): TArticlePreviewProps {
   return {
     title: article.title,
@@ -77,6 +79,7 @@ function compileArticlePreviewProps(
     authorName: article.authorName,
     createdAt: article.createdAt,
     tags: article.tags,
+    onOpenClick: () => onOpenArticle(article.title),
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }
@@ -85,10 +88,11 @@ export function compileFeedViewModel(
   state: TState,
   getState: TGetState,
   setState: TSetState,
+  onOpenArticle: (title: string) => void,
 ): TFeedViewModel {
   return {
     articlePreviewProps: selectVisibleArticles(state).map((article) =>
-      compileArticlePreviewProps(article, state, getState, setState),
+      compileArticlePreviewProps(article, state, getState, setState, onOpenArticle),
     ),
   };
 }

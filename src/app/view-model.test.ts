@@ -22,11 +22,13 @@ function makeStore(initial: TState) {
   return { getState, setState };
 }
 
+const noop = () => {};
+
 describe("compileFeedViewModel", () => {
   it("produces one preview per visible article, with a favorite label", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
 
     expect(viewModel.articlePreviewProps).toHaveLength(1);
     expect(viewModel.articlePreviewProps[0].title).toBe("A");
@@ -36,7 +38,7 @@ describe("compileFeedViewModel", () => {
   it("onFavoriteClick toggles the article's favorite state through essence", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
     viewModel.articlePreviewProps[0].onFavoriteClick();
 
     expect(getState().articles[0].isFavorite).toBe(true);
@@ -46,7 +48,7 @@ describe("compileFeedViewModel", () => {
     const favorited: TArticle = { ...article, isFavorite: true, favoritesCount: 1 };
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [favorited] });
 
-    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
 
     expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Unfavorite (1)");
   });
@@ -54,7 +56,7 @@ describe("compileFeedViewModel", () => {
   it("labels the follow button by whether you follow the author", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
 
     expect(viewModel.articlePreviewProps[0].followLabel).toBe("Follow");
   });
@@ -66,7 +68,7 @@ describe("compileFeedViewModel", () => {
       followedAuthors: ["alice"],
     });
 
-    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
 
     expect(viewModel.articlePreviewProps[0].followLabel).toBe("Unfollow");
   });
@@ -74,9 +76,22 @@ describe("compileFeedViewModel", () => {
   it("onFollowClick toggles following the author through essence", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
     viewModel.articlePreviewProps[0].onFollowClick();
 
     expect(getState().followedAuthors).toEqual(["alice"]);
+  });
+
+  it("onOpenClick calls onOpenArticle with the article's title", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+    let opened: string | undefined;
+    const onOpenArticle = (title: string) => {
+      opened = title;
+    };
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, onOpenArticle);
+    viewModel.articlePreviewProps[0].onOpenClick();
+
+    expect(opened).toBe("A");
   });
 });

@@ -9,7 +9,8 @@ import React, { useEffect, useState } from "react";
 import { BehaviorSubject, skip } from "rxjs";
 import { createInitialState, TState } from "../essence/state";
 import { compileFeedViewModel } from "./view-model";
-import { Feed } from "./components";
+import { compileArticleDetailViewModel } from "./article-view-model";
+import { Feed, ArticleDetail } from "./components";
 
 export function createCompositionRoot() {
   const store = new BehaviorSubject<TState>(createInitialState());
@@ -28,8 +29,22 @@ export function createCompositionRoot() {
 
   return function App() {
     const state = useSharedState();
-    const viewModel = compileFeedViewModel(state, getState, setState);
-    return React.createElement(Feed, viewModel);
+    // Which article is open is navigation, not essence -- same call
+    // essence-view/main.ts's activeArticleTitle already made. Local React
+    // state, not routed through the essence store.
+    const [openArticleTitle, setOpenArticleTitle] = useState<string | null>(null);
+
+    const feedViewModel = compileFeedViewModel(state, getState, setState, setOpenArticleTitle);
+    const articleViewModel = openArticleTitle
+      ? compileArticleDetailViewModel(state, openArticleTitle, getState, setState)
+      : undefined;
+
+    return React.createElement(
+      React.Fragment,
+      null,
+      React.createElement(Feed, feedViewModel),
+      articleViewModel ? React.createElement(ArticleDetail, articleViewModel) : null,
+    );
   };
 }
 
