@@ -5,6 +5,14 @@
 // every field name should be related to something perceivable
 // no abstract / reified concepts allowed
 
+// Dependency Inversion (docs/solid-in-this-repo.md#dependency-inversion):
+// this file, and everything else in src/essence, imports nothing from
+// src/essence-view or src/accidents. The dependency arrow points one way --
+// accidents depend on essence, never the reverse. If accidents need more
+// than TState offers (e.g. pagination's page/pageSize), they extend it by
+// composition from their own side (src/accidents/pagination-state.ts),
+// never by editing this file -- see Open/Closed in the same doc.
+
 export type TArticle = {
   // we don't use id because it can be calculated from properties here
   title: string;
