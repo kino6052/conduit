@@ -26,6 +26,7 @@ export default defineConfig({
         "src/essence-view/main.ts",
         "src/app/composition-root.ts",
         "src/app/components.ts",
+        "src/app/main.ts",
       ],
       reporter: ["text", "json-summary"],
     },

@@ -6,7 +6,8 @@
     "test": "bun test src",
     "test:coverage": "bun test src --coverage",
     "test:branches": "node scripts/branch-coverage.mjs",
-    "essence-view": "bun scripts/serve-essence-view.ts"
+    "essence-view": "bun scripts/serve-essence-view.ts",
+    "app": "bun scripts/serve-app.ts"
   },
   "dependencies": {
     "react": "^19.2.8",

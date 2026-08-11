@@ -106,7 +106,8 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 
 ### Underlying technology
 
-- [ ] Programming language(s) and framework(s), front and back
+- [x] Front-end language/framework (→ TypeScript + React + RxJS, `src/app`, following `docs/code-example.md`'s MVVM shape — a composition root, not baked into essence)
+- [ ] Back-end language/framework — not yet decided
 - [ ] Database/storage technology
 - [ ] API shape/protocol (REST, GraphQL, RPC, …)
 - [ ] Hosting/deployment platform
