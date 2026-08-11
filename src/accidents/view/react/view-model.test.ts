@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { createInitialState, TArticle, TState } from "../essence/state";
+import { createInitialState, TArticle, TState } from "../../../essence/state";
 import { compileFeedViewModel, onWriteArticle } from "./view-model";
 
 const article: TArticle = {

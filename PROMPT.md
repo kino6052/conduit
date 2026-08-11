@@ -15,12 +15,12 @@ it's accident, not essence.
 - `src/essence/` is the essence. Zero dependencies by default. No framework, no DOM, no
   network, no styling. If a field or function doesn't correspond to something a user could
   point at on screen, it doesn't belong there.
-- Everything else (`src/essence-view/`, `src/app/`, `src/accidents/`, `legacy/`) is accident.
-  Accidents may depend on essence. **Essence never depends on accidents** — check this by
-  grepping `src/essence` for imports from anywhere else; there should never be any.
+- Everything else (`src/accidents/`, `legacy/`) is accident. Accidents may depend on essence.
+  **Essence never depends on accidents** — check this by grepping `src/essence` for imports
+  from anywhere else; there should never be any.
 - **Never edit `src/essence/state.ts` to add a field an accident needs.** Extend by
   composition instead: `type TPaginationState = TState & { page: number }`. See
-  `src/accidents/pagination-state.ts` for the pattern. This is Open/Closed in practice — see
+  `src/accidents/pagination/pagination-state.ts` for the pattern. This is Open/Closed in practice — see
   [`docs/solid-in-this-repo.md`](docs/solid-in-this-repo.md).
 
 Read [`docs/empirical-software-manifesto.md`](docs/empirical-software-manifesto.md) once, before
@@ -32,11 +32,13 @@ your first change, if you haven't. It's short.
 |---|---|
 | `docs/realworld-essence-checklist.md` | The living checklist. Essence and accidents listed separately. Drives what gets built next. |
 | `docs/solid-in-this-repo.md` | SOLID mapped to real files in this repo. |
-| `docs/code-example.md` | The reference implementation pattern (tic-tac-toe) — MVVM shape for `src/app`. |
+| `docs/code-example.md` | The reference implementation pattern (tic-tac-toe) — MVVM shape for `src/accidents/view/react`. |
 | `src/essence/` | Pure state, pure logic, pure selectors/actions. One file per perceivable capability. |
-| `src/essence-view/` | Bare, unstyled, interactive HTML rendering of the essence, plus a storybook-style state picker. Exists to keep the essence grounded in something clickable — not the real app. |
-| `src/accidents/` | Small, isolated accidents that extend essence state/behavior from the outside (e.g. pagination). Not wired into an app by default — Step 5 says they can be developed and verified in isolation. |
-| `src/app/` | The real accident-layer delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components → an RxJS `BehaviorSubject` composition root). |
+| `src/index.ts` | Composition root for the React view. Not inside `accidents/view` — a composition root is where essence and a view meet, so it isn't itself "the view." |
+| `src/index.essence.ts` | Composition root for the essence view. Same reasoning, same top-level placement. |
+| `src/accidents/view/react/` | The real delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components). Also holds the mount point (`main.ts`), HTML shell, and stylesheet — accident artifacts, not composition logic. |
+| `src/accidents/view/essence/` | Bare, unstyled, interactive HTML rendering of the essence, plus a storybook-style state picker. Exists to keep the essence grounded in something clickable — not the real app. Also holds its own `main.ts` (mount point). |
+| `src/accidents/navigation/`, `src/accidents/pagination/` | Small, isolated accidents that extend essence state/behavior from the outside. Not wired into a view by default — Step 5 says they can be developed and verified in isolation. |
 | `legacy/` | A prior implementation, predating this split. Reference only; not wired into the toolchain. |
 
 ## The TDD loop — every essence or accident change, no exceptions
@@ -57,23 +59,25 @@ your first change, if you haven't. It's short.
    Browser automation driving clicks turned out unreliable in this environment (it stopped
    working partway through a session, even on buttons proven to work minutes earlier) — do not
    depend on it. Instead:
-   - For `src/essence-view`: add/update a named state in `src/essence-view/states.ts` so the
-     new scenario is reachable from the sidebar, and confirm the render *functions'* own unit
-     tests assert the exact output you expect. That's the proof, not a simulated click.
-   - For `src/app`: confirm the composition root still bundles (`bun build
-     src/app/composition-root.ts --outdir <tmp> --format esm`) and, if you want a live check,
-     start the dev server and confirm zero console errors — but treat that as a smoke test,
-     not the verification. The view-model tests are the verification.
+   - For `src/accidents/view/essence`: add/update a named state in
+     `src/accidents/view/essence/states.ts` so the new scenario is reachable from the sidebar,
+     and confirm the render *functions'* own unit tests assert the exact output you expect.
+     That's the proof, not a simulated click.
+   - For `src/accidents/view/react`: confirm the composition root still bundles (`bun build
+     src/accidents/view/react/main.ts --outdir <tmp> --format esm`) and, if you want a live
+     check, start the dev server and confirm zero console errors — but treat that as a smoke
+     test, not the verification. The view-model tests are the verification.
    - Every essence capability should end its cycle with something new to look at — a button,
      a rendered field — not just a passing assertion.
 6. **Commit.** One cycle, one commit. Message states what red/green/refactor produced,
    confirms coverage passed, and says plainly if verification was "tests only" vs. "also
    checked live" — don't imply you clicked through something you didn't.
 
-Composition roots (`*/composition-root.ts`, `*/main.ts`) and pure presentational components
-(`src/app/components.ts`) are **not unit-tested** — same precedent as `code-example.md`'s own
-`createCompositionRoot`/`Square`/`Board`/`Game`. They're excluded explicitly in
-`vitest.config.mts`, not just left untested by accident.
+Composition roots (`src/index.ts`, `src/index.essence.ts`), mount points
+(`src/accidents/view/*/main.ts`), and pure presentational components
+(`src/accidents/view/react/components.ts`) are **not unit-tested** — same precedent as
+`code-example.md`'s own `createCompositionRoot`/`Square`/`Board`/`Game`. They're excluded
+explicitly in `vitest.config.mts`, not just left untested by accident.
 
 ## Naming — every name must be perceivable, not reified
 
@@ -122,8 +126,8 @@ bun install              # install everything (essence itself needs none, but th
 bun run test             # bun's own fast test run, src/
 bun run test:coverage    # bun's function/line coverage (not sufficient alone — see above)
 bun run test:branches    # the real check — 100% branches required, fails otherwise
-bun run essence-view     # serve src/essence-view at :4321
-bun run app              # serve src/app at :4322
+bun run essence-view     # serve src/accidents/view/essence at :4321
+bun run app              # serve src/accidents/view/react at :4323
 ```
 
 ## Before you start a session here

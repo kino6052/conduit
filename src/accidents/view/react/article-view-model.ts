@@ -1,10 +1,10 @@
 // The article-detail counterpart to view-model.ts's feed compiler --
 // same shape, same reused essence actions, one article instead of a list.
 
-import { TState } from "../essence/state";
-import { selectArticle } from "../essence/article";
-import { selectComments } from "../essence/comment";
-import { isMine } from "../essence/ownership";
+import { TState } from "../../../essence/state";
+import { selectArticle } from "../../../essence/article";
+import { selectComments } from "../../../essence/comment";
+import { isMine } from "../../../essence/ownership";
 import {
   TGetState,
   TSetState,

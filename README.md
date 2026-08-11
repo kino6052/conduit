@@ -12,9 +12,10 @@ framework-free, and only then wrap it in whatever accidents the moment calls for
 
 **Status:** the essence is complete — every checkable item in
 [`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md) is checked off,
-each pointing at the `src/essence` code and `src/essence-view` rendering that prove it. 45
-tests, branch coverage 30/30 (100%). Next up is Step 5: layering accidents (auth, settings,
-pagination, markdown rendering, styling) on top of the now-stable essence.
+each pointing at the `src/essence` code and its views (`src/accidents/view`) that prove it. 72
+tests, branch coverage 36/36 (100%). Step 5 (layering accidents on the now-stable essence) is
+underway: pagination, navigation, styling, and a full React delivery are built; auth and
+markdown rendering aren't yet.
 
 ## Project layout
 
@@ -24,10 +25,18 @@ pagination, markdown rendering, styling) on top of the now-stable essence.
 - **[`src/essence/`](src/essence)** — the essence itself. Pure state, pure logic, pure
   selectors/actions. No framework, no DOM, no network, no styling — if it isn't perceivable
   on screen, it doesn't belong here. Dependency-free by default; the checklist explains why.
-- **[`src/essence-view/`](src/essence-view)** — a bare, unstyled, _interactive_ HTML rendering
-  of the essence, plus a storybook-style sidebar for jumping between named states. This exists
-  so the essence stays grounded in something you can actually click, not just typed data and
-  green tests. See [`src/essence-view/README.md`](src/essence-view/README.md).
+- **[`src/accidents/`](src/accidents)** — everything that delivers the essence. Composition
+  roots sit at the top of `src/`, not buried inside here (a composition root is where essence
+  and a view meet, so it isn't itself "the view") — see
+  [`src/index.ts`](src/index.ts) and [`src/index.essence.ts`](src/index.essence.ts).
+  - **[`view/react/`](src/accidents/view/react)** — the real delivery: React + RxJS. View-model
+    compiler, pure presentational components, mount point, HTML shell, stylesheet.
+  - **[`view/essence/`](src/accidents/view/essence)** — a bare, unstyled, _interactive_ HTML
+    rendering of the essence, plus a storybook-style sidebar for jumping between named states.
+    Exists so the essence stays grounded in something you can actually click, not just typed
+    data and green tests. See [its README](src/accidents/view/essence/README.md).
+  - **[`navigation/`](src/accidents/navigation)**, **[`pagination/`](src/accidents/pagination)**
+    — smaller, isolated accidents, developed and tested independent of either view.
 - **[`legacy/`](legacy)** — the prior React/Parcel/Storybook implementation. Kept for
   reference only; it predates the essence/accident split and isn't wired into the current
   toolchain (its dependencies aren't installed).
@@ -41,10 +50,11 @@ bun install
 ```
 
 ```bash
-bun run test            # run the essence + essence-view tests
+bun run test            # run every essence + accident test
 bun run test:coverage   # bun's own function/line coverage
 bun run test:branches   # branch coverage via vitest+istanbul, fails under 100%
-bun run essence-view    # serve src/essence-view at http://localhost:4321
+bun run essence-view    # serve src/accidents/view/essence at http://localhost:4321
+bun run app             # serve src/accidents/view/react at http://localhost:4323
 ```
 
 ## Development Approach
@@ -61,8 +71,8 @@ bun run essence-view    # serve src/essence-view at http://localhost:4321
 
 ### The essential contract — why accidents depend on essence, not the other way around
 
-Essence never imports anything from `src/essence-view`, `src/app`, or `src/accidents` — that
-direction is checked, not assumed (grep `src/essence` for those paths; there are none). But the
+Essence never imports anything from `src/accidents` (either view, navigation, pagination) — that
+direction is checked, not assumed (grep `src/essence` for that path; there are none). But the
 *other* direction is where most designs quietly go wrong: an accident depending on essence
 should depend on the smallest, most generic contract that satisfies what it actually does — not
 on essence's specific vocabulary. This applies to every kind of accident, not just the view — a
@@ -105,7 +115,7 @@ A generic, grounded prop couples to nothing. A button that takes `{ label, onCli
 know or care *what* happens when it's clicked — favoriting an article, publishing one, closing
 a dialog are all the same shape to it. Something has to translate "the user clicked this" into
 "favorite this article" — but that translation belongs in exactly one place: the composition
-root / view-model compiler (`src/app/view-model.ts`, `src/app/composition-root.ts`), which is
+root / view-model compiler (`src/accidents/view/react/view-model.ts`, `src/index.ts`), which is
 the one part of the system explicitly allowed to know about both essence and the view at once.
 Everywhere else, the dependency points one way, same as essence's own DIP rule, just mirrored:
 essence knows nothing below it; pure view components should know as little as possible about
@@ -120,8 +130,9 @@ response), and let the one composition root carry the meaning.
 **A tool's own reification is allowed to exist — just not to leak.** React's DOM event is
 literally named `onSubmit`; an HTML button's native attribute is literally `type="submit"`.
 Renaming those away would just mean maintaining a fork of vocabulary React and HTML already
-committed to — pointless. The rule is about the *boundary*: `src/app/components.ts`'s `Editor`
-uses React's `onSubmit`/`handleSubmit`/`type="submit"` entirely inside its own implementation,
+committed to — pointless. The rule is about the *boundary*:
+`src/accidents/view/react/components.ts`'s `Editor` uses React's
+`onSubmit`/`handleSubmit`/`type="submit"` entirely inside its own implementation,
 and that's fine, because nothing outside the component ever sees those names. What the
 component *exposes* — `TEditorProps` — is `onClick`, grounded, with no `onSubmit` in sight.
 Guard the boundary, not every line inside it.
@@ -155,7 +166,7 @@ make themselves).
 
 #### Step 3: MVVM & TDD — the loop, every cycle
 
-Every change to `src/essence` (and its view in `src/essence-view`) goes through the same six
+Every change to `src/essence` (and its views in `src/accidents/view`) goes through the same six
 steps, in order, no exceptions:
 
 1. **Write a failing test (red).** State the behavior as an assertion before any
@@ -181,17 +192,19 @@ steps, in order, no exceptions:
    `http://localhost:4321`, and actually click the thing you just built. A passing test proves
    the logic; clicking a real button proves it's grounded in something perceivable. Every
    essence capability should end its cycle with something to click, not just an assertion —
-   and where relevant, a new named state in `src/essence-view/states.ts` so the scenario stays
-   reachable from the sidebar later.
+   and where relevant, a new named state in `src/accidents/view/essence/states.ts` so the
+   scenario stays reachable from the sidebar later.
 6. **Commit.** One cycle, one commit, message states what red/green/refactor produced and
    confirms coverage and manual verification both passed.
 
 #### Step 4: Connecting to IO
 
 Delay decisions about storage and other IO as long as possible. Define the essence of any
-dependency as an interface first; only the composition root (`src/essence-view/main.ts` today)
-knows about a concrete implementation. Develop those implementations with TDD, same as
-anything else.
+dependency as an interface first; only a composition root (`src/index.ts`,
+`src/index.essence.ts`) knows about a concrete implementation. `src/accidents/navigation` is
+this applied for real: `TNavigation` is the interface, `createMemoryNavigation` and
+`createHashNavigation` are two swappable implementations behind it. Develop implementations
+with TDD, same as anything else.
 
 #### Step 5: Capture non-essential features and add them
 
@@ -217,6 +230,6 @@ progress.
 ## Conclusion
 
 The essence is the part of this app that doesn't change when the framework does. Everything
-in `src/essence` and `src/essence-view` is built to stay that way: framework-free, fully
-tested down to the branch, and — critically — always one click away from being checked by a
-human, not just a test runner.
+in `src/essence` and `src/accidents/view/essence` is built to stay that way: framework-free,
+fully tested down to the branch, and — critically — always one click away from being checked by
+a human, not just a test runner.

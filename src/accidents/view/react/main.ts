@@ -4,7 +4,7 @@
 
 import React from "react";
 import { createRoot } from "react-dom/client";
-import App from "./composition-root";
+import App from "../../../index";
 
 const root = document.getElementById("root");
 if (root) {

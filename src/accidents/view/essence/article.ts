@@ -1,6 +1,6 @@
-import { TArticle, TComment, TState } from "../essence/state";
-import { isFollowing } from "../essence/follow";
-import { isMine } from "../essence/ownership";
+import { TArticle, TComment, TState } from "../../../essence/state";
+import { isFollowing } from "../../../essence/follow";
+import { isMine } from "../../../essence/ownership";
 
 export function renderArticleDetail(
   article: TArticle,

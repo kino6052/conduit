@@ -4,7 +4,7 @@
 // code-example.md's Square/Board/Game -- verified by looking, not
 // asserting (see vitest.config.mts's coverage exclude for why).
 //
-// className values reference src/app/styles.css. That file is the only
+// className values reference src/accidents/view/styles.css. That file is the only
 // place actual colors/fonts/spacing are decided -- these components stay
 // ignorant of what the classes render as, same "boundary" discipline as
 // the onClick/onSubmit split (README, "The essential contract").

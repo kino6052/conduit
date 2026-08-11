@@ -3,13 +3,13 @@
 // itself already lives in src/essence -- this file adds nothing to it,
 // only wires it to closures a React component can call.
 
-import { TArticle, TState } from "../essence/state";
-import { selectVisibleArticles } from "../essence/feed";
-import { toggleFavorite } from "../essence/favorite";
-import { isFollowing, toggleFollow } from "../essence/follow";
-import { writeArticle, TDraftArticle } from "../essence/write";
-import { writeComment } from "../essence/comment";
-import { deleteArticle } from "../essence/delete";
+import { TArticle, TState } from "../../../essence/state";
+import { selectVisibleArticles } from "../../../essence/feed";
+import { toggleFavorite } from "../../../essence/favorite";
+import { isFollowing, toggleFollow } from "../../../essence/follow";
+import { writeArticle, TDraftArticle } from "../../../essence/write";
+import { writeComment } from "../../../essence/comment";
+import { deleteArticle } from "../../../essence/delete";
 
 export type TGetState = () => TState;
 export type TSetState = (next: TState) => void;

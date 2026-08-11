@@ -47,7 +47,7 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 - [x] The favorite count on an article is visible. (→ `TArticle.favoritesCount`, kept in sync by `toggleFavorite`)
 - [x] A comment can be written on an article. (→ `writeComment`, `src/essence/comment.ts`)
 - [x] Existing comments are visible under the article, each attributed to who wrote it. (→ `selectComments`, `src/essence/comment.ts`)
-- [x] A comment can be removed by the person who wrote it — and only by them. (→ `deleteComment`, `src/essence/comment.ts`, gated by `isMine` in `src/essence-view/article.ts`)
+- [x] A comment can be removed by the person who wrote it — and only by them. (→ `deleteComment`, `src/essence/comment.ts`, gated by `isMine` in `src/accidents/view/essence/article.ts`)
 
 ### 5. Following authors
 
@@ -83,8 +83,8 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 
 ### Presentation & delivery of the feed
 
-- [x] The exact "more than fits on screen" mechanism — numbered pages, infinite scroll, a "load more" button (→ `paginate`, `src/accidents/pagination.ts` — chose numbered pages)
-- [x] Visual layout: card design, spacing, colors, fonts (→ `src/app/styles.css`, values pulled from `legacy/`'s design tokens: Titillium Web/Source Sans Pro fonts, the green/grey/lightgrey palette, 8px radius). No banner or sidebar built yet — src/app doesn't have those views.
+- [x] The exact "more than fits on screen" mechanism — numbered pages, infinite scroll, a "load more" button (→ `paginate`, `src/accidents/pagination/pagination.ts` — chose numbered pages)
+- [x] Visual layout: card design, spacing, colors, fonts (→ `src/accidents/view/styles.css`, values pulled from `legacy/`'s design tokens: Titillium Web/Source Sans Pro fonts, the green/grey/lightgrey palette, 8px radius). No banner or sidebar built yet — src/accidents/view doesn't have those views.
 - [ ] A "popular tags" browsing widget as a discovery shortcut (a convenience on top of tag filtering, not the filtering capability itself)
 
 ### Presentation of an article
@@ -106,7 +106,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 
 ### Underlying technology
 
-- [x] Front-end language/framework (→ TypeScript + React + RxJS, `src/app`, following `docs/code-example.md`'s MVVM shape — a composition root, not baked into essence)
+- [x] Front-end language/framework (→ TypeScript + React + RxJS, `src/accidents/view`, following `docs/code-example.md`'s MVVM shape — a composition root, not baked into essence)
 - [ ] Back-end language/framework — not yet decided
 - [ ] Database/storage technology
 - [ ] API shape/protocol (REST, GraphQL, RPC, …)

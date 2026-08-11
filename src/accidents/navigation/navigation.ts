@@ -1,6 +1,7 @@
 // Navigation ("which article is open") is accident, not essence -- decided
-// back when essence-view/main.ts introduced activeArticleTitle. This is
-// Step 4 (README, "Connecting to IO") applied to it: the contract is
+// back when src/index.essence.ts (essence-view's composition root) first
+// introduced activeArticleTitle. This is Step 4 (README, "Connecting to
+// IO") applied to it: the contract is
 // defined first, grounded in what's perceivable (an article is open, or
 // it isn't), before any concrete implementation exists. Nothing here
 // mentions URLs, hashes, or history -- that's the implementation's

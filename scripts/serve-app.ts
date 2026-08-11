@@ -1,12 +1,14 @@
 #!/usr/bin/env bun
-// Serves src/app the same way scripts/serve-essence-view.ts serves
-// src/essence-view: main.ts is rebuilt fresh on every request to /main.js,
-// no watch process, just refresh the page.
+// Serves src/accidents/view/react (the React view accident; its
+// composition root lives at src/index.ts) the same way
+// scripts/serve-essence-view.ts serves src/accidents/view/essence:
+// main.ts is rebuilt fresh on every request to /main.js, no watch
+// process, just refresh the page.
 
 import { fileURLToPath } from "node:url";
 
-const appDir = new URL("../src/app/", import.meta.url);
-const port = 4322;
+const appDir = new URL("../src/accidents/view/react/", import.meta.url);
+const port = 4323;
 
 Bun.serve({
   port,

@@ -1,6 +1,6 @@
-import { TArticle, TState } from "../essence/state";
-import { selectVisibleArticles } from "../essence/feed";
-import { isFollowing } from "../essence/follow";
+import { TArticle, TState } from "../../../essence/state";
+import { selectVisibleArticles } from "../../../essence/feed";
+import { isFollowing } from "../../../essence/follow";
 
 export function renderFeed(state: TState): string {
   const items = selectVisibleArticles(state)

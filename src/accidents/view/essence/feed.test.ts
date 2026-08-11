@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { createInitialState, TArticle } from "../essence/state";
+import { createInitialState, TArticle } from "../../../essence/state";
 import { renderFeed } from "./feed";
 
 const article: TArticle = {

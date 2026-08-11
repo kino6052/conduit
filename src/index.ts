@@ -1,24 +1,25 @@
-// THE COMPOSITION ROOT -- docs/code-example.md's shape: an RxJS
-// BehaviorSubject as the store, getState/setState closing over it, a
-// useSharedState hook wiring the store into React, and an App component
-// assembled from compileFeedViewModel + Feed. This is where essence
-// (src/essence), the view-model compiler, and the view components all
-// finally meet -- nowhere else in this tree do they know about each other.
+// THE COMPOSITION ROOT -- and src's own entry point (src/index.ts), not
+// tucked inside accidents/view, because this is where essence and the
+// view actually meet and get wired together; it isn't itself "the view",
+// it's the one thing allowed to know about both sides. docs/code-example.md's
+// shape: an RxJS BehaviorSubject as the store, getState/setState closing
+// over it, a useSharedState hook wiring the store into React, and an App
+// component assembled from compileFeedViewModel + Feed.
 
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { BehaviorSubject, skip } from "rxjs";
-import { createInitialState, TState } from "../essence/state";
-import { TDraftArticle } from "../essence/write";
-import { createHashNavigation } from "../accidents/navigation-hash";
-import { compileFeedViewModel, onWriteArticle } from "./view-model";
-import { compileArticleDetailViewModel } from "./article-view-model";
-import { Feed, ArticleDetail, Editor } from "./components";
+import { createInitialState, TState } from "./essence/state";
+import { TDraftArticle } from "./essence/write";
+import { createHashNavigation } from "./accidents/navigation/navigation-hash";
+import { compileFeedViewModel, onWriteArticle } from "./accidents/view/react/view-model";
+import { compileArticleDetailViewModel } from "./accidents/view/react/article-view-model";
+import { Feed, ArticleDetail, Editor } from "./accidents/view/react/components";
 
 export function createCompositionRoot() {
   const store = new BehaviorSubject<TState>(createInitialState());
   // Which article is open is navigation, not essence -- decided when
-  // essence-view/main.ts's activeArticleTitle first drew that line. Backed
-  // by the URL (src/accidents/navigation-hash.ts) rather than plain
+  // src/index.essence.ts's activeArticleTitle first drew that line. Backed
+  // by the URL (src/accidents/navigation/navigation-hash.ts) rather than plain
   // component state, so back/forward and page refresh behave like a real
   // app. Created once here, same as the essence store above.
   const navigation = createHashNavigation();

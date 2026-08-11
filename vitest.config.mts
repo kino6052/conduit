@@ -23,11 +23,12 @@ export default defineConfig({
       // by accident, if they ever grow a conditional.
       exclude: [
         "src/**/*.test.ts",
-        "src/essence-view/main.ts",
-        "src/app/composition-root.ts",
-        "src/app/components.ts",
-        "src/app/main.ts",
-        "src/accidents/navigation-hash.ts",
+        "src/index.ts",
+        "src/index.essence.ts",
+        "src/accidents/view/react/components.ts",
+        "src/accidents/view/react/main.ts",
+        "src/accidents/view/essence/main.ts",
+        "src/accidents/navigation/navigation-hash.ts",
       ],
       reporter: ["text", "json-summary"],
     },

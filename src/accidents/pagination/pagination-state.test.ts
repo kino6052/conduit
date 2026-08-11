@@ -1,5 +1,5 @@
 import { describe, expect, it } from "bun:test";
-import { createInitialState, TArticle } from "../essence/state";
+import { createInitialState, TArticle } from "../../essence/state";
 import { createInitialPaginationState, selectVisiblePage } from "./pagination-state";
 
 const article = (title: string): TArticle => ({

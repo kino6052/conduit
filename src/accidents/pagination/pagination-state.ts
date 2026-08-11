@@ -1,5 +1,5 @@
-import { TArticle, TState } from "../essence/state";
-import { selectVisibleArticles } from "../essence/feed";
+import { TArticle, TState } from "../../essence/state";
+import { selectVisibleArticles } from "../../essence/feed";
 import { paginate } from "./pagination";
 
 // Open/Closed (docs/solid-in-this-repo.md#openclosed): TState is closed --

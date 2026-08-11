@@ -1,4 +1,4 @@
-/* Styling is accident, not essence -- src/essence and src/app/view-model.ts
+/* Styling is accident, not essence -- src/essence and src/accidents/view/react/view-model.ts
    know nothing about this file. Values (colors, fonts, radius) are pulled
    from legacy/'s design tokens (legacy/styleguide.css,
    legacy/.storybook/preview-head.html, and the component .scss files under

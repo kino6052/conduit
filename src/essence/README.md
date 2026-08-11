@@ -17,6 +17,7 @@ Full mapping: [`docs/solid-in-this-repo.md`](../../docs/solid-in-this-repo.md).
 - **Single Responsibility**: one file, one perceivable capability. `favorite.ts` is
   favoriting, `follow.ts` is following, `comment.ts` is commenting — not "one reason to
   change" (unfalsifiable), but "one thing a user could point at."
-- **Dependency Inversion**: nothing in this folder imports from `src/essence-view` or
-  `src/accidents`. Check any file here — zero such imports. The dependency arrow points one
-  way: accidents depend on essence, essence depends on nothing.
+- **Dependency Inversion**: nothing in this folder imports from `src/accidents` (which is
+  everything else — both views, navigation, pagination). Check any file here — zero such
+  imports. The dependency arrow points one way: accidents depend on essence, essence depends on
+  nothing.

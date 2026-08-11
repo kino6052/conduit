@@ -1,21 +1,30 @@
-import { TFilterName, TState } from "../essence/state";
-import { toggleFavorite } from "../essence/favorite";
-import { toggleFollow } from "../essence/follow";
-import { writeArticle } from "../essence/write";
-import { deleteArticle } from "../essence/delete";
-import { selectArticle } from "../essence/article";
-import { writeComment, selectComments, deleteComment } from "../essence/comment";
-import { renderFeed } from "./feed";
-import { renderSidebar } from "./sidebar";
-import { renderEditor } from "./editor";
-import { renderArticleDetail } from "./article";
-import { namedStates } from "./states";
+// THE COMPOSITION ROOT for the essence view -- src's other entry point,
+// alongside index.ts (the React one). Same rule as index.ts: this is where
+// essence and the essence-view render functions actually meet and get
+// wired together, so it lives at the top of src/, not buried inside
+// accidents/view/essence. The essence-view render functions themselves
+// (feed.ts, article.ts, sidebar.ts, editor.ts, states.ts) stay in
+// accidents/view/essence -- they're the reusable, tested part; this file
+// is the wiring, same as index.ts's createCompositionRoot.
+
+import { TFilterName, TState } from "./essence/state";
+import { toggleFavorite } from "./essence/favorite";
+import { toggleFollow } from "./essence/follow";
+import { writeArticle } from "./essence/write";
+import { deleteArticle } from "./essence/delete";
+import { selectArticle } from "./essence/article";
+import { writeComment, selectComments, deleteComment } from "./essence/comment";
+import { renderFeed } from "./accidents/view/essence/feed";
+import { renderSidebar } from "./accidents/view/essence/sidebar";
+import { renderEditor } from "./accidents/view/essence/editor";
+import { renderArticleDetail } from "./accidents/view/essence/article";
+import { namedStates } from "./accidents/view/essence/states";
 
 let activeStateName = namedStates[0].name;
 let state: TState = namedStates[0].state;
 let activeArticleTitle: string | null = namedStates[0].openArticleTitle ?? null;
 
-function render(): void {
+export function render(): void {
   const sidebar = document.getElementById("sidebar");
   const app = document.getElementById("app");
   const editor = document.getElementById("editor");
@@ -65,7 +74,7 @@ function postCommentFromForm(form: HTMLFormElement): void {
   state = writeComment(state, articleTitle, body, new Date().toISOString().slice(0, 10));
 }
 
-function handleClick(event: Event): void {
+export function handleClick(event: Event): void {
   if (!(event.target instanceof Element)) return;
   const actionEl = event.target.closest<HTMLElement>("[data-action]");
   if (!actionEl) return;
@@ -106,6 +115,3 @@ function handleClick(event: Event): void {
 
   render();
 }
-
-document.addEventListener("click", handleClick);
-render();

@@ -1,6 +1,6 @@
-import { createInitialState, TArticle, TState } from "../essence/state";
-import { writeArticle } from "../essence/write";
-import { writeComment } from "../essence/comment";
+import { createInitialState, TArticle, TState } from "../../../essence/state";
+import { writeArticle } from "../../../essence/write";
+import { writeComment } from "../../../essence/comment";
 
 // A curated list of essential scenarios to preview, bare-bone-storybook
 // style. Not essence itself — a fixture set for manually verifying the

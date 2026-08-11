@@ -1,11 +1,13 @@
 #!/usr/bin/env bun
-// Serves src/essence-view so it can be opened in a real browser and
-// clicked through by hand after each TDD cycle. main.ts is rebuilt fresh
-// on every request to /main.js — no watch process, just refresh the page.
+// Serves src/accidents/view/essence (the essence-view accident; its
+// composition root lives at src/index.essence.ts) so it can be opened in a
+// real browser and clicked through by hand after each TDD cycle. main.ts
+// is rebuilt fresh on every request to /main.js — no watch process, just
+// refresh the page.
 
 import { fileURLToPath } from "node:url";
 
-const viewDir = new URL("../src/essence-view/", import.meta.url);
+const viewDir = new URL("../src/accidents/view/essence/", import.meta.url);
 const port = 4321;
 
 Bun.serve({
