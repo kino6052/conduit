@@ -83,7 +83,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 
 ### Presentation & delivery of the feed
 
-- [ ] The exact "more than fits on screen" mechanism — numbered pages, infinite scroll, a "load more" button
+- [x] The exact "more than fits on screen" mechanism — numbered pages, infinite scroll, a "load more" button (→ `paginate`, `src/accidents/pagination.ts` — chose numbered pages)
 - [ ] Visual layout: banner, sidebar placement, card design, spacing, colors, fonts, icons
 - [ ] A "popular tags" browsing widget as a discovery shortcut (a convenience on top of tag filtering, not the filtering capability itself)
 
