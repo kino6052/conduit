@@ -14,6 +14,7 @@ export function ArticlePreview(props: TArticlePreviewProps) {
     React.createElement("h2", null, props.title),
     React.createElement("p", null, props.summary),
     React.createElement("span", null, props.authorName),
+    React.createElement("button", { onClick: props.onFollowClick }, props.followLabel),
     React.createElement("span", null, props.createdAt),
     React.createElement(
       "ul",

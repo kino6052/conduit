@@ -50,4 +50,33 @@ describe("compileFeedViewModel", () => {
 
     expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Unfavorite (1)");
   });
+
+  it("labels the follow button by whether you follow the author", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState);
+
+    expect(viewModel.articlePreviewProps[0].followLabel).toBe("Follow");
+  });
+
+  it("labels the follow button Unfollow once you follow the author", () => {
+    const { getState, setState } = makeStore({
+      ...createInitialState(),
+      articles: [article],
+      followedAuthors: ["alice"],
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState);
+
+    expect(viewModel.articlePreviewProps[0].followLabel).toBe("Unfollow");
+  });
+
+  it("onFollowClick toggles following the author through essence", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState);
+    viewModel.articlePreviewProps[0].onFollowClick();
+
+    expect(getState().followedAuthors).toEqual(["alice"]);
+  });
 });

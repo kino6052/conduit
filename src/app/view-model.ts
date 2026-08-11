@@ -6,6 +6,7 @@
 import { TArticle, TState } from "../essence/state";
 import { selectVisibleArticles } from "../essence/feed";
 import { toggleFavorite } from "../essence/favorite";
+import { isFollowing, toggleFollow } from "../essence/follow";
 
 export type TGetState = () => TState;
 export type TSetState = (next: TState) => void;
@@ -20,6 +21,14 @@ export const onToggleFavorite = (
   setState(toggleFavorite(getState(), title));
 };
 
+export const onToggleFollow = (
+  authorName: string,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState(toggleFollow(getState(), authorName));
+};
+
 export type TArticlePreviewProps = {
   title: string;
   summary: string;
@@ -28,6 +37,8 @@ export type TArticlePreviewProps = {
   tags: string[];
   favoriteLabel: string;
   onFavoriteClick: () => void;
+  followLabel: string;
+  onFollowClick: () => void;
 };
 
 export type TFeedViewModel = {
@@ -36,6 +47,7 @@ export type TFeedViewModel = {
 
 function compileArticlePreviewProps(
   article: TArticle,
+  state: TState,
   getState: TGetState,
   setState: TSetState,
 ): TArticlePreviewProps {
@@ -47,6 +59,8 @@ function compileArticlePreviewProps(
     tags: article.tags,
     favoriteLabel: `${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})`,
     onFavoriteClick: () => onToggleFavorite(article.title, getState, setState),
+    followLabel: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
+    onFollowClick: () => onToggleFollow(article.authorName, getState, setState),
   };
 }
 
@@ -57,7 +71,7 @@ export function compileFeedViewModel(
 ): TFeedViewModel {
   return {
     articlePreviewProps: selectVisibleArticles(state).map((article) =>
-      compileArticlePreviewProps(article, getState, setState),
+      compileArticlePreviewProps(article, state, getState, setState),
     ),
   };
 }
