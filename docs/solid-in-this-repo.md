@@ -9,12 +9,35 @@ tags: all; code / architecture; code / metaphysics; reference;
 substance/accident distinction. This doc is the short version, pointed at real files, so code
 comments can say "SRP, see here" instead of re-deriving the philosophy inline every time.
 
-## Single Responsibility — one component, one perceivable entity
+## Single Responsibility — one entity or one derived composite, per concern
 
-Not "one reason to change" (unfalsifiable — every stakeholder is a reason). Each file in
-`src/essence` corresponds to exactly one thing a user could point at or one capability they
-could name: `favorite.ts` is favoriting, `follow.ts` is following, `comment.ts` is commenting.
-None of them reach into each other's concerns.
+Not "one reason to change" (unfalsifiable — every stakeholder is a reason). The concrete
+version: every file's logic touches exactly one thing from
+[`docs/ontological-entities-in-this-repo.md`](./ontological-entities-in-this-repo.md) — one
+primary entity, one relation, or one named derived composite built from entities for a
+specific screen — never a mix of unrelated ones.
+
+This doesn't mean one entity gets exactly one file. Article alone has `write.ts`, `edit.ts`,
+`delete.ts`, `favorite.ts`, and `article.ts` — five separate *concerns*, each entirely about
+Article and nothing else. `comment.ts` puts all of Comment's lifecycle (write, read, delete) in
+one file instead, because that grouping was still just about Comment. Either shape is fine; what
+isn't is a file that reaches into two entities' business, or invents a field that belongs to
+neither an entity nor a named composite.
+
+Relations get the same treatment, kept separate from the entities they relate: `follow.ts` is
+the follows-relation between the acting identity and an Author-name; `ownership.ts` is the
+authored-by relation, deliberately generalized to work on an Article *or* a Comment rather than
+living inside either.
+
+Composites are named and scoped the same way: `feed.ts`'s `selectVisibleArticles` and
+`src/accidents/view/react/view-model.ts`'s `compileFeedViewModel` are both "the Feed" — a
+filtered, lensed list of Articles — never anything more. `essence/article.ts`'s
+`selectArticle` and `article-view-model.ts`'s `compileArticleDetailViewModel` are both "the
+Article Detail" composite — one Article, its Comments, the ownership relation — never anything
+less or more than that screen needs. A composite is allowed to carry a relation's *effect*
+(the Delete button existing or not) but never the relation *itself* as a separately named field
+— that field wouldn't belong to the entity, the relation, or any named composite; it'd belong
+to nothing, which is exactly how `TArticleDetailViewModel.isOwnArticle` was found and removed.
 
 ## Open/Closed — the essence is closed, accidents are open
 
@@ -39,10 +62,14 @@ whole wrapped state straight to `selectVisibleArticles` with no adapter, no fiel
 narrowest possible contract, derived from what the function actually does, not from "the
 shape of our domain."
 
+Same rule one level down, on a single entity rather than the whole domain: `isMine` in
+`src/essence/ownership.ts` takes `{ authorName: string }`, not `TArticle` or `TComment`. It
+doesn't need a title, a body, tags, or anything else either entity carries — just the one field
+the relation is actually about — which is why it works on both without caring which one it got.
+
 ## Dependency Inversion — essence depends on nothing; accidents depend on essence
 
 Check any file in `src/essence`: zero imports from `src/accidents` (both views, navigation,
 pagination). The dependency arrow only ever points one way — accidents import essence, never
-the reverse. This
-is what makes `bun run test` able to run the whole essence with zero external dependencies: the
-substance doesn't know the accidents exist.
+the reverse. This is what makes `bun run test` able to run the whole essence with zero external
+dependencies: the substance doesn't know the accidents exist.
