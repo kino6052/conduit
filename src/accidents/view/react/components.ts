@@ -262,9 +262,9 @@ export function Editor(props: TEditorProps) {
 // Two mutually exclusive perceivable states, not a "session" flag checked
 // elsewhere: while signed out, the only thing on screen is a form asking
 // for a name and password; once signed in, the form is gone and a name
-// plus a Sign Out control take its place. Whether that fact should also
-// hide Editor/NameForm below it is a separate, undecided question --
-// flagged in docs/realworld-essence-checklist.md, not resolved here.
+// plus a Sign Out control take its place. Only rendered on LoginPage
+// (src/accidents/view/react/pages.ts) -- Home's own gating on the same
+// signedInName fact (no Editor for a guest) lives there, not here.
 export function SignIn(props: TSignInViewModel) {
   if (props.signedInName) {
     return React.createElement(
