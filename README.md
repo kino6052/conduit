@@ -30,11 +30,14 @@ markdown rendering aren't yet.
   and a view meet, so it isn't itself "the view") — see
   [`src/index.ts`](src/index.ts) and [`src/index.essence.ts`](src/index.essence.ts).
   - **[`view/react/`](src/accidents/view/react)** — the real delivery: React + RxJS. View-model
-    compiler, pure presentational components, mount point, HTML shell, stylesheet.
+    compiler, pure presentational components, `pages.ts` (Home/Login/Article — separate routed
+    screens), mount point, HTML shell, stylesheet.
   - **[`view/essence/`](src/accidents/view/essence)** — a bare, unstyled, _interactive_ HTML
     rendering of the essence, plus a storybook-style sidebar for jumping between named states.
     Exists so the essence stays grounded in something you can actually click, not just typed
-    data and green tests. See [its README](src/accidents/view/essence/README.md).
+    data and green tests. See [its README](src/accidents/view/essence/README.md). Deliberately
+    has no pages of its own — see the essence checklist's "Pages" section for why a grounding
+    tool and a real app want opposite things here.
   - **[`navigation/`](src/accidents/navigation)**, **[`pagination/`](src/accidents/pagination)**
     — smaller, isolated accidents, developed and tested independent of either view.
 - **[`legacy/`](legacy)** — the prior React/Parcel/Storybook implementation. Kept for
