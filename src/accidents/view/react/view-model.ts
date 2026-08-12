@@ -3,12 +3,12 @@
 // itself already lives in src/essence -- this file adds nothing to it,
 // only wires it to closures a React component can call.
 
-import { TArticle, TState } from "../../../essence/state";
+import { TArticle, TComment, TState } from "../../../essence/state";
 import { selectVisibleArticles } from "../../../essence/feed";
 import { toggleFavorite } from "../../../essence/favorite";
 import { isFollowing, toggleFollow } from "../../../essence/follow";
 import { writeArticle, TDraftArticle } from "../../../essence/write";
-import { writeComment } from "../../../essence/comment";
+import { writeComment, deleteComment } from "../../../essence/comment";
 import { deleteArticle } from "../../../essence/delete";
 import { changeName } from "../../../essence/name";
 import { selectPopularTags } from "../../popular-tags/popular-tags";
@@ -58,6 +58,16 @@ export const onDeleteArticle = (
   setState: TSetState,
 ): void => {
   setState(deleteArticle(getState(), title));
+};
+
+// A comment is identified by its own content, not a synthetic id -- same
+// natural-key rule as deleteComment itself (src/essence/comment.ts).
+export const onDeleteComment = (
+  comment: TComment,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState(deleteComment(getState(), comment));
 };
 
 export const onSetTag = (tag: string, getState: TGetState, setState: TSetState): void => {

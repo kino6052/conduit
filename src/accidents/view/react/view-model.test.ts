@@ -4,6 +4,7 @@ import {
   compileFeedViewModel,
   compileNameFormViewModel,
   compilePopularTagsViewModel,
+  onDeleteComment,
   onWriteArticle,
 } from "./view-model";
 
@@ -136,6 +137,22 @@ describe("onWriteArticle", () => {
     expect(getState().articles).toHaveLength(1);
     expect(getState().articles[0].title).toBe("New Post");
     expect(getState().articles[0].authorName).toBe(getState().name);
+  });
+});
+
+describe("onDeleteComment", () => {
+  it("removes the given comment through essence", () => {
+    const comment = {
+      articleTitle: "A",
+      authorName: "you",
+      body: "Nice!",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({ ...createInitialState(), comments: [comment] });
+
+    onDeleteComment(comment, getState, setState);
+
+    expect(getState().comments).toEqual([]);
   });
 });
 

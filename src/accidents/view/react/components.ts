@@ -111,6 +111,13 @@ function Comment(props: TCommentProps) {
     { className: "comment" },
     React.createElement("p", null, props.body),
     React.createElement("span", { className: "author" }, props.authorName),
+    props.onDeleteClick
+      ? React.createElement(
+          "button",
+          { className: "btn btn-danger", onClick: props.onDeleteClick },
+          "Delete Comment",
+        )
+      : null,
   );
 }
 

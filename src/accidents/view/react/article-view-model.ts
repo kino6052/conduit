@@ -13,11 +13,16 @@ import {
   compileFavoriteFollowProps,
   onWriteComment,
   onDeleteArticle,
+  onDeleteComment,
 } from "./view-model";
 
 export type TCommentProps = {
   body: string;
   authorName: string;
+  // Same "no isOwnArticle-style flag" rule as TArticleDetailViewModel's
+  // onDeleteClick below -- the control's own presence is the only signal,
+  // recomputed via isMine every time, not cached.
+  onDeleteClick: (() => void) | undefined;
 };
 
 export type TArticleDetailViewModel = TFavoriteFollowProps & {
@@ -58,6 +63,9 @@ export function compileArticleDetailViewModel(
     commentProps: selectComments(state, article.title).map((comment) => ({
       body: comment.body,
       authorName: comment.authorName,
+      onDeleteClick: isMine(comment, state)
+        ? () => onDeleteComment(comment, getState, setState)
+        : undefined,
     })),
     onCommentClick: (body: string) =>
       onWriteComment(article.title, body, getCreatedAt(), getState, setState),

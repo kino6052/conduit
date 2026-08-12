@@ -101,7 +101,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 ### Comments & favorites mechanics
 
 - [ ] Visual placement/styling of the comment thread and comment form
-- [x] Confirmation prompts before deleting a comment (→ same `withConfirmation`, wired in `src/index.essence.ts` — the React app doesn't have delete-comment yet, so only the essence view has this one so far)
+- [x] Confirmation prompts before deleting a comment (→ same `withConfirmation`; wired in both `src/index.essence.ts` and now `src/index.ts` — see the delete-comment item below, which closed the parity gap this line used to flag)
 - [ ] The specific icon/animation used to show "favorited"
 
 ### Underlying technology
@@ -162,10 +162,10 @@ elements doesn't count, same "derived composite" standard as
   - [x] Favorite control (→ `compileFavoriteFollowProps`)
   - [x] Follow control (→ same)
   - [x] Delete control, owner-gated (→ `onDeleteClick`)
-  - [x] Edit control, owner-gated (→ `editArticle`, `src/essence/edit.ts`; wired in `src/index.essence.ts`'s `edit-article`/`save-article` actions, pre-filled form via `renderEditor(article)`, `src/accidents/view/essence/editor.ts`) — essence-view only; the React app's `Editor`/`article-view-model.ts` don't have this yet, same one-side-first precedent as delete-comment below. Correcting an earlier inaccuracy here: this checklist previously said "nothing on screen offers it," but `renderArticleDetail` had already been rendering an Edit Article button that silently did nothing when clicked — a broken affordance, not a missing one; this cycle wired it rather than just noting the gap.
+  - [x] Edit control, owner-gated (→ `editArticle`, `src/essence/edit.ts`; wired in `src/index.essence.ts`'s `edit-article`/`save-article` actions, pre-filled form via `renderEditor(article)`, `src/accidents/view/essence/editor.ts`) — essence-view only; the React app's `Editor`/`article-view-model.ts` don't have this yet. Correcting an earlier inaccuracy here: this checklist previously said "nothing on screen offers it," but `renderArticleDetail` had already been rendering an Edit Article button that silently did nothing when clicked — a broken affordance, not a missing one; this cycle wired it rather than just noting the gap.
   - [x] Comment list, attributed (→ `selectComments`)
   - [x] Comment form (→ `onCommentClick`)
-  - [ ] Delete-comment control, owner-gated — only in essence-view (`src/index.essence.ts`), not the React app yet
+  - [x] Delete-comment control, owner-gated (→ `onDeleteComment`, `src/accidents/view/react/view-model.ts`; `TCommentProps.onDeleteClick`, `src/accidents/view/react/article-view-model.ts`, gated by `isMine`; wired with confirmation in both `src/index.ts` and `src/index.essence.ts` now — this was the one item essence-view had and the React app didn't; closed)
   - [x] Reachable at its own URL (→ `createHashNavigation`, `#/article/<title>`)
 
 - [ ] **Profile** (`/profile/:authorName`) — an author, their articles

@@ -114,6 +114,16 @@ export function createCompositionRoot() {
         })
       : undefined;
 
+    // Same confirmation wrap as the article's own delete above, one comment
+    // at a time -- only wraps a comment's onDeleteClick when it exists, same
+    // "undefined has to survive the wrap" reasoning.
+    const commentProps = articleViewModel?.commentProps.map((comment) => ({
+      ...comment,
+      onDeleteClick: comment.onDeleteClick
+        ? withConfirmation("Delete this comment?", window.confirm.bind(window), comment.onDeleteClick)
+        : undefined,
+    }));
+
     return React.createElement(
       React.Fragment,
       null,
@@ -130,6 +140,7 @@ export function createCompositionRoot() {
           ? React.createElement(ArticleDetail, {
               ...articleViewModel,
               onDeleteClick: handleDelete,
+              commentProps: commentProps ?? [],
             })
           : null,
       ),

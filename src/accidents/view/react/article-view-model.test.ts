@@ -92,7 +92,82 @@ describe("compileArticleDetailViewModel", () => {
       getCreatedAt,
     );
 
-    expect(viewModel?.commentProps).toEqual([{ body: "Nice!", authorName: "bob" }]);
+    expect(viewModel?.commentProps).toHaveLength(1);
+    expect(viewModel?.commentProps[0].body).toBe("Nice!");
+    expect(viewModel?.commentProps[0].authorName).toBe("bob");
+  });
+
+  it("gives you a delete control on a comment you wrote", () => {
+    const yours: TComment = {
+      articleTitle: "Real World",
+      authorName: "you",
+      body: "My own comment",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      comments: [yours],
+    });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+
+    expect(typeof viewModel?.commentProps[0].onDeleteClick).toBe("function");
+  });
+
+  it("gives no delete control on someone else's comment", () => {
+    const comment: TComment = {
+      articleTitle: "Real World",
+      authorName: "bob",
+      body: "Nice!",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      comments: [comment],
+    });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+
+    expect(viewModel?.commentProps[0].onDeleteClick).toBeUndefined();
+  });
+
+  it("a comment's onDeleteClick, when present, removes it through essence", () => {
+    const yours: TComment = {
+      articleTitle: "Real World",
+      authorName: "you",
+      body: "My own comment",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      comments: [yours],
+    });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+    );
+    viewModel?.commentProps[0].onDeleteClick?.();
+
+    expect(getState().comments).toEqual([]);
   });
 
   it("onCommentClick posts a comment through essence, dated by getCreatedAt", () => {
