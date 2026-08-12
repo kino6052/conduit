@@ -102,6 +102,14 @@ explicitly in `vitest.config.mts`, not just left untested by accident.
   committed to. The rule is about the boundary: whatever the component *exposes* to its caller
   (its props type) must be grounded, even if its internal wiring isn't. Guard the boundary, not
   every line inside it.
+- **"Store"/"session"/"storage"/"auth"/"user" are reifications too.** None of them are entities
+  (`docs/ontological-entities-in-this-repo.md` rejects `User` by name, and the same test applies
+  to any word that names an implementation mechanism instead of something actually rendered).
+  When an accident needs to hold state that has no persisted/perceivable backing yet — "are we
+  currently signed in," an RxJS subject wiring essence to React — name it after the fact itself
+  (`signedIn`) or the form/control that drives it (`state$`, not `store`), not the machinery
+  category it happens to resemble. This applies even to variable names inside a composition
+  root, not just exposed contracts.
 
 ## The checklist is not optional bookkeeping
 

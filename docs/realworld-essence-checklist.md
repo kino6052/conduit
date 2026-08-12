@@ -70,11 +70,11 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 
 ### Establishing "who you are"
 
-- [x] The specific credential scheme (email+password, magic link, OAuth/SSO, a single hard-coded demo identity, etc.) — chose a self-declared, unverified name: no password, no account record (→ `changeName`, `src/essence/name.ts`, a form wired into `src/index.ts`'s `NameForm`)
-- [ ] Sign-up / registration form and flow — ⚠️ with no verification, there's nothing to distinguish "register" from "sign in": setting a name that already exists and setting a brand-new one are the same action, so this collapses into the item below rather than needing its own form
-- [ ] Sign-in / login form and flow — the *changing* of the acting identity's name is built (see credential-scheme item above); what's still missing is any concept of returning to a name you'd already used, since nothing is remembered between changes
-- [ ] How identity persists between visits (token, cookie, server session, local storage, …)
-- [ ] Signing out — with no session to end, this is only meaningful once the above is decided
+- [x] The specific credential scheme (email+password, magic link, OAuth/SSO, a single hard-coded demo identity, etc.) — a name and a password, neither checked against an account record (there isn't one to check against — see "how identity persists" below): `signIn(name, password)`'s contract requires the shape of a credential without yet requiring the substance of one (→ `TSignIn`, `src/accidents/sign-in/sign-in.ts`)
+- [x] Sign-up / registration form and flow — collapses into Sign-in below: with nothing to verify a name against, submitting one that already exists and submitting a brand-new one are the same action, so one form covers both (→ `SignIn`, `src/accidents/view/react/components.ts`)
+- [x] Sign-in / login form and flow (→ `SignIn`, `src/accidents/view/react/components.ts`; `compileSignInViewModel`, `src/accidents/view/react/sign-in-view-model.ts`; signing in also changes the acting identity's name through the already-essence `changeName`)
+- [ ] How identity persists between visits (token, cookie, server session, local storage, …) — `createSignIn` holds the signed-in fact only in memory (a closure, not any storage technology); reloading the page loses it, same as everything else in this app right now
+- [x] Signing out (→ same `TSignIn`/`SignIn` — a Sign Out control replaces the form once signed in). Doesn't touch the acting identity's name (`TState.name` stays whatever it was) — only what's *displayed* changes, since essence has no concept of "no one" (see Part 1, item 6: a "you" is always present). ⚠️ whether being signed out should also hide Editor/NameForm below it is a separate, undecided call — left alone here, both still render regardless of `signedIn`
 
 ### Presenting & editing your identity
 
@@ -141,8 +141,9 @@ elements doesn't count, same "derived composite" standard as
   - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
 
 - [ ] **Sign in** (`/login`) / **Sign up** (`/register`) — establishing "who you are"
-  - [x] A control to change the acting identity's name (→ `changeName`, `src/essence/name.ts`; `NameForm`, `src/accidents/view/react/components.ts`) — RealWorld splits this into two pages because its credential scheme has accounts to distinguish; ours doesn't (see "Establishing 'who you are'" above), so one control covers both, and it isn't a dedicated page either, same inline-on-Home choice as New article below
-  - [ ] Anything to persist the name across visits, or return to a previously-used one — still nothing remembered between changes
+  - [x] A name+password form and a signed-in/signed-out toggle (→ `SignIn`, `src/accidents/view/react/components.ts`; `TSignIn`, `src/accidents/sign-in/sign-in.ts`) — RealWorld splits this into two pages because its credential scheme has accounts to distinguish; ours doesn't, so one form covers both, and it isn't a dedicated page either, same inline-on-Home choice as New article below
+  - [x] A separate control to change the acting identity's name without going through sign-in/out (→ `NameForm`, `src/essence/name.ts`) — ⚠️ kept alongside `SignIn` rather than folded into it; both end up setting the same `TState.name`, which is a real, unreconciled overlap between "change your display name" and "sign in as someone else," flagged here rather than resolved
+  - [ ] Anything to persist the name, or the signed-in fact, across visits, or return to a previously-used one — still nothing remembered between changes
 
 - [ ] **Settings** (`/settings`) — presenting & editing your identity
   - [ ] Settings form (display name, bio, avatar image, email, password) — name-changing exists (above) but not as a dedicated settings screen, and bio/avatar/email/password remain undecided
@@ -184,5 +185,7 @@ These were classified using the manifesto's test without a direct answer from yo
 2. **Article "summary/short description" vs. full body** — treated as essence (it's what lets someone decide whether to open an article from the list); could be argued as accident if you consider a title alone sufficient.
 3. **Markdown rendering** — treated the formatting *technology* as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
 4. **Whether "Home" is its own distinct page** — this repo's current app puts the editor, feed, and popular tags on one always-visible screen rather than routing "Home" separately from "New article"; treated that as a valid accident choice (RealWorld's own page split is one delivery shape, not the only one), so the Pages section above doesn't assume separate routing is required, only that the *elements* exist somewhere reachable.
+5. **`NameForm` vs. `SignIn`** — both change `TState.name`, through the same essence `changeName`, and both stayed, unreconciled: `NameForm` is "edit your display name," always available; `SignIn`/`SignOut` is "become someone else, or stop being treated as signed in," gated on a fact (`signedIn`) `NameForm` doesn't touch. Whether these should merge, or `NameForm` should only be reachable once signed in, wasn't decided — flagging rather than guessing.
+6. **Whether signing out should hide write affordances** — `Editor` and `NameForm` render regardless of `signedIn`; RealWorld hides its equivalents when signed out, this repo doesn't yet. Left alone since resolving it means deciding what an anonymous write even looks like, which touches essence's "a 'you' is always present" assumption (Part 1, item 6) more than this cycle's scope warranted.
 
 Already settled by you: **follow/personal feed → essence**, **comments → essence**, **dedicated profile page → accident**, **pagination → accident entirely** (not even the underlying concept of "there's more, and a way to get to it" is essence — the feed showing whatever it shows is sufficient; reaching the rest is purely a delivery-mechanism concern, see Part 2).

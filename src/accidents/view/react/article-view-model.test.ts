@@ -13,7 +13,7 @@ const article: TArticle = {
   isFavorite: false,
 };
 
-function makeStore(initial: TState) {
+function makeState(initial: TState) {
   let current = initial;
   const getState = () => current;
   const setState = (next: TState) => {
@@ -26,7 +26,7 @@ const getCreatedAt = () => "2026-01-05";
 
 describe("compileArticleDetailViewModel", () => {
   it("compiles the full article: body, tags, author, favorite/follow labels", () => {
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
 
@@ -39,7 +39,7 @@ describe("compileArticleDetailViewModel", () => {
 
   it("renders the body as markdown, not plain text", () => {
     const formatted: TArticle = { ...article, body: "This is **important**." };
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [formatted] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [formatted] });
 
     const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
 
@@ -47,7 +47,7 @@ describe("compileArticleDetailViewModel", () => {
   });
 
   it("returns undefined when no article matches the title", () => {
-    const { getState, setState } = makeStore(createInitialState());
+    const { getState, setState } = makeState(createInitialState());
 
     const viewModel = compileArticleDetailViewModel(
       getState(),
@@ -61,7 +61,7 @@ describe("compileArticleDetailViewModel", () => {
   });
 
   it("onFavoriteClick and onFollowClick act through essence, same as the feed's", () => {
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
     viewModel?.onFavoriteClick();
@@ -78,7 +78,7 @@ describe("compileArticleDetailViewModel", () => {
       body: "Nice!",
       createdAt: "2026-01-02",
     };
-    const { getState, setState } = makeStore({
+    const { getState, setState } = makeState({
       ...createInitialState(),
       articles: [article],
       comments: [comment],
@@ -96,7 +96,7 @@ describe("compileArticleDetailViewModel", () => {
   });
 
   it("onCommentClick posts a comment through essence, dated by getCreatedAt", () => {
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(
       getState(),
@@ -119,7 +119,7 @@ describe("compileArticleDetailViewModel", () => {
 
   it("gives you a delete control when you wrote the article", () => {
     const mine: TArticle = { ...article, authorName: "you" };
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [mine] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [mine] });
 
     const viewModel = compileArticleDetailViewModel(
       getState(),
@@ -133,7 +133,7 @@ describe("compileArticleDetailViewModel", () => {
   });
 
   it("gives no delete control when someone else wrote the article", () => {
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(
       getState(),
@@ -148,7 +148,7 @@ describe("compileArticleDetailViewModel", () => {
 
   it("onDeleteClick, when present, removes the article through essence", () => {
     const mine: TArticle = { ...article, authorName: "you" };
-    const { getState, setState } = makeStore({ ...createInitialState(), articles: [mine] });
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [mine] });
 
     const viewModel = compileArticleDetailViewModel(
       getState(),

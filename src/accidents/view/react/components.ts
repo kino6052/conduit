@@ -19,6 +19,7 @@ import {
 } from "./view-model";
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 import { THeaderProps } from "./header-view-model";
+import { TSignInViewModel } from "./sign-in-view-model";
 
 // Layout matches legacy/details/view/components/Navbar + Tab: a
 // full-width bar (className "header") with an inner row capped at the
@@ -209,6 +210,38 @@ export function Editor(props: TEditorProps) {
     }),
     React.createElement("input", { name: "tags", placeholder: "Enter tags" }),
     React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Publish Article"),
+  );
+}
+
+// Two mutually exclusive perceivable states, not a "session" flag checked
+// elsewhere: while signed out, the only thing on screen is a form asking
+// for a name and password; once signed in, the form is gone and a name
+// plus a Sign Out control take its place. Whether that fact should also
+// hide Editor/NameForm below it is a separate, undecided question --
+// flagged in docs/realworld-essence-checklist.md, not resolved here.
+export function SignIn(props: TSignInViewModel) {
+  if (props.signedIn) {
+    return React.createElement(
+      "div",
+      { className: "form" },
+      React.createElement("span", { className: "author" }, props.name),
+      React.createElement("button", { className: "btn", onClick: props.onSignOutClick }, "Sign Out"),
+    );
+  }
+
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    props.onSignInClick(String(data.get("name") ?? ""), String(data.get("password") ?? ""));
+    event.currentTarget.reset();
+  };
+
+  return React.createElement(
+    "form",
+    { className: "form", onSubmit: handleSubmit },
+    React.createElement("input", { name: "name", placeholder: "Name" }),
+    React.createElement("input", { name: "password", type: "password", placeholder: "Password" }),
+    React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Sign In"),
   );
 }
 

@@ -137,6 +137,17 @@ and that's fine, because nothing outside the component ever sees those names. Wh
 component *exposes* — `TEditorProps` — is `onClick`, grounded, with no `onSubmit` in sight.
 Guard the boundary, not every line inside it.
 
+**"Store"/"session"/"storage"/"auth" are the same mistake as "submit," just from the backend
+side.** None of them ever appear in what the app renders — same test
+`docs/ontological-entities-in-this-repo.md` already applies to reject `User` as an entity. An
+accident that needs to hold state with no perceivable or persisted backing yet — whether you're
+currently signed in, an RxJS subject wiring essence to React — should be named after the fact
+itself (`signedIn`) or the form/control that drives it (`state$`), not the implementation
+category it happens to resemble (`store`, `session`). This is stricter than the boundary rule
+above: it applies to internal variable names too, including inside the composition root, because
+unlike React's `onSubmit` there's no library actually calling the concept "a store" — that name
+would be one we invented, not one we inherited.
+
 This is a standard to hold new code to, not a claim that everything here already meets it —
 `ArticlePreview` still takes `onFavoriteClick`/`onFollowClick` rather than fully generic button
 props. That one's a real gap, not a guarded internal detail; worth tightening in a future

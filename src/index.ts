@@ -2,9 +2,10 @@
 // tucked inside accidents/view, because this is where essence and the
 // view actually meet and get wired together; it isn't itself "the view",
 // it's the one thing allowed to know about both sides. docs/code-example.md's
-// shape: an RxJS BehaviorSubject as the store, getState/setState closing
-// over it, a useSharedState hook wiring the store into React, and an App
-// component assembled from compileFeedViewModel + Feed.
+// shape: an RxJS BehaviorSubject (state$ -- not "store": nothing here is a
+// storage mechanism, it's the essence's own state, held), getState/setState
+// closing over it, a useSharedState hook wiring state$ into React, and an
+// App component assembled from compileFeedViewModel + Feed.
 
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { BehaviorSubject, skip } from "rxjs";
@@ -12,6 +13,7 @@ import { createInitialState, TState } from "./essence/state";
 import { TDraftArticle } from "./essence/write";
 import { createHashNavigation } from "./accidents/navigation/navigation-hash";
 import { withConfirmation } from "./accidents/confirmation/confirmation";
+import { createSignIn } from "./accidents/sign-in/sign-in";
 import {
   compileFeedViewModel,
   compileNameFormViewModel,
@@ -20,6 +22,7 @@ import {
 } from "./accidents/view/react/view-model";
 import { compileArticleDetailViewModel } from "./accidents/view/react/article-view-model";
 import { compileHeaderViewModel } from "./accidents/view/react/header-view-model";
+import { compileSignInViewModel } from "./accidents/view/react/sign-in-view-model";
 import {
   Feed,
   ArticleDetail,
@@ -27,24 +30,26 @@ import {
   Header,
   NameForm,
   PopularTags,
+  SignIn,
 } from "./accidents/view/react/components";
 
 export function createCompositionRoot() {
-  const store = new BehaviorSubject<TState>(createInitialState());
+  const state$ = new BehaviorSubject<TState>(createInitialState());
   // Which article is open is navigation, not essence -- decided when
   // src/index.essence.ts's activeArticleTitle first drew that line. Backed
   // by the URL (src/accidents/navigation/navigation-hash.ts) rather than plain
   // component state, so back/forward and page refresh behave like a real
-  // app. Created once here, same as the essence store above.
+  // app. Created once here, same as state$ above.
   const navigation = createHashNavigation();
+  const signIn = createSignIn();
 
-  const getState = (): TState => store.getValue();
-  const setState = (next: TState): void => store.next(next);
+  const getState = (): TState => state$.getValue();
+  const setState = (next: TState): void => state$.next(next);
 
   function useSharedState(): TState {
-    const [value, setReactState] = useState(store.getValue());
+    const [value, setReactState] = useState(state$.getValue());
     useEffect(() => {
-      const subscription = store
+      const subscription = state$
         .pipe(skip(1))
         .subscribe((next) => setReactState(next));
       return () => subscription.unsubscribe();
@@ -64,6 +69,7 @@ export function createCompositionRoot() {
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
     const headerViewModel = compileHeaderViewModel(openArticleTitle, navigation.closeArticle);
+    const signInViewModel = compileSignInViewModel(signIn, state, getState, setState);
     const nameFormViewModel = compileNameFormViewModel(state, getState, setState);
     const feedViewModel = compileFeedViewModel(
       state,
@@ -115,6 +121,7 @@ export function createCompositionRoot() {
       React.createElement(
         "div",
         { className: "page" },
+        React.createElement(SignIn, signInViewModel),
         React.createElement(NameForm, nameFormViewModel),
         React.createElement(Editor, { onClick: onPublishArticleButtonClick }),
         PopularTags(popularTagsViewModel),
