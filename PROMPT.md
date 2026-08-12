@@ -34,11 +34,11 @@ your first change, if you haven't. It's short.
 | `docs/solid-in-this-repo.md` | SOLID mapped to real files in this repo. |
 | `docs/code-example.md` | The reference implementation pattern (tic-tac-toe) — MVVM shape for `src/accidents/view/react`. |
 | `src/essence/` | Pure state, pure logic, pure selectors/actions. One file per perceivable capability. |
-| `src/index.ts` | Composition root for the React view. Not inside `accidents/view` — a composition root is where essence and a view meet, so it isn't itself "the view." |
-| `src/index.essence.ts` | Composition root for the essence view. Same reasoning, same top-level placement. |
-| `src/accidents/view/react/` | The real delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components). Also holds the mount point (`main.ts`), HTML shell, stylesheet, and `pages.ts` (Home/Login/Article — separate routed screens, themselves accident; see `docs/realworld-essence-checklist.md`'s "Pages" section for why essence-view below doesn't need this and this one does) — accident artifacts, not composition logic. |
+| `src/index.ts` | Thin adapter, not the composition root's actual logic anymore — builds the real dependencies and reads React hooks into a snapshot for `compose-app.ts`. Not inside `accidents/view` — it's where essence and a view meet, so it isn't itself "the view." |
+| `src/index.essence.ts` | Composition root for the essence view. Same top-level placement; hasn't grown the dependency-injection split above, since it's a single fixed-dependency grounding tool, not something integration-tested. |
+| `src/accidents/view/react/` | The real delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components). `compose-app.ts` holds the actual composition logic (which page, what props), fully unit-tested with injected in-memory dependencies — see "Integration testing via injected dependencies" below. Also holds the mount point (`main.ts`), HTML shell, stylesheet, and `pages.ts` (Home/Login/Article/Editor — separate routed screens, themselves accident; see `docs/realworld-essence-checklist.md`'s "Pages" section for why essence-view below doesn't need this and this one does) — accident artifacts, not composition logic. |
 | `src/accidents/view/essence/` | Bare, unstyled, interactive HTML rendering of the essence, plus a storybook-style state picker. Exists to keep the essence grounded in something clickable — not the real app. Deliberately has no pages: it shows every relevant piece of a given state directly, for inspection, not for a real user's flow. Also holds its own `main.ts` (mount point). |
-| `src/accidents/navigation/`, `src/accidents/pagination/` | Small, isolated accidents that extend essence state/behavior from the outside. Not wired into a view by default — Step 5 says they can be developed and verified in isolation. |
+| `src/accidents/navigation/`, `src/accidents/pagination/`, `src/accidents/state-management/` | Small, isolated accidents that extend essence state/behavior from the outside, or hold view-layer state generically (`state-management` isn't specific to `TState` at all). Not wired into a view by default — Step 5 says they can be developed and verified in isolation. |
 | `legacy/` | A prior implementation, predating this split. Reference only; not wired into the toolchain. |
 
 ## The TDD loop — every essence or accident change, no exceptions
@@ -75,9 +75,42 @@ your first change, if you haven't. It's short.
 
 Composition roots (`src/index.ts`, `src/index.essence.ts`), mount points
 (`src/accidents/view/*/main.ts`), and pure presentational components
-(`src/accidents/view/react/components.ts`) are **not unit-tested** — same precedent as
-`code-example.md`'s own `createCompositionRoot`/`Square`/`Board`/`Game`. They're excluded
-explicitly in `vitest.config.mts`, not just left untested by accident.
+(`src/accidents/view/react/components.ts`, `src/accidents/view/react/pages.ts`) are **not
+unit-tested** — same precedent as `code-example.md`'s own
+`createCompositionRoot`/`Square`/`Board`/`Game`. They're excluded explicitly in
+`vitest.config.mts`, not just left untested by accident.
+
+## Integration testing via injected dependencies
+
+`src/index.ts` looks like a composition root but isn't where the composing actually happens
+anymore — it only builds the *real* dependencies (browser-backed navigation, RxJS-backed state,
+the real page components) and adapts React's hooks into a plain snapshot. All the actual logic —
+which page, what props, how signing in/deleting/publishing compose essence with navigation —
+lives in `composeApp` (`src/accidents/view/react/compose-app.ts`), a plain function with no React
+import at all, fully unit-tested (`compose-app.test.ts`).
+
+Two things make this possible, both following the same "Step 4" shape as `TNavigation`/`TConfirm`
+already did:
+
+- **Every dependency is swappable.** `createCompositionRoot(deps?: TDependencies)` takes its
+  navigation, sign-in, confirm, state (getState/setState), and view as one object, defaulting to
+  the real ones (`createDefaultDependencies()`) when called with none. A test builds the same
+  object with `createMemoryNavigation()`, `createSignIn()` (already in-memory — there's no real
+  backend to swap in), `createMemoryState()` (`src/accidents/state-management`), and
+  `confirm: () => true` in place of `window.confirm`.
+- **The view itself is a dependency.** `TView<R>` is generic over what a page function returns —
+  production wires in the real page components (`src/accidents/view/react/pages.ts`, which return
+  React elements); a test wires in *bare bone view models*: functions that just hand back the
+  props they were given (`LoginPage: (props) => props`, etc.). `composeApp<R>` returns whatever
+  the view produced, so a test asserts on the fully-computed view-model tree directly — no
+  rendering, no DOM, same "assert on the return value" style as every other test in this repo.
+
+`compose-app.test.ts` is the sanity-test suite this pattern exists for: sign in, publish, edit,
+delete (confirmed and declined), read as a guest, read someone else's article — all exercised by
+calling `composeApp` with in-memory dependencies and inspecting what came back, nothing simulated.
+When branch coverage flags a path a test never reaches, check whether the branch is actually
+reachable first — `commentProps ?? []`'s fallback turned out to be dead code once traced through,
+not a missing test.
 
 ## Naming — every name must be perceivable, not reified
 

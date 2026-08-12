@@ -108,6 +108,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 ### Underlying technology
 
 - [x] Front-end language/framework (→ TypeScript + React + RxJS, `src/accidents/view`, following `docs/code-example.md`'s MVVM shape — a composition root, not baked into essence)
+- [x] How the composition root itself gets tested — every dependency it needs (navigation, sign-in, confirm, state management, even the view) is injected rather than hard-coded, so `compose-app.ts`'s composition logic (which page, what props) is a plain function testable with in-memory implementations and "bare bone" view functions that just hand back their props, no rendering involved (→ `composeApp`, `src/accidents/view/react/compose-app.ts`; `TStateManagement`, `src/accidents/state-management/state-management.ts` — state management pulled out the same way navigation/sign-in already were; sanity/integration tests in `compose-app.test.ts` cover sign in, publish, edit, delete confirmed/declined, reading as a guest, reading someone else's article)
 - [ ] Back-end language/framework — not yet decided (`TLoadArticles`, "presentation & delivery of the feed" above, is shaped for real IO but has no backend behind it yet)
 - [ ] Database/storage technology
 - [ ] API shape/protocol (REST, GraphQL, RPC, …)

@@ -11,6 +11,10 @@
 // isn't looking at a sign-in form, an always-blank editor, and someone
 // else's open article all in one scroll -- nicer delivery, not a
 // different app.
+//
+// Prop types are exported so src/accidents/view/react/compose-app.ts can
+// depend on the shape without depending on React -- the same reason
+// components.ts's prop types live next to view-model.ts, not here.
 
 import React from "react";
 import { THeaderProps } from "./header-view-model";
@@ -19,10 +23,12 @@ import { TEditorProps, TFeedViewModel, TTagProps } from "./view-model";
 import { TArticleDetailViewModel } from "./article-view-model";
 import { Header, SignIn, Editor, PopularTags, Feed, ArticleDetail } from "./components";
 
-export function LoginPage(props: {
+export type TLoginPageProps = {
   headerViewModel: THeaderProps;
   signInViewModel: TSignInViewModel;
-}) {
+};
+
+export function LoginPage(props: TLoginPageProps) {
   return React.createElement(
     React.Fragment,
     null,
@@ -35,11 +41,13 @@ export function LoginPage(props: {
   );
 }
 
-export function HomePage(props: {
+export type THomePageProps = {
   headerViewModel: THeaderProps;
   popularTagsProps: TTagProps[];
   feedViewModel: TFeedViewModel;
-}) {
+};
+
+export function HomePage(props: THomePageProps) {
   return React.createElement(
     React.Fragment,
     null,
@@ -53,7 +61,7 @@ export function HomePage(props: {
   );
 }
 
-export function EditorPage(props: {
+export type TEditorPageProps = {
   headerViewModel: THeaderProps;
   // Writing requires a signed-in name -- a guest doesn't get an Editor at
   // all, not a disabled one (docs/realworld-essence-checklist.md: "article
@@ -65,7 +73,9 @@ export function EditorPage(props: {
   // exposes (TEditorProps), only how the composition root tells React
   // this is a different form instance (new vs. editing which article).
   editorKey: string;
-}) {
+};
+
+export function EditorPage(props: TEditorPageProps) {
   return React.createElement(
     React.Fragment,
     null,
@@ -80,7 +90,7 @@ export function EditorPage(props: {
   );
 }
 
-export function ArticlePage(props: {
+export type TArticlePageProps = {
   headerViewModel: THeaderProps;
   // Same rule as editorProps above: reading an article's full detail also
   // requires a signed-in name. Needed here (unlike editorProps, where
@@ -89,7 +99,9 @@ export function ArticlePage(props: {
   // that title -- and they read as different messages on screen.
   signedInName: string | undefined;
   articleViewModel: TArticleDetailViewModel | undefined;
-}) {
+};
+
+export function ArticlePage(props: TArticlePageProps) {
   const emptyMessage = props.signedInName
     ? "No such article."
     : "Sign in to read this article.";

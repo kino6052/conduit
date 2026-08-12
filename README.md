@@ -30,16 +30,23 @@ markdown rendering aren't yet.
   and a view meet, so it isn't itself "the view") — see
   [`src/index.ts`](src/index.ts) and [`src/index.essence.ts`](src/index.essence.ts).
   - **[`view/react/`](src/accidents/view/react)** — the real delivery: React + RxJS. View-model
-    compiler, pure presentational components, `pages.ts` (Home/Login/Article — separate routed
-    screens), mount point, HTML shell, stylesheet.
+    compiler, pure presentational components, `pages.ts` (Home/Login/Article/Editor — separate
+    routed screens), mount point, HTML shell, stylesheet. `compose-app.ts` holds the actual
+    composition logic (which page, what props) as a plain, fully unit-tested function — every
+    dependency it needs (navigation, sign-in, confirm, state, even the view itself) is injected,
+    so `compose-app.test.ts` exercises the whole app end to end with in-memory implementations
+    and bare bone view models, no rendering involved. `src/index.ts` just builds the real
+    versions of those dependencies and adapts React's hooks into the plain snapshot this
+    function takes.
   - **[`view/essence/`](src/accidents/view/essence)** — a bare, unstyled, _interactive_ HTML
     rendering of the essence, plus a storybook-style sidebar for jumping between named states.
     Exists so the essence stays grounded in something you can actually click, not just typed
     data and green tests. See [its README](src/accidents/view/essence/README.md). Deliberately
     has no pages of its own — see the essence checklist's "Pages" section for why a grounding
     tool and a real app want opposite things here.
-  - **[`navigation/`](src/accidents/navigation)**, **[`pagination/`](src/accidents/pagination)**
-    — smaller, isolated accidents, developed and tested independent of either view.
+  - **[`navigation/`](src/accidents/navigation)**, **[`pagination/`](src/accidents/pagination)**,
+    **[`state-management/`](src/accidents/state-management)** — smaller, isolated accidents,
+    developed and tested independent of either view.
 - **[`legacy/`](legacy)** — the prior React/Parcel/Storybook implementation. Kept for
   reference only; it predates the essence/accident split and isn't wired into the current
   toolchain (its dependencies aren't installed).
