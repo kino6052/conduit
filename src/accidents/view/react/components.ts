@@ -18,6 +18,39 @@ import {
   TTagProps,
 } from "./view-model";
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
+import { THeaderProps } from "./header-view-model";
+
+// Layout matches legacy/details/view/components/Navbar + Tab: a
+// full-width bar (className "header") with an inner row capped at the
+// same width as the rest of the page, a logo, and a row of tabs -- one
+// tab so far ("Home"), since that's the only nav destination built.
+export function Header(props: THeaderProps) {
+  return React.createElement(
+    "header",
+    { className: "header" },
+    React.createElement(
+      "div",
+      { className: "header-content" },
+      React.createElement(
+        "button",
+        { className: "logo", onClick: props.onHomeClick },
+        "conduit",
+      ),
+      React.createElement(
+        "nav",
+        { className: "nav" },
+        React.createElement(
+          "button",
+          {
+            className: props.isHome ? "nav-tab active" : "nav-tab",
+            onClick: props.onHomeClick,
+          },
+          "Home",
+        ),
+      ),
+    ),
+  );
+}
 
 function TagList(tags: string[], onTagClick?: (tag: string) => void) {
   return React.createElement(

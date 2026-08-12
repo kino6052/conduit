@@ -19,10 +19,12 @@ import {
   onWriteArticle,
 } from "./accidents/view/react/view-model";
 import { compileArticleDetailViewModel } from "./accidents/view/react/article-view-model";
+import { compileHeaderViewModel } from "./accidents/view/react/header-view-model";
 import {
   Feed,
   ArticleDetail,
   Editor,
+  Header,
   NameForm,
   PopularTags,
 } from "./accidents/view/react/components";
@@ -61,6 +63,7 @@ export function createCompositionRoot() {
     // any pure view-model function or presentational component.
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
+    const headerViewModel = compileHeaderViewModel(openArticleTitle, navigation.closeArticle);
     const nameFormViewModel = compileNameFormViewModel(state, getState, setState);
     const feedViewModel = compileFeedViewModel(
       state,
@@ -108,16 +111,21 @@ export function createCompositionRoot() {
     return React.createElement(
       React.Fragment,
       null,
-      React.createElement(NameForm, nameFormViewModel),
-      React.createElement(Editor, { onClick: onPublishArticleButtonClick }),
-      PopularTags(popularTagsViewModel),
-      React.createElement(Feed, feedViewModel),
-      articleViewModel
-        ? React.createElement(ArticleDetail, {
-            ...articleViewModel,
-            onDeleteClick: handleDelete,
-          })
-        : null,
+      React.createElement(Header, headerViewModel),
+      React.createElement(
+        "div",
+        { className: "page" },
+        React.createElement(NameForm, nameFormViewModel),
+        React.createElement(Editor, { onClick: onPublishArticleButtonClick }),
+        PopularTags(popularTagsViewModel),
+        React.createElement(Feed, feedViewModel),
+        articleViewModel
+          ? React.createElement(ArticleDetail, {
+              ...articleViewModel,
+              onDeleteClick: handleDelete,
+            })
+          : null,
+      ),
     );
   };
 }

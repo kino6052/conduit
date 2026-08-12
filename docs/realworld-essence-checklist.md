@@ -114,6 +114,11 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 - [ ] Error-message wording, placement, and validation mechanics
 - [ ] Branding, footer text, attribution, favicon, typography
 
+### Site-wide navigation
+
+- [x] A persistent header showing the app's name and a way back to the feed (→ `compileHeaderViewModel`, `src/accidents/view/react/header-view-model.ts`; `Header`, `src/accidents/view/react/components.ts` — styled after `legacy/details/view/components/Navbar` and `Tab`: full-width bar, content capped at the page's own width, green underline on the active tab)
+- [ ] Tabs/links to the other pages (New article, Settings, Profile, Sign in/up) — only Home exists as a distinct nav destination so far, because those are the only two the app currently distinguishes (see Pages below); the rest render inline or don't exist yet, so linking to them would be a link to nothing
+
 ### Pages (how the accidents above get grouped into screens)
 
 A "page" is itself accident, not essence — the RealWorld spec's own
@@ -131,6 +136,7 @@ elements doesn't count, same "derived composite" standard as
   - [x] Tag filter (→ `onTagClick`, `src/accidents/view/react/view-model.ts`)
   - [x] Popular tags widget (→ `selectPopularTags`, `src/accidents/popular-tags/popular-tags.ts`)
   - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
+  - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
   - [ ] A control to switch feed lenses (global ↔ personal) — `filterName` exists on state but nothing on screen sets it yet, only fixtures do
   - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
 
