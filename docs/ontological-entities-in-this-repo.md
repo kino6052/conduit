@@ -14,7 +14,7 @@ equivalents) actually produce, checked against the real function bodies, not inf
 
 **The user, the developer, "you," any AI or agent — none of these are entities of this
 project.** They never appear in a `renderFeed`/`renderArticleDetail` return value. The only
-thing the screen ever shows in their place is a *name* — a string sitting in a byline — and
+thing the screen ever shows in their place is a _name_ — a string sitting in a byline — and
 that name is what's listed below, not a person behind it. This is the same discipline
 [`docs/empirical-software-manifesto.md`](empirical-software-manifesto.md) and
 [`metaphysics-of-code.substance-vs-essence.md`](metaphysics-of-code.substance-vs-essence.md)
@@ -37,7 +37,7 @@ view — a distinct thing, not a property of anything else.
 
 A body of text and an author's name, rendered as its own `<li>` under the article it belongs
 to. It has no independent existence outside that article (no screen shows a comment on its
-own), but it *is* its own thing on that screen — you can point at "this comment" as distinct
+own), but it _is_ its own thing on that screen — you can point at "this comment" as distinct
 from the article's body or from any other comment.
 
 ### Tag
@@ -50,24 +50,16 @@ one-off detail of a single article.
 ### Author (a name — not a "User")
 
 A name string, rendered as plain text next to an article or a comment. This is deliberately
-*not* a `User` entity: there's no bio, no avatar, no email, no page of its own — none of that
+_not_ a `User` entity: there's no bio, no avatar, no email, no page of its own — none of that
 is ever rendered, because a dedicated profile page was classified as accident, not essence (see
 [`docs/realworld-essence-checklist.md`](realworld-essence-checklist.md), Part 2). What exists,
 empirically, is the name attached to the things that name authored — nothing more.
 
-## Relations and attributes — exist only *of* something else, not independently
+## Non-entity
 
-These never get their own `<li>`/block; they always modify or connect a primary entity.
+If something doesn't have a perceivable correlate, it can't be an entity
 
-- **Favorite** — a count and a yes/no state carried on an Article (`favoritesCount`,
-  `isFavorite`). Rendered as a button's label, not a separate thing.
-- **Follow** — a relation between the acting identity and an Author-name
-  (`followedAuthors`). Rendered as a button's label ("Follow"/"Unfollow") next to that name,
-  never as its own entry anywhere.
-- **Ownership** — a relation between the acting identity and an Article's or Comment's
-  author-name, computed on the spot (`isMine`) to decide whether edit/delete controls render at
-  all. Never stored, never itself rendered as a label — it only ever shows up as *other things
-  appearing or not*.
+## Entity Derived Composites
 
 ## Screens — arrangements of entities, not entities themselves
 
@@ -89,5 +81,3 @@ Article is.
   excluded, not just omitted for brevity.
 - `id`, `slug` — rejected reifications; see `src/essence/state.ts`'s own comments on why
   `TArticle`/`TComment` don't have them.
-- A stored `isMine` flag, or any other cached boolean standing in for a comparison the render
-  function could make itself — see ownership above: it's a relation, computed, not a thing.

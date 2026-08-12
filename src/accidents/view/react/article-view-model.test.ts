@@ -108,7 +108,7 @@ describe("compileArticleDetailViewModel", () => {
     ]);
   });
 
-  it("marks the article as yours when you wrote it", () => {
+  it("gives you a delete control when you wrote the article", () => {
     const mine: TArticle = { ...article, authorName: "you" };
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [mine] });
 
@@ -120,10 +120,10 @@ describe("compileArticleDetailViewModel", () => {
       getCreatedAt,
     );
 
-    expect(viewModel?.isOwnArticle).toBe(true);
+    expect(typeof viewModel?.onDeleteClick).toBe("function");
   });
 
-  it("does not mark the article as yours when someone else wrote it", () => {
+  it("gives no delete control when someone else wrote the article", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(
@@ -134,10 +134,10 @@ describe("compileArticleDetailViewModel", () => {
       getCreatedAt,
     );
 
-    expect(viewModel?.isOwnArticle).toBe(false);
+    expect(viewModel?.onDeleteClick).toBeUndefined();
   });
 
-  it("onDeleteClick removes the article through essence", () => {
+  it("onDeleteClick, when present, removes the article through essence", () => {
     const mine: TArticle = { ...article, authorName: "you" };
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [mine] });
 
@@ -148,7 +148,7 @@ describe("compileArticleDetailViewModel", () => {
       setState,
       getCreatedAt,
     );
-    viewModel?.onDeleteClick();
+    viewModel?.onDeleteClick?.();
 
     expect(getState().articles).toEqual([]);
   });

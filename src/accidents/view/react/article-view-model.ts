@@ -26,8 +26,12 @@ export type TArticleDetailViewModel = TFavoriteFollowProps & {
   authorName: string;
   commentProps: TCommentProps[];
   onCommentClick: (body: string) => void;
-  isOwnArticle: boolean;
-  onDeleteClick: () => void;
+  // No separate "isOwnArticle" flag -- there's nothing on screen that
+  // directly shows ownership, only a Delete Article button that either
+  // exists or doesn't (docs/ontological-entities-in-this-repo.md: "if
+  // something doesn't have a perceivable correlate, it can't be an
+  // entity"). The control's own presence is the only signal.
+  onDeleteClick: (() => void) | undefined;
 };
 
 export function compileArticleDetailViewModel(
@@ -51,8 +55,9 @@ export function compileArticleDetailViewModel(
     })),
     onCommentClick: (body: string) =>
       onWriteComment(article.title, body, getCreatedAt(), getState, setState),
-    isOwnArticle: isMine(article, state),
-    onDeleteClick: () => onDeleteArticle(article.title, getState, setState),
+    onDeleteClick: isMine(article, state)
+      ? () => onDeleteArticle(article.title, getState, setState)
+      : undefined,
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }
