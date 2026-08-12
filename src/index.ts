@@ -11,6 +11,7 @@ import { BehaviorSubject, skip } from "rxjs";
 import { createInitialState, TState } from "./essence/state";
 import { TDraftArticle } from "./essence/write";
 import { createHashNavigation } from "./accidents/navigation/navigation-hash";
+import { withConfirmation } from "./accidents/confirmation/confirmation";
 import {
   compileFeedViewModel,
   onWriteArticle,
@@ -82,15 +83,16 @@ export function createCompositionRoot() {
 
     // Composes two concerns the view-model can't see at once: essence
     // (delete the article) and navigation (stop viewing something that no
-    // longer exists). Only wraps the view-model's own onDeleteClick when it
-    // exists -- undefined means "not yours," and that has to survive the
-    // wrap, or the Delete button would render for everyone.
+    // longer exists) -- plus a confirmation prompt in front of both. Only
+    // wraps the view-model's own onDeleteClick when it exists -- undefined
+    // means "not yours," and that has to survive the wrap, or the Delete
+    // button would render for everyone.
     const viewModelOnDeleteClick = articleViewModel?.onDeleteClick;
     const handleDelete = viewModelOnDeleteClick
-      ? (): void => {
+      ? withConfirmation("Delete this article?", window.confirm.bind(window), () => {
           viewModelOnDeleteClick();
           navigation.closeArticle();
-        }
+        })
       : undefined;
 
     return React.createElement(

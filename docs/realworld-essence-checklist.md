@@ -90,18 +90,18 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 ### Presentation of an article
 
 - [ ] Rendering the body as formatted markdown vs. plain text vs. rich text — that it's readable text is essence; the rendering technology/format is accident
-- [ ] The URL/address scheme used to reach a specific article
+- [x] The URL/address scheme used to reach a specific article (→ `createHashNavigation`, `src/accidents/navigation/navigation-hash.ts` — `#/article/<title>`, the article's own title, no synthetic slug)
 
 ### Writing & editing mechanics
 
 - [ ] The input widgets used for title/summary/body/tags (plain fields vs. rich editor, tag autocomplete, etc.)
 - [ ] Any draft/autosave behavior
-- [ ] Confirmation prompts before deleting
+- [x] Confirmation prompts before deleting (→ `withConfirmation`, `src/accidents/confirmation/confirmation.ts`, wired to `window.confirm` in `src/index.ts` for article deletion)
 
 ### Comments & favorites mechanics
 
 - [ ] Visual placement/styling of the comment thread and comment form
-- [ ] Confirmation prompts before deleting a comment
+- [x] Confirmation prompts before deleting a comment (→ same `withConfirmation`, wired in `src/index.essence.ts` — the React app doesn't have delete-comment yet, so only the essence view has this one so far)
 - [ ] The specific icon/animation used to show "favorited"
 
 ### Underlying technology

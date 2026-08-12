@@ -14,6 +14,7 @@ import { writeArticle } from "./essence/write";
 import { deleteArticle } from "./essence/delete";
 import { selectArticle } from "./essence/article";
 import { writeComment, selectComments, deleteComment } from "./essence/comment";
+import { withConfirmation } from "./accidents/confirmation/confirmation";
 import { renderFeed } from "./accidents/view/essence/feed";
 import { renderSidebar } from "./accidents/view/essence/sidebar";
 import { renderEditor } from "./accidents/view/essence/editor";
@@ -103,12 +104,16 @@ export function handleClick(event: Event): void {
   } else if (action === "open-article" && title) {
     activeArticleTitle = title;
   } else if (action === "delete-article" && title) {
-    state = deleteArticle(state, title);
+    withConfirmation("Delete this article?", window.confirm.bind(window), () => {
+      state = deleteArticle(state, title);
+    })();
   } else if (action === "post-comment" && actionEl instanceof HTMLFormElement) {
     event.preventDefault();
     postCommentFromForm(actionEl);
   } else if (action === "delete-comment" && articleTitle && authorName && body && createdAt) {
-    state = deleteComment(state, { articleTitle, authorName, body, createdAt });
+    withConfirmation("Delete this comment?", window.confirm.bind(window), () => {
+      state = deleteComment(state, { articleTitle, authorName, body, createdAt });
+    })();
   } else {
     return;
   }
