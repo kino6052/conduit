@@ -107,10 +107,16 @@ looks like:
   whoever the essence's acting identity last was (→ `composeApp`,
   `src/accidents/view/react/compose-app.ts`, sanity-tested in
   `compose-app.test.ts`)
+- [x] **Viewing a profile** — same message-swap treatment
+  ("Sign in to view this profile.") as Article/Editor, not the redirect
+  treatment Favorite/Follow got. Clicking an author's name to get there
+  is itself unrestricted for a guest, same as opening an article — only
+  what's shown once you arrive is gated (→ `ProfilePage`, same file; see
+  the Profile page entry below)
 - [x] **Browsing itself is never gated** — the feed, tag filtering, the
-  popular tags widget, and opening an article (the click itself, not what
-  you see once there) all stay available to a guest; only *acting*
-  requires a signed-in name
+  popular tags widget, and opening an article or a profile (the click
+  itself, not what you see once there) all stay available to a guest;
+  only *acting* requires a signed-in name
 
 ⚠️ Two different gating shapes for the same underlying rule (a message
 swap on pages vs. a redirect on inline controls) is a real, visible
@@ -165,7 +171,8 @@ reads best in their own context, not from one rule applied twice.
 
 - [x] A persistent header showing the app's name and a way back to the feed (→ `compileHeaderViewModel`, `src/accidents/view/react/header-view-model.ts`; `Header`, `src/accidents/view/react/components.ts` — styled after `legacy/details/view/components/Navbar` and `Tab`: full-width bar, content capped at the page's own width, green underline on the active tab)
 - [x] Home and Login tabs, gated by whether anyone's signed in — a guest sees Login, a signed-in name sees New Article and "Sign Out (name)" instead, same gating shape as `legacy/details/services/SimpleNavigationService.getNavigationTabs`
-- [ ] Tabs/links to Settings and Profile — those don't exist as pages yet (see Pages below), so linking to them from the header would be links to nothing
+- [x] A link to Profile — not a header tab (legacy's own nav doesn't put one there either), reached the same way real apps do it: any author's name, wherever it's shown (feed, article, comments), links through to their profile (see the Profile page below)
+- [ ] A tab/link to Settings — doesn't exist as a page yet (see Pages below), so linking to it from the header would be a link to nothing
 
 ### Pages (how the accidents above get grouped into screens)
 
@@ -238,14 +245,16 @@ count, same "derived composite" standard as above.
   - [x] Comment form (→ `onCommentClick`)
   - [x] Delete-comment control, owner-gated — both sides now
   - [x] Reachable at its own URL (→ `createHashNavigation`, `#/article/<title>`)
-  - [x] Only available when a name is signed in — a guest sees "Sign in to read this article" instead of the article itself (→ `src/index.ts`'s page-level gating: `signedInName && openArticleTitle ? compileArticleDetailViewModel(...) : undefined`). This is stricter than plain RealWorld (which lets anyone read), a deliberate choice for this exercise: reading requires a name the same way writing does, so the guest/signed-in distinction has a second, visible consequence beyond just the header
+  - [x] Only available when a name is signed in — a guest sees "Sign in to read this article" instead of the article itself (→ `compose-app.ts`'s page-level gating: `signedInName && openArticleTitle ? compileArticleDetailViewModel(...) : undefined`). This is stricter than plain RealWorld (which lets anyone read), a deliberate choice for this exercise: reading requires a name the same way writing does, so the guest/signed-in distinction has a second, visible consequence beyond just the header
+  - [x] The author's name, on the article and on every comment, links through to their profile (→ `onAuthorClick`, `src/accidents/view/react/article-view-model.ts`; `AuthorLink`, `src/accidents/view/react/components.ts`) — see the Profile page below
 
-- [ ] **Profile** (`/profile/:authorName`) — an author, their articles
-  - [ ] Author bio/avatar display — not yet decided as essence-grounded (see "presenting identity" above)
-  - [ ] Follow control on the profile itself — `toggleFollow` exists in essence, not wired to a profile page
-  - [ ] Their authored articles
-  - [ ] Their favorited articles
-  - [ ] Reachable at its own URL
+- [x] **Profile** (`/profile/:authorName`) — an author, their articles (→ `ProfilePage`, `src/accidents/view/react/pages.ts`, reachable via any author name shown anywhere and `#/profile/<authorName>`)
+  - [ ] Author bio/avatar display — not yet decided as essence-grounded (see "presenting identity" above); still not built, this page shows only the name
+  - [x] Follow control on the profile itself (→ `compileProfileViewModel`, `src/accidents/view/react/profile-view-model.ts`, reusing `toggleFollow`/`isFollowing`)
+  - [x] Their authored articles (→ `selectArticlesByAuthor`, `src/essence/article.ts` — new essence selector, same shape as `selectArticle`; the article previews themselves reuse `compileArticlePreviewProps`/`ArticlePreview`, the same components the feed uses, since a preview looks and behaves identically wherever it's shown)
+  - [ ] Their favorited articles — not built; would need essence to track *which* articles a name favorited, not just whether the current viewer did (`TArticle.isFavorite` is a per-viewer fact, not a per-article list); a real gap, not a trivial wiring one
+  - [x] Reachable at its own URL (→ `#/profile/<authorName>`, `src/accidents/navigation/navigation-hash.ts`)
+  - [x] Only available when a name is signed in, same rule and same reasoning as the Article page above — a guest sees "Sign in to view this profile." (→ `compose-app.ts`'s page-level gating). Unlike Article, there's no second "doesn't exist" case: an author isn't an entity that can fail to exist the way an article can (any name is valid to view, even with zero articles), so `undefined` here means exactly one thing, not two
 
 ---
 

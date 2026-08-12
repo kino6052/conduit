@@ -28,7 +28,7 @@ describe("compileArticleDetailViewModel", () => {
   it("compiles the full article: body, tags, author, favorite/follow labels", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {});
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
 
     expect(viewModel?.bodyHtml).toContain("The full body text.");
     expect(viewModel?.tags).toEqual(["react"]);
@@ -41,7 +41,7 @@ describe("compileArticleDetailViewModel", () => {
     const formatted: TArticle = { ...article, body: "This is **important**." };
     const { getState, setState } = makeState({ ...createInitialState(), articles: [formatted] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {});
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
 
     expect(viewModel?.bodyHtml).toContain("<strong>important</strong>");
   });
@@ -56,6 +56,7 @@ describe("compileArticleDetailViewModel", () => {
       setState,
       getCreatedAt,
       () => {},
+      () => {},
     );
 
     expect(viewModel).toBeUndefined();
@@ -64,7 +65,7 @@ describe("compileArticleDetailViewModel", () => {
   it("onFavoriteClick and onFollowClick act through essence, same as the feed's", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {});
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
     viewModel?.onFavoriteClick();
     viewModel?.onFollowClick();
 
@@ -91,6 +92,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
       () => {},
     );
 
@@ -119,6 +121,7 @@ describe("compileArticleDetailViewModel", () => {
       setState,
       getCreatedAt,
       () => {},
+      () => {},
     );
 
     expect(typeof viewModel?.commentProps[0].onDeleteClick).toBe("function");
@@ -143,6 +146,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
       () => {},
     );
 
@@ -169,6 +173,7 @@ describe("compileArticleDetailViewModel", () => {
       setState,
       getCreatedAt,
       () => {},
+      () => {},
     );
     viewModel?.commentProps[0].onDeleteClick?.();
 
@@ -184,6 +189,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
       () => {},
     );
     viewModel?.onCommentClick("Great post!");
@@ -209,6 +215,7 @@ describe("compileArticleDetailViewModel", () => {
       setState,
       getCreatedAt,
       () => {},
+      () => {},
     );
 
     expect(typeof viewModel?.onDeleteClick).toBe("function");
@@ -223,6 +230,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
       () => {},
     );
 
@@ -239,6 +247,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
       () => {},
     );
     viewModel?.onDeleteClick?.();
@@ -257,6 +266,7 @@ describe("compileArticleDetailViewModel", () => {
       setState,
       getCreatedAt,
       () => {},
+      () => {},
     );
 
     expect(typeof viewModel?.onEditClick).toBe("function");
@@ -271,6 +281,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
       () => {},
     );
 
@@ -291,9 +302,60 @@ describe("compileArticleDetailViewModel", () => {
       (title) => {
         editedTitle = title;
       },
+      () => {},
     );
     viewModel?.onEditClick?.();
 
     expect(editedTitle).toBe("Real World");
+  });
+
+  it("onAuthorClick calls the given onOpenProfile with the article's author name", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
+    let opened: string | undefined;
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      () => {},
+      (authorName) => {
+        opened = authorName;
+      },
+    );
+    viewModel?.onAuthorClick();
+
+    expect(opened).toBe("alice");
+  });
+
+  it("a comment's onAuthorClick calls the given onOpenProfile with the comment's author name", () => {
+    const comment: TComment = {
+      articleTitle: "Real World",
+      authorName: "bob",
+      body: "Nice!",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      comments: [comment],
+    });
+    let opened: string | undefined;
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      () => {},
+      (authorName) => {
+        opened = authorName;
+      },
+    );
+    viewModel?.commentProps[0].onAuthorClick();
+
+    expect(opened).toBe("bob");
   });
 });

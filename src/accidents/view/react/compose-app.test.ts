@@ -10,6 +10,7 @@ import {
   TEditorPageProps,
   THomePageProps,
   TLoginPageProps,
+  TProfilePageProps,
 } from "./pages";
 
 // The "bare bone view models" the user asked for: no React, no rendering
@@ -17,13 +18,19 @@ import {
 // integration test can assert on the fully-computed view-model tree
 // directly, the same way every other test in this repo asserts on a
 // compile*ViewModel's return value.
-type TAnyPageProps = TLoginPageProps | THomePageProps | TEditorPageProps | TArticlePageProps;
+type TAnyPageProps =
+  | TLoginPageProps
+  | THomePageProps
+  | TEditorPageProps
+  | TArticlePageProps
+  | TProfilePageProps;
 
 const identityView: TView<TAnyPageProps> = {
   LoginPage: (props) => props,
   HomePage: (props) => props,
   EditorPage: (props) => props,
   ArticlePage: (props) => props,
+  ProfilePage: (props) => props,
 };
 
 const article: TArticle = {
@@ -76,7 +83,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
 
@@ -90,7 +97,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
     result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
@@ -104,7 +111,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
     result.feedViewModel.articlePreviewProps[0].onFollowClick();
@@ -119,7 +126,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
     result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
@@ -140,6 +147,7 @@ describe("composeApp", () => {
         page: "article",
         openArticleTitle: "Real World",
         editingArticleTitle: null,
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TArticlePageProps;
@@ -159,6 +167,7 @@ describe("composeApp", () => {
         page: "article",
         openArticleTitle: "Real World",
         editingArticleTitle: null,
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TArticlePageProps;
@@ -172,7 +181,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "editor", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "editor", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as TEditorPageProps;
 
@@ -185,7 +194,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "editor", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "editor", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as TEditorPageProps;
     result.editorProps?.onClick({ title: "New Post", summary: "s", body: "b", tags: ["x"] });
@@ -207,6 +216,7 @@ describe("composeApp", () => {
         page: "editor",
         openArticleTitle: null,
         editingArticleTitle: "Real World",
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TEditorPageProps;
@@ -236,6 +246,7 @@ describe("composeApp", () => {
         page: "article",
         openArticleTitle: "Real World",
         editingArticleTitle: null,
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TArticlePageProps;
@@ -250,7 +261,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "login", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "login", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as TLoginPageProps;
 
@@ -264,7 +275,7 @@ describe("composeApp", () => {
 
     const result = composeApp(
       deps,
-      { state: deps.getState(), page: "article", openArticleTitle: null, editingArticleTitle: null },
+      { state: deps.getState(), page: "article", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as TArticlePageProps;
 
@@ -282,6 +293,7 @@ describe("composeApp", () => {
         page: "article",
         openArticleTitle: "Real World",
         editingArticleTitle: null,
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TArticlePageProps;
@@ -316,6 +328,7 @@ describe("composeApp", () => {
         page: "article",
         openArticleTitle: "Real World",
         editingArticleTitle: null,
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TArticlePageProps;
@@ -343,11 +356,88 @@ describe("composeApp", () => {
         page: "article",
         openArticleTitle: "Real World",
         editingArticleTitle: null,
+        profileAuthorName: null,
       },
       getCreatedAt,
     ) as TArticlePageProps;
     result.articleViewModel?.onDeleteClick?.();
 
     expect(deps.getRealState().articles).toHaveLength(1);
+  });
+
+  it("a guest can't view a profile -- sign-in message instead", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel).toBeUndefined();
+  });
+
+  it("signed in, viewing a profile shows that author's name and articles", () => {
+    const deps = makeDeps({
+      ...createInitialState(),
+      articles: [article, { ...article, title: "Other", authorName: "bob" }],
+    });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel?.authorName).toBe("alice");
+    expect(result.profileViewModel?.articlePreviewProps).toHaveLength(1);
+    expect(result.profileViewModel?.articlePreviewProps[0].title).toBe("Real World");
+  });
+
+  it("following an author from their own profile page works through essence", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+    result.profileViewModel?.onFollowClick();
+
+    expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
+  });
+
+  it("clicking an author's name on the feed opens their profile page", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onAuthorClick();
+
+    expect(deps.navigation.getPage()).toBe("profile");
+    expect(deps.navigation.getProfileAuthorName()).toBe("alice");
   });
 });

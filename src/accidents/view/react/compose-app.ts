@@ -29,11 +29,13 @@ import {
 import { compileArticleDetailViewModel } from "./article-view-model";
 import { compileHeaderViewModel } from "./header-view-model";
 import { compileSignInViewModel } from "./sign-in-view-model";
+import { compileProfileViewModel } from "./profile-view-model";
 import {
   TArticlePageProps,
   TEditorPageProps,
   THomePageProps,
   TLoginPageProps,
+  TProfilePageProps,
 } from "./pages";
 
 export type TView<R> = {
@@ -41,6 +43,7 @@ export type TView<R> = {
   HomePage: (props: THomePageProps) => R;
   EditorPage: (props: TEditorPageProps) => R;
   ArticlePage: (props: TArticlePageProps) => R;
+  ProfilePage: (props: TProfilePageProps) => R;
 };
 
 export type TComposeAppDependencies<R> = {
@@ -60,6 +63,8 @@ export type TAppSnapshot = {
   page: TPage;
   openArticleTitle: string | null;
   editingArticleTitle: string | null;
+  // Meaningful only when page === "profile".
+  profileAuthorName: string | null;
 };
 
 export function composeApp<R>(
@@ -68,7 +73,7 @@ export function composeApp<R>(
   getCreatedAt: () => string,
 ): R {
   const { navigation, signIn, confirm, getState, setState, view } = deps;
-  const { state, page, openArticleTitle, editingArticleTitle } = snapshot;
+  const { state, page, openArticleTitle, editingArticleTitle, profileAuthorName } = snapshot;
 
   const signInViewModel = compileSignInViewModel(signIn, getState, setState);
   const signedInName = signInViewModel.signedInName;
@@ -144,6 +149,7 @@ export function composeApp<R>(
             setState,
             getCreatedAt,
             navigation.openEditor,
+            navigation.openProfile,
           )
         : undefined;
 
@@ -181,8 +187,36 @@ export function composeApp<R>(
     });
   }
 
+  if (page === "profile") {
+    // Same rule as reading an article: viewing a profile requires a
+    // signed-in name (docs/realworld-essence-checklist.md, "What a guest
+    // can and can't do"). Unlike the article page, there's no second
+    // "doesn't exist" case to tell apart -- an author isn't an entity
+    // that can fail to exist the way an article can, so undefined here
+    // means exactly one thing.
+    const profileViewModel =
+      signedInName && profileAuthorName
+        ? compileProfileViewModel(
+            state,
+            profileAuthorName,
+            getState,
+            setState,
+            navigation.openArticle,
+            navigation.openProfile,
+          )
+        : undefined;
+
+    return view.ProfilePage({ headerViewModel, profileViewModel });
+  }
+
   // Home.
-  const feedViewModel = compileFeedViewModel(state, getState, setState, navigation.openArticle);
+  const feedViewModel = compileFeedViewModel(
+    state,
+    getState,
+    setState,
+    navigation.openArticle,
+    navigation.openProfile,
+  );
   const popularTagsViewModel = compilePopularTagsViewModel(state, getState, setState);
 
   // Favoriting/following require a signed-in name, same as writing and

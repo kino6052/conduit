@@ -21,7 +21,8 @@ import { THeaderProps } from "./header-view-model";
 import { TSignInViewModel } from "./sign-in-view-model";
 import { TEditorProps, TFeedViewModel, TTagProps } from "./view-model";
 import { TArticleDetailViewModel } from "./article-view-model";
-import { Header, SignIn, Editor, PopularTags, Feed, ArticleDetail } from "./components";
+import { TProfileViewModel } from "./profile-view-model";
+import { Header, SignIn, Editor, PopularTags, Feed, ArticleDetail, Profile } from "./components";
 
 export type TLoginPageProps = {
   headerViewModel: THeaderProps;
@@ -116,6 +117,34 @@ export function ArticlePage(props: TArticlePageProps) {
       props.articleViewModel
         ? React.createElement(ArticleDetail, props.articleViewModel)
         : React.createElement("p", null, emptyMessage),
+    ),
+  );
+}
+
+export type TProfilePageProps = {
+  headerViewModel: THeaderProps;
+  // Same rule as ArticlePageProps.articleViewModel: viewing a profile is
+  // a detail page, gated the same way Article is (a deliberate,
+  // stricter-than-RealWorld choice for this exercise -- see the
+  // checklist's "What a guest can and can't do"). Unlike Article, there's
+  // no second reason this can be undefined: an author isn't an entity
+  // that can fail to exist the way an article can (any name is a valid
+  // thing to view, even with zero articles) -- undefined here means
+  // exactly one thing, a guest.
+  profileViewModel: TProfileViewModel | undefined;
+};
+
+export function ProfilePage(props: TProfilePageProps) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Header, props.headerViewModel),
+    React.createElement(
+      "div",
+      { className: "page" },
+      props.profileViewModel
+        ? Profile(props.profileViewModel)
+        : React.createElement("p", null, "Sign in to view this profile."),
     ),
   );
 }

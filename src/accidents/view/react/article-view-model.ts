@@ -23,6 +23,7 @@ export type TCommentProps = {
   // onDeleteClick below -- the control's own presence is the only signal,
   // recomputed via isMine every time, not cached.
   onDeleteClick: (() => void) | undefined;
+  onAuthorClick: () => void;
 };
 
 export type TArticleDetailViewModel = TFavoriteFollowProps & {
@@ -35,6 +36,7 @@ export type TArticleDetailViewModel = TFavoriteFollowProps & {
   bodyHtml: string;
   tags: string[];
   authorName: string;
+  onAuthorClick: () => void;
   commentProps: TCommentProps[];
   onCommentClick: (body: string) => void;
   // No separate "isOwnArticle" flag -- there's nothing on screen that
@@ -57,6 +59,7 @@ export function compileArticleDetailViewModel(
   setState: TSetState,
   getCreatedAt: () => string,
   onEditArticle: (title: string) => void,
+  onOpenProfile: (authorName: string) => void,
 ): TArticleDetailViewModel | undefined {
   const article = selectArticle(state, articleTitle);
   if (!article) return undefined;
@@ -66,12 +69,14 @@ export function compileArticleDetailViewModel(
     bodyHtml: renderMarkdownToHtml(article.body),
     tags: article.tags,
     authorName: article.authorName,
+    onAuthorClick: () => onOpenProfile(article.authorName),
     commentProps: selectComments(state, article.title).map((comment) => ({
       body: comment.body,
       authorName: comment.authorName,
       onDeleteClick: isMine(comment, state)
         ? () => onDeleteComment(comment, getState, setState)
         : undefined,
+      onAuthorClick: () => onOpenProfile(comment.authorName),
     })),
     onCommentClick: (body: string) =>
       onWriteComment(article.title, body, getCreatedAt(), getState, setState),

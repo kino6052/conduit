@@ -23,7 +23,13 @@ import { createSignIn } from "./accidents/sign-in/sign-in";
 import { loadSeedArticles } from "./accidents/articles-io/articles-io";
 import { createRxState } from "./accidents/state-management/state-management";
 import { composeApp, TComposeAppDependencies } from "./accidents/view/react/compose-app";
-import { LoginPage, HomePage, EditorPage, ArticlePage } from "./accidents/view/react/pages";
+import {
+  LoginPage,
+  HomePage,
+  EditorPage,
+  ArticlePage,
+  ProfilePage,
+} from "./accidents/view/react/pages";
 
 export type TDependencies = TComposeAppDependencies<React.ReactElement> & {
   // Not part of composeApp's own dependencies (it only ever needs
@@ -45,7 +51,7 @@ export function createDefaultDependencies(): TDependencies {
     setState: stateManagement.setState,
     subscribe: stateManagement.subscribe,
     loadArticles: loadSeedArticles,
-    view: { LoginPage, HomePage, EditorPage, ArticlePage },
+    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage },
   };
 }
 
@@ -79,11 +85,19 @@ export function createCompositionRoot(deps: TDependencies = createDefaultDepende
       navigation.subscribe,
       navigation.getEditingArticleTitle,
     );
+    const profileAuthorName = useSyncExternalStore(
+      navigation.subscribe,
+      navigation.getProfileAuthorName,
+    );
     // Current time is IO -- it belongs at the composition root, not inside
     // composeApp or any presentational component.
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
-    return composeApp(deps, { state, page, openArticleTitle, editingArticleTitle }, getCreatedAt);
+    return composeApp(
+      deps,
+      { state, page, openArticleTitle, editingArticleTitle, profileAuthorName },
+      getCreatedAt,
+    );
   };
 }
 

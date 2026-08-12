@@ -221,13 +221,25 @@ h2 {
   font-size: 13px;
 }
 
-.meta .author {
+.author {
   color: var(--color-accent);
   font-weight: 600;
 }
 
 .meta .date {
   color: var(--color-border);
+}
+
+/* author names are buttons now (clickable through to a profile page),
+   but should still read as plain text, not a button -- reset everything
+   a <button> brings with it except the pointer cursor */
+.link-button {
+  background: none;
+  border: none;
+  padding: 0;
+  margin: 0;
+  font: inherit;
+  cursor: pointer;
 }
 
 .tag-list {

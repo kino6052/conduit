@@ -114,6 +114,7 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
   tags: string[];
   onOpenClick: () => void;
   onTagClick: (tag: string) => void;
+  onAuthorClick: () => void;
 };
 
 export type TFeedViewModel = {
@@ -122,12 +123,16 @@ export type TFeedViewModel = {
   onSetFilterClick: (filterName: TFilterName) => void;
 };
 
-function compileArticlePreviewProps(
+// Exported -- reused by profile-view-model.ts, whose own list of article
+// previews (one author's, not the feed's) is compiled exactly the same
+// way.
+export function compileArticlePreviewProps(
   article: TArticle,
   state: TState,
   getState: TGetState,
   setState: TSetState,
   onOpenArticle: (title: string) => void,
+  onOpenProfile: (authorName: string) => void,
 ): TArticlePreviewProps {
   return {
     title: article.title,
@@ -137,6 +142,7 @@ function compileArticlePreviewProps(
     tags: article.tags,
     onOpenClick: () => onOpenArticle(article.title),
     onTagClick: (tag: string) => onSetTag(tag, getState, setState),
+    onAuthorClick: () => onOpenProfile(article.authorName),
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }
@@ -159,10 +165,11 @@ export function compileFeedViewModel(
   getState: TGetState,
   setState: TSetState,
   onOpenArticle: (title: string) => void,
+  onOpenProfile: (authorName: string) => void,
 ): TFeedViewModel {
   return {
     articlePreviewProps: selectVisibleArticles(state).map((article) =>
-      compileArticlePreviewProps(article, state, getState, setState, onOpenArticle),
+      compileArticlePreviewProps(article, state, getState, setState, onOpenArticle, onOpenProfile),
     ),
     filterName: state.filterName,
     onSetFilterClick: (filterName: TFilterName) => onSetFilter(filterName, getState, setState),

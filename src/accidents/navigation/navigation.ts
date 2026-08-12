@@ -11,7 +11,7 @@
 // screens exist as distinct, reachable places (vs. everything on one
 // always-visible screen) doesn't change what the app *is*, only how it's
 // delivered.
-export type TPage = "home" | "login" | "article" | "editor";
+export type TPage = "home" | "login" | "article" | "editor" | "profile";
 
 export type TNavigation = {
   getPage: () => TPage;
@@ -23,9 +23,14 @@ export type TNavigation = {
   // pre-filled" shape as essence-view's editingArticleTitle
   // (src/index.essence.ts) and the Editor component itself.
   getEditingArticleTitle: () => string | null;
+  // Meaningful only when getPage() === "profile" -- whose profile,
+  // identified the same way everything else is, by the name itself, not
+  // a synthetic id.
+  getProfileAuthorName: () => string | null;
   openArticle: (title: string) => void;
   openLogin: () => void;
   openEditor: (title?: string) => void;
+  openProfile: (authorName: string) => void;
   goHome: () => void;
   subscribe: (listener: () => void) => () => void;
 };
@@ -38,38 +43,50 @@ export function createMemoryNavigation(): TNavigation {
   let page: TPage = "home";
   let openArticleTitle: string | null = null;
   let editingArticleTitle: string | null = null;
+  let profileAuthorName: string | null = null;
   const listeners = new Set<() => void>();
 
   const notify = (): void => {
     for (const listener of listeners) listener();
   };
 
+  const clearEverything = (): void => {
+    openArticleTitle = null;
+    editingArticleTitle = null;
+    profileAuthorName = null;
+  };
+
   return {
     getPage: () => page,
     getOpenArticleTitle: () => openArticleTitle,
     getEditingArticleTitle: () => editingArticleTitle,
+    getProfileAuthorName: () => profileAuthorName,
     openArticle: (title) => {
+      clearEverything();
       page = "article";
       openArticleTitle = title;
-      editingArticleTitle = null;
       notify();
     },
     openLogin: () => {
+      clearEverything();
       page = "login";
-      openArticleTitle = null;
-      editingArticleTitle = null;
       notify();
     },
     openEditor: (title) => {
+      clearEverything();
       page = "editor";
-      openArticleTitle = null;
       editingArticleTitle = title ?? null;
       notify();
     },
+    openProfile: (authorName) => {
+      clearEverything();
+      page = "profile";
+      profileAuthorName = authorName;
+      notify();
+    },
     goHome: () => {
+      clearEverything();
       page = "home";
-      openArticleTitle = null;
-      editingArticleTitle = null;
       notify();
     },
     subscribe: (listener) => {

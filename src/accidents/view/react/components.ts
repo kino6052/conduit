@@ -19,6 +19,7 @@ import {
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 import { THeaderProps } from "./header-view-model";
 import { TSignInViewModel } from "./sign-in-view-model";
+import { TProfileViewModel } from "./profile-view-model";
 
 // Layout matches legacy/details/view/components/Navbar + Tab: a
 // full-width bar (className "header") with an inner row capped at the
@@ -82,6 +83,17 @@ export function Header(props: THeaderProps) {
   );
 }
 
+// The author name shown next to an article/comment, clickable through to
+// that author's profile -- same button-styled-as-text approach as
+// card-title above (a real click target, not a decorative label).
+function AuthorLink(authorName: string, onClick: () => void) {
+  return React.createElement(
+    "button",
+    { className: "author link-button", onClick },
+    authorName,
+  );
+}
+
 function TagList(tags: string[], onTagClick?: (tag: string) => void) {
   return React.createElement(
     "ul",
@@ -117,7 +129,7 @@ export function ArticlePreview(props: TArticlePreviewProps) {
     React.createElement(
       "div",
       { className: "meta" },
-      React.createElement("span", { className: "author" }, props.authorName),
+      AuthorLink(props.authorName, props.onAuthorClick),
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
       React.createElement("span", { className: "date" }, props.createdAt),
     ),
@@ -139,7 +151,7 @@ function Comment(props: TCommentProps) {
     "li",
     { className: "comment" },
     React.createElement("p", null, props.body),
-    React.createElement("span", { className: "author" }, props.authorName),
+    AuthorLink(props.authorName, props.onAuthorClick),
     props.onDeleteClick
       ? React.createElement(
           "button",
@@ -174,7 +186,7 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
     React.createElement(
       "div",
       { className: "meta" },
-      React.createElement("span", { className: "author" }, props.authorName),
+      AuthorLink(props.authorName, props.onAuthorClick),
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
     ),
     // dangerouslySetInnerHTML is React's own name for "insert pre-rendered
@@ -343,6 +355,29 @@ export function Feed(props: TFeedViewModel) {
     React.Fragment,
     null,
     FeedLensToggle(props),
+    React.createElement(
+      "ul",
+      { className: "feed" },
+      ...props.articlePreviewProps.map((previewProps) =>
+        React.createElement(ArticlePreview, { key: previewProps.title, ...previewProps }),
+      ),
+    ),
+  );
+}
+
+// An author, and the articles they wrote -- reuses ArticlePreview for the
+// list, same component the feed uses, since an article preview looks and
+// behaves identically wherever it's shown.
+export function Profile(props: TProfileViewModel) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(
+      "div",
+      { className: "meta" },
+      React.createElement("span", { className: "author" }, props.authorName),
+      React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
+    ),
     React.createElement(
       "ul",
       { className: "feed" },

@@ -82,6 +82,34 @@ describe("createMemoryNavigation", () => {
     expect(navigation.getEditingArticleTitle()).toBeNull();
   });
 
+  it("openProfile opens that author's profile page", () => {
+    const navigation = createMemoryNavigation();
+
+    navigation.openProfile("alice");
+
+    expect(navigation.getPage()).toBe("profile");
+    expect(navigation.getProfileAuthorName()).toBe("alice");
+  });
+
+  it("goHome leaves the profile page", () => {
+    const navigation = createMemoryNavigation();
+    navigation.openProfile("alice");
+
+    navigation.goHome();
+
+    expect(navigation.getPage()).toBe("home");
+    expect(navigation.getProfileAuthorName()).toBeNull();
+  });
+
+  it("opening an article closes the profile page", () => {
+    const navigation = createMemoryNavigation();
+    navigation.openProfile("alice");
+
+    navigation.openArticle("Real World");
+
+    expect(navigation.getProfileAuthorName()).toBeNull();
+  });
+
   it("notifies subscribers when the page changes", () => {
     const navigation = createMemoryNavigation();
     let notifications = 0;
