@@ -11,6 +11,7 @@ import { TFilterName, TState } from "./essence/state";
 import { toggleFavorite } from "./essence/favorite";
 import { toggleFollow } from "./essence/follow";
 import { writeArticle } from "./essence/write";
+import { editArticle } from "./essence/edit";
 import { deleteArticle } from "./essence/delete";
 import { selectArticle } from "./essence/article";
 import { writeComment, selectComments, deleteComment } from "./essence/comment";
@@ -24,6 +25,9 @@ import { namedStates } from "./accidents/view/essence/states";
 let activeStateName = namedStates[0].name;
 let state: TState = namedStates[0].state;
 let activeArticleTitle: string | null = namedStates[0].openArticleTitle ?? null;
+// Which article the editor form is pre-filled with, if any -- title, not
+// an id, same identification rule as activeArticleTitle above.
+let editingArticleTitle: string | null = null;
 
 export function render(): void {
   const sidebar = document.getElementById("sidebar");
@@ -38,7 +42,11 @@ export function render(): void {
     );
   }
   if (app) app.innerHTML = renderFeed(state);
-  if (editor) editor.innerHTML = renderEditor();
+  const editingArticle = editingArticleTitle
+    ? selectArticle(state, editingArticleTitle)
+    : undefined;
+  if (!editingArticle) editingArticleTitle = null;
+  if (editor) editor.innerHTML = renderEditor(editingArticle);
 
   const openArticle = activeArticleTitle ? selectArticle(state, activeArticleTitle) : undefined;
   if (!openArticle) activeArticleTitle = null;
@@ -63,6 +71,24 @@ function publishFromForm(form: HTMLFormElement): void {
     tags,
     createdAt: new Date().toISOString().slice(0, 10),
   });
+}
+
+function saveEditsFromForm(form: HTMLFormElement): void {
+  const data = new FormData(form);
+  const originalTitle = String(data.get("originalTitle") ?? "");
+  if (!originalTitle) return;
+  const tags = String(data.get("tags") ?? "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
+  state = editArticle(state, originalTitle, {
+    title: String(data.get("title") ?? ""),
+    summary: String(data.get("summary") ?? ""),
+    body: String(data.get("body") ?? ""),
+    tags,
+  });
+  editingArticleTitle = null;
 }
 
 function postCommentFromForm(form: HTMLFormElement): void {
@@ -101,6 +127,11 @@ export function handleClick(event: Event): void {
   } else if (action === "publish-article" && actionEl instanceof HTMLFormElement) {
     event.preventDefault();
     publishFromForm(actionEl);
+  } else if (action === "edit-article" && title) {
+    editingArticleTitle = title;
+  } else if (action === "save-article" && actionEl instanceof HTMLFormElement) {
+    event.preventDefault();
+    saveEditsFromForm(actionEl);
   } else if (action === "open-article" && title) {
     activeArticleTitle = title;
   } else if (action === "delete-article" && title) {

@@ -137,7 +137,7 @@ elements doesn't count, same "derived composite" standard as
   - [x] Popular tags widget (→ `selectPopularTags`, `src/accidents/popular-tags/popular-tags.ts`)
   - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
   - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
-  - [ ] A control to switch feed lenses (global ↔ personal) — `filterName` exists on state but nothing on screen sets it yet, only fixtures do
+  - [x] A control to switch feed lenses (global ↔ personal) — essence-view only (→ `set-filter`, `renderFeed`, `src/accidents/view/essence/feed.ts`; handled in `src/index.essence.ts`). Correcting an earlier inaccuracy: this line previously said "nothing on screen sets it yet, only fixtures do" — that was true for the React app but not for essence-view, which already had this built; the claim wasn't re-checked against essence-view before being written. The React app's `Feed`/`view-model.ts` still don't have it.
   - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
 
 - [ ] **Sign in** (`/login`) / **Sign up** (`/register`) — establishing "who you are"
@@ -162,7 +162,7 @@ elements doesn't count, same "derived composite" standard as
   - [x] Favorite control (→ `compileFavoriteFollowProps`)
   - [x] Follow control (→ same)
   - [x] Delete control, owner-gated (→ `onDeleteClick`)
-  - [ ] Edit control — `editArticle` exists in essence, nothing on screen offers it yet (same gap as the Edit article page above)
+  - [x] Edit control, owner-gated (→ `editArticle`, `src/essence/edit.ts`; wired in `src/index.essence.ts`'s `edit-article`/`save-article` actions, pre-filled form via `renderEditor(article)`, `src/accidents/view/essence/editor.ts`) — essence-view only; the React app's `Editor`/`article-view-model.ts` don't have this yet, same one-side-first precedent as delete-comment below. Correcting an earlier inaccuracy here: this checklist previously said "nothing on screen offers it," but `renderArticleDetail` had already been rendering an Edit Article button that silently did nothing when clicked — a broken affordance, not a missing one; this cycle wired it rather than just noting the gap.
   - [x] Comment list, attributed (→ `selectComments`)
   - [x] Comment form (→ `onCommentClick`)
   - [ ] Delete-comment control, owner-gated — only in essence-view (`src/index.essence.ts`), not the React app yet
