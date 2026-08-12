@@ -76,7 +76,7 @@ export function createCompositionRoot() {
     // any pure view-model function or presentational component.
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
-    const headerViewModel = compileHeaderViewModel(openArticleTitle, navigation.closeArticle);
+    const headerViewModel = compileHeaderViewModel(openArticleTitle, navigation.goHome);
     const signInViewModel = compileSignInViewModel(signIn, getState, setState);
     const nameFormViewModel = compileNameFormViewModel(state, getState, setState);
     const feedViewModel = compileFeedViewModel(
@@ -122,7 +122,7 @@ export function createCompositionRoot() {
     const handleDelete = viewModelOnDeleteClick
       ? withConfirmation("Delete this article?", window.confirm.bind(window), () => {
           viewModelOnDeleteClick();
-          navigation.closeArticle();
+          navigation.goHome();
         })
       : undefined;
 
