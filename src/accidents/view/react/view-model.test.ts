@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TArticle, TState } from "../../../essence/state";
-import { compileFeedViewModel, onWriteArticle } from "./view-model";
+import { compileFeedViewModel, compilePopularTagsViewModel, onWriteArticle } from "./view-model";
 
 const article: TArticle = {
   title: "A",
@@ -131,5 +131,37 @@ describe("onWriteArticle", () => {
     expect(getState().articles).toHaveLength(1);
     expect(getState().articles[0].title).toBe("New Post");
     expect(getState().articles[0].authorName).toBe(getState().name);
+  });
+});
+
+describe("compilePopularTagsViewModel", () => {
+  it("gives each popular tag a label and a click handler", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
+
+    expect(tagProps).toEqual([{ label: "x", onClick: expect.any(Function) }]);
+  });
+
+  it("stays computed over every article, ignoring the current tag/lens filter", () => {
+    const other: TArticle = { ...article, title: "B", tags: ["y"], authorName: "bob" };
+    const { getState, setState } = makeStore({
+      ...createInitialState(),
+      articles: [article, other],
+      activeTag: "x",
+    });
+
+    const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
+
+    expect(tagProps.map((props) => props.label)).toEqual(["x", "y"]);
+  });
+
+  it("clicking a tag sets it as the active filter, through the same onSetTag as the feed", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
+    tagProps[0].onClick();
+
+    expect(getState().activeTag).toBe("x");
   });
 });

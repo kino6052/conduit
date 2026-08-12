@@ -10,6 +10,7 @@ import { isFollowing, toggleFollow } from "../../../essence/follow";
 import { writeArticle, TDraftArticle } from "../../../essence/write";
 import { writeComment } from "../../../essence/comment";
 import { deleteArticle } from "../../../essence/delete";
+import { selectPopularTags } from "../../popular-tags/popular-tags";
 
 export type TGetState = () => TState;
 export type TSetState = (next: TState) => void;
@@ -139,4 +140,23 @@ export function compileFeedViewModel(
       compileArticlePreviewProps(article, state, getState, setState, onOpenArticle),
     ),
   };
+}
+
+export type TTagProps = {
+  label: string;
+  onClick: () => void;
+};
+
+// A discovery shortcut, not the filter itself -- deliberately computed
+// over every article (state.articles), not just the currently visible
+// ones, so it stays useful for finding your way *out* of a filter too.
+export function compilePopularTagsViewModel(
+  state: TState,
+  getState: TGetState,
+  setState: TSetState,
+): TTagProps[] {
+  return selectPopularTags(state.articles).map((tag) => ({
+    label: tag,
+    onClick: () => onSetTag(tag, getState, setState),
+  }));
 }

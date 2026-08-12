@@ -10,7 +10,7 @@
 // the onClick/onSubmit split (README, "The essential contract").
 
 import React from "react";
-import { TArticlePreviewProps, TFeedViewModel, TEditorProps } from "./view-model";
+import { TArticlePreviewProps, TFeedViewModel, TEditorProps, TTagProps } from "./view-model";
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 
 function TagList(tags: string[], onTagClick?: (tag: string) => void) {
@@ -165,6 +165,20 @@ export function Editor(props: TEditorProps) {
     }),
     React.createElement("input", { name: "tags", placeholder: "Enter tags" }),
     React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Publish Article"),
+  );
+}
+
+export function PopularTags(tagProps: TTagProps[]) {
+  return React.createElement(
+    "ul",
+    { className: "tag-list" },
+    ...tagProps.map((props) =>
+      React.createElement(
+        "li",
+        { key: props.label },
+        React.createElement("button", { className: "tag", onClick: props.onClick }, props.label),
+      ),
+    ),
   );
 }
 

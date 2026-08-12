@@ -14,10 +14,16 @@ import { createHashNavigation } from "./accidents/navigation/navigation-hash";
 import { withConfirmation } from "./accidents/confirmation/confirmation";
 import {
   compileFeedViewModel,
+  compilePopularTagsViewModel,
   onWriteArticle,
 } from "./accidents/view/react/view-model";
 import { compileArticleDetailViewModel } from "./accidents/view/react/article-view-model";
-import { Feed, ArticleDetail, Editor } from "./accidents/view/react/components";
+import {
+  Feed,
+  ArticleDetail,
+  Editor,
+  PopularTags,
+} from "./accidents/view/react/components";
 
 export function createCompositionRoot() {
   const store = new BehaviorSubject<TState>(createInitialState());
@@ -59,6 +65,7 @@ export function createCompositionRoot() {
       setState,
       navigation.openArticle,
     );
+    const popularTagsViewModel = compilePopularTagsViewModel(state, getState, setState);
     const articleViewModel = openArticleTitle
       ? compileArticleDetailViewModel(
           state,
@@ -99,6 +106,7 @@ export function createCompositionRoot() {
       React.Fragment,
       null,
       React.createElement(Editor, { onClick: onPublishArticleButtonClick }),
+      PopularTags(popularTagsViewModel),
       React.createElement(Feed, feedViewModel),
       articleViewModel
         ? React.createElement(ArticleDetail, {
