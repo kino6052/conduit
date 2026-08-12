@@ -137,7 +137,7 @@ elements doesn't count, same "derived composite" standard as
   - [x] Popular tags widget (→ `selectPopularTags`, `src/accidents/popular-tags/popular-tags.ts`)
   - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
   - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
-  - [x] A control to switch feed lenses (global ↔ personal) — essence-view only (→ `set-filter`, `renderFeed`, `src/accidents/view/essence/feed.ts`; handled in `src/index.essence.ts`). Correcting an earlier inaccuracy: this line previously said "nothing on screen sets it yet, only fixtures do" — that was true for the React app but not for essence-view, which already had this built; the claim wasn't re-checked against essence-view before being written. The React app's `Feed`/`view-model.ts` still don't have it.
+  - [x] A control to switch feed lenses (global ↔ personal) — both sides now (essence-view: `set-filter`, `renderFeed`, `src/accidents/view/essence/feed.ts`, handled in `src/index.essence.ts`; React: `onSetFilterClick`, `compileFeedViewModel`, `src/accidents/view/react/view-model.ts`, rendered by `FeedLensToggle`, `src/accidents/view/react/components.ts`, styled with the header's own `.nav-tab` classes)
   - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
 
 - [ ] **Sign in** (`/login`) / **Sign up** (`/register`) — establishing "who you are"

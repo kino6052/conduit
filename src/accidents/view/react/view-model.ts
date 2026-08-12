@@ -3,7 +3,7 @@
 // itself already lives in src/essence -- this file adds nothing to it,
 // only wires it to closures a React component can call.
 
-import { TArticle, TComment, TState } from "../../../essence/state";
+import { TArticle, TComment, TFilterName, TState } from "../../../essence/state";
 import { selectVisibleArticles } from "../../../essence/feed";
 import { toggleFavorite } from "../../../essence/favorite";
 import { isFollowing, toggleFollow } from "../../../essence/follow";
@@ -75,6 +75,14 @@ export const onSetTag = (tag: string, getState: TGetState, setState: TSetState):
   setState({ ...state, activeTag: state.activeTag === tag ? null : tag });
 };
 
+export const onSetFilter = (
+  filterName: TFilterName,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState({ ...getState(), filterName });
+};
+
 export const onChangeName = (
   name: string,
   getState: TGetState,
@@ -119,6 +127,8 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
 
 export type TFeedViewModel = {
   articlePreviewProps: TArticlePreviewProps[];
+  filterName: TFilterName;
+  onSetFilterClick: (filterName: TFilterName) => void;
 };
 
 function compileArticlePreviewProps(
@@ -158,6 +168,8 @@ export function compileFeedViewModel(
     articlePreviewProps: selectVisibleArticles(state).map((article) =>
       compileArticlePreviewProps(article, state, getState, setState, onOpenArticle),
     ),
+    filterName: state.filterName,
+    onSetFilterClick: (filterName: TFilterName) => onSetFilter(filterName, getState, setState),
   };
 }
 

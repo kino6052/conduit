@@ -286,12 +286,36 @@ export function PopularTags(tagProps: TTagProps[]) {
   );
 }
 
+function FeedLensToggle(props: TFeedViewModel) {
+  const lens = (filterName: TFeedViewModel["filterName"], label: string) =>
+    React.createElement(
+      "button",
+      {
+        className: props.filterName === filterName ? "nav-tab active" : "nav-tab",
+        onClick: () => props.onSetFilterClick(filterName),
+      },
+      label,
+    );
+
+  return React.createElement(
+    "nav",
+    { className: "nav" },
+    lens("global", "Global Feed"),
+    lens("personal", "Your Feed"),
+  );
+}
+
 export function Feed(props: TFeedViewModel) {
   return React.createElement(
-    "ul",
-    { className: "feed" },
-    ...props.articlePreviewProps.map((previewProps) =>
-      React.createElement(ArticlePreview, { key: previewProps.title, ...previewProps }),
+    React.Fragment,
+    null,
+    FeedLensToggle(props),
+    React.createElement(
+      "ul",
+      { className: "feed" },
+      ...props.articlePreviewProps.map((previewProps) =>
+        React.createElement(ArticlePreview, { key: previewProps.title, ...previewProps }),
+      ),
     ),
   );
 }

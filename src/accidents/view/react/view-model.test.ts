@@ -122,6 +122,23 @@ describe("compileFeedViewModel", () => {
 
     expect(opened).toBe("A");
   });
+
+  it("shows the current feed lens", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
+
+    expect(viewModel.filterName).toBe("global");
+  });
+
+  it("onSetFilterClick switches the feed lens through essence", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
+    viewModel.onSetFilterClick("personal");
+
+    expect(getState().filterName).toBe("personal");
+  });
 });
 
 describe("onWriteArticle", () => {
