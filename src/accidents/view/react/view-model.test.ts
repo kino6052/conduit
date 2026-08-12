@@ -1,6 +1,11 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TArticle, TState } from "../../../essence/state";
-import { compileFeedViewModel, compilePopularTagsViewModel, onWriteArticle } from "./view-model";
+import {
+  compileFeedViewModel,
+  compileNameFormViewModel,
+  compilePopularTagsViewModel,
+  onWriteArticle,
+} from "./view-model";
 
 const article: TArticle = {
   title: "A",
@@ -131,6 +136,25 @@ describe("onWriteArticle", () => {
     expect(getState().articles).toHaveLength(1);
     expect(getState().articles[0].title).toBe("New Post");
     expect(getState().articles[0].authorName).toBe(getState().name);
+  });
+});
+
+describe("compileNameFormViewModel", () => {
+  it("shows the acting identity's current name", () => {
+    const { getState, setState } = makeStore(createInitialState());
+
+    const nameFormViewModel = compileNameFormViewModel(getState(), getState, setState);
+
+    expect(nameFormViewModel.name).toBe("you");
+  });
+
+  it("onClick changes the acting identity's name through essence", () => {
+    const { getState, setState } = makeStore(createInitialState());
+
+    const nameFormViewModel = compileNameFormViewModel(getState(), getState, setState);
+    nameFormViewModel.onClick("alice");
+
+    expect(getState().name).toBe("alice");
   });
 });
 

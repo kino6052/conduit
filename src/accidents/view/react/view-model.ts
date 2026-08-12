@@ -10,6 +10,7 @@ import { isFollowing, toggleFollow } from "../../../essence/follow";
 import { writeArticle, TDraftArticle } from "../../../essence/write";
 import { writeComment } from "../../../essence/comment";
 import { deleteArticle } from "../../../essence/delete";
+import { changeName } from "../../../essence/name";
 import { selectPopularTags } from "../../popular-tags/popular-tags";
 
 export type TGetState = () => TState;
@@ -62,6 +63,14 @@ export const onDeleteArticle = (
 export const onSetTag = (tag: string, getState: TGetState, setState: TSetState): void => {
   const state = getState();
   setState({ ...state, activeTag: state.activeTag === tag ? null : tag });
+};
+
+export const onChangeName = (
+  name: string,
+  getState: TGetState,
+  setState: TSetState,
+): void => {
+  setState(changeName(getState(), name));
 };
 
 export type TFavoriteFollowProps = {
@@ -139,6 +148,28 @@ export function compileFeedViewModel(
     articlePreviewProps: selectVisibleArticles(state).map((article) =>
       compileArticlePreviewProps(article, state, getState, setState, onOpenArticle),
     ),
+  };
+}
+
+export type TNameFormProps = {
+  name: string;
+  onClick: (name: string) => void;
+};
+
+// The acting identity's name, and a way to change it -- not "sign in,"
+// there's no credential to check (docs/realworld-essence-checklist.md
+// still lists the credential scheme as undecided; this doesn't decide it,
+// it just gives the one field that's already essence -- TState.name -- a
+// control). No separate "sign up" either: with no verification, setting
+// a new name and setting an existing one are the same action.
+export function compileNameFormViewModel(
+  state: TState,
+  getState: TGetState,
+  setState: TSetState,
+): TNameFormProps {
+  return {
+    name: state.name,
+    onClick: (name: string) => onChangeName(name, getState, setState),
   };
 }
 

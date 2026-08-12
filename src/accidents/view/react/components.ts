@@ -10,7 +10,13 @@
 // the onClick/onSubmit split (README, "The essential contract").
 
 import React from "react";
-import { TArticlePreviewProps, TFeedViewModel, TEditorProps, TTagProps } from "./view-model";
+import {
+  TArticlePreviewProps,
+  TFeedViewModel,
+  TEditorProps,
+  TNameFormProps,
+  TTagProps,
+} from "./view-model";
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 
 function TagList(tags: string[], onTagClick?: (tag: string) => void) {
@@ -170,6 +176,26 @@ export function Editor(props: TEditorProps) {
     }),
     React.createElement("input", { name: "tags", placeholder: "Enter tags" }),
     React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Publish Article"),
+  );
+}
+
+export function NameForm(props: TNameFormProps) {
+  // Same "guard the boundary" split as Editor/CommentForm above: React's
+  // onSubmit/handleSubmit and HTML's type="submit" stay internal, the
+  // exposed contract (TNameFormProps.onClick) never mentions them.
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    props.onClick(String(data.get("name") ?? ""));
+    event.currentTarget.reset();
+  };
+
+  return React.createElement(
+    "form",
+    { className: "form", onSubmit: handleSubmit },
+    React.createElement("span", { className: "author" }, props.name),
+    React.createElement("input", { name: "name", placeholder: "Change your name" }),
+    React.createElement("button", { className: "btn", type: "submit" }, "Change Name"),
   );
 }
 

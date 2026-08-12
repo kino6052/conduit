@@ -14,6 +14,7 @@ import { createHashNavigation } from "./accidents/navigation/navigation-hash";
 import { withConfirmation } from "./accidents/confirmation/confirmation";
 import {
   compileFeedViewModel,
+  compileNameFormViewModel,
   compilePopularTagsViewModel,
   onWriteArticle,
 } from "./accidents/view/react/view-model";
@@ -22,6 +23,7 @@ import {
   Feed,
   ArticleDetail,
   Editor,
+  NameForm,
   PopularTags,
 } from "./accidents/view/react/components";
 
@@ -59,6 +61,7 @@ export function createCompositionRoot() {
     // any pure view-model function or presentational component.
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
+    const nameFormViewModel = compileNameFormViewModel(state, getState, setState);
     const feedViewModel = compileFeedViewModel(
       state,
       getState,
@@ -105,6 +108,7 @@ export function createCompositionRoot() {
     return React.createElement(
       React.Fragment,
       null,
+      React.createElement(NameForm, nameFormViewModel),
       React.createElement(Editor, { onClick: onPublishArticleButtonClick }),
       PopularTags(popularTagsViewModel),
       React.createElement(Feed, feedViewModel),

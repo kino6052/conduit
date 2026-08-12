@@ -70,11 +70,11 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 
 ### Establishing "who you are"
 
-- [ ] Sign-up / registration form and flow
-- [ ] Sign-in / login form and flow
-- [ ] The specific credential scheme (email+password, magic link, OAuth/SSO, a single hard-coded demo identity, etc.)
+- [x] The specific credential scheme (email+password, magic link, OAuth/SSO, a single hard-coded demo identity, etc.) — chose a self-declared, unverified name: no password, no account record (→ `changeName`, `src/essence/name.ts`, a form wired into `src/index.ts`'s `NameForm`)
+- [ ] Sign-up / registration form and flow — ⚠️ with no verification, there's nothing to distinguish "register" from "sign in": setting a name that already exists and setting a brand-new one are the same action, so this collapses into the item below rather than needing its own form
+- [ ] Sign-in / login form and flow — the *changing* of the acting identity's name is built (see credential-scheme item above); what's still missing is any concept of returning to a name you'd already used, since nothing is remembered between changes
 - [ ] How identity persists between visits (token, cookie, server session, local storage, …)
-- [ ] Signing out
+- [ ] Signing out — with no session to end, this is only meaningful once the above is decided
 
 ### Presenting & editing your identity
 
@@ -134,18 +134,13 @@ elements doesn't count, same "derived composite" standard as
   - [ ] A control to switch feed lenses (global ↔ personal) — `filterName` exists on state but nothing on screen sets it yet, only fixtures do
   - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
 
-- [ ] **Sign in** (`/login`) — establishing "who you are," existing identity
-  - [ ] Sign-in form
-  - [ ] Link to sign-up
-  - (blocked on "Establishing 'who you are'" above — none of that is built yet)
-
-- [ ] **Sign up** (`/register`) — establishing "who you are," new identity
-  - [ ] Sign-up form
-  - [ ] Link to sign-in
+- [ ] **Sign in** (`/login`) / **Sign up** (`/register`) — establishing "who you are"
+  - [x] A control to change the acting identity's name (→ `changeName`, `src/essence/name.ts`; `NameForm`, `src/accidents/view/react/components.ts`) — RealWorld splits this into two pages because its credential scheme has accounts to distinguish; ours doesn't (see "Establishing 'who you are'" above), so one control covers both, and it isn't a dedicated page either, same inline-on-Home choice as New article below
+  - [ ] Anything to persist the name across visits, or return to a previously-used one — still nothing remembered between changes
 
 - [ ] **Settings** (`/settings`) — presenting & editing your identity
-  - [ ] Settings form (display name, bio, avatar image, email, password)
-  - [ ] Sign-out control
+  - [ ] Settings form (display name, bio, avatar image, email, password) — name-changing exists (above) but not as a dedicated settings screen, and bio/avatar/email/password remain undecided
+  - [ ] Sign-out control — nothing to sign out of yet
 
 - [ ] **New article** (`/editor`) — writing
   - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`)
