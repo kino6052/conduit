@@ -16,6 +16,7 @@ import { selectArticle } from "./essence/article";
 import { createHashNavigation } from "./accidents/navigation/navigation-hash";
 import { withConfirmation } from "./accidents/confirmation/confirmation";
 import { createSignIn } from "./accidents/sign-in/sign-in";
+import { loadSeedArticles } from "./accidents/articles-io/articles-io";
 import {
   compileFeedViewModel,
   compilePopularTagsViewModel,
@@ -39,6 +40,16 @@ export function createCompositionRoot() {
 
   const getState = (): TState => state$.getValue();
   const setState = (next: TState): void => state$.next(next);
+
+  // Prepopulated articles, from IO -- not baked into createInitialState
+  // (essence stays IO-free), fetched once here, the same "connect to IO
+  // at the composition root" shape as everything else in this file.
+  // Merged in, not replacing whatever's already there, in case a real
+  // backend someday makes this genuinely asynchronous and something else
+  // happens first.
+  loadSeedArticles().then((articles) => {
+    setState({ ...getState(), articles: [...articles, ...getState().articles] });
+  });
 
   function useSharedState(): TState {
     const [value, setReactState] = useState(state$.getValue());
