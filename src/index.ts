@@ -127,6 +127,7 @@ export function createCompositionRoot() {
 
       return ArticlePage({
         headerViewModel,
+        signedInName,
         articleViewModel: articleViewModel && {
           ...articleViewModel,
           onDeleteClick: handleDelete,

@@ -69,11 +69,17 @@ export function HomePage(props: {
 export function ArticlePage(props: {
   headerViewModel: THeaderProps;
   // Same rule as editorProps above: reading an article's full detail also
-  // requires a signed-in name. undefined covers both "you're a guest" and
-  // "no such article" -- the page doesn't need to tell those apart, it
-  // shows the same thing either way: nothing to read here.
+  // requires a signed-in name. Needed here (unlike editorProps, where
+  // absence alone was enough) because there are two different reasons
+  // articleViewModel can be missing -- a guest, or simply no article by
+  // that title -- and they read as different messages on screen.
+  signedInName: string | undefined;
   articleViewModel: TArticleDetailViewModel | undefined;
 }) {
+  const emptyMessage = props.signedInName
+    ? "No such article."
+    : "Sign in to read this article.";
+
   return React.createElement(
     React.Fragment,
     null,
@@ -83,7 +89,7 @@ export function ArticlePage(props: {
       { className: "page" },
       props.articleViewModel
         ? React.createElement(ArticleDetail, props.articleViewModel)
-        : React.createElement("p", null, "Sign in to read this article."),
+        : React.createElement("p", null, emptyMessage),
     ),
   );
 }
