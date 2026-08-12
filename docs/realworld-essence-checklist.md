@@ -114,6 +114,65 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 - [ ] Error-message wording, placement, and validation mechanics
 - [ ] Branding, footer text, attribution, favicon, typography
 
+### Pages (how the accidents above get grouped into screens)
+
+A "page" is itself accident, not essence — the RealWorld spec's own
+concept of dividing the app into separate routed screens is one
+possible delivery shape, not the only one (a single always-visible
+screen, like this repo's current React app, communicates the same
+essence). Each entry below is a composite of items already listed
+above; it's checked off only once that composition exists as its own
+distinct, reachable screen — an unwired collection of the right
+elements doesn't count, same "derived composite" standard as
+`docs/solid-in-this-repo.md`'s SRP section.
+
+- [ ] **Home** (`/`) — the article feed and how to narrow it down
+  - [x] Feed, two lenses (global/personal) (→ `selectVisibleArticles`, `src/essence/feed.ts`)
+  - [x] Tag filter (→ `onTagClick`, `src/accidents/view/react/view-model.ts`)
+  - [x] Popular tags widget (→ `selectPopularTags`, `src/accidents/popular-tags/popular-tags.ts`)
+  - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
+  - [ ] A control to switch feed lenses (global ↔ personal) — `filterName` exists on state but nothing on screen sets it yet, only fixtures do
+  - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
+
+- [ ] **Sign in** (`/login`) — establishing "who you are," existing identity
+  - [ ] Sign-in form
+  - [ ] Link to sign-up
+  - (blocked on "Establishing 'who you are'" above — none of that is built yet)
+
+- [ ] **Sign up** (`/register`) — establishing "who you are," new identity
+  - [ ] Sign-up form
+  - [ ] Link to sign-in
+
+- [ ] **Settings** (`/settings`) — presenting & editing your identity
+  - [ ] Settings form (display name, bio, avatar image, email, password)
+  - [ ] Sign-out control
+
+- [ ] **New article** (`/editor`) — writing
+  - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`)
+  - [ ] As its own dedicated page — currently renders inline on the same screen as the feed, not behind its own navigation
+
+- [ ] **Edit article** (`/editor/:article`) — writing, an existing article
+  - [ ] Same form, pre-filled with the article's current values — `editArticle` exists in essence (`src/essence/edit.ts`) but has no view wiring: no edit control anywhere, no pre-filled form
+
+- [ ] **Article** (`/article/:title`) — reading, interacting, one article
+  - [x] Full body, rendered as markdown (→ `compileArticleDetailViewModel`, `bodyHtml`)
+  - [x] Author attribution, tags (→ same)
+  - [x] Favorite control (→ `compileFavoriteFollowProps`)
+  - [x] Follow control (→ same)
+  - [x] Delete control, owner-gated (→ `onDeleteClick`)
+  - [ ] Edit control — `editArticle` exists in essence, nothing on screen offers it yet (same gap as the Edit article page above)
+  - [x] Comment list, attributed (→ `selectComments`)
+  - [x] Comment form (→ `onCommentClick`)
+  - [ ] Delete-comment control, owner-gated — only in essence-view (`src/index.essence.ts`), not the React app yet
+  - [x] Reachable at its own URL (→ `createHashNavigation`, `#/article/<title>`)
+
+- [ ] **Profile** (`/profile/:authorName`) — an author, their articles
+  - [ ] Author bio/avatar display — not yet decided as essence-grounded (see "presenting identity" above)
+  - [ ] Follow control on the profile itself — `toggleFollow` exists in essence, not wired to a profile page
+  - [ ] Their authored articles
+  - [ ] Their favorited articles
+  - [ ] Reachable at its own URL
+
 ---
 
 ## Open questions / unilateral calls (⚠️ items above)
@@ -123,5 +182,6 @@ These were classified using the manifesto's test without a direct answer from yo
 1. **Tags as a filter** — treated as essence (an on-screen way articles are discovered), separate from the "popular tags" widget (accident, a shortcut to that filter).
 2. **Article "summary/short description" vs. full body** — treated as essence (it's what lets someone decide whether to open an article from the list); could be argued as accident if you consider a title alone sufficient.
 3. **Markdown rendering** — treated the formatting *technology* as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
+4. **Whether "Home" is its own distinct page** — this repo's current app puts the editor, feed, and popular tags on one always-visible screen rather than routing "Home" separately from "New article"; treated that as a valid accident choice (RealWorld's own page split is one delivery shape, not the only one), so the Pages section above doesn't assume separate routing is required, only that the *elements* exist somewhere reachable.
 
 Already settled by you: **follow/personal feed → essence**, **comments → essence**, **dedicated profile page → accident**, **pagination → accident entirely** (not even the underlying concept of "there's more, and a way to get to it" is essence — the feed showing whatever it shows is sufficient; reaching the rest is purely a delivery-mechanism concern, see Part 2).
