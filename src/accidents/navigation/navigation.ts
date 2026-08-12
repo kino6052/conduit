@@ -11,15 +11,21 @@
 // screens exist as distinct, reachable places (vs. everything on one
 // always-visible screen) doesn't change what the app *is*, only how it's
 // delivered.
-export type TPage = "home" | "login" | "article";
+export type TPage = "home" | "login" | "article" | "editor";
 
 export type TNavigation = {
   getPage: () => TPage;
-  // Meaningful only when getPage() === "article" -- null otherwise, same
-  // as before.
+  // Meaningful only when getPage() === "article" -- null otherwise.
   getOpenArticleTitle: () => string | null;
+  // Meaningful only when getPage() === "editor" -- null means a blank
+  // form (writing a new article), a title means pre-filled (editing that
+  // one). Same "one form, two actions, told apart by what's already
+  // pre-filled" shape as essence-view's editingArticleTitle
+  // (src/index.essence.ts) and the Editor component itself.
+  getEditingArticleTitle: () => string | null;
   openArticle: (title: string) => void;
   openLogin: () => void;
+  openEditor: (title?: string) => void;
   goHome: () => void;
   subscribe: (listener: () => void) => () => void;
 };
@@ -31,6 +37,7 @@ export type TNavigation = {
 export function createMemoryNavigation(): TNavigation {
   let page: TPage = "home";
   let openArticleTitle: string | null = null;
+  let editingArticleTitle: string | null = null;
   const listeners = new Set<() => void>();
 
   const notify = (): void => {
@@ -40,19 +47,29 @@ export function createMemoryNavigation(): TNavigation {
   return {
     getPage: () => page,
     getOpenArticleTitle: () => openArticleTitle,
+    getEditingArticleTitle: () => editingArticleTitle,
     openArticle: (title) => {
       page = "article";
       openArticleTitle = title;
+      editingArticleTitle = null;
       notify();
     },
     openLogin: () => {
       page = "login";
       openArticleTitle = null;
+      editingArticleTitle = null;
+      notify();
+    },
+    openEditor: (title) => {
+      page = "editor";
+      openArticleTitle = null;
+      editingArticleTitle = title ?? null;
       notify();
     },
     goHome: () => {
       page = "home";
       openArticleTitle = null;
+      editingArticleTitle = null;
       notify();
     },
     subscribe: (listener) => {

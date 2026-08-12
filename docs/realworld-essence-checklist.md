@@ -117,8 +117,8 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 ### Site-wide navigation
 
 - [x] A persistent header showing the app's name and a way back to the feed (→ `compileHeaderViewModel`, `src/accidents/view/react/header-view-model.ts`; `Header`, `src/accidents/view/react/components.ts` — styled after `legacy/details/view/components/Navbar` and `Tab`: full-width bar, content capped at the page's own width, green underline on the active tab)
-- [x] Home and Login tabs, gated by whether anyone's signed in — a guest sees Login, a signed-in name sees "Sign Out (name)" instead, same gating shape as `legacy/details/services/SimpleNavigationService.getNavigationTabs`
-- [ ] Tabs/links to the other pages (New article, Settings, Profile) — those still render inline or don't exist as pages yet (see Pages below), so linking to them from the header would be links to nothing
+- [x] Home and Login tabs, gated by whether anyone's signed in — a guest sees Login, a signed-in name sees New Article and "Sign Out (name)" instead, same gating shape as `legacy/details/services/SimpleNavigationService.getNavigationTabs`
+- [ ] Tabs/links to Settings and Profile — those don't exist as pages yet (see Pages below), so linking to them from the header would be links to nothing
 
 ### Pages (how the accidents above get grouped into screens)
 
@@ -163,7 +163,7 @@ count, same "derived composite" standard as above.
   - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
   - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
   - [x] A control to switch feed lenses (global ↔ personal) — both sides (essence-view: `set-filter`, `renderFeed`; React: `onSetFilterClick`, `FeedLensToggle`)
-  - [x] The write form (Editor), but only when signed in — a guest gets no Editor at all on Home, not a disabled one (→ `editorProps: signedInName ? {...} : undefined`, `src/index.ts`)
+  - [x] No longer includes the write form — Editor moved to its own page (see New article below); Home now only shows what everyone (guest or signed in) can see: the feed and how to narrow it down
 
 - [x] **Login** (`/login`) — establishing "who you are" (→ `LoginPage`, `src/accidents/view/react/pages.ts`, reachable via the header's Login tab and `#/login`)
   - [x] A name+password form (→ `SignIn`, `src/accidents/view/react/components.ts`; `TSignIn`, `src/accidents/sign-in/sign-in.ts`) — RealWorld splits this into Login and Register because its credential scheme has accounts to distinguish; ours doesn't, so one form covers both
@@ -174,13 +174,11 @@ count, same "derived composite" standard as above.
   - [ ] Settings form (display name, bio, avatar image, email, password) — not built; changing your name now only happens by signing in as someone else
   - [x] Sign-out control (→ the header's Sign Out tab, `src/accidents/view/react/components.ts`)
 
-- [ ] **New article** (`/editor`) — writing
-  - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`), gated on being signed in (see Home above)
-  - [ ] As its own dedicated page — currently renders inline on Home, not behind its own navigation
-
-- [ ] **Edit article** (`/editor/:article`) — writing, an existing article
-  - [x] Same form, pre-filled with the article's current values (→ `editArticle`, `src/essence/edit.ts`; essence-view: `renderEditor(article)`; React: `TEditorProps.title/summary/body/tags`, `onEditClick`, `onEditorSubmit`) — both sides, no cancel-without-saving control on either
-  - [ ] As its own dedicated page — same inline-on-Home choice as New article above
+- [x] **New article** / **Edit article** (`/editor`, `/editor/:article`) — writing (→ `EditorPage`, `src/accidents/view/react/pages.ts`, reachable via the header's New Article tab, once signed in, and `#/editor`/`#/editor/<title>`)
+  - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`), gated on being signed in — a guest sees "Sign in to write an article." instead, same message-swap shape as the Article page
+  - [x] Same form, pre-filled with the article's current values when editing (→ `editArticle`, `src/essence/edit.ts`; `TNavigation.openEditor(title?)`/`getEditingArticleTitle()`, now URL-backed (`src/accidents/navigation/navigation.ts`) instead of plain component state — refresh and back/forward work on this page too now) — both React and essence-view, no cancel-without-saving control on either
+  - [x] RealWorld splits New article and Edit article into two routes; one page covers both here, told apart by whether it's pre-filled — same "one form, two actions" shape already used for essence-view's publish-article/save-article and for Sign in/Sign up collapsing into one form
+  - [x] After publishing, returns to Home; after saving edits, returns to the article's own page (using its current title, in case the title itself was just changed) — a small but real UX difference from before, when saving an edit left you back on Home
 
 - [x] **Article** (`/article/:title`) — reading, interacting, one article (→ `ArticlePage`, `src/accidents/view/react/pages.ts`)
   - [x] Full body, rendered as markdown (→ `compileArticleDetailViewModel`, `bodyHtml`)

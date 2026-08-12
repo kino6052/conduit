@@ -49,6 +49,20 @@ export function Header(props: THeaderProps) {
           },
           "Home",
         ),
+        // New Article is only offered once signed in -- writing requires
+        // a name, same rule as HomePage's own Editor gating
+        // (src/accidents/view/react/pages.ts) and legacy's
+        // SimpleNavigationService (New article only shows up logged in).
+        props.signedInName
+          ? React.createElement(
+              "button",
+              {
+                className: props.isEditor ? "nav-tab active" : "nav-tab",
+                onClick: props.onNewArticleClick,
+              },
+              "New Article",
+            )
+          : null,
         props.signedInName
           ? React.createElement(
               "button",

@@ -17,6 +17,8 @@ export type THeaderProps = {
   // presence-not-flag rule as sign-in-view-model.ts's own signedInName.
   signedInName: string | undefined;
   onSignOutClick: () => void;
+  isEditor: boolean;
+  onNewArticleClick: () => void;
 };
 
 export function compileHeaderViewModel(
@@ -25,6 +27,7 @@ export function compileHeaderViewModel(
   signedInName: string | undefined,
   onLogin: () => void,
   onSignOut: () => void,
+  onNewArticle: () => void,
 ): THeaderProps {
   return {
     isHome: page === "home",
@@ -33,5 +36,7 @@ export function compileHeaderViewModel(
     onLoginClick: onLogin,
     signedInName,
     onSignOutClick: onSignOut,
+    isEditor: page === "editor",
+    onNewArticleClick: onNewArticle,
   };
 }

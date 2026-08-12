@@ -24,7 +24,7 @@ import {
 import { compileArticleDetailViewModel } from "./accidents/view/react/article-view-model";
 import { compileHeaderViewModel } from "./accidents/view/react/header-view-model";
 import { compileSignInViewModel } from "./accidents/view/react/sign-in-view-model";
-import { LoginPage, HomePage, ArticlePage } from "./accidents/view/react/pages";
+import { LoginPage, HomePage, EditorPage, ArticlePage } from "./accidents/view/react/pages";
 
 export function createCompositionRoot() {
   const state$ = new BehaviorSubject<TState>(createInitialState());
@@ -58,13 +58,14 @@ export function createCompositionRoot() {
       navigation.subscribe,
       navigation.getOpenArticleTitle,
     );
-    // Which article the editor form is pre-filled with, if any -- title,
-    // not an id, same rule as everywhere else articles are identified.
-    // Purely a view concern (not navigation: it isn't backed by the URL,
-    // same as essence-view's editingArticleTitle in src/index.essence.ts),
-    // so plain component state rather than the navigation contract. Only
-    // read on the Home page, since that's the only page Editor renders on.
-    const [editingArticleTitle, setEditingArticleTitle] = useState<string | null>(null);
+    // Which article the editor form is pre-filled with, if any -- now
+    // URL-backed too (src/accidents/navigation/navigation.ts), same as
+    // openArticleTitle above, so refresh/back-forward work on the editor
+    // page the same way they do everywhere else.
+    const editingArticleTitle = useSyncExternalStore(
+      navigation.subscribe,
+      navigation.getEditingArticleTitle,
+    );
 
     // Current time is IO -- it belongs at the composition root, not inside
     // any pure view-model function or presentational component.
@@ -73,9 +74,9 @@ export function createCompositionRoot() {
     const signInViewModel = compileSignInViewModel(signIn, getState, setState);
     const signedInName = signInViewModel.signedInName;
 
-    // Signing out also leaves wherever you were -- Article and (once
-    // there's more to it) Settings/New article stop being reachable for a
-    // guest, same as the page-level gating below.
+    // Signing out also leaves wherever you were -- Article/New Article
+    // stop being reachable for a guest, same as the page-level gating
+    // below.
     const onSignOutClick = (): void => {
       signInViewModel.onSignOutClick();
       navigation.goHome();
@@ -86,10 +87,47 @@ export function createCompositionRoot() {
       signedInName,
       navigation.openLogin,
       onSignOutClick,
+      () => navigation.openEditor(),
     );
 
     if (page === "login") {
       return LoginPage({ headerViewModel, signInViewModel });
+    }
+
+    if (page === "editor") {
+      // Publishing and saving edits are the same click, told apart by
+      // whether the editor is currently pre-filled -- same "one form, two
+      // actions" shape as essence-view's publish-article/save-article.
+      const editingArticle = editingArticleTitle
+        ? selectArticle(state, editingArticleTitle)
+        : undefined;
+      const onEditorSubmit = (draft: Omit<TDraftArticle, "createdAt">): void => {
+        if (editingArticleTitle) {
+          setState(editArticle(getState(), editingArticleTitle, draft));
+          // Off to see the result, not back to a blank form -- the title
+          // might have changed, so navigate to whatever it's called now.
+          navigation.openArticle(draft.title);
+        } else {
+          onWriteArticle({ ...draft, createdAt: getCreatedAt() }, getState, setState);
+          navigation.goHome();
+        }
+      };
+
+      return EditorPage({
+        headerViewModel,
+        // undefined for a guest -- no Editor at all, same rule as the
+        // article page below (write access requires a signed-in name).
+        editorProps: signedInName
+          ? {
+              title: editingArticle?.title,
+              summary: editingArticle?.summary,
+              body: editingArticle?.body,
+              tags: editingArticle?.tags,
+              onClick: onEditorSubmit,
+            }
+          : undefined,
+        editorKey: editingArticleTitle ?? "new",
+      });
     }
 
     if (page === "article") {
@@ -106,7 +144,7 @@ export function createCompositionRoot() {
               getState,
               setState,
               getCreatedAt,
-              setEditingArticleTitle,
+              navigation.openEditor,
             )
           : undefined;
 
@@ -136,37 +174,12 @@ export function createCompositionRoot() {
       });
     }
 
-    // Home. Publishing and saving edits are the same click, told apart by
-    // whether the editor is currently pre-filled -- same "one form, two
-    // actions" shape as essence-view's publish-article/save-article.
-    const editingArticle = editingArticleTitle
-      ? selectArticle(state, editingArticleTitle)
-      : undefined;
-    const onEditorSubmit = (draft: Omit<TDraftArticle, "createdAt">): void => {
-      if (editingArticleTitle) {
-        setState(editArticle(getState(), editingArticleTitle, draft));
-        setEditingArticleTitle(null);
-      } else {
-        onWriteArticle({ ...draft, createdAt: getCreatedAt() }, getState, setState);
-      }
-    };
+    // Home.
     const feedViewModel = compileFeedViewModel(state, getState, setState, navigation.openArticle);
     const popularTagsViewModel = compilePopularTagsViewModel(state, getState, setState);
 
     return HomePage({
       headerViewModel,
-      // undefined for a guest -- no Editor at all, same rule as the
-      // article page above (write access requires a signed-in name).
-      editorProps: signedInName
-        ? {
-            title: editingArticle?.title,
-            summary: editingArticle?.summary,
-            body: editingArticle?.body,
-            tags: editingArticle?.tags,
-            onClick: onEditorSubmit,
-          }
-        : undefined,
-      editorKey: editingArticleTitle ?? "new",
       popularTagsProps: popularTagsViewModel,
       feedViewModel,
     });

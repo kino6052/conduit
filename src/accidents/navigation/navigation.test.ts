@@ -45,6 +45,43 @@ describe("createMemoryNavigation", () => {
     expect(navigation.getPage()).toBe("article");
   });
 
+  it("openEditor with no title opens the editor page for a new article", () => {
+    const navigation = createMemoryNavigation();
+
+    navigation.openEditor();
+
+    expect(navigation.getPage()).toBe("editor");
+    expect(navigation.getEditingArticleTitle()).toBeNull();
+  });
+
+  it("openEditor with a title opens the editor page pre-filled for that article", () => {
+    const navigation = createMemoryNavigation();
+
+    navigation.openEditor("Real World");
+
+    expect(navigation.getPage()).toBe("editor");
+    expect(navigation.getEditingArticleTitle()).toBe("Real World");
+  });
+
+  it("goHome leaves the editor page and clears which article was being edited", () => {
+    const navigation = createMemoryNavigation();
+    navigation.openEditor("Real World");
+
+    navigation.goHome();
+
+    expect(navigation.getPage()).toBe("home");
+    expect(navigation.getEditingArticleTitle()).toBeNull();
+  });
+
+  it("opening an article closes the editor", () => {
+    const navigation = createMemoryNavigation();
+    navigation.openEditor("Real World");
+
+    navigation.openArticle("Real World");
+
+    expect(navigation.getEditingArticleTitle()).toBeNull();
+  });
+
   it("notifies subscribers when the page changes", () => {
     const navigation = createMemoryNavigation();
     let notifications = 0;

@@ -37,16 +37,6 @@ export function LoginPage(props: {
 
 export function HomePage(props: {
   headerViewModel: THeaderProps;
-  // Writing requires a signed-in name -- a guest doesn't get an Editor at
-  // all, not a disabled one (docs/realworld-essence-checklist.md: "article
-  // is only available when name is present"). undefined here means
-  // exactly what it means everywhere else in this session: a guest.
-  editorProps: TEditorProps | undefined;
-  // React's own remount key -- kept separate from editorProps rather than
-  // folded into it, since "key" isn't part of what Editor's contract
-  // exposes (TEditorProps), only how the composition root tells React
-  // this is a different form instance (new vs. editing which article).
-  editorKey: string;
   popularTagsProps: TTagProps[];
   feedViewModel: TFeedViewModel;
 }) {
@@ -57,11 +47,35 @@ export function HomePage(props: {
     React.createElement(
       "div",
       { className: "page" },
-      props.editorProps
-        ? React.createElement(Editor, { key: props.editorKey, ...props.editorProps })
-        : null,
       PopularTags(props.popularTagsProps),
       React.createElement(Feed, props.feedViewModel),
+    ),
+  );
+}
+
+export function EditorPage(props: {
+  headerViewModel: THeaderProps;
+  // Writing requires a signed-in name -- a guest doesn't get an Editor at
+  // all, not a disabled one (docs/realworld-essence-checklist.md: "article
+  // is only available when name is present"). undefined here means
+  // exactly what it means everywhere else in this session: a guest.
+  editorProps: TEditorProps | undefined;
+  // React's own remount key -- kept separate from editorProps rather than
+  // folded into it, since "key" isn't part of what Editor's contract
+  // exposes (TEditorProps), only how the composition root tells React
+  // this is a different form instance (new vs. editing which article).
+  editorKey: string;
+}) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Header, props.headerViewModel),
+    React.createElement(
+      "div",
+      { className: "page" },
+      props.editorProps
+        ? React.createElement(Editor, { key: props.editorKey, ...props.editorProps })
+        : React.createElement("p", null, "Sign in to write an article."),
     ),
   );
 }
