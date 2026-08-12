@@ -11,6 +11,8 @@ import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { BehaviorSubject, skip } from "rxjs";
 import { createInitialState, TState } from "./essence/state";
 import { TDraftArticle } from "./essence/write";
+import { editArticle } from "./essence/edit";
+import { selectArticle } from "./essence/article";
 import { createHashNavigation } from "./accidents/navigation/navigation-hash";
 import { withConfirmation } from "./accidents/confirmation/confirmation";
 import { createSignIn } from "./accidents/sign-in/sign-in";
@@ -63,6 +65,12 @@ export function createCompositionRoot() {
       navigation.subscribe,
       navigation.getOpenArticleTitle,
     );
+    // Which article the editor form is pre-filled with, if any -- title,
+    // not an id, same rule as everywhere else articles are identified.
+    // Purely a view concern (not navigation: it isn't backed by the URL,
+    // same as essence-view's editingArticleTitle in src/index.essence.ts),
+    // so plain component state rather than the navigation contract.
+    const [editingArticleTitle, setEditingArticleTitle] = useState<string | null>(null);
 
     // Current time is IO -- it belongs at the composition root, not inside
     // any pure view-model function or presentational component.
@@ -85,19 +93,23 @@ export function createCompositionRoot() {
           getState,
           setState,
           getCreatedAt,
+          setEditingArticleTitle,
         )
       : undefined;
+    const editingArticle = editingArticleTitle
+      ? selectArticle(state, editingArticleTitle)
+      : undefined;
 
-    // "onPublishArticleButtonClick" we need to make sure we don't reify anything -
-    // clicks, buttons, texts are the only perceivable things so we
-    const onPublishArticleButtonClick = (
-      draft: Omit<TDraftArticle, "createdAt">,
-    ): void => {
-      onWriteArticle(
-        { ...draft, createdAt: getCreatedAt() },
-        getState,
-        setState,
-      );
+    // Publishing and saving edits are the same click, told apart by
+    // whether the editor is currently pre-filled -- same "one form, two
+    // actions" shape as essence-view's publish-article/save-article.
+    const onEditorSubmit = (draft: Omit<TDraftArticle, "createdAt">): void => {
+      if (editingArticleTitle) {
+        setState(editArticle(getState(), editingArticleTitle, draft));
+        setEditingArticleTitle(null);
+      } else {
+        onWriteArticle({ ...draft, createdAt: getCreatedAt() }, getState, setState);
+      }
     };
 
     // Composes two concerns the view-model can't see at once: essence
@@ -133,7 +145,14 @@ export function createCompositionRoot() {
         { className: "page" },
         React.createElement(SignIn, signInViewModel),
         React.createElement(NameForm, nameFormViewModel),
-        React.createElement(Editor, { onClick: onPublishArticleButtonClick }),
+        React.createElement(Editor, {
+          key: editingArticleTitle ?? "new",
+          title: editingArticle?.title,
+          summary: editingArticle?.summary,
+          body: editingArticle?.body,
+          tags: editingArticle?.tags,
+          onClick: onEditorSubmit,
+        }),
         PopularTags(popularTagsViewModel),
         React.createElement(Feed, feedViewModel),
         articleViewModel

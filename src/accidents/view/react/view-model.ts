@@ -150,11 +150,16 @@ function compileArticlePreviewProps(
   };
 }
 
-// The editor has no state-derived props -- it's always a blank form -- so
-// there's nothing to compile, just a shape for what it can hand back. No
-// separate "submission" type: reuse essence's own TDraftArticle, minus
-// createdAt (that's IO, added by the composition root, not the click).
+// No state-derived props to compile -- there's nothing to look up, only
+// values the composition root already has when it's editing an existing
+// article (and none when it's a blank form). No separate "submission" or
+// "draft" type: reuse essence's own TDraftArticle, minus createdAt (that's
+// IO, added by the composition root, not the click).
 export type TEditorProps = {
+  title?: string;
+  summary?: string;
+  body?: string;
+  tags?: string[];
   onClick: (draft: Omit<TDraftArticle, "createdAt">) => void;
 };
 

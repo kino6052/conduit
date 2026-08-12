@@ -43,6 +43,11 @@ export type TArticleDetailViewModel = TFavoriteFollowProps & {
   // something doesn't have a perceivable correlate, it can't be an
   // entity"). The control's own presence is the only signal.
   onDeleteClick: (() => void) | undefined;
+  // Same presence-not-flag rule as onDeleteClick. Doesn't touch essence
+  // itself -- starting to edit isn't a state change, only *saving* an
+  // edit is (that happens through onEditArticle, at the composition
+  // root, once the pre-filled form is actually submitted).
+  onEditClick: (() => void) | undefined;
 };
 
 export function compileArticleDetailViewModel(
@@ -51,6 +56,7 @@ export function compileArticleDetailViewModel(
   getState: TGetState,
   setState: TSetState,
   getCreatedAt: () => string,
+  onEditArticle: (title: string) => void,
 ): TArticleDetailViewModel | undefined {
   const article = selectArticle(state, articleTitle);
   if (!article) return undefined;
@@ -72,6 +78,7 @@ export function compileArticleDetailViewModel(
     onDeleteClick: isMine(article, state)
       ? () => onDeleteArticle(article.title, getState, setState)
       : undefined,
+    onEditClick: isMine(article, state) ? () => onEditArticle(article.title) : undefined,
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }

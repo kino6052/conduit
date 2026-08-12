@@ -154,7 +154,8 @@ elements doesn't count, same "derived composite" standard as
   - [ ] As its own dedicated page — currently renders inline on the same screen as the feed, not behind its own navigation
 
 - [ ] **Edit article** (`/editor/:article`) — writing, an existing article
-  - [ ] Same form, pre-filled with the article's current values — `editArticle` exists in essence (`src/essence/edit.ts`) but has no view wiring: no edit control anywhere, no pre-filled form
+  - [x] Same form, pre-filled with the article's current values (→ `editArticle`, `src/essence/edit.ts`; essence-view: `renderEditor(article)`, `edit-article`/`save-article` actions in `src/index.essence.ts`; React: `TEditorProps.title/summary/body/tags`, `onEditClick` on `TArticleDetailViewModel`, `onEditorSubmit` in `src/index.ts`) — both sides now, no cancel-without-saving control on either
+  - [ ] As its own dedicated page — same inline-on-Home choice as New article above, not a gap specific to editing
 
 - [ ] **Article** (`/article/:title`) — reading, interacting, one article
   - [x] Full body, rendered as markdown (→ `compileArticleDetailViewModel`, `bodyHtml`)
@@ -162,7 +163,7 @@ elements doesn't count, same "derived composite" standard as
   - [x] Favorite control (→ `compileFavoriteFollowProps`)
   - [x] Follow control (→ same)
   - [x] Delete control, owner-gated (→ `onDeleteClick`)
-  - [x] Edit control, owner-gated (→ `editArticle`, `src/essence/edit.ts`; wired in `src/index.essence.ts`'s `edit-article`/`save-article` actions, pre-filled form via `renderEditor(article)`, `src/accidents/view/essence/editor.ts`) — essence-view only; the React app's `Editor`/`article-view-model.ts` don't have this yet. Correcting an earlier inaccuracy here: this checklist previously said "nothing on screen offers it," but `renderArticleDetail` had already been rendering an Edit Article button that silently did nothing when clicked — a broken affordance, not a missing one; this cycle wired it rather than just noting the gap.
+  - [x] Edit control, owner-gated — both sides now (→ essence-view: `editArticle`, `src/essence/edit.ts`, `edit-article`/`save-article` actions in `src/index.essence.ts`, pre-filled via `renderEditor(article)`; React: `onEditClick` on `TArticleDetailViewModel`, pre-filled `Editor` via `onEditorSubmit` in `src/index.ts`, remounted with a `key` so `defaultValue`s refresh)
   - [x] Comment list, attributed (→ `selectComments`)
   - [x] Comment form (→ `onCommentClick`)
   - [x] Delete-comment control, owner-gated (→ `onDeleteComment`, `src/accidents/view/react/view-model.ts`; `TCommentProps.onDeleteClick`, `src/accidents/view/react/article-view-model.ts`, gated by `isMine`; wired with confirmation in both `src/index.ts` and `src/index.essence.ts` now — this was the one item essence-view had and the React app didn't; closed)

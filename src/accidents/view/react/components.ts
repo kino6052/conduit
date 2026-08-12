@@ -163,6 +163,13 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
         { className: "btn btn-accent", onClick: props.onFavoriteClick },
         props.favoriteLabel,
       ),
+      props.onEditClick
+        ? React.createElement(
+            "button",
+            { className: "btn", onClick: props.onEditClick },
+            "Edit Article",
+          )
+        : null,
       props.onDeleteClick
         ? React.createElement(
             "button",
@@ -209,14 +216,31 @@ export function Editor(props: TEditorProps) {
   return React.createElement(
     "form",
     { className: "form", onSubmit: handleSubmit },
-    React.createElement("input", { name: "title", placeholder: "Article Title" }),
-    React.createElement("input", { name: "summary", placeholder: "What's this article about?" }),
+    React.createElement("input", {
+      name: "title",
+      placeholder: "Article Title",
+      defaultValue: props.title,
+    }),
+    React.createElement("input", {
+      name: "summary",
+      placeholder: "What's this article about?",
+      defaultValue: props.summary,
+    }),
     React.createElement("textarea", {
       name: "body",
       placeholder: "Write your article (in markdown)",
+      defaultValue: props.body,
     }),
-    React.createElement("input", { name: "tags", placeholder: "Enter tags" }),
-    React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Publish Article"),
+    React.createElement("input", {
+      name: "tags",
+      placeholder: "Enter tags",
+      defaultValue: props.tags?.join(", "),
+    }),
+    React.createElement(
+      "button",
+      { className: "btn btn-accent", type: "submit" },
+      props.title ? "Save Changes" : "Publish Article",
+    ),
   );
 }
 

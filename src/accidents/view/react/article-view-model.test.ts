@@ -28,7 +28,7 @@ describe("compileArticleDetailViewModel", () => {
   it("compiles the full article: body, tags, author, favorite/follow labels", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {});
 
     expect(viewModel?.bodyHtml).toContain("The full body text.");
     expect(viewModel?.tags).toEqual(["react"]);
@@ -41,7 +41,7 @@ describe("compileArticleDetailViewModel", () => {
     const formatted: TArticle = { ...article, body: "This is **important**." };
     const { getState, setState } = makeState({ ...createInitialState(), articles: [formatted] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {});
 
     expect(viewModel?.bodyHtml).toContain("<strong>important</strong>");
   });
@@ -55,6 +55,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
 
     expect(viewModel).toBeUndefined();
@@ -63,7 +64,7 @@ describe("compileArticleDetailViewModel", () => {
   it("onFavoriteClick and onFollowClick act through essence, same as the feed's", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
-    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {});
     viewModel?.onFavoriteClick();
     viewModel?.onFollowClick();
 
@@ -90,6 +91,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
 
     expect(viewModel?.commentProps).toHaveLength(1);
@@ -116,6 +118,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
 
     expect(typeof viewModel?.commentProps[0].onDeleteClick).toBe("function");
@@ -140,6 +143,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
 
     expect(viewModel?.commentProps[0].onDeleteClick).toBeUndefined();
@@ -164,6 +168,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
     viewModel?.commentProps[0].onDeleteClick?.();
 
@@ -179,6 +184,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
     viewModel?.onCommentClick("Great post!");
 
@@ -202,6 +208,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
 
     expect(typeof viewModel?.onDeleteClick).toBe("function");
@@ -216,6 +223,7 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
 
     expect(viewModel?.onDeleteClick).toBeUndefined();
@@ -231,9 +239,61 @@ describe("compileArticleDetailViewModel", () => {
       getState,
       setState,
       getCreatedAt,
+      () => {},
     );
     viewModel?.onDeleteClick?.();
 
     expect(getState().articles).toEqual([]);
+  });
+
+  it("gives you an edit control when you wrote the article", () => {
+    const mine: TArticle = { ...article, authorName: "you" };
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [mine] });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      () => {},
+    );
+
+    expect(typeof viewModel?.onEditClick).toBe("function");
+  });
+
+  it("gives no edit control when someone else wrote the article", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      () => {},
+    );
+
+    expect(viewModel?.onEditClick).toBeUndefined();
+  });
+
+  it("onEditClick, when present, calls the given onEditArticle with the article's title", () => {
+    const mine: TArticle = { ...article, authorName: "you" };
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [mine] });
+    let editedTitle: string | undefined;
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      (title) => {
+        editedTitle = title;
+      },
+    );
+    viewModel?.onEditClick?.();
+
+    expect(editedTitle).toBe("Real World");
   });
 });
