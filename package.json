@@ -10,6 +10,7 @@
     "app": "bun scripts/serve-app.ts"
   },
   "dependencies": {
+    "marked": "^18.0.9",
     "react": "^19.2.8",
     "react-dom": "^19.2.8",
     "rxjs": "^7.8.2"

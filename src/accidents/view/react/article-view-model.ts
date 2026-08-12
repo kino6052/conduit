@@ -5,6 +5,7 @@ import { TState } from "../../../essence/state";
 import { selectArticle } from "../../../essence/article";
 import { selectComments } from "../../../essence/comment";
 import { isMine } from "../../../essence/ownership";
+import { renderMarkdownToHtml } from "../../markdown/markdown";
 import {
   TGetState,
   TSetState,
@@ -21,7 +22,12 @@ export type TCommentProps = {
 
 export type TArticleDetailViewModel = TFavoriteFollowProps & {
   title: string;
-  body: string;
+  // Rendered, not raw source -- the checklist treats "readable text" as
+  // essence and the markdown-vs-plain-text-vs-rich-text choice as accident
+  // (docs/realworld-essence-checklist.md). This is that accident's output,
+  // computed here (the tested layer) so components.ts stays a dumb
+  // prop-to-DOM mapping, same split as the rest of this file's props.
+  bodyHtml: string;
   tags: string[];
   authorName: string;
   commentProps: TCommentProps[];
@@ -46,7 +52,7 @@ export function compileArticleDetailViewModel(
 
   return {
     title: article.title,
-    body: article.body,
+    bodyHtml: renderMarkdownToHtml(article.body),
     tags: article.tags,
     authorName: article.authorName,
     commentProps: selectComments(state, article.title).map((comment) => ({

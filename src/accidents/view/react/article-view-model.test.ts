@@ -30,11 +30,20 @@ describe("compileArticleDetailViewModel", () => {
 
     const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
 
-    expect(viewModel?.body).toBe("The full body text.");
+    expect(viewModel?.bodyHtml).toContain("The full body text.");
     expect(viewModel?.tags).toEqual(["react"]);
     expect(viewModel?.authorName).toBe("alice");
     expect(viewModel?.favoriteLabel).toBe("Favorite (3)");
     expect(viewModel?.followLabel).toBe("Follow");
+  });
+
+  it("renders the body as markdown, not plain text", () => {
+    const formatted: TArticle = { ...article, body: "This is **important**." };
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [formatted] });
+
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt);
+
+    expect(viewModel?.bodyHtml).toContain("<strong>important</strong>");
   });
 
   it("returns undefined when no article matches the title", () => {

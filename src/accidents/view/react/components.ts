@@ -101,7 +101,12 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
       React.createElement("span", { className: "author" }, props.authorName),
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
     ),
-    React.createElement("p", { className: "body" }, props.body),
+    // dangerouslySetInnerHTML is React's own name for "insert pre-rendered
+    // HTML" -- library vocabulary contained inside this component, same
+    // "guard the boundary" rule as onSubmit above. The HTML itself was
+    // rendered from markdown in the tested view-model layer
+    // (article-view-model.ts), not here.
+    React.createElement("div", { className: "body", dangerouslySetInnerHTML: { __html: props.bodyHtml } }),
     TagList(props.tags),
     React.createElement(
       "div",
