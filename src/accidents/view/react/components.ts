@@ -52,7 +52,7 @@ export function ArticlePreview(props: TArticlePreviewProps) {
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
       React.createElement("span", { className: "date" }, props.createdAt),
     ),
-    TagList(props.tags),
+    TagList(props.tags, props.onTagClick),
     React.createElement(
       "div",
       { className: "actions" },

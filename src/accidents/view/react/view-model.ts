@@ -58,6 +58,11 @@ export const onDeleteArticle = (
   setState(deleteArticle(getState(), title));
 };
 
+export const onSetTag = (tag: string, getState: TGetState, setState: TSetState): void => {
+  const state = getState();
+  setState({ ...state, activeTag: state.activeTag === tag ? null : tag });
+};
+
 export type TFavoriteFollowProps = {
   favoriteLabel: string;
   onFavoriteClick: () => void;
@@ -89,6 +94,7 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
   createdAt: string;
   tags: string[];
   onOpenClick: () => void;
+  onTagClick: (tag: string) => void;
 };
 
 export type TFeedViewModel = {
@@ -109,6 +115,7 @@ function compileArticlePreviewProps(
     createdAt: article.createdAt,
     tags: article.tags,
     onOpenClick: () => onOpenArticle(article.title),
+    onTagClick: (tag: string) => onSetTag(tag, getState, setState),
     ...compileFavoriteFollowProps(article, state, getState, setState),
   };
 }

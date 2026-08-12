@@ -82,6 +82,28 @@ describe("compileFeedViewModel", () => {
     expect(getState().followedAuthors).toEqual(["alice"]);
   });
 
+  it("onTagClick sets the active tag filter", () => {
+    const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
+    viewModel.articlePreviewProps[0].onTagClick("x");
+
+    expect(getState().activeTag).toBe("x");
+  });
+
+  it("onTagClick clears the active tag filter when clicking the same tag again", () => {
+    const { getState, setState } = makeStore({
+      ...createInitialState(),
+      articles: [article],
+      activeTag: "x",
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop);
+    viewModel.articlePreviewProps[0].onTagClick("x");
+
+    expect(getState().activeTag).toBeNull();
+  });
+
   it("onOpenClick calls onOpenArticle with the article's title", () => {
     const { getState, setState } = makeStore({ ...createInitialState(), articles: [article] });
     let opened: string | undefined;
