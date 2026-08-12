@@ -251,11 +251,11 @@ export function Editor(props: TEditorProps) {
 // hide Editor/NameForm below it is a separate, undecided question --
 // flagged in docs/realworld-essence-checklist.md, not resolved here.
 export function SignIn(props: TSignInViewModel) {
-  if (props.signedIn) {
+  if (props.signedInName) {
     return React.createElement(
       "div",
       { className: "form" },
-      React.createElement("span", { className: "author" }, props.name),
+      React.createElement("span", { className: "author" }, props.signedInName),
       React.createElement("button", { className: "btn", onClick: props.onSignOutClick }, "Sign Out"),
     );
   }

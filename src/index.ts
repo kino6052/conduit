@@ -77,7 +77,7 @@ export function createCompositionRoot() {
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
     const headerViewModel = compileHeaderViewModel(openArticleTitle, navigation.closeArticle);
-    const signInViewModel = compileSignInViewModel(signIn, state, getState, setState);
+    const signInViewModel = compileSignInViewModel(signIn, getState, setState);
     const nameFormViewModel = compileNameFormViewModel(state, getState, setState);
     const feedViewModel = compileFeedViewModel(
       state,

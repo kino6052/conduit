@@ -3,27 +3,26 @@
 // signed in is navigation-adjacent state, not essence, even though signing
 // in also changes essence's own TState.name through changeName.
 
-import { TState } from "../../../essence/state";
 import { changeName } from "../../../essence/name";
 import { TSignIn } from "../../sign-in/sign-in";
 import { TGetState, TSetState } from "./view-model";
 
 export type TSignInViewModel = {
-  signedIn: boolean;
-  name: string;
+  // undefined -- a guest -- not a separate isGuest/signedIn flag. Whatever
+  // reads this (a page deciding what it can show, the header deciding
+  // what to render) checks presence, same as onDeleteClick elsewhere.
+  signedInName: string | undefined;
   onSignInClick: (name: string, password: string) => void;
   onSignOutClick: () => void;
 };
 
 export function compileSignInViewModel(
   signIn: TSignIn,
-  state: TState,
   getState: TGetState,
   setState: TSetState,
 ): TSignInViewModel {
   return {
-    signedIn: signIn.signedIn(),
-    name: state.name,
+    signedInName: signIn.signedInName(),
     onSignInClick: (name: string, password: string) => {
       signIn.signIn(name, password);
       setState(changeName(getState(), name));

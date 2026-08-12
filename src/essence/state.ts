@@ -39,7 +39,13 @@ export type TComment = {
 export type TFilterName = "global" | "personal"; // everyone, or just who you follow
 
 export type TState = {
-  name: string; // the acting identity ("you") — always present
+  // The acting identity -- always present in essence. Whether anyone is
+  // currently "signed in" (vs. a guest) is an accident's concern, tracked
+  // by extending state from the accident side
+  // (src/accidents/sign-in/sign-in.ts), never by making this field
+  // optional -- same Open/Closed discipline pagination-state.ts already
+  // established for page/pageSize.
+  name: string;
   articles: TArticle[];
   comments: TComment[];
   followedAuthors: string[];

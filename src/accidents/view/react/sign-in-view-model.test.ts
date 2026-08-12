@@ -13,45 +13,36 @@ function makeState(initial: TState) {
 }
 
 describe("compileSignInViewModel", () => {
-  it("starts signed out", () => {
+  it("starts as a guest", () => {
     const { getState, setState } = makeState(createInitialState());
     const signIn = createSignIn();
 
-    const signInViewModel = compileSignInViewModel(signIn, getState(), getState, setState);
+    const signInViewModel = compileSignInViewModel(signIn, getState, setState);
 
-    expect(signInViewModel.signedIn).toBe(false);
+    expect(signInViewModel.signedInName).toBeUndefined();
   });
 
   it("onSignInClick signs in and changes the acting identity's name through essence", () => {
     const { getState, setState } = makeState(createInitialState());
     const signIn = createSignIn();
 
-    const signInViewModel = compileSignInViewModel(signIn, getState(), getState, setState);
+    const signInViewModel = compileSignInViewModel(signIn, getState, setState);
     signInViewModel.onSignInClick("alice", "whatever");
 
     expect(getState().name).toBe("alice");
-    expect(compileSignInViewModel(signIn, getState(), getState, setState).signedIn).toBe(true);
+    expect(compileSignInViewModel(signIn, getState, setState).signedInName).toBe("alice");
   });
 
-  it("onSignOutClick signs back out, without changing the acting identity's name", () => {
+  it("onSignOutClick clears the signed-in name -- back to a guest -- without changing the acting identity's name", () => {
     const { getState, setState } = makeState(createInitialState());
     const signIn = createSignIn();
     signIn.signIn("alice", "whatever");
     setState({ ...getState(), name: "alice" });
 
-    const signInViewModel = compileSignInViewModel(signIn, getState(), getState, setState);
+    const signInViewModel = compileSignInViewModel(signIn, getState, setState);
     signInViewModel.onSignOutClick();
 
-    expect(compileSignInViewModel(signIn, getState(), getState, setState).signedIn).toBe(false);
+    expect(compileSignInViewModel(signIn, getState, setState).signedInName).toBeUndefined();
     expect(getState().name).toBe("alice");
-  });
-
-  it("shows the acting identity's current name", () => {
-    const { getState, setState } = makeState({ ...createInitialState(), name: "alice" });
-    const signIn = createSignIn();
-
-    const signInViewModel = compileSignInViewModel(signIn, getState(), getState, setState);
-
-    expect(signInViewModel.name).toBe("alice");
   });
 });

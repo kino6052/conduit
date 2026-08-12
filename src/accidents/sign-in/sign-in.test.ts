@@ -2,26 +2,26 @@ import { describe, expect, it } from "bun:test";
 import { createSignIn } from "./sign-in";
 
 describe("createSignIn", () => {
-  it("starts signed out", () => {
+  it("starts as a guest -- no signed-in name", () => {
     const signIn = createSignIn();
 
-    expect(signIn.signedIn()).toBe(false);
+    expect(signIn.signedInName()).toBeUndefined();
   });
 
-  it("signIn marks it as signed in", () => {
+  it("signIn makes the given name the signed-in name", () => {
     const signIn = createSignIn();
 
     signIn.signIn("alice", "whatever");
 
-    expect(signIn.signedIn()).toBe(true);
+    expect(signIn.signedInName()).toBe("alice");
   });
 
-  it("signOut marks it as signed out again", () => {
+  it("signOut clears the signed-in name -- back to a guest", () => {
     const signIn = createSignIn();
     signIn.signIn("alice", "whatever");
 
     signIn.signOut();
 
-    expect(signIn.signedIn()).toBe(false);
+    expect(signIn.signedInName()).toBeUndefined();
   });
 });

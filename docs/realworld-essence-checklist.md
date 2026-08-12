@@ -9,8 +9,8 @@ tags: all; code / architecture; code / metaphysics; checklist;
 
 Per [`empirical-software-manifesto.md`](./empirical-software-manifesto.md) and the root [`README.md`](../README.md):
 
-- **Essence (substance)** — what the app *communicates* to the user. If you removed it, the app would stop being "an app for sharing, discovering, and discussing articles." It must be perceivable on screen.
-- **Accidents (machinery)** — how the essence is delivered. Swappable without changing what the app *is*: frameworks, storage, visual design, specific auth mechanism, routing, etc.
+- **Essence (substance)** — what the app _communicates_ to the user. If you removed it, the app would stop being "an app for sharing, discovering, and discussing articles." It must be perceivable on screen.
+- **Accidents (machinery)** — how the essence is delivered. Swappable without changing what the app _is_: frameworks, storage, visual design, specific auth mechanism, routing, etc.
 
 This list intentionally ignores the current codebase. It describes the app the way a user perceives it, based on the [RealWorld / Conduit specification](https://github.com/realworld-apps/realworld) (routing, templates, and required-behavior docs), re-expressed in plain language.
 
@@ -60,7 +60,7 @@ This is a **living checklist** — amend it as understanding sharpens. Items mar
 
 - [x] At any moment, the app knows who is reading/writing/favoriting/following/commenting — a "you," distinct from everyone else. Without this, "your feed," "your article," "your comment," and "who you follow" are meaningless. (→ `TState.name`, `src/essence/state.ts`)
 - [x] Everything you create or mark is recognizably yours: articles you wrote, comments you posted, articles you favorited, authors you follow. (→ `isMine` (generalized to articles and comments), `TArticle.isFavorite`, `isFollowing`)
-- [ ] **Explicitly excluded from essence** (per the README's own worked example): *how* that identity gets established, proven, or changed — signing up, signing in, sessions, changing your name/bio/photo — is machinery, not identity itself. Only the fact that a "you" exists and things are attributed to it is essence.
+- [ ] **Explicitly excluded from essence** (per the README's own worked example): _how_ that identity gets established, proven, or changed — signing up, signing in, sessions, changing your name/bio/photo — is machinery, not identity itself. Only the fact that a "you" exists and things are attributed to it is essence.
 
 ---
 
@@ -74,12 +74,12 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 - [x] Sign-up / registration form and flow — collapses into Sign-in below: with nothing to verify a name against, submitting one that already exists and submitting a brand-new one are the same action, so one form covers both (→ `SignIn`, `src/accidents/view/react/components.ts`)
 - [x] Sign-in / login form and flow (→ `SignIn`, `src/accidents/view/react/components.ts`; `compileSignInViewModel`, `src/accidents/view/react/sign-in-view-model.ts`; signing in also changes the acting identity's name through the already-essence `changeName`)
 - [ ] How identity persists between visits (token, cookie, server session, local storage, …) — `createSignIn` holds the signed-in fact only in memory (a closure, not any storage technology); reloading the page loses it, same as everything else in this app right now
-- [x] Signing out (→ same `TSignIn`/`SignIn` — a Sign Out control replaces the form once signed in). Doesn't touch the acting identity's name (`TState.name` stays whatever it was) — only what's *displayed* changes, since essence has no concept of "no one" (see Part 1, item 6: a "you" is always present). ⚠️ whether being signed out should also hide Editor/NameForm below it is a separate, undecided call — left alone here, both still render regardless of `signedIn`
+- [x] Signing out (→ same `TSignIn`/`SignIn` — a Sign Out control replaces the form once signed in). Doesn't touch the acting identity's name (`TState.name` stays whatever it was) — only what's _displayed_ changes, since essence has no concept of "no one" (see Part 1, item 6: a "you" is always present). ⚠️ whether being signed out should also hide Editor/NameForm below it is a separate, undecided call — left alone here, both still render regardless of `signedIn`
 
 ### Presenting & editing your identity
 
 - [ ] A dedicated settings page for changing your display name, bio, avatar image, email, or password
-- [ ] A dedicated profile page for browsing another author — their bio, avatar, and full article/favorites list ⚠️ (per your call: the *page* is accident; the underlying attribution and follow relationship it displays are essence)
+- [ ] A dedicated profile page for browsing another author — their bio, avatar, and full article/favorites list ⚠️ (per your call: the _page_ is accident; the underlying attribution and follow relationship it displays are essence)
 
 ### Presentation & delivery of the feed
 
@@ -138,7 +138,7 @@ elements doesn't count, same "derived composite" standard as
   - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
   - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
   - [x] A control to switch feed lenses (global ↔ personal) — both sides now (essence-view: `set-filter`, `renderFeed`, `src/accidents/view/essence/feed.ts`, handled in `src/index.essence.ts`; React: `onSetFilterClick`, `compileFeedViewModel`, `src/accidents/view/react/view-model.ts`, rendered by `FeedLensToggle`, `src/accidents/view/react/components.ts`, styled with the header's own `.nav-tab` classes)
-  - ⚠️ Whether "Home" is its own page at all, distinct from the always-visible screen this repo currently builds, is itself an open call — see below
+  - [ ] "Home" is its own page
 
 - [ ] **Sign in** (`/login`) / **Sign up** (`/register`) — establishing "who you are"
   - [x] A name+password form and a signed-in/signed-out toggle (→ `SignIn`, `src/accidents/view/react/components.ts`; `TSignIn`, `src/accidents/sign-in/sign-in.ts`) — RealWorld splits this into two pages because its credential scheme has accounts to distinguish; ours doesn't, so one form covers both, and it isn't a dedicated page either, same inline-on-Home choice as New article below
@@ -184,8 +184,8 @@ These were classified using the manifesto's test without a direct answer from yo
 
 1. **Tags as a filter** — treated as essence (an on-screen way articles are discovered), separate from the "popular tags" widget (accident, a shortcut to that filter).
 2. **Article "summary/short description" vs. full body** — treated as essence (it's what lets someone decide whether to open an article from the list); could be argued as accident if you consider a title alone sufficient.
-3. **Markdown rendering** — treated the formatting *technology* as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
-4. **Whether "Home" is its own distinct page** — this repo's current app puts the editor, feed, and popular tags on one always-visible screen rather than routing "Home" separately from "New article"; treated that as a valid accident choice (RealWorld's own page split is one delivery shape, not the only one), so the Pages section above doesn't assume separate routing is required, only that the *elements* exist somewhere reachable.
+3. **Markdown rendering** — treated the formatting _technology_ as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
+4. **Whether "Home" is its own distinct page** — this repo's current app puts the editor, feed, and popular tags on one always-visible screen rather than routing "Home" separately from "New article"; treated that as a valid accident choice (RealWorld's own page split is one delivery shape, not the only one), so the Pages section above doesn't assume separate routing is required, only that the _elements_ exist somewhere reachable.
 5. **`NameForm` vs. `SignIn`** — both change `TState.name`, through the same essence `changeName`, and both stayed, unreconciled: `NameForm` is "edit your display name," always available; `SignIn`/`SignOut` is "become someone else, or stop being treated as signed in," gated on a fact (`signedIn`) `NameForm` doesn't touch. Whether these should merge, or `NameForm` should only be reachable once signed in, wasn't decided — flagging rather than guessing.
 6. **Whether signing out should hide write affordances** — `Editor` and `NameForm` render regardless of `signedIn`; RealWorld hides its equivalents when signed out, this repo doesn't yet. Left alone since resolving it means deciding what an anonymous write even looks like, which touches essence's "a 'you' is always present" assumption (Part 1, item 6) more than this cycle's scope warranted.
 
