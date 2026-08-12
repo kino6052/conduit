@@ -18,30 +18,22 @@ import { withConfirmation } from "./accidents/confirmation/confirmation";
 import { createSignIn } from "./accidents/sign-in/sign-in";
 import {
   compileFeedViewModel,
-  compileNameFormViewModel,
   compilePopularTagsViewModel,
   onWriteArticle,
 } from "./accidents/view/react/view-model";
 import { compileArticleDetailViewModel } from "./accidents/view/react/article-view-model";
 import { compileHeaderViewModel } from "./accidents/view/react/header-view-model";
 import { compileSignInViewModel } from "./accidents/view/react/sign-in-view-model";
-import {
-  Feed,
-  ArticleDetail,
-  Editor,
-  Header,
-  NameForm,
-  PopularTags,
-  SignIn,
-} from "./accidents/view/react/components";
+import { LoginPage, HomePage, ArticlePage } from "./accidents/view/react/pages";
 
 export function createCompositionRoot() {
   const state$ = new BehaviorSubject<TState>(createInitialState());
-  // Which article is open is navigation, not essence -- decided when
-  // src/index.essence.ts's activeArticleTitle first drew that line. Backed
-  // by the URL (src/accidents/navigation/navigation-hash.ts) rather than plain
-  // component state, so back/forward and page refresh behave like a real
-  // app. Created once here, same as state$ above.
+  // Which page is showing, and which article, if any -- decided when
+  // src/index.essence.ts's activeArticleTitle first drew that line, since
+  // extended to real pages (src/accidents/navigation/navigation.ts).
+  // Backed by the URL (src/accidents/navigation/navigation-hash.ts) rather
+  // than plain component state, so back/forward and page refresh behave
+  // like a real app. Created once here, same as state$ above.
   const navigation = createHashNavigation();
   const signIn = createSignIn();
 
@@ -61,6 +53,7 @@ export function createCompositionRoot() {
 
   return function App() {
     const state = useSharedState();
+    const page = useSyncExternalStore(navigation.subscribe, navigation.getPage);
     const openArticleTitle = useSyncExternalStore(
       navigation.subscribe,
       navigation.getOpenArticleTitle,
@@ -69,40 +62,85 @@ export function createCompositionRoot() {
     // not an id, same rule as everywhere else articles are identified.
     // Purely a view concern (not navigation: it isn't backed by the URL,
     // same as essence-view's editingArticleTitle in src/index.essence.ts),
-    // so plain component state rather than the navigation contract.
+    // so plain component state rather than the navigation contract. Only
+    // read on the Home page, since that's the only page Editor renders on.
     const [editingArticleTitle, setEditingArticleTitle] = useState<string | null>(null);
 
     // Current time is IO -- it belongs at the composition root, not inside
     // any pure view-model function or presentational component.
     const getCreatedAt = () => new Date().toISOString().slice(0, 10);
 
-    const headerViewModel = compileHeaderViewModel(openArticleTitle, navigation.goHome);
     const signInViewModel = compileSignInViewModel(signIn, getState, setState);
-    const nameFormViewModel = compileNameFormViewModel(state, getState, setState);
-    const feedViewModel = compileFeedViewModel(
-      state,
-      getState,
-      setState,
-      navigation.openArticle,
+    const signedInName = signInViewModel.signedInName;
+
+    // Signing out also leaves wherever you were -- Article and (once
+    // there's more to it) Settings/New article stop being reachable for a
+    // guest, same as the page-level gating below.
+    const onSignOutClick = (): void => {
+      signInViewModel.onSignOutClick();
+      navigation.goHome();
+    };
+    const headerViewModel = compileHeaderViewModel(
+      page,
+      navigation.goHome,
+      signedInName,
+      navigation.openLogin,
+      onSignOutClick,
     );
-    const popularTagsViewModel = compilePopularTagsViewModel(state, getState, setState);
-    const articleViewModel = openArticleTitle
-      ? compileArticleDetailViewModel(
-          state,
-          openArticleTitle,
-          getState,
-          setState,
-          getCreatedAt,
-          setEditingArticleTitle,
-        )
-      : undefined;
+
+    if (page === "login") {
+      return LoginPage({ headerViewModel, signInViewModel });
+    }
+
+    if (page === "article") {
+      // Reading an article's full detail requires a signed-in name --
+      // docs/realworld-essence-checklist.md: "article is only available
+      // when name is present." A guest gets the same "nothing to read
+      // here" as a nonexistent article; the page doesn't tell those two
+      // apart.
+      const articleViewModel =
+        signedInName && openArticleTitle
+          ? compileArticleDetailViewModel(
+              state,
+              openArticleTitle,
+              getState,
+              setState,
+              getCreatedAt,
+              setEditingArticleTitle,
+            )
+          : undefined;
+
+      const viewModelOnDeleteClick = articleViewModel?.onDeleteClick;
+      const handleDelete = viewModelOnDeleteClick
+        ? withConfirmation("Delete this article?", window.confirm.bind(window), () => {
+            viewModelOnDeleteClick();
+            navigation.goHome();
+          })
+        : undefined;
+
+      const commentProps = articleViewModel?.commentProps.map((comment) => ({
+        ...comment,
+        onDeleteClick: comment.onDeleteClick
+          ? withConfirmation("Delete this comment?", window.confirm.bind(window), comment.onDeleteClick)
+          : undefined,
+      }));
+
+      return ArticlePage({
+        headerViewModel,
+        articleViewModel: articleViewModel && {
+          ...articleViewModel,
+          onDeleteClick: handleDelete,
+          commentProps: commentProps ?? [],
+        },
+      });
+    }
+
+    // Home. Publishing and saving edits are the same click, told apart by
+    // whether the editor is currently pre-filled -- same "one form, two
+    // actions" shape as essence-view's publish-article/save-article.
     const editingArticle = editingArticleTitle
       ? selectArticle(state, editingArticleTitle)
       : undefined;
-
-    // Publishing and saving edits are the same click, told apart by
-    // whether the editor is currently pre-filled -- same "one form, two
-    // actions" shape as essence-view's publish-article/save-article.
     const onEditorSubmit = (draft: Omit<TDraftArticle, "createdAt">): void => {
       if (editingArticleTitle) {
         setState(editArticle(getState(), editingArticleTitle, draft));
@@ -111,59 +149,26 @@ export function createCompositionRoot() {
         onWriteArticle({ ...draft, createdAt: getCreatedAt() }, getState, setState);
       }
     };
+    const feedViewModel = compileFeedViewModel(state, getState, setState, navigation.openArticle);
+    const popularTagsViewModel = compilePopularTagsViewModel(state, getState, setState);
 
-    // Composes two concerns the view-model can't see at once: essence
-    // (delete the article) and navigation (stop viewing something that no
-    // longer exists) -- plus a confirmation prompt in front of both. Only
-    // wraps the view-model's own onDeleteClick when it exists -- undefined
-    // means "not yours," and that has to survive the wrap, or the Delete
-    // button would render for everyone.
-    const viewModelOnDeleteClick = articleViewModel?.onDeleteClick;
-    const handleDelete = viewModelOnDeleteClick
-      ? withConfirmation("Delete this article?", window.confirm.bind(window), () => {
-          viewModelOnDeleteClick();
-          navigation.goHome();
-        })
-      : undefined;
-
-    // Same confirmation wrap as the article's own delete above, one comment
-    // at a time -- only wraps a comment's onDeleteClick when it exists, same
-    // "undefined has to survive the wrap" reasoning.
-    const commentProps = articleViewModel?.commentProps.map((comment) => ({
-      ...comment,
-      onDeleteClick: comment.onDeleteClick
-        ? withConfirmation("Delete this comment?", window.confirm.bind(window), comment.onDeleteClick)
+    return HomePage({
+      headerViewModel,
+      // undefined for a guest -- no Editor at all, same rule as the
+      // article page above (write access requires a signed-in name).
+      editorProps: signedInName
+        ? {
+            title: editingArticle?.title,
+            summary: editingArticle?.summary,
+            body: editingArticle?.body,
+            tags: editingArticle?.tags,
+            onClick: onEditorSubmit,
+          }
         : undefined,
-    }));
-
-    return React.createElement(
-      React.Fragment,
-      null,
-      React.createElement(Header, headerViewModel),
-      React.createElement(
-        "div",
-        { className: "page" },
-        React.createElement(SignIn, signInViewModel),
-        React.createElement(NameForm, nameFormViewModel),
-        React.createElement(Editor, {
-          key: editingArticleTitle ?? "new",
-          title: editingArticle?.title,
-          summary: editingArticle?.summary,
-          body: editingArticle?.body,
-          tags: editingArticle?.tags,
-          onClick: onEditorSubmit,
-        }),
-        PopularTags(popularTagsViewModel),
-        React.createElement(Feed, feedViewModel),
-        articleViewModel
-          ? React.createElement(ArticleDetail, {
-              ...articleViewModel,
-              onDeleteClick: handleDelete,
-              commentProps: commentProps ?? [],
-            })
-          : null,
-      ),
-    );
+      editorKey: editingArticleTitle ?? "new",
+      popularTagsProps: popularTagsViewModel,
+      feedViewModel,
+    });
   };
 }
 

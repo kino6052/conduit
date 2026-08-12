@@ -74,7 +74,7 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 - [x] Sign-up / registration form and flow — collapses into Sign-in below: with nothing to verify a name against, submitting one that already exists and submitting a brand-new one are the same action, so one form covers both (→ `SignIn`, `src/accidents/view/react/components.ts`)
 - [x] Sign-in / login form and flow (→ `SignIn`, `src/accidents/view/react/components.ts`; `compileSignInViewModel`, `src/accidents/view/react/sign-in-view-model.ts`; signing in also changes the acting identity's name through the already-essence `changeName`)
 - [ ] How identity persists between visits (token, cookie, server session, local storage, …) — `createSignIn` holds the signed-in fact only in memory (a closure, not any storage technology); reloading the page loses it, same as everything else in this app right now
-- [x] Signing out (→ same `TSignIn`/`SignIn` — a Sign Out control replaces the form once signed in). Doesn't touch the acting identity's name (`TState.name` stays whatever it was) — only what's _displayed_ changes, since essence has no concept of "no one" (see Part 1, item 6: a "you" is always present). ⚠️ whether being signed out should also hide Editor/NameForm below it is a separate, undecided call — left alone here, both still render regardless of `signedIn`
+- [x] Signing out (→ same `TSignIn`/`SignIn` — a Sign Out control replaces the form once signed in, on the header once pages existed). Doesn't touch the acting identity's name (`TState.name` stays whatever it was) — only whether `TSignIn.signedInName()` returns it changes, since essence has no concept of "no one" (see Part 1, item 6: a "you" is always present). Resolved, not left open anymore: signing out (or never having signed in — a guest) now hides the Editor entirely and blocks the Article page, rather than rendering them unusably (→ `src/index.ts`'s page-level gating, see "Pages" below)
 
 ### Presenting & editing your identity
 
@@ -117,57 +117,83 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 ### Site-wide navigation
 
 - [x] A persistent header showing the app's name and a way back to the feed (→ `compileHeaderViewModel`, `src/accidents/view/react/header-view-model.ts`; `Header`, `src/accidents/view/react/components.ts` — styled after `legacy/details/view/components/Navbar` and `Tab`: full-width bar, content capped at the page's own width, green underline on the active tab)
-- [ ] Tabs/links to the other pages (New article, Settings, Profile, Sign in/up) — only Home exists as a distinct nav destination so far, because those are the only two the app currently distinguishes (see Pages below); the rest render inline or don't exist yet, so linking to them would be a link to nothing
+- [x] Home and Login tabs, gated by whether anyone's signed in — a guest sees Login, a signed-in name sees "Sign Out (name)" instead, same gating shape as `legacy/details/services/SimpleNavigationService.getNavigationTabs`
+- [ ] Tabs/links to the other pages (New article, Settings, Profile) — those still render inline or don't exist as pages yet (see Pages below), so linking to them from the header would be links to nothing
 
 ### Pages (how the accidents above get grouped into screens)
 
-A "page" is itself accident, not essence — the RealWorld spec's own
-concept of dividing the app into separate routed screens is one
-possible delivery shape, not the only one (a single always-visible
-screen, like this repo's current React app, communicates the same
-essence). Each entry below is a composite of items already listed
-above; it's checked off only once that composition exists as its own
-distinct, reachable screen — an unwired collection of the right
-elements doesn't count, same "derived composite" standard as
-`docs/solid-in-this-repo.md`'s SRP section.
+A "page" is itself accident, not essence. Two things are true at once
+here, and both matter:
 
-- [ ] **Home** (`/`) — the article feed and how to narrow it down
+1. **Which screens exist as separate, reachable places is accident.**
+   RealWorld's own split into Home/Login/Article/etc. is one delivery
+   shape, not the only one — a single always-visible screen communicates
+   the same essence, just delivered differently.
+2. **Pages don't change identity.** Whatever page you're on, `TState`
+   (the essence) is exactly the same shape, holding exactly the same
+   kind of facts — an article is still an article, a comment still a
+   comment, whether it's reachable from `/` or `/article/:title` or one
+   scrolling div. A page is purely a *grouping* of already-essential
+   things into a screen, the same "derived composite" idea
+   `docs/solid-in-this-repo.md`'s SRP section already uses for Feed and
+   Article Detail — just one level up.
+
+Point 2 is exactly why `src/accidents/view/essence` — the bare grounding
+tool, "storybook for the essence" (`PROMPT.md`) — never grew pages at
+all, and correctly so: its entire purpose is showing every relevant piece
+of a given state directly, side by side, for inspection. Splitting that
+across routed screens would add navigation to click through *while
+verifying*, not make the essence any clearer — the opposite of what the
+tool is for. The React app (`src/index.ts`) *does* need pages, for the
+opposite reason: a real user reading one article shouldn't also be
+looking at a blank editor, someone else's sign-in form, and the whole
+feed in the same scroll. That's nicer visual separation, a real
+usability improvement — but it's still just delivery, not a different
+app underneath.
+
+Each entry below is a composite of items already listed above; it's
+checked off only once that composition exists as its own distinct,
+reachable screen — an unwired collection of the right elements doesn't
+count, same "derived composite" standard as above.
+
+- [x] **Home** (`/`) — the article feed and how to narrow it down (→ `HomePage`, `src/accidents/view/react/pages.ts`)
   - [x] Feed, two lenses (global/personal) (→ `selectVisibleArticles`, `src/essence/feed.ts`)
   - [x] Tag filter (→ `onTagClick`, `src/accidents/view/react/view-model.ts`)
   - [x] Popular tags widget (→ `selectPopularTags`, `src/accidents/popular-tags/popular-tags.ts`)
   - [x] Pagination (→ `paginate`, `src/accidents/pagination/pagination.ts`)
   - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
-  - [x] A control to switch feed lenses (global ↔ personal) — both sides now (essence-view: `set-filter`, `renderFeed`, `src/accidents/view/essence/feed.ts`, handled in `src/index.essence.ts`; React: `onSetFilterClick`, `compileFeedViewModel`, `src/accidents/view/react/view-model.ts`, rendered by `FeedLensToggle`, `src/accidents/view/react/components.ts`, styled with the header's own `.nav-tab` classes)
-  - [ ] "Home" is its own page
+  - [x] A control to switch feed lenses (global ↔ personal) — both sides (essence-view: `set-filter`, `renderFeed`; React: `onSetFilterClick`, `FeedLensToggle`)
+  - [x] The write form (Editor), but only when signed in — a guest gets no Editor at all on Home, not a disabled one (→ `editorProps: signedInName ? {...} : undefined`, `src/index.ts`)
 
-- [ ] **Sign in** (`/login`) / **Sign up** (`/register`) — establishing "who you are"
-  - [x] A name+password form and a signed-in/signed-out toggle (→ `SignIn`, `src/accidents/view/react/components.ts`; `TSignIn`, `src/accidents/sign-in/sign-in.ts`) — RealWorld splits this into two pages because its credential scheme has accounts to distinguish; ours doesn't, so one form covers both, and it isn't a dedicated page either, same inline-on-Home choice as New article below
-  - [x] A separate control to change the acting identity's name without going through sign-in/out (→ `NameForm`, `src/essence/name.ts`) — ⚠️ kept alongside `SignIn` rather than folded into it; both end up setting the same `TState.name`, which is a real, unreconciled overlap between "change your display name" and "sign in as someone else," flagged here rather than resolved
-  - [ ] Anything to persist the name, or the signed-in fact, across visits, or return to a previously-used one — still nothing remembered between changes
+- [x] **Login** (`/login`) — establishing "who you are" (→ `LoginPage`, `src/accidents/view/react/pages.ts`, reachable via the header's Login tab and `#/login`)
+  - [x] A name+password form (→ `SignIn`, `src/accidents/view/react/components.ts`; `TSignIn`, `src/accidents/sign-in/sign-in.ts`) — RealWorld splits this into Login and Register because its credential scheme has accounts to distinguish; ours doesn't, so one form covers both
+  - [x] `NameForm` (a separate "change your display name" control, independent of signing in/out) was retired once this page existed — it was flagged as an unreconciled overlap with `SignIn` (both set `TState.name`); with a real Login page as the one place identity gets established, keeping a second, ungated control for the same fact stopped making sense
+  - [ ] Anything to persist the signed-in name across visits, or return to a previously-used one — still nothing remembered between reloads
 
 - [ ] **Settings** (`/settings`) — presenting & editing your identity
-  - [ ] Settings form (display name, bio, avatar image, email, password) — name-changing exists (above) but not as a dedicated settings screen, and bio/avatar/email/password remain undecided
-  - [ ] Sign-out control — nothing to sign out of yet
+  - [ ] Settings form (display name, bio, avatar image, email, password) — not built; changing your name now only happens by signing in as someone else
+  - [x] Sign-out control (→ the header's Sign Out tab, `src/accidents/view/react/components.ts`)
 
 - [ ] **New article** (`/editor`) — writing
-  - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`)
-  - [ ] As its own dedicated page — currently renders inline on the same screen as the feed, not behind its own navigation
+  - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`), gated on being signed in (see Home above)
+  - [ ] As its own dedicated page — currently renders inline on Home, not behind its own navigation
 
 - [ ] **Edit article** (`/editor/:article`) — writing, an existing article
-  - [x] Same form, pre-filled with the article's current values (→ `editArticle`, `src/essence/edit.ts`; essence-view: `renderEditor(article)`, `edit-article`/`save-article` actions in `src/index.essence.ts`; React: `TEditorProps.title/summary/body/tags`, `onEditClick` on `TArticleDetailViewModel`, `onEditorSubmit` in `src/index.ts`) — both sides now, no cancel-without-saving control on either
-  - [ ] As its own dedicated page — same inline-on-Home choice as New article above, not a gap specific to editing
+  - [x] Same form, pre-filled with the article's current values (→ `editArticle`, `src/essence/edit.ts`; essence-view: `renderEditor(article)`; React: `TEditorProps.title/summary/body/tags`, `onEditClick`, `onEditorSubmit`) — both sides, no cancel-without-saving control on either
+  - [ ] As its own dedicated page — same inline-on-Home choice as New article above
 
-- [ ] **Article** (`/article/:title`) — reading, interacting, one article
+- [x] **Article** (`/article/:title`) — reading, interacting, one article (→ `ArticlePage`, `src/accidents/view/react/pages.ts`)
   - [x] Full body, rendered as markdown (→ `compileArticleDetailViewModel`, `bodyHtml`)
   - [x] Author attribution, tags (→ same)
   - [x] Favorite control (→ `compileFavoriteFollowProps`)
   - [x] Follow control (→ same)
   - [x] Delete control, owner-gated (→ `onDeleteClick`)
-  - [x] Edit control, owner-gated — both sides now (→ essence-view: `editArticle`, `src/essence/edit.ts`, `edit-article`/`save-article` actions in `src/index.essence.ts`, pre-filled via `renderEditor(article)`; React: `onEditClick` on `TArticleDetailViewModel`, pre-filled `Editor` via `onEditorSubmit` in `src/index.ts`, remounted with a `key` so `defaultValue`s refresh)
+  - [x] Edit control, owner-gated — both sides
   - [x] Comment list, attributed (→ `selectComments`)
   - [x] Comment form (→ `onCommentClick`)
-  - [x] Delete-comment control, owner-gated (→ `onDeleteComment`, `src/accidents/view/react/view-model.ts`; `TCommentProps.onDeleteClick`, `src/accidents/view/react/article-view-model.ts`, gated by `isMine`; wired with confirmation in both `src/index.ts` and `src/index.essence.ts` now — this was the one item essence-view had and the React app didn't; closed)
+  - [x] Delete-comment control, owner-gated — both sides now
   - [x] Reachable at its own URL (→ `createHashNavigation`, `#/article/<title>`)
+  - [x] Only available when a name is signed in — a guest sees "Sign in to read this article" instead of the article itself (→ `src/index.ts`'s page-level gating: `signedInName && openArticleTitle ? compileArticleDetailViewModel(...) : undefined`). This is stricter than plain RealWorld (which lets anyone read), a deliberate choice for this exercise: reading requires a name the same way writing does, so the guest/signed-in distinction has a second, visible consequence beyond just the header
 
 - [ ] **Profile** (`/profile/:authorName`) — an author, their articles
   - [ ] Author bio/avatar display — not yet decided as essence-grounded (see "presenting identity" above)
@@ -185,8 +211,9 @@ These were classified using the manifesto's test without a direct answer from yo
 1. **Tags as a filter** — treated as essence (an on-screen way articles are discovered), separate from the "popular tags" widget (accident, a shortcut to that filter).
 2. **Article "summary/short description" vs. full body** — treated as essence (it's what lets someone decide whether to open an article from the list); could be argued as accident if you consider a title alone sufficient.
 3. **Markdown rendering** — treated the formatting _technology_ as accident; if the app's identity depends on rich-text specifically (not just readable text), this should move to essence.
-4. **Whether "Home" is its own distinct page** — this repo's current app puts the editor, feed, and popular tags on one always-visible screen rather than routing "Home" separately from "New article"; treated that as a valid accident choice (RealWorld's own page split is one delivery shape, not the only one), so the Pages section above doesn't assume separate routing is required, only that the _elements_ exist somewhere reachable.
-5. **`NameForm` vs. `SignIn`** — both change `TState.name`, through the same essence `changeName`, and both stayed, unreconciled: `NameForm` is "edit your display name," always available; `SignIn`/`SignOut` is "become someone else, or stop being treated as signed in," gated on a fact (`signedIn`) `NameForm` doesn't touch. Whether these should merge, or `NameForm` should only be reachable once signed in, wasn't decided — flagging rather than guessing.
-6. **Whether signing out should hide write affordances** — `Editor` and `NameForm` render regardless of `signedIn`; RealWorld hides its equivalents when signed out, this repo doesn't yet. Left alone since resolving it means deciding what an anonymous write even looks like, which touches essence's "a 'you' is always present" assumption (Part 1, item 6) more than this cycle's scope warranted.
+4. **Whether "Home" is its own distinct page** — settled: it now is (`HomePage`, `src/accidents/view/react/pages.ts`), alongside real Login and Article pages, once real page-level routing was built.
+5. ~~`NameForm` vs. `SignIn`~~ — resolved by retiring `NameForm`: with a real Login page as the one place identity gets established, a second, always-available, ungated control for the same fact (`TState.name`) no longer made sense. See the Login page entry above.
+6. ~~Whether signing out should hide write affordances~~ — resolved: a guest now gets no Editor on Home and no Article page at all (page-level gating on `signedInName`, `src/index.ts`), rather than a technically-visible-but-meaningless form. Also extended past writing to *reading* an article specifically — see the Article page's last item above, itself a further unilateral call worth flagging: RealWorld lets guests read, this repo now doesn't.
+7. **Guests can't read articles either, not just write them** — RealWorld's actual behavior lets anyone read an article without an account; this repo now requires a signed-in name for the Article page too (`src/index.ts`: `signedInName && openArticleTitle ? compileArticleDetailViewModel(...) : undefined`), per an explicit instruction for this exercise ("article is only available when name is present"). Flagging since it's a real divergence from RealWorld's own spec, not just an accident-shape choice.
 
 Already settled by you: **follow/personal feed → essence**, **comments → essence**, **dedicated profile page → accident**, **pagination → accident entirely** (not even the underlying concept of "there's more, and a way to get to it" is essence — the feed showing whatever it shows is sufficient; reaching the rest is purely a delivery-mechanism concern, see Part 2).

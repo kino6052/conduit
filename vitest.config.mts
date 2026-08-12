@@ -26,6 +26,7 @@ export default defineConfig({
         "src/index.ts",
         "src/index.essence.ts",
         "src/accidents/view/react/components.ts",
+        "src/accidents/view/react/pages.ts",
         "src/accidents/view/react/main.ts",
         "src/accidents/view/essence/main.ts",
         "src/accidents/navigation/navigation-hash.ts",

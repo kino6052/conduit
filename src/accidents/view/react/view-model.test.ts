@@ -2,7 +2,6 @@ import { describe, expect, it } from "bun:test";
 import { createInitialState, TArticle, TState } from "../../../essence/state";
 import {
   compileFeedViewModel,
-  compileNameFormViewModel,
   compilePopularTagsViewModel,
   onDeleteComment,
   onWriteArticle,
@@ -170,25 +169,6 @@ describe("onDeleteComment", () => {
     onDeleteComment(comment, getState, setState);
 
     expect(getState().comments).toEqual([]);
-  });
-});
-
-describe("compileNameFormViewModel", () => {
-  it("shows the acting identity's current name", () => {
-    const { getState, setState } = makeState(createInitialState());
-
-    const nameFormViewModel = compileNameFormViewModel(getState(), getState, setState);
-
-    expect(nameFormViewModel.name).toBe("you");
-  });
-
-  it("onClick changes the acting identity's name through essence", () => {
-    const { getState, setState } = makeState(createInitialState());
-
-    const nameFormViewModel = compileNameFormViewModel(getState(), getState, setState);
-    nameFormViewModel.onClick("alice");
-
-    expect(getState().name).toBe("alice");
   });
 });
 

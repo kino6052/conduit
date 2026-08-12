@@ -36,8 +36,8 @@ your first change, if you haven't. It's short.
 | `src/essence/` | Pure state, pure logic, pure selectors/actions. One file per perceivable capability. |
 | `src/index.ts` | Composition root for the React view. Not inside `accidents/view` — a composition root is where essence and a view meet, so it isn't itself "the view." |
 | `src/index.essence.ts` | Composition root for the essence view. Same reasoning, same top-level placement. |
-| `src/accidents/view/react/` | The real delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components). Also holds the mount point (`main.ts`), HTML shell, and stylesheet — accident artifacts, not composition logic. |
-| `src/accidents/view/essence/` | Bare, unstyled, interactive HTML rendering of the essence, plus a storybook-style state picker. Exists to keep the essence grounded in something clickable — not the real app. Also holds its own `main.ts` (mount point). |
+| `src/accidents/view/react/` | The real delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components). Also holds the mount point (`main.ts`), HTML shell, stylesheet, and `pages.ts` (Home/Login/Article — separate routed screens, themselves accident; see `docs/realworld-essence-checklist.md`'s "Pages" section for why essence-view below doesn't need this and this one does) — accident artifacts, not composition logic. |
+| `src/accidents/view/essence/` | Bare, unstyled, interactive HTML rendering of the essence, plus a storybook-style state picker. Exists to keep the essence grounded in something clickable — not the real app. Deliberately has no pages: it shows every relevant piece of a given state directly, for inspection, not for a real user's flow. Also holds its own `main.ts` (mount point). |
 | `src/accidents/navigation/`, `src/accidents/pagination/` | Small, isolated accidents that extend essence state/behavior from the outside. Not wired into a view by default — Step 5 says they can be developed and verified in isolation. |
 | `legacy/` | A prior implementation, predating this split. Reference only; not wired into the toolchain. |
 

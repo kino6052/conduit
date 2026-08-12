@@ -14,7 +14,6 @@ import {
   TArticlePreviewProps,
   TFeedViewModel,
   TEditorProps,
-  TNameFormProps,
   TTagProps,
 } from "./view-model";
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
@@ -23,8 +22,10 @@ import { TSignInViewModel } from "./sign-in-view-model";
 
 // Layout matches legacy/details/view/components/Navbar + Tab: a
 // full-width bar (className "header") with an inner row capped at the
-// same width as the rest of the page, a logo, and a row of tabs -- one
-// tab so far ("Home"), since that's the only nav destination built.
+// same width as the rest of the page, a logo, and a row of tabs. Which
+// tabs show up (Login vs. a name + Sign Out) mirrors legacy's own
+// SimpleNavigationService.getNavigationTabs gating on whether anyone's
+// signed in -- guest or not is the only thing that decides it here too.
 export function Header(props: THeaderProps) {
   return React.createElement(
     "header",
@@ -48,6 +49,20 @@ export function Header(props: THeaderProps) {
           },
           "Home",
         ),
+        props.signedInName
+          ? React.createElement(
+              "button",
+              { className: "nav-tab", onClick: props.onSignOutClick },
+              `Sign Out (${props.signedInName})`,
+            )
+          : React.createElement(
+              "button",
+              {
+                className: props.isLogin ? "nav-tab active" : "nav-tab",
+                onClick: props.onLoginClick,
+              },
+              "Login",
+            ),
       ),
     ),
   );
@@ -273,26 +288,6 @@ export function SignIn(props: TSignInViewModel) {
     React.createElement("input", { name: "name", placeholder: "Name" }),
     React.createElement("input", { name: "password", type: "password", placeholder: "Password" }),
     React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Sign In"),
-  );
-}
-
-export function NameForm(props: TNameFormProps) {
-  // Same "guard the boundary" split as Editor/CommentForm above: React's
-  // onSubmit/handleSubmit and HTML's type="submit" stay internal, the
-  // exposed contract (TNameFormProps.onClick) never mentions them.
-  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
-    event.preventDefault();
-    const data = new FormData(event.currentTarget);
-    props.onClick(String(data.get("name") ?? ""));
-    event.currentTarget.reset();
-  };
-
-  return React.createElement(
-    "form",
-    { className: "form", onSubmit: handleSubmit },
-    React.createElement("span", { className: "author" }, props.name),
-    React.createElement("input", { name: "name", placeholder: "Change your name" }),
-    React.createElement("button", { className: "btn", type: "submit" }, "Change Name"),
   );
 }
 

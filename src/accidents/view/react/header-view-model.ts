@@ -1,27 +1,37 @@
 // Which page you're on isn't essence -- it's navigation, an accident
-// (src/accidents/navigation), so this doesn't touch TState/TGetState/
-// TSetState at all, only the one navigation fact a header cares about:
-// whether an article is currently open. Kept separate from view-model.ts
-// for the same reason article-view-model.ts is its own file -- one
-// derived composite (docs/solid-in-this-repo.md), the header, not mixed
-// into the feed's.
+// (src/accidents/navigation). Kept separate from view-model.ts for the
+// same reason article-view-model.ts is its own file -- one derived
+// composite (docs/solid-in-this-repo.md), the header, not mixed into the
+// feed's.
+
+import { TPage } from "../../navigation/navigation";
 
 export type THeaderProps = {
-  // "Home" isn't essence either -- it's the one nav destination this repo
-  // currently has, since Editor/NameForm render inline rather than behind
-  // their own routes (docs/realworld-essence-checklist.md, "Pages"). No
-  // isOwnArticle-style stored flag here: recomputed from the same fact
-  // (openArticleTitle) every time, same discipline as isMine.
+  // No isOwnArticle-style stored flag here: recomputed from the current
+  // page every time, same discipline as isMine.
   isHome: boolean;
   onHomeClick: () => void;
+  isLogin: boolean;
+  onLoginClick: () => void;
+  // undefined -- a guest -- not a separate isGuest/signedIn flag, same
+  // presence-not-flag rule as sign-in-view-model.ts's own signedInName.
+  signedInName: string | undefined;
+  onSignOutClick: () => void;
 };
 
 export function compileHeaderViewModel(
-  openArticleTitle: string | null,
+  page: TPage,
   onGoHome: () => void,
+  signedInName: string | undefined,
+  onLogin: () => void,
+  onSignOut: () => void,
 ): THeaderProps {
   return {
-    isHome: openArticleTitle === null,
+    isHome: page === "home",
     onHomeClick: onGoHome,
+    isLogin: page === "login",
+    onLoginClick: onLogin,
+    signedInName,
+    onSignOutClick: onSignOut,
   };
 }
