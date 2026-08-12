@@ -76,6 +76,51 @@ Grouped to mirror Part 1, so each accident is traceable to the essence it's in s
 - [ ] How identity persists between visits (token, cookie, server session, local storage, …) — `createSignIn` holds the signed-in fact only in memory (a closure, not any storage technology); reloading the page loses it, same as everything else in this app right now
 - [x] Signing out (→ same `TSignIn`/`SignIn` — a Sign Out control replaces the form once signed in, on the header once pages existed). Doesn't touch the acting identity's name (`TState.name` stays whatever it was) — only whether `TSignIn.signedInName()` returns it changes, since essence has no concept of "no one" (see Part 1, item 6: a "you" is always present). Resolved, not left open anymore: signing out (or never having signed in — a guest) now hides the Editor entirely and blocks the Article page, rather than rendering them unusably (→ `src/index.ts`'s page-level gating, see "Pages" below)
 
+### What a guest can and can't do
+
+Every essence action that attributes something to "you" needs a signed-in
+name to attribute it to — a guest (no signed-in name) is blocked from all
+of them. Two different, both deliberate, treatments for what "blocked"
+looks like:
+
+- [x] **Reading a full article** — blocked with an in-page message
+  ("Sign in to read this article.") rather than a redirect, same as the
+  message a nonexistent article gets (→ `ArticlePage`,
+  `src/accidents/view/react/pages.ts`; see the Article page entry below)
+- [x] **Writing a new article, or editing your own** — same message-swap
+  treatment ("Sign in to write an article.") on the Editor page (→
+  `EditorPage`, same file; see the New article/Edit article entry below)
+- [x] **Commenting on an article, or deleting your own comment** —
+  blocked as a consequence of the article page itself being blocked, not
+  gated separately (there's no way to reach the comment form without
+  first reading the article)
+- [x] **Deleting your own article** — same as above, a consequence of the
+  Article page's own gate
+- [x] **Favoriting an article, or following its author** — the one place
+  this needed its own gate rather than inheriting a page's: these
+  controls appear on the Home feed, which stays open to guests (browsing
+  is never gated, only acting). Clicking either as a guest now navigates
+  to the Login page, instead of the click silently mutating essence under
+  whatever name `state.name` happens to still hold from a previous
+  session — essence has no concept of "no one" (Part 1, item 6), so
+  without this gate a guest's click wouldn't fail, it would just act as
+  whoever the essence's acting identity last was (→ `composeApp`,
+  `src/accidents/view/react/compose-app.ts`, sanity-tested in
+  `compose-app.test.ts`)
+- [x] **Browsing itself is never gated** — the feed, tag filtering, the
+  popular tags widget, and opening an article (the click itself, not what
+  you see once there) all stay available to a guest; only *acting*
+  requires a signed-in name
+
+⚠️ Two different gating shapes for the same underlying rule (a message
+swap on pages vs. a redirect on inline controls) is a real, visible
+inconsistency, not a single unified pattern — flagging rather than
+pretending otherwise. A page-level gate reads naturally as "this whole
+screen isn't for you right now"; an inline control's gate reads more
+naturally as "go do the thing that would let you do this," since the
+feed around it is otherwise perfectly usable. Both were chosen for what
+reads best in their own context, not from one rule applied twice.
+
 ### Presenting & editing your identity
 
 - [ ] A dedicated settings page for changing your display name, bio, avatar image, email, or password

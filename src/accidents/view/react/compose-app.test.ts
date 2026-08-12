@@ -85,6 +85,51 @@ describe("composeApp", () => {
     expect(result.headerViewModel.isHome).toBe(true);
   });
 
+  it("a guest clicking Favorite on the feed goes to the login page instead of favoriting", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
+
+    expect(deps.navigation.getPage()).toBe("login");
+    expect(deps.getRealState().articles[0].isFavorite).toBe(false);
+  });
+
+  it("a guest clicking Follow on the feed goes to the login page instead of following", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onFollowClick();
+
+    expect(deps.navigation.getPage()).toBe("login");
+    expect(deps.getRealState().followedAuthors).toEqual([]);
+  });
+
+  it("signed in, favoriting and following from the feed still work normally", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
+    result.feedViewModel.articlePreviewProps[0].onFollowClick();
+
+    expect(deps.getRealState().articles[0].isFavorite).toBe(true);
+    expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
+    expect(deps.navigation.getPage()).toBe("home");
+  });
+
   it("a guest can't read an article -- same message as one that doesn't exist", () => {
     const deps = makeDeps({ ...createInitialState(), articles: [article] });
 

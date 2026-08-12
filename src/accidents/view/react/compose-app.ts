@@ -185,9 +185,24 @@ export function composeApp<R>(
   const feedViewModel = compileFeedViewModel(state, getState, setState, navigation.openArticle);
   const popularTagsViewModel = compilePopularTagsViewModel(state, getState, setState);
 
+  // Favoriting/following require a signed-in name, same as writing and
+  // reading a full article -- a guest clicking either goes to the login
+  // page instead of the click silently mutating essence under whatever
+  // name state.name happens to still hold from a previous session
+  // (essence has no concept of "no one," Part 1 item 6). Opening an
+  // article and filtering by tag stay unrestricted -- browsing itself was
+  // never gated, only acting.
+  const articlePreviewProps = signedInName
+    ? feedViewModel.articlePreviewProps
+    : feedViewModel.articlePreviewProps.map((preview) => ({
+        ...preview,
+        onFavoriteClick: navigation.openLogin,
+        onFollowClick: navigation.openLogin,
+      }));
+
   return view.HomePage({
     headerViewModel,
     popularTagsProps: popularTagsViewModel,
-    feedViewModel,
+    feedViewModel: { ...feedViewModel, articlePreviewProps },
   });
 }
