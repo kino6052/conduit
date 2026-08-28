@@ -299,3 +299,15 @@ h2 {
   margin: 0 0 8px;
   white-space: pre-wrap;
 }
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-border);
+  padding: 24px 16px;
+}
+
+.footer a {
+  color: var(--color-accent);
+  text-decoration: underline;
+}

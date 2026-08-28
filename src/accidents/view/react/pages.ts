@@ -22,7 +22,16 @@ import { TSignInViewModel } from "./sign-in-view-model";
 import { TEditorProps, TFeedViewModel, TTagProps } from "./view-model";
 import { TArticleDetailViewModel } from "./article-view-model";
 import { TProfileViewModel } from "./profile-view-model";
-import { Header, SignIn, Editor, PopularTags, Feed, ArticleDetail, Profile } from "./components";
+import {
+  Header,
+  Footer,
+  SignIn,
+  Editor,
+  PopularTags,
+  Feed,
+  ArticleDetail,
+  Profile,
+} from "./components";
 
 export type TLoginPageProps = {
   headerViewModel: THeaderProps;
@@ -39,6 +48,7 @@ export function LoginPage(props: TLoginPageProps) {
       { className: "page" },
       React.createElement(SignIn, props.signInViewModel),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -59,6 +69,7 @@ export function HomePage(props: THomePageProps) {
       PopularTags(props.popularTagsProps),
       React.createElement(Feed, props.feedViewModel),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -88,6 +99,7 @@ export function EditorPage(props: TEditorPageProps) {
         ? React.createElement(Editor, { key: props.editorKey, ...props.editorProps })
         : React.createElement("p", null, "Sign in to write an article."),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -118,6 +130,7 @@ export function ArticlePage(props: TArticlePageProps) {
         ? React.createElement(ArticleDetail, props.articleViewModel)
         : React.createElement("p", null, emptyMessage),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -146,5 +159,6 @@ export function ProfilePage(props: TProfilePageProps) {
         ? Profile(props.profileViewModel)
         : React.createElement("p", null, "Sign in to view this profile."),
     ),
+    React.createElement(Footer),
   );
 }

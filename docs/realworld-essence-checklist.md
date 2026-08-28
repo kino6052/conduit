@@ -167,7 +167,7 @@ reads best in their own context, not from one rule applied twice.
 - [ ] API shape/protocol (REST, GraphQL, RPC, …)
 - [ ] Hosting/deployment platform
 - [ ] Error-message wording, placement, and validation mechanics
-- [ ] Branding, footer text, attribution, favicon, typography
+- [x] Branding, footer text, attribution, favicon — a `Footer` on every page (attribution + a link to the RealWorld spec this app follows, not navigation; → `src/accidents/view/react/components.ts`/`pages.ts`), and a favicon: one inline SVG circle in the app's own accent green, no external asset file or icon library (→ `src/accidents/view/react/index.html`). Typography stays what it already was (Titillium Web/Source Sans Pro, from the earlier visual-layout item) — nothing new decided there
 
 ### Site-wide navigation
 

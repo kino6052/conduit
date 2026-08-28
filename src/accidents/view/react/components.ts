@@ -397,6 +397,24 @@ export function Feed(props: TFeedViewModel) {
   );
 }
 
+// Attribution, not navigation -- no links to pages of this app, just where
+// the spec this app follows comes from. Same on every page (pages.ts adds
+// it as the last sibling after Header/.page on each of them), same
+// "shared chrome" role Header plays at the top.
+export function Footer() {
+  return React.createElement(
+    "footer",
+    { className: "footer" },
+    "conduit — an empirically grounded app, built against the ",
+    React.createElement(
+      "a",
+      { href: "https://codebase.show/projects/realworld", target: "_blank", rel: "noreferrer" },
+      "RealWorld",
+    ),
+    " spec",
+  );
+}
+
 // An author, and the articles they wrote -- reuses ArticlePreview for the
 // list, same component the feed uses, since an article preview looks and
 // behaves identically wherever it's shown.
