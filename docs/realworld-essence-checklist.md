@@ -147,8 +147,8 @@ reads best in their own context, not from one rule applied twice.
 
 ### Writing & editing mechanics
 
-- [ ] The input widgets used for title/summary/body/tags (plain fields vs. rich editor, tag autocomplete, etc.)
-- [ ] Any draft/autosave behavior
+- [x] The input widgets used for title/summary/body/tags — plain HTML `<input>`/`<textarea>` throughout, tags as one comma-separated text field (→ `Editor`, `src/accidents/view/react/components.ts`; `renderEditor`, `src/accidents/view/essence/editor.ts`). No rich editor, no tag autocomplete, no per-tag input widget — a deliberate choice by omission (never built one), now recorded as the decision rather than left looking unmade
+- [x] Draft/autosave behavior — decided against. The form is either blank (writing) or pre-filled once from the article being edited (`TEditorProps.title`/etc., set on mount via React's `defaultValue`, not resynced afterward) — nothing is saved as you type, and navigating away loses unsaved changes, same as the rest of this app not persisting anything beyond the signed-in name itself
 - [x] Confirmation prompts before deleting (→ `withConfirmation`, `src/accidents/confirmation/confirmation.ts`, wired to `window.confirm` in `src/index.ts` for article deletion)
 
 ### Comments & favorites mechanics
