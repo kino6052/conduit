@@ -58,6 +58,14 @@ describe("compileFeedViewModel", () => {
     expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Unfavorite (1)");
   });
 
+  it("carries the article's own isFavorite through, for the favorited icon", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+
+    expect(viewModel.articlePreviewProps[0].isFavorite).toBe(false);
+  });
+
   it("labels the follow button by whether you follow the author", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 

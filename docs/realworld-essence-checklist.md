@@ -155,7 +155,7 @@ reads best in their own context, not from one rule applied twice.
 
 - [ ] Visual placement/styling of the comment thread and comment form
 - [x] Confirmation prompts before deleting a comment (→ same `withConfirmation`; wired in both `src/index.essence.ts` and now `src/index.ts` — see the delete-comment item below, which closed the parity gap this line used to flag)
-- [ ] The specific icon/animation used to show "favorited"
+- [x] The specific icon used to show "favorited" — a minimal inline heart, filled once favorited, outline otherwise (→ `HeartIcon`/`FavoriteButton`, `src/accidents/view/react/components.ts`; `TFavoriteFollowProps.isFavorite`, `src/accidents/view/react/view-model.ts` — essence's own `TArticle.isFavorite` forwarded as-is, not a new flag, so the icon doesn't have to parse `favoriteLabel`'s text back apart to recover the same fact). No animation — a plain state change, same as everything else in this app. React app only, same scoping as the rest of this section's visual items
 
 ### Underlying technology
 

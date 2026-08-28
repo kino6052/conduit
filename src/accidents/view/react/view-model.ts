@@ -84,6 +84,11 @@ export const onSetFilter = (
 
 export type TFavoriteFollowProps = {
   favoriteLabel: string;
+  // Not a new flag standing in for anything -- this is essence's own
+  // TArticle.isFavorite, forwarded as-is, so the favorited icon
+  // (components.ts) can render filled/outline directly instead of
+  // parsing favoriteLabel's text back apart to recover the same fact.
+  isFavorite: boolean;
   onFavoriteClick: () => void;
   followLabel: string;
   onFollowClick: () => void;
@@ -100,6 +105,7 @@ export function compileFavoriteFollowProps(
 ): TFavoriteFollowProps {
   return {
     favoriteLabel: `${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})`,
+    isFavorite: article.isFavorite,
     onFavoriteClick: () => onToggleFavorite(article.title, getState, setState),
     followLabel: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
     onFollowClick: () => onToggleFollow(article.authorName, getState, setState),

@@ -94,6 +94,41 @@ function AuthorLink(authorName: string, onClick: () => void) {
   );
 }
 
+// A minimal inline heart -- filled once favorited, outline otherwise --
+// next to the same favoriteLabel text that was already there. No icon
+// library: one <svg>, one <path>, styled entirely by currentColor so it
+// picks up whatever .btn-accent's own color already is.
+function HeartIcon(filled: boolean) {
+  return React.createElement(
+    "svg",
+    {
+      viewBox: "0 0 24 24",
+      width: 14,
+      height: 14,
+      "aria-hidden": true,
+      fill: filled ? "currentColor" : "none",
+      stroke: "currentColor",
+      strokeWidth: 2,
+    },
+    React.createElement("path", {
+      d: "M12 21s-6.7-4.35-9.3-8.1C.8 9.8 1.6 6.2 4.6 5 6.7 4.15 9 5 12 8c3-3 5.3-3.85 7.4-3 3 1.2 3.8 4.8 1.9 7.9C18.7 16.65 12 21 12 21z",
+    }),
+  );
+}
+
+function FavoriteButton(props: {
+  isFavorite: boolean;
+  favoriteLabel: string;
+  onFavoriteClick: () => void;
+}) {
+  return React.createElement(
+    "button",
+    { className: "btn btn-accent", onClick: props.onFavoriteClick },
+    HeartIcon(props.isFavorite),
+    props.favoriteLabel,
+  );
+}
+
 function TagList(tags: string[], onTagClick?: (tag: string) => void) {
   return React.createElement(
     "ul",
@@ -137,11 +172,7 @@ export function ArticlePreview(props: TArticlePreviewProps) {
     React.createElement(
       "div",
       { className: "actions" },
-      React.createElement(
-        "button",
-        { className: "btn btn-accent", onClick: props.onFavoriteClick },
-        props.favoriteLabel,
-      ),
+      FavoriteButton(props),
     ),
   );
 }
@@ -199,11 +230,7 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
     React.createElement(
       "div",
       { className: "actions" },
-      React.createElement(
-        "button",
-        { className: "btn btn-accent", onClick: props.onFavoriteClick },
-        props.favoriteLabel,
-      ),
+      FavoriteButton(props),
       props.onEditClick
         ? React.createElement(
             "button",
