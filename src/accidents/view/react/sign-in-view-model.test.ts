@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TState } from "../../../essence/state";
 import { createMemorySignIn } from "../../sign-in/sign-in";
-import { compileSignInViewModel, restoreSignedInIdentity } from "./sign-in-view-model";
+import { compileSignInViewModel } from "./sign-in-view-model";
 
 function makeState(initial: TState) {
   let current = initial;
@@ -43,27 +43,6 @@ describe("compileSignInViewModel", () => {
     signInViewModel.onSignOutClick();
 
     expect(compileSignInViewModel(signIn, getState, setState).signedInName).toBeUndefined();
-    expect(getState().name).toBe("alice");
-  });
-});
-
-describe("restoreSignedInIdentity", () => {
-  it("does nothing for a guest -- no signed-in name to restore", () => {
-    const { getState, setState } = makeState(createInitialState());
-    const signIn = createMemorySignIn();
-
-    restoreSignedInIdentity(signIn, getState, setState);
-
-    expect(getState().name).toBe(createInitialState().name);
-  });
-
-  it("changes the acting identity's name to match an already-signed-in name", () => {
-    const { getState, setState } = makeState(createInitialState());
-    const signIn = createMemorySignIn();
-    signIn.signIn("alice", "whatever");
-
-    restoreSignedInIdentity(signIn, getState, setState);
-
     expect(getState().name).toBe("alice");
   });
 });

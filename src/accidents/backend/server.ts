@@ -211,6 +211,23 @@ export function createBackendServer(dbPath: string, port: number) {
           });
           return json({ comments: readComments(db, articleTitle) }, 201);
         }
+
+        if (req.method === "DELETE") {
+          // Matched by its own fields, not a synthetic id -- the same
+          // natural-key identification essence's own deleteComment
+          // relies on (src/essence/comment.ts), not this table's internal
+          // autoincrement id.
+          const body = (await req.json()) as { authorName: string; body: string; createdAt: string };
+          db.query(
+            "DELETE FROM comments WHERE article_title = $article_title AND author_name = $author_name AND body = $body AND created_at = $created_at",
+          ).run({
+            $article_title: articleTitle,
+            $author_name: body.authorName,
+            $body: body.body,
+            $created_at: body.createdAt,
+          });
+          return json({ comments: readComments(db, articleTitle) });
+        }
       }
 
       const favoriteMatch = pathname.match(/^\/api\/articles\/([^/]+)\/favorite$/);

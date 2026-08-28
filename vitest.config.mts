@@ -39,6 +39,7 @@ export default defineConfig({
         // under bun:test (docs/realworld-essence-checklist.md's "Part 3").
         "src/accidents/backend/db.ts",
         "src/accidents/backend/server.ts",
+        "src/accidents/backend-sync/backend-sync-client.ts",
       ],
       reporter: ["text", "json-summary"],
     },
