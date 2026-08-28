@@ -46,6 +46,24 @@ export type TComment = {
 
 export type TFilterName = "global" | "personal"; // everyone, or just who you follow
 
+// A name's bio and avatar image are perceivable facts attached to that
+// name -- same ontological status as followedAuthors/favoritedBy below
+// (a relation over names), not fields on some User/Person/Profile entity
+// that "has" a name. There is no such entity anywhere in this essence
+// (docs/ontological-entities-in-this-repo.md); there are only names, and
+// the independent, screen-perceivable things attached to them. A name
+// with no entry here simply has no bio/avatar to show yet -- not an error,
+// same as an author nobody's followed yet just isn't in followedAuthors.
+export type TBio = {
+  name: string;
+  text: string;
+};
+
+export type TAvatarUrl = {
+  name: string;
+  url: string;
+};
+
 export type TState = {
   // The acting identity -- always present in essence. Whether anyone is
   // currently "signed in" (vs. a guest) is an accident's concern, tracked
@@ -57,6 +75,8 @@ export type TState = {
   articles: TArticle[];
   comments: TComment[];
   followedAuthors: string[];
+  bios: TBio[];
+  avatarUrls: TAvatarUrl[];
   filterName: TFilterName;
   activeTag: string | null;
 };
@@ -67,6 +87,8 @@ export function createInitialState(): TState {
     articles: [],
     comments: [],
     followedAuthors: [],
+    bios: [],
+    avatarUrls: [],
     filterName: "global",
     activeTag: null,
   };
