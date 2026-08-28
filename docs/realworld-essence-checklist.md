@@ -298,6 +298,10 @@ persistent dataset, same as every actual RealWorld implementation.
   - An executor that takes `TSyncAction[]` and actually `fetch`es them — untested, real IO, same category as `navigation-hash.ts`.
   - Wired into `createRxState`'s `setState` only inside `src/index.ts`'s `createDefaultDependencies` — every other composition root (`index.essence.ts`, `index.essential-dependencies.ts`, `essential-ui`) stays exactly as it is today, fully in-memory, no backend, same "essential vs. real IO" split already established for navigation/persistence/state-management.
   - On startup, replaces `loadSeedArticles()` for the real app only: fetches from the backend (`GET /api/articles`, each article's comments, and — once a signed-in name is known — `GET /api/users/:name/following`) and assembles the initial `TState`. First-boot seeding (an empty database) is the *server's* job, not the client's — it seeds itself once, on boot, if `articles` is empty.
+- [ ] **A real loading state, since hydration is now async where it wasn't before.** Today `createRxState(createInitialState())` has a real `TState` the instant the app boots — synchronous, nothing to wait for. Fetching from a real server means there's a window, however brief, with no real state yet. Two ways this could go, and the wrong one silently ships a bug:
+  - **Wrong:** start from `createInitialState()` (empty feed, guest) and swap it for the fetched state once the request resolves. This flashes "no articles, not signed in" — actively misleading, not just empty — before the real content appears.
+  - **Right, and the one to build:** the server-synced state-management accident's own `getState()` returns `TState | undefined` — `undefined` meaning "not hydrated yet" — same "presence, not a flag" discipline this codebase already uses everywhere (`signedInName: string | undefined`, `onDeleteClick: (() => void) | undefined`). `src/index.ts`'s own adapter code (not `composeApp`, not any view-model — those stay exactly as they are, still assuming a real `TState`) checks for `undefined` *before* ever calling `composeApp`, and renders a plain "Loading…" element instead. Once hydration resolves and the subscribed listener fires, the real render tree takes over. This keeps the loading concern where it belongs: an accident of *this one real IO implementation*, invisible to `TStateManagement<T>`'s shared contract, to every other composition root, and to every existing test.
+  - Loading state is not essence — it's not a domain fact about articles/authors/identity, it's "is the network request in flight," the same category of thing `TConfirm`/navigation/persistence already keep out of `TState`.
 - [ ] **Concurrency** — last-write-wins, no locking, no merge. Acceptable at this app's demo scale; flagged here so it's a documented limitation, not a silent gap.
 
 ### Rollout, one cycle at a time
@@ -308,7 +312,7 @@ persistent dataset, same as every actual RealWorld implementation.
 - [ ] `PUT /api/user` (bio/avatar), `GET /api/users/:name/following`
 - [ ] `computeSyncActions` + its tests (pure, no network)
 - [ ] The real fetch-based executor, wired only into `src/index.ts`
-- [ ] Client hydration on startup replaces `loadSeedArticles` for the real app
+- [ ] Client hydration on startup replaces `loadSeedArticles` for the real app, with a real `undefined`-until-ready loading state (not a flash of empty/guest content) gating when `composeApp` is first called
 - [ ] `.gitignore` the SQLite data file
 - [ ] Live verification: two browser tabs, one publishes/favorites/comments/follows/edits its bio, reload the other tab and see it persisted there too
 
