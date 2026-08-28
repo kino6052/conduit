@@ -8,16 +8,27 @@ following **Empirically Grounded Software** principles — see
 version: every piece of software is **substance** (the essence — what it means to the user)
 wrapped in **accidents** (the machinery that delivers it — frameworks, databases, styling,
 routing). Accidents are swappable; the essence is not. We build the essence first, keep it
-framework-free, and only then wrap it in whatever accidents the moment calls for.
+framework-free, and only then wrap it in whatever accidents the moment calls for — and we keep
+every decision *about* those accidents open for as long as possible, deciding the framework, the
+database, the API shape, even whether Sign In and Sign Up are one page or two, only once the
+essence made the question concrete enough to actually answer. The
+[Philosophy in practice](#philosophy-in-practice) section below is the fuller argument for why
+that ordering isn't just a style preference: it's what makes the rest of this README's claims
+checkable rather than asserted.
 
-**Status:** most of the essence is built and checked off in
-[`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md), each item pointing
-at the `src/essence` code and its views (`src/accidents/view`) that prove it — 185 tests, branch
-coverage 105/105 (100%). A round of checking that checklist against the actual RealWorld/Conduit
-spec (paraphrased locally in [`docs/spec/`](docs/spec)) turned up real gaps still open: an
-author's bio and avatar image are genuine essence, not accident, and the Settings page needed to
-edit them isn't built yet, along with a few smaller UI divergences (see the checklist's open
-items). Pagination, navigation, styling, and a full React delivery are built.
+**Status:** finished, for now. Every essence item in
+[`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md) is built and checked
+off, each pointing at the `src/essence` code and its views (`src/accidents/view`) that prove it.
+A round of checking that checklist against the actual RealWorld/Conduit spec (paraphrased locally
+in [`docs/spec/`](docs/spec)) turned up real, spec-grounded gaps — an author's bio and avatar
+image, a Settings page to edit them, Sign In and Sign Up as two real pages, a real backend — all
+since closed. 245 tests, branch coverage 156/156 (100%). Four composition roots
+([below](#project-layout)) all build and run: the real app (React, RxJS, hash routing, a
+Bun+SQLite backend), the essential-dependencies build (same real logic, in-memory dependencies),
+the bare essence-view (no framework at all), and essential-ui (essence-view plus a stylesheet).
+What's left open is deliberately left open — see the checklist's own "Open questions" section for
+the calls still flagged as unilateral, and the caveat on reification below for why "finished"
+here means "nothing currently known to be ungrounded," not "nothing left to ever revisit."
 
 ## Project layout
 
@@ -260,6 +271,208 @@ progress.
 
 - Requires a coherent conceptual understanding of the application up front.
 - Necessitates ongoing refactoring as the checklist grows.
+
+## Philosophy in practice
+
+Everything above is a method. This section is why the method produces the specific things this
+repo has: four composition roots instead of one, decisions left open for most of the project's
+life, and a coverage gate that fails the build at 99%. None of it is aesthetic preference —
+each choice is what the essence/accident split *implies*, once you take it seriously enough to
+follow through.
+
+### Decisions kept open — on purpose, and for a long time
+
+"Build the essence first" only means something if the accidents genuinely stayed undecided
+while it happened. In this repo they did, checkably:
+
+- **The backend didn't exist until the very last feature.** Every essence function — favoriting,
+  following, writing, commenting — was built, tested, and clicked-through in
+  `src/accidents/view/essence` for most of this project's life with *no* durable storage
+  anywhere except a signed-in name in `localStorage`. Bun and SQLite weren't chosen on day one
+  and worked backward from; they were chosen once "we need a backend" was itself the next item
+  on the checklist, planned as its own doc section (`docs/realworld-essence-checklist.md`'s
+  "Part 3") *before* a line of server code existed, specifically so the choice could be argued
+  about instead of assumed.
+- **Bio and avatar sat unbuilt, on purpose, until the spec forced the question.** An earlier pass
+  reasoned — wrongly — that neither had "a perceivable correlate anywhere in this app's actual
+  rendered output" and used that to decide against a Settings page outright. That call held for
+  a while, got checked against the actual RealWorld specification, turned out to be reasoning
+  from this codebase's own current gaps rather than from the thing it was supposed to be
+  grounded in, and was reversed — see
+  [`docs/ontological-entities-in-this-repo.md`](docs/ontological-entities-in-this-repo.md)'s
+  Author entry, which still carries the correction inline rather than a silently edited history.
+  The point isn't that the first call was wrong; it's that the architecture made the wrongness
+  cheap to find and cheap to fix, because nothing downstream had been built assuming it.
+- **Whether Sign In and Sign Up should be one page or two stayed an open question** — literally
+  flagged as one, by name, in the checklist's own "Open questions" section — for most of this
+  project, resolved only once it was worth answering.
+- Every one of these lived, while undecided, as a flagged, dated, revisitable entry in
+  `docs/realworld-essence-checklist.md`'s own "Open questions / unilateral calls" section — not
+  as an implicit assumption baked into code no one thought to question.
+
+This is Step 4 (`Connecting to IO`, above) taken all the way: not "defer storage a little," but
+defer *every* accident-level commitment until the essence has made the question concrete enough
+that answering it is a real decision instead of a guess dressed up as one.
+
+### Why four composition roots, not one
+
+A claim like "the essence doesn't depend on React, RxJS, or a backend" is unfalsifiable until
+someone actually tries running it without them. One working app proves nothing about that claim
+— you cannot tell, from a single build, whether framework-coupling quietly leaked in, because
+there's nothing to compare it against. So this repo doesn't have one composition root; it has
+four, each one a live falsification attempt against a specific piece of the claim:
+
+- **`src/index.essence.ts`** — the essence with *no* framework at all: no React, no build step,
+  plain DOM strings. If the essence secretly needed React, this wouldn't run.
+- **`src/accidents/view/essential-ui`** — the exact same essence-view render functions, with
+  only a stylesheet layered on top. If styling and logic were actually entangled, this
+  wouldn't be a one-line `import`.
+- **`src/index.essential-dependencies.ts`** — the *real* `composeApp`, the real React
+  components, wired to the simplest possible implementation of every dependency (in-memory
+  state, no URL, an always-`true` confirm). If any of navigation, persistence, or the backend
+  had quietly become load-bearing for the composition logic itself, this build would either fail
+  to compile or behave differently in some way beyond "the URL bar doesn't update and a reload
+  loses everything" — exactly the two things the swapped dependencies were actually responsible
+  for, and the only two things that are allowed to differ.
+- **`src/index.ts`** — every accident for real: React, RxJS, hash routing, `localStorage`, a
+  Bun+SQLite backend over HTTP.
+
+This isn't hypothetical insurance. It caught a real bug this project: essence-view's Editor used
+`type="button"` with manual click-delegation (a fix for real click-handling quirks), which meant
+the native HTML `required` attribute — added to match the real app's validation — was silently
+inert there, since `required` only guards an actual `submit` event. The bug was invisible in the
+real app, where `required` genuinely works. It was only visible because a second, framework-free
+build of the same essence existed to check against — the falsification attempt actually caught
+something, which is the only way you'd know the whole exercise wasn't theater.
+
+### What this grounds: SOLID, precisely
+
+The full mapping lives in [`docs/solid-in-this-repo.md`](docs/solid-in-this-repo.md); the
+headline claim is that every letter stops being a matter of taste once "essence" has a checkable
+definition — [`docs/ontological-entities-in-this-repo.md`](docs/ontological-entities-in-this-repo.md),
+built from what the app's own render functions actually produce, not from what a developer
+assumes exists.
+
+- **Single Responsibility** stops meaning "one reason to change" — a phrase so elastic that
+  every stakeholder in the building counts as a reason, which makes the principle unfalsifiable:
+  no file could ever conclusively violate it, because you can always invent a reason it might
+  need to change. The grounded version is checkable instead: *one file's logic touches exactly
+  one entity, one relation, or one named derived composite from the entity list — never a mix.*
+  `TArticleDetailViewModel.isOwnArticle` failed this test and was removed — not because someone
+  felt it was inelegant, but because it belonged to none of the three categories: not an entity,
+  not a relation, not a named composite, just a cached comparison masquerading as a fact.
+- **Open/Closed** is why `src/essence/state.ts` has never once grown an accident-only field.
+  Pagination needed `page`/`pageSize`; they live in
+  `src/accidents/pagination/pagination-state.ts`'s `TPaginationState = TState & { page; pageSize }`
+  — essence extended by intersection, never edited. The same shape was reused for this session's
+  loading-state accident (`TLoadingState = TState & { isLoaderShown }`) without anyone having to
+  re-derive the pattern; it was already load-bearing precedent, not a one-off decision.
+- **Liskov Substitution** holds because a decorated state is a strict superset, not a
+  reshaping — `TPaginationState` and `TLoadingState` both satisfy every essence function's
+  contract with zero adapter code, because they *are* a `TState`, plus more.
+- **Interface Segregation** is the rule this README's own "essential contract" section spends
+  the most words on: a contract shaped like the interaction (`onClick`, a label, a list), never
+  like the domain (`onSubmitArticle`) and never like the delivery mechanism (`onSubmit`) —
+  `isMine` taking `{ authorName: string }` instead of a whole `TArticle` is the same rule one
+  level down, on a single function instead of a whole boundary.
+- **Dependency Inversion** is the one rule enforced by the file system itself, not just
+  convention: `src/essence` has zero imports from `src/accidents`, checkable with one grep.
+
+### Myths this busts
+
+Once "an entity is a thing that appears in the program's own rendered output" is the actual
+test — not "a thing the team agreed to model" — several standard pieces of advice stop surviving
+contact with it:
+
+- **Domain-Driven Design's "domain" is not a feature of the software's relationship to its
+  user — it's a model of the organization's own bureaucracy.** A user never sees an Aggregate
+  Root, a Bounded Context, or a Repository; they see a button, a list, a form, a confirmation
+  message. Those are the actual ontological primitives — the same list this repo's own
+  [`docs/ontological-entities-in-this-repo.md`](docs/ontological-entities-in-this-repo.md)
+  derives, line by line, from what `renderFeed`/`renderArticleDetail`/the React components
+  actually produce. The moment "Customer" or "Aggregate" gets architectural authority instead
+  of a rendered `<article>` or `<li>`, the org chart has been handed the structural weight of
+  physical law — and org charts change for political reasons, constantly, while a button either
+  is or isn't on the screen. This is an inverted ontological commitment in the literal sense: DDD
+  takes the map (how people in a meeting talk about the system) as more real than the territory
+  (what the system actually shows a user), when it has to be the other way around for the
+  architecture to answer to anything checkable.
+- **"The bounded contexts were drawn wrong" is not a diagnosis — it's the tell that the
+  methodology is unfalsifiable.** When a DDD system, a microservices architecture, or an
+  event-sourced system becomes unmaintainable, the standard explanation is always some version
+  of "not executed correctly," never "the method itself was the problem." A claim that can
+  absorb every failure as evidence of insufficient purity, rather than as evidence against
+  itself, isn't an engineering claim — it can't be tested, which means it can't be wrong, which
+  means it isn't telling you anything. This repo's essence/accident split makes the opposite bet
+  explicitly falsifiable, and stakes something on it: if any of the four composition roots above
+  failed to build, or behaved differently in some way beyond what its swapped-out accidents were
+  actually responsible for, that would be direct evidence the essence wasn't as pure as claimed
+  — not a reason to add a fifth composition root and call the first four "not executed
+  correctly."
+- **"One reason to change" is itself an example of the pattern it's diagnosing in others** — an
+  ungrounded principle, stated as if self-evidently true, that turns out to be unfalsifiable the
+  moment you ask what actually counts as a reason. This repo doesn't reject SRP; it replaces the
+  unfalsifiable phrasing with the checkable one two sections up, which is the same move made
+  against DDD, just aimed at a principle usually taken for granted rather than one usually
+  argued against.
+
+### TDD, and why the coverage gate is doing more than QA
+
+Every essence change goes through the same six-step loop (Step 3, above): a failing test first,
+the smallest implementation that passes it, a refactor pass that's allowed to conclude "nothing
+to refactor," a coverage run, a manual click in `essence-view`, one commit. `bun run
+test:branches` isn't measuring code quality in the abstract — it fails the build under 100%, on
+purpose, and that specific bar (branches, not lines — a line can execute while only ever taking
+one of its paths) is what turns coverage from a QA metric into an entity-creep detector.
+
+Here's the mechanism: a reified field — a stored flag, a cached value, an `id`, a duplicated fact
+— almost never introduces new *behavior*. It introduces a new *branch*: a check for whether the
+cached value agrees with the thing it's cached from, an `if` that only exists to keep two
+representations in sync, a fallback for the case where they've drifted. To hit 100%, that branch
+now needs its own test — which means writing a test whose entire purpose is proving a reification
+doesn't cause a bug that a derived computation could never have had in the first place, because
+there'd be nothing to drift. Writing that test is uncomfortable in exactly the way that's useful:
+it's the moment the reification announces itself, before it's had time to spread. This project's
+own `favoritedBy: string[]` replacing a stored `isFavorite`/`favoritesCount` pair is that pattern
+caught directly — the stored pair could disagree with reality by construction (nothing forced
+`favoritesCount` to equal how many names had actually favorited it); `favoritedBy.length` cannot,
+because there's only one fact, not two describing the same thing.
+
+The speed argument follows from the same mechanism, not a separate one. Because every essence
+function is small, pure, and already proven correct down to the branch, a refactor doesn't need
+a QA pass, a staging deploy, or a colleague's manual click-through to be trusted — `bun run
+test:branches` either stays green or it doesn't, in seconds, for the whole essence at once. The
+"Cons" list above says this approach "necessitates ongoing refactoring as the checklist grows";
+100% branch coverage is exactly what makes that refactoring cheap enough to actually happen
+instead of being deferred the way it usually is everywhere else.
+
+### The caveat: reifications slip in anyway
+
+None of this makes grounding self-sustaining. It has to be re-checked, constantly, because
+reification is not a one-time architectural mistake you avoid by deciding to — it's the default
+gravity of naming things, and it slipped into *this* project's own code and docs more than once,
+with the discipline explicitly in force the whole time:
+
+- `docs/ontological-entities-in-this-repo.md`'s own Author entry asserted, confidently, that
+  there was "no bio, no avatar, no email" — a claim about what doesn't exist that turned out to
+  be wrong, made from introspecting this codebase's current state rather than checking the
+  actual spec the checklist is supposed to answer to.
+- `TArticle.isFavorite`/`favoritesCount` were exactly the kind of stored duplication the
+  coverage argument above describes — present in the codebase for a real stretch of time before
+  being caught and replaced.
+- Mid-session, correcting a Settings-page decision required an explicit reminder that bio,
+  avatar, and identity fields describe *names*, not *people* — that this app's ontology has no
+  `User`/`Person` entity, only names and the independent, perceivable facts attached to them
+  (`src/essence/bio.ts`'s and `avatar.ts`'s own header comments exist specifically to keep that
+  distinction visible at the one place future code would be most tempted to blur it).
+
+The lesson isn't that the method failed; it's that grounding decays without active maintenance,
+the same way any invariant does. That's precisely why the TDD loop's third step is "Refactor,"
+every single cycle, not "refactor when it starts to hurt" — and precisely why 100% branch
+coverage matters here specifically: it's what makes near-constant refactoring cheap enough to
+actually happen on every cycle, rather than being the thing that gets skipped when a deadline is
+close. A codebase that can't afford to refactor constantly will accumulate the reifications this
+philosophy exists to prevent, regardless of how good its founding principles were on day one.
 
 ## Conclusion
 
