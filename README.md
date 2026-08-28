@@ -10,12 +10,14 @@ wrapped in **accidents** (the machinery that delivers it — frameworks, databas
 routing). Accidents are swappable; the essence is not. We build the essence first, keep it
 framework-free, and only then wrap it in whatever accidents the moment calls for.
 
-**Status:** the essence is complete — every checkable item in
-[`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md) is checked off,
-each pointing at the `src/essence` code and its views (`src/accidents/view`) that prove it. 72
-tests, branch coverage 36/36 (100%). Step 5 (layering accidents on the now-stable essence) is
-underway: pagination, navigation, styling, and a full React delivery are built; auth and
-markdown rendering aren't yet.
+**Status:** most of the essence is built and checked off in
+[`docs/realworld-essence-checklist.md`](docs/realworld-essence-checklist.md), each item pointing
+at the `src/essence` code and its views (`src/accidents/view`) that prove it — 185 tests, branch
+coverage 105/105 (100%). A round of checking that checklist against the actual RealWorld/Conduit
+spec (paraphrased locally in [`docs/spec/`](docs/spec)) turned up real gaps still open: an
+author's bio and avatar image are genuine essence, not accident, and the Settings page needed to
+edit them isn't built yet, along with a few smaller UI divergences (see the checklist's open
+items). Pagination, navigation, styling, and a full React delivery are built.
 
 ## Project layout
 
