@@ -59,13 +59,19 @@ export function render(): void {
 
 function publishFromForm(form: HTMLFormElement): void {
   const data = new FormData(form);
+  const title = String(data.get("title") ?? "");
+  // A blank title would collide under the natural-key identification
+  // scheme every essence function relies on (an article *is* its title) --
+  // same "if (!x) return;" guard postCommentFromForm already uses for a
+  // blank comment body.
+  if (!title) return;
   const tags = String(data.get("tags") ?? "")
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
 
   state = writeArticle(state, {
-    title: String(data.get("title") ?? ""),
+    title,
     summary: String(data.get("summary") ?? ""),
     body: String(data.get("body") ?? ""),
     tags,
@@ -77,13 +83,15 @@ function saveEditsFromForm(form: HTMLFormElement): void {
   const data = new FormData(form);
   const originalTitle = String(data.get("originalTitle") ?? "");
   if (!originalTitle) return;
+  const title = String(data.get("title") ?? "");
+  if (!title) return;
   const tags = String(data.get("tags") ?? "")
     .split(",")
     .map((tag) => tag.trim())
     .filter(Boolean);
 
   state = editArticle(state, originalTitle, {
-    title: String(data.get("title") ?? ""),
+    title,
     summary: String(data.get("summary") ?? ""),
     body: String(data.get("body") ?? ""),
     tags,

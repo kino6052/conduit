@@ -8,6 +8,15 @@ import { TArticle } from "../../../essence/state";
 // originalTitle field carries which article is being replaced, since
 // title is how articles are identified everywhere else too (no synthetic
 // id, same as selectArticle/editArticle/deleteArticle).
+//
+// No `required` on the title field -- unlike the React app's Editor
+// (src/accidents/view/react/components.ts), this button is deliberately
+// `type="button"`, not `type="submit"` (the browser-click-unreliability
+// fix, PROMPT.md): nothing here ever fires a native `submit` event, so
+// `required` would be silently inert, not a working guard. The actual
+// blank-title guard lives in src/index.essence.ts's publishFromForm/
+// saveEditsFromForm, same `if (!x) return;` shape postCommentFromForm
+// already used for a blank comment body.
 export function renderEditor(article?: TArticle): string {
   const action = article ? "save-article" : "publish-article";
   const originalTitleField = article

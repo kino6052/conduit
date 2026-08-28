@@ -205,6 +205,24 @@ describe("composeApp", () => {
     expect(deps.navigation.getPage()).toBe("home");
   });
 
+  it("publishing with a blank title does nothing -- a defensive guard, since the browser's own required attribute isn't a true guarantee", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "alice");
+    deps.navigation.openEditor();
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "editor", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TEditorPageProps;
+    result.editorProps?.onClick({ title: "", summary: "s", body: "b", tags: ["x"] });
+
+    expect(deps.getRealState().articles).toEqual([]);
+    // Still on the editor page -- if the guard hadn't fired, a successful
+    // publish would have navigated home.
+    expect(deps.navigation.getPage()).toBe("editor");
+  });
+
   it("editing an article updates it and navigates to its (possibly renamed) page", () => {
     const deps = makeDeps({ ...createInitialState(), articles: [{ ...article, authorName: "alice" }] });
     signInAs(deps, "alice");

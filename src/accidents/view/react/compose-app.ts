@@ -106,6 +106,14 @@ export function composeApp<R>(
       ? selectArticle(state, editingArticleTitle)
       : undefined;
     const onEditorSubmit = (draft: Omit<TDraftArticle, "createdAt">): void => {
+      // A blank title would collide under the natural-key identification
+      // scheme every essence function relies on (an article *is* its
+      // title). The real Editor's title input is required, so the
+      // browser already blocks this in practice -- this is defense in
+      // depth for whatever calls onClick directly, same as
+      // src/index.essence.ts's own publishFromForm/saveEditsFromForm
+      // guard.
+      if (!draft.title) return;
       if (editingArticleTitle) {
         setState(editArticle(getState(), editingArticleTitle, draft));
         // Off to see the result, not back to a blank form -- the title

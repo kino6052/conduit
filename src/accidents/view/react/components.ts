@@ -293,6 +293,13 @@ export function Editor(props: TEditorProps) {
       name: "title",
       placeholder: "Article Title",
       defaultValue: props.title,
+      // required, not a custom error message -- a blank title isn't just
+      // an incomplete article, it breaks the natural-key identification
+      // scheme every essence function already relies on (an article *is*
+      // its title; two blank ones would collide). The browser's own
+      // built-in validation UI is the whole mechanism here, same "plain
+      // fields" choice already made for every input in this app.
+      required: true,
     }),
     React.createElement("input", {
       name: "summary",
@@ -343,8 +350,18 @@ export function SignIn(props: TSignInViewModel) {
   return React.createElement(
     "form",
     { className: "form", onSubmit: handleSubmit },
-    React.createElement("input", { name: "name", placeholder: "Name" }),
-    React.createElement("input", { name: "password", type: "password", placeholder: "Password" }),
+    // required on both -- same reasoning as Editor's title: a blank name
+    // can't become the acting identity anything else gets attributed to,
+    // and a blank password isn't a credential at all even though nothing
+    // checks its substance yet. Browser-native validation, no custom
+    // error-message UI invented for it.
+    React.createElement("input", { name: "name", placeholder: "Name", required: true }),
+    React.createElement("input", {
+      name: "password",
+      type: "password",
+      placeholder: "Password",
+      required: true,
+    }),
     React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Sign In"),
   );
 }
