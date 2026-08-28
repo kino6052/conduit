@@ -48,6 +48,11 @@ markdown rendering aren't yet.
     data and green tests. See [its README](src/accidents/view/essence/README.md). Deliberately
     has no pages of its own — see the essence checklist's "Pages" section for why a grounding
     tool and a real app want opposite things here.
+  - **[`view/essential-ui/`](src/accidents/view/essential-ui)** — the barebone/essential UI
+    dependency: the exact same essence-view render functions and composition root, unchanged
+    (`main.ts` here is a one-line `import "../essence/main"`), with a minimal stylesheet and
+    HTML shell layered on top instead of essence-view's own zero styling. Builds on top of the
+    essence-view literally — not a fork, a presentation layer.
   - **[`navigation/`](src/accidents/navigation)**, **[`pagination/`](src/accidents/pagination)**,
     **[`state-management/`](src/accidents/state-management)** — smaller, isolated accidents,
     developed and tested independent of either view.
@@ -70,6 +75,7 @@ bun run test:branches   # branch coverage via vitest+istanbul, fails under 100%
 bun run essence-view    # serve src/accidents/view/essence at http://localhost:4321
 bun run app             # serve src/accidents/view/react at http://localhost:4323
 bun run essential-app   # serve the same app on essential (in-memory) dependencies at http://localhost:4322
+bun run essential-ui    # serve essence-view with a minimal stylesheet layered on top, at http://localhost:4324
 ```
 
 ## Development Approach

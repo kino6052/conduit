@@ -31,6 +31,7 @@ export default defineConfig({
         "src/accidents/view/react/main.ts",
         "src/accidents/view/react/main-essential-dependencies.ts",
         "src/accidents/view/essence/main.ts",
+        "src/accidents/view/essential-ui/main.ts",
         "src/accidents/navigation/navigation-hash.ts",
       ],
       reporter: ["text", "json-summary"],
