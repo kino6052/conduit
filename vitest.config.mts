@@ -34,6 +34,11 @@ export default defineConfig({
         "src/accidents/view/essential-ui/main.ts",
         "src/accidents/navigation/navigation-hash.ts",
         "src/accidents/persistence/persistence-local-storage.ts",
+        // The backend accident's own real IO (bun:sqlite, Bun.serve) --
+        // same category as the two files above, verified live, not
+        // under bun:test (docs/realworld-essence-checklist.md's "Part 3").
+        "src/accidents/backend/db.ts",
+        "src/accidents/backend/server.ts",
       ],
       reporter: ["text", "json-summary"],
     },

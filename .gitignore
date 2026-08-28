@@ -1,4 +1,7 @@
 node_modules/
+# The backend accident's SQLite data file (docs/realworld-essence-checklist.md's
+# "Part 3") -- local dev state, not something to commit.
+data/
 /target/
 .DS_Store
 package-lock.json

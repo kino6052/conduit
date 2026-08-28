@@ -9,7 +9,8 @@
     "essence-view": "bun scripts/serve-essence-view.ts",
     "app": "bun scripts/serve-app.ts",
     "essential-app": "bun scripts/serve-essential-dependencies-app.ts",
-    "essential-ui": "bun scripts/serve-essential-ui.ts"
+    "essential-ui": "bun scripts/serve-essential-ui.ts",
+    "backend": "bun scripts/serve-backend.ts"
   },
   "dependencies": {
     "marked": "^18.0.9",
