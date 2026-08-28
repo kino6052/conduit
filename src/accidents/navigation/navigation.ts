@@ -11,7 +11,7 @@
 // screens exist as distinct, reachable places (vs. everything on one
 // always-visible screen) doesn't change what the app *is*, only how it's
 // delivered.
-export type TPage = "home" | "login" | "article" | "editor" | "profile";
+export type TPage = "home" | "login" | "register" | "article" | "editor" | "profile" | "settings";
 
 export type TNavigation = {
   getPage: () => TPage;
@@ -29,8 +29,16 @@ export type TNavigation = {
   getProfileAuthorName: () => string | null;
   openArticle: (title: string) => void;
   openLogin: () => void;
+  // A genuinely separate page from Login, per the real spec
+  // (docs/spec/routes.md) -- even though this app's own identity model
+  // makes them the same underlying action (TSignIn.signIn(name, password)
+  // either reuses or creates that name; there's no separate account
+  // record to distinguish "already exists" from "brand new"). See
+  // docs/realworld-essence-checklist.md's Sign In/Sign Up entry.
+  openRegister: () => void;
   openEditor: (title?: string) => void;
   openProfile: (authorName: string) => void;
+  openSettings: () => void;
   goHome: () => void;
   subscribe: (listener: () => void) => () => void;
 };
@@ -72,6 +80,11 @@ export function createMemoryNavigation(): TNavigation {
       page = "login";
       notify();
     },
+    openRegister: () => {
+      clearEverything();
+      page = "register";
+      notify();
+    },
     openEditor: (title) => {
       clearEverything();
       page = "editor";
@@ -82,6 +95,11 @@ export function createMemoryNavigation(): TNavigation {
       clearEverything();
       page = "profile";
       profileAuthorName = authorName;
+      notify();
+    },
+    openSettings: () => {
+      clearEverything();
+      page = "settings";
       notify();
     },
     goHome: () => {

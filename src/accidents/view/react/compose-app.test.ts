@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TArticle, TComment, TState } from "../../../essence/state";
 import { createMemoryNavigation } from "../../navigation/navigation";
-import { createSignIn } from "../../sign-in/sign-in";
+import { createMemorySignIn } from "../../sign-in/sign-in";
 import { createMemoryState } from "../../state-management/state-management";
 import { compileSignInViewModel } from "./sign-in-view-model";
 import { composeApp, TComposeAppDependencies, TView } from "./compose-app";
@@ -11,6 +11,8 @@ import {
   THomePageProps,
   TLoginPageProps,
   TProfilePageProps,
+  TRegisterPageProps,
+  TSettingsPageProps,
 } from "./pages";
 
 // The "bare bone view models" the user asked for: no React, no rendering
@@ -20,17 +22,21 @@ import {
 // compile*ViewModel's return value.
 type TAnyPageProps =
   | TLoginPageProps
+  | TRegisterPageProps
   | THomePageProps
   | TEditorPageProps
   | TArticlePageProps
-  | TProfilePageProps;
+  | TProfilePageProps
+  | TSettingsPageProps;
 
 const identityView: TView<TAnyPageProps> = {
   LoginPage: (props) => props,
+  RegisterPage: (props) => props,
   HomePage: (props) => props,
   EditorPage: (props) => props,
   ArticlePage: (props) => props,
   ProfilePage: (props) => props,
+  SettingsPage: (props) => props,
 };
 
 const article: TArticle = {
@@ -40,8 +46,7 @@ const article: TArticle = {
   tags: ["x"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 function makeDeps(
@@ -49,7 +54,7 @@ function makeDeps(
   confirm: TComposeAppDependencies<TAnyPageProps>["confirm"] = () => true,
 ): TComposeAppDependencies<TAnyPageProps> & { getRealState: () => TState } {
   const navigation = createMemoryNavigation();
-  const signIn = createSignIn();
+  const signIn = createMemorySignIn();
   const stateManagement = createMemoryState(initial);
   return {
     navigation,
@@ -100,10 +105,10 @@ describe("composeApp", () => {
       { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
-    result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
+    result.feedViewModel.articlePreviewProps[0].toggleButtonProps.onClick();
 
     expect(deps.navigation.getPage()).toBe("login");
-    expect(deps.getRealState().articles[0].isFavorite).toBe(false);
+    expect(deps.getRealState().articles[0].favoritedBy).toEqual([]);
   });
 
   it("a guest clicking Follow on the feed goes to the login page instead of following", () => {
@@ -114,7 +119,7 @@ describe("composeApp", () => {
       { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
-    result.feedViewModel.articlePreviewProps[0].onFollowClick();
+    result.feedViewModel.articlePreviewProps[0].buttonProps.onClick();
 
     expect(deps.navigation.getPage()).toBe("login");
     expect(deps.getRealState().followedAuthors).toEqual([]);
@@ -129,10 +134,10 @@ describe("composeApp", () => {
       { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
-    result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
-    result.feedViewModel.articlePreviewProps[0].onFollowClick();
+    result.feedViewModel.articlePreviewProps[0].toggleButtonProps.onClick();
+    result.feedViewModel.articlePreviewProps[0].buttonProps.onClick();
 
-    expect(deps.getRealState().articles[0].isFavorite).toBe(true);
+    expect(deps.getRealState().articles[0].favoritedBy).toContain("bob");
     expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
     expect(deps.navigation.getPage()).toBe("home");
   });
@@ -205,6 +210,24 @@ describe("composeApp", () => {
     expect(deps.navigation.getPage()).toBe("home");
   });
 
+  it("publishing with a blank title does nothing -- a defensive guard, since the browser's own required attribute isn't a true guarantee", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "alice");
+    deps.navigation.openEditor();
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "editor", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TEditorPageProps;
+    result.editorProps?.onClick({ title: "", summary: "s", body: "b", tags: ["x"] });
+
+    expect(deps.getRealState().articles).toEqual([]);
+    // Still on the editor page -- if the guard hadn't fired, a successful
+    // publish would have navigated home.
+    expect(deps.navigation.getPage()).toBe("editor");
+  });
+
   it("editing an article updates it and navigates to its (possibly renamed) page", () => {
     const deps = makeDeps({ ...createInitialState(), articles: [{ ...article, authorName: "alice" }] });
     signInAs(deps, "alice");
@@ -267,6 +290,41 @@ describe("composeApp", () => {
 
     expect(result.headerViewModel.isLogin).toBe(true);
     expect(typeof result.signInViewModel.onSignInClick).toBe("function");
+  });
+
+  it("shows the same sign-in form on its own register page", () => {
+    const deps = makeDeps(createInitialState());
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "register", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TRegisterPageProps;
+
+    expect(result.headerViewModel.isRegister).toBe(true);
+    expect(typeof result.signInViewModel.onSignInClick).toBe("function");
+  });
+
+  it("switches from login to register and back through navigation", () => {
+    const deps = makeDeps(createInitialState());
+
+    const loginResult = composeApp(
+      deps,
+      { state: deps.getState(), page: "login", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TLoginPageProps;
+    loginResult.onSwitchToRegister();
+
+    expect(deps.navigation.getPage()).toBe("register");
+
+    const registerResult = composeApp(
+      deps,
+      { state: deps.getState(), page: "register", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TRegisterPageProps;
+    registerResult.onSwitchToLogin();
+
+    expect(deps.navigation.getPage()).toBe("login");
   });
 
   it("shows nothing to read when signed in but no article title is open", () => {
@@ -407,6 +465,27 @@ describe("composeApp", () => {
     expect(result.profileViewModel?.articlePreviewProps[0].title).toBe("Real World");
   });
 
+  it("a profile also shows what that author favorited, regardless of who wrote it", () => {
+    const bobsArticle: TArticle = { ...article, title: "Other", authorName: "bob", favoritedBy: ["alice"] };
+    const deps = makeDeps({ ...createInitialState(), articles: [article, bobsArticle] });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel?.favoritedArticlePreviewProps).toHaveLength(1);
+    expect(result.profileViewModel?.favoritedArticlePreviewProps[0].title).toBe("Other");
+  });
+
   it("following an author from their own profile page works through essence", () => {
     const deps = makeDeps({ ...createInitialState(), articles: [article] });
     signInAs(deps, "bob");
@@ -422,7 +501,7 @@ describe("composeApp", () => {
       },
       getCreatedAt,
     ) as TProfilePageProps;
-    result.profileViewModel?.onFollowClick();
+    result.profileViewModel?.buttonProps.onClick();
 
     expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
   });
@@ -439,5 +518,146 @@ describe("composeApp", () => {
 
     expect(deps.navigation.getPage()).toBe("profile");
     expect(deps.navigation.getProfileAuthorName()).toBe("alice");
+  });
+
+  it("navigating away clears any active tag filter", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article], activeTag: "x" });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onAuthorClick();
+
+    expect(deps.getRealState().activeTag).toBeNull();
+  });
+
+  it("navigating with no active tag filter is a no-op for it, not an error", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onAuthorClick();
+
+    expect(deps.getRealState().activeTag).toBeNull();
+  });
+
+  it("viewing your own profile flags it as such and can open Settings", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "bob",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel?.buttonProps.label).toBe("Edit Profile Settings");
+    result.profileViewModel?.buttonProps.onClick();
+    expect(deps.navigation.getPage()).toBe("settings");
+  });
+
+  it("viewing someone else's profile shows a Follow button instead of Edit Profile Settings", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel?.buttonProps.label).toBe("Follow");
+  });
+
+  it("the header's onProfileClick opens your own profile, once signed in", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.headerViewModel.onProfileClick();
+
+    expect(deps.navigation.getPage()).toBe("profile");
+    expect(deps.navigation.getProfileAuthorName()).toBe("bob");
+  });
+
+  it("the header's onProfileClick does nothing for a guest", () => {
+    const deps = makeDeps(createInitialState());
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.headerViewModel.onProfileClick();
+
+    expect(deps.navigation.getPage()).toBe("home");
+  });
+
+  it("a guest can't reach settings -- sign-in message instead", () => {
+    const deps = makeDeps(createInitialState());
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "settings", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TSettingsPageProps;
+
+    expect(result.settingsViewModel).toBeUndefined();
+  });
+
+  it("signed in, settings shows your own current bio and avatar", () => {
+    const deps = makeDeps({
+      ...createInitialState(),
+      bios: [{ name: "bob", text: "existing bio" }],
+    });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "settings", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TSettingsPageProps;
+
+    expect(result.settingsViewModel?.bio).toBe("existing bio");
+  });
+
+  it("saving settings updates your bio/avatar through essence and opens your own profile", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "settings", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TSettingsPageProps;
+    result.settingsViewModel?.onSaveClick("new bio", "https://example.com/bob.png");
+
+    expect(deps.getRealState().bios).toEqual([{ name: "bob", text: "new bio" }]);
+    expect(deps.getRealState().avatarUrls).toEqual([
+      { name: "bob", url: "https://example.com/bob.png" },
+    ]);
+    expect(deps.navigation.getPage()).toBe("profile");
+    expect(deps.navigation.getProfileAuthorName()).toBe("bob");
   });
 });

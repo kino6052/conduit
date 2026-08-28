@@ -36,8 +36,10 @@ your first change, if you haven't. It's short.
 | `src/essence/` | Pure state, pure logic, pure selectors/actions. One file per perceivable capability. |
 | `src/index.ts` | Thin adapter, not the composition root's actual logic anymore — builds the real dependencies and reads React hooks into a snapshot for `compose-app.ts`. Not inside `accidents/view` — it's where essence and a view meet, so it isn't itself "the view." |
 | `src/index.essence.ts` | Composition root for the essence view. Same top-level placement; hasn't grown the dependency-injection split above, since it's a single fixed-dependency grounding tool, not something integration-tested. |
+| `src/index.essential-dependencies.ts` | A third composition root, same real `composeApp`/essence/pages as `src/index.ts`, wired to every dependency's simplest/essential implementation instead (`createMemoryNavigation`, `createMemoryState`, an always-confirm function) — the same proof `compose-app.test.ts` gives under test, running live in a browser instead. Imports `TDependencies` from `src/index.ts` with `import type` specifically — a plain import would risk pulling in that file's own real `createHashNavigation`/RxJS side effects just to borrow a type. |
 | `src/accidents/view/react/` | The real delivery: React + RxJS, following `code-example.md`'s shape (view-model compiler → pure presentational components). `compose-app.ts` holds the actual composition logic (which page, what props), fully unit-tested with injected in-memory dependencies — see "Integration testing via injected dependencies" below. Also holds the mount point (`main.ts`), HTML shell, stylesheet, and `pages.ts` (Home/Login/Article/Editor — separate routed screens, themselves accident; see `docs/realworld-essence-checklist.md`'s "Pages" section for why essence-view below doesn't need this and this one does) — accident artifacts, not composition logic. |
 | `src/accidents/view/essence/` | Bare, unstyled, interactive HTML rendering of the essence, plus a storybook-style state picker. Exists to keep the essence grounded in something clickable — not the real app. Deliberately has no pages: it shows every relevant piece of a given state directly, for inspection, not for a real user's flow. Also holds its own `main.ts` (mount point). |
+| `src/accidents/view/essential-ui/` | The barebone/essential UI dependency: the exact same essence-view render functions and composition root as above, unchanged — `main.ts` here is a one-line `import "../essence/main"` — with a minimal stylesheet (`styles.css`) and HTML shell layered on top instead of essence-view's zero styling. "Builds on top of the essence-view" literally: not a fork, a presentation layer. Serve: `bun run essential-ui` (port 4324). |
 | `src/accidents/navigation/`, `src/accidents/pagination/`, `src/accidents/state-management/` | Small, isolated accidents that extend essence state/behavior from the outside, or hold view-layer state generically (`state-management` isn't specific to `TState` at all). Not wired into a view by default — Step 5 says they can be developed and verified in isolation. |
 | `legacy/` | A prior implementation, predating this split. Reference only; not wired into the toolchain. |
 
@@ -69,6 +71,12 @@ your first change, if you haven't. It's short.
      test, not the verification. The view-model tests are the verification.
    - Every essence capability should end its cycle with something new to look at — a button,
      a rendered field — not just a passing assertion.
+   - **If a live check shows stale behavior after an edit, check the browser cache before the
+     code.** Every dev server here rebuilds `main.js` fresh per request (`scripts/no-cache-headers.ts`
+     sets `Cache-Control: no-store` on every response for exactly this reason) — but a tab left
+     open across several edits can still be showing an old cached bundle with no error to say so.
+     Reload with a cache-busting query string (`?x=1`) or open a fresh tab before concluding a
+     fix didn't work.
 6. **Commit.** One cycle, one commit. Message states what red/green/refactor produced,
    confirms coverage passed, and says plainly if verification was "tests only" vs. "also
    checked live" — don't imply you clicked through something you didn't.
@@ -169,6 +177,8 @@ bun run test:coverage    # bun's function/line coverage (not sufficient alone �
 bun run test:branches    # the real check — 100% branches required, fails otherwise
 bun run essence-view     # serve src/accidents/view/essence at :4321
 bun run app              # serve src/accidents/view/react at :4323
+bun run essential-app    # serve the same app on essential (in-memory) dependencies at :4322
+bun run essential-ui     # serve essence-view with a minimal stylesheet layered on top, at :4324
 ```
 
 ## Before you start a session here

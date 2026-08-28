@@ -23,6 +23,8 @@ const ARTICLE_HASH_PREFIX = "#/article/";
 const EDITOR_HASH_PREFIX = "#/editor";
 const PROFILE_HASH_PREFIX = "#/profile/";
 const LOGIN_HASH = "#/login";
+const REGISTER_HASH = "#/register";
+const SETTINGS_HASH = "#/settings";
 
 function readPage(): TPage {
   const { hash } = window.location;
@@ -30,6 +32,8 @@ function readPage(): TPage {
   if (hash.startsWith(PROFILE_HASH_PREFIX)) return "profile";
   if (hash.startsWith(EDITOR_HASH_PREFIX)) return "editor";
   if (hash === LOGIN_HASH) return "login";
+  if (hash === REGISTER_HASH) return "register";
+  if (hash === SETTINGS_HASH) return "settings";
   return "home";
 }
 
@@ -65,6 +69,9 @@ export function createHashNavigation(): TNavigation {
     openLogin: () => {
       window.location.hash = LOGIN_HASH;
     },
+    openRegister: () => {
+      window.location.hash = REGISTER_HASH;
+    },
     openEditor: (title) => {
       window.location.hash = title
         ? `${EDITOR_HASH_PREFIX}/${encodeURIComponent(title)}`
@@ -72,6 +79,9 @@ export function createHashNavigation(): TNavigation {
     },
     openProfile: (authorName) => {
       window.location.hash = PROFILE_HASH_PREFIX + encodeURIComponent(authorName);
+    },
+    openSettings: () => {
+      window.location.hash = SETTINGS_HASH;
     },
     goHome: () => {
       window.location.hash = "";

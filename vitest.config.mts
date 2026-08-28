@@ -25,11 +25,21 @@ export default defineConfig({
         "src/**/*.test.ts",
         "src/index.ts",
         "src/index.essence.ts",
+        "src/index.essential-dependencies.ts",
         "src/accidents/view/react/components.ts",
         "src/accidents/view/react/pages.ts",
         "src/accidents/view/react/main.ts",
+        "src/accidents/view/react/main-essential-dependencies.ts",
         "src/accidents/view/essence/main.ts",
+        "src/accidents/view/essential-ui/main.ts",
         "src/accidents/navigation/navigation-hash.ts",
+        "src/accidents/persistence/persistence-local-storage.ts",
+        // The backend accident's own real IO (bun:sqlite, Bun.serve) --
+        // same category as the two files above, verified live, not
+        // under bun:test (docs/realworld-essence-checklist.md's "Part 3").
+        "src/accidents/backend/db.ts",
+        "src/accidents/backend/server.ts",
+        "src/accidents/backend-sync/backend-sync-client.ts",
       ],
       reporter: ["text", "json-summary"],
     },

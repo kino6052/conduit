@@ -22,11 +22,31 @@ import { TSignInViewModel } from "./sign-in-view-model";
 import { TEditorProps, TFeedViewModel, TTagProps } from "./view-model";
 import { TArticleDetailViewModel } from "./article-view-model";
 import { TProfileViewModel } from "./profile-view-model";
-import { Header, SignIn, Editor, PopularTags, Feed, ArticleDetail, Profile } from "./components";
+import { TSettingsViewModel } from "./settings-view-model";
+import {
+  Header,
+  Footer,
+  SignIn,
+  Editor,
+  PopularTags,
+  Feed,
+  ArticleDetail,
+  Profile,
+  Settings,
+} from "./components";
 
+// Two genuinely separate pages, per the real spec (docs/spec/routes.md,
+// docs/spec/pages.md) -- even though the underlying action is the same
+// one (TSignIn.signIn(name, password), SignIn/submitLabel,
+// components.ts): this app's name-only identity model has no account
+// record to distinguish "already exists" from "brand new," so there's
+// nothing for the two forms to differ on except which page they're on
+// and what they say (docs/realworld-essence-checklist.md's Sign In/Sign
+// Up entry).
 export type TLoginPageProps = {
   headerViewModel: THeaderProps;
   signInViewModel: TSignInViewModel;
+  onSwitchToRegister: () => void;
 };
 
 export function LoginPage(props: TLoginPageProps) {
@@ -37,8 +57,51 @@ export function LoginPage(props: TLoginPageProps) {
     React.createElement(
       "div",
       { className: "page" },
-      React.createElement(SignIn, props.signInViewModel),
+      React.createElement("h1", null, "Sign in"),
+      SignIn(props.signInViewModel, "Sign In"),
+      React.createElement(
+        "p",
+        { className: "auth-switch" },
+        "Need an account? ",
+        React.createElement(
+          "button",
+          { className: "link-button", onClick: props.onSwitchToRegister },
+          "Sign up",
+        ),
+      ),
     ),
+    React.createElement(Footer),
+  );
+}
+
+export type TRegisterPageProps = {
+  headerViewModel: THeaderProps;
+  signInViewModel: TSignInViewModel;
+  onSwitchToLogin: () => void;
+};
+
+export function RegisterPage(props: TRegisterPageProps) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Header, props.headerViewModel),
+    React.createElement(
+      "div",
+      { className: "page" },
+      React.createElement("h1", null, "Sign up"),
+      SignIn(props.signInViewModel, "Sign Up"),
+      React.createElement(
+        "p",
+        { className: "auth-switch" },
+        "Have an account? ",
+        React.createElement(
+          "button",
+          { className: "link-button", onClick: props.onSwitchToLogin },
+          "Sign in",
+        ),
+      ),
+    ),
+    React.createElement(Footer),
   );
 }
 
@@ -53,12 +116,23 @@ export function HomePage(props: THomePageProps) {
     React.Fragment,
     null,
     React.createElement(Header, props.headerViewModel),
+    // A banner with the app's name and a one-line tagline, same
+    // placement as the real spec's Home page -- purely decorative, no
+    // view-model needed (docs/realworld-essence-checklist.md's Home
+    // entry).
+    React.createElement(
+      "div",
+      { className: "banner" },
+      React.createElement("h1", null, "conduit"),
+      React.createElement("p", null, "Where this codebase explains itself, one small essence at a time."),
+    ),
     React.createElement(
       "div",
       { className: "page" },
       PopularTags(props.popularTagsProps),
       React.createElement(Feed, props.feedViewModel),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -88,6 +162,7 @@ export function EditorPage(props: TEditorPageProps) {
         ? React.createElement(Editor, { key: props.editorKey, ...props.editorProps })
         : React.createElement("p", null, "Sign in to write an article."),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -118,6 +193,7 @@ export function ArticlePage(props: TArticlePageProps) {
         ? React.createElement(ArticleDetail, props.articleViewModel)
         : React.createElement("p", null, emptyMessage),
     ),
+    React.createElement(Footer),
   );
 }
 
@@ -146,5 +222,29 @@ export function ProfilePage(props: TProfilePageProps) {
         ? Profile(props.profileViewModel)
         : React.createElement("p", null, "Sign in to view this profile."),
     ),
+    React.createElement(Footer),
+  );
+}
+
+export type TSettingsPageProps = {
+  headerViewModel: THeaderProps;
+  // Same rule as EditorPageProps.editorProps: editing your own bio/avatar
+  // requires a signed-in name -- there's no "your" bio to edit as a guest.
+  settingsViewModel: TSettingsViewModel | undefined;
+};
+
+export function SettingsPage(props: TSettingsPageProps) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Header, props.headerViewModel),
+    React.createElement(
+      "div",
+      { className: "page" },
+      props.settingsViewModel
+        ? React.createElement(Settings, props.settingsViewModel)
+        : React.createElement("p", null, "Sign in to edit your settings."),
+    ),
+    React.createElement(Footer),
   );
 }

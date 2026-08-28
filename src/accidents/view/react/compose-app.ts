@@ -16,6 +16,7 @@ import { TState } from "../../../essence/state";
 import { TDraftArticle } from "../../../essence/write";
 import { editArticle } from "../../../essence/edit";
 import { selectArticle } from "../../../essence/article";
+import { selectAvatarUrl } from "../../../essence/avatar";
 import { TNavigation, TPage } from "../../navigation/navigation";
 import { TSignIn } from "../../sign-in/sign-in";
 import { TConfirm, withConfirmation } from "../../confirmation/confirmation";
@@ -30,20 +31,25 @@ import { compileArticleDetailViewModel } from "./article-view-model";
 import { compileHeaderViewModel } from "./header-view-model";
 import { compileSignInViewModel } from "./sign-in-view-model";
 import { compileProfileViewModel } from "./profile-view-model";
+import { compileSettingsViewModel } from "./settings-view-model";
 import {
   TArticlePageProps,
   TEditorPageProps,
   THomePageProps,
   TLoginPageProps,
   TProfilePageProps,
+  TRegisterPageProps,
+  TSettingsPageProps,
 } from "./pages";
 
 export type TView<R> = {
   LoginPage: (props: TLoginPageProps) => R;
+  RegisterPage: (props: TRegisterPageProps) => R;
   HomePage: (props: THomePageProps) => R;
   EditorPage: (props: TEditorPageProps) => R;
   ArticlePage: (props: TArticlePageProps) => R;
   ProfilePage: (props: TProfilePageProps) => R;
+  SettingsPage: (props: TSettingsPageProps) => R;
 };
 
 export type TComposeAppDependencies<R> = {
@@ -67,12 +73,66 @@ export type TAppSnapshot = {
   profileAuthorName: string | null;
 };
 
+// Every navigation call also clears any active tag filter -- a filter
+// that silently survived a trip to another page and back would be a
+// real surprise, not a convenience (docs/realworld-essence-checklist.md's
+// feed/discovery entry). Wrapped once, here, so it can't be missed on
+// any of the several places navigation actually gets called from below
+// (the header, the feed's own article/author clicks, the editor/profile
+// flows) -- clicking a tag itself never goes through this at all
+// (onSetTag/onClearTag, view-model.ts, act on essence directly), so
+// setting a filter is untouched, only leaving it is.
+function withTagCleared(
+  navigation: TNavigation,
+  getState: TGetState,
+  setState: TSetState,
+): TNavigation {
+  const clearTag = (): void => {
+    const state = getState();
+    if (state.activeTag !== null) {
+      setState({ ...state, activeTag: null });
+    }
+  };
+  return {
+    ...navigation,
+    goHome: () => {
+      clearTag();
+      navigation.goHome();
+    },
+    openArticle: (title) => {
+      clearTag();
+      navigation.openArticle(title);
+    },
+    openLogin: () => {
+      clearTag();
+      navigation.openLogin();
+    },
+    openRegister: () => {
+      clearTag();
+      navigation.openRegister();
+    },
+    openEditor: (title) => {
+      clearTag();
+      navigation.openEditor(title);
+    },
+    openProfile: (authorName) => {
+      clearTag();
+      navigation.openProfile(authorName);
+    },
+    openSettings: () => {
+      clearTag();
+      navigation.openSettings();
+    },
+  };
+}
+
 export function composeApp<R>(
   deps: TComposeAppDependencies<R>,
   snapshot: TAppSnapshot,
   getCreatedAt: () => string,
 ): R {
-  const { navigation, signIn, confirm, getState, setState, view } = deps;
+  const { signIn, confirm, getState, setState, view } = deps;
+  const navigation = withTagCleared(deps.navigation, getState, setState);
   const { state, page, openArticleTitle, editingArticleTitle, profileAuthorName } = snapshot;
 
   const signInViewModel = compileSignInViewModel(signIn, getState, setState);
@@ -89,13 +149,28 @@ export function composeApp<R>(
     page,
     navigation.goHome,
     signedInName,
+    signedInName ? selectAvatarUrl(state, signedInName) : "",
     navigation.openLogin,
-    onSignOutClick,
+    navigation.openRegister,
     () => navigation.openEditor(),
+    navigation.openSettings,
+    () => signedInName && navigation.openProfile(signedInName),
   );
 
   if (page === "login") {
-    return view.LoginPage({ headerViewModel, signInViewModel });
+    return view.LoginPage({
+      headerViewModel,
+      signInViewModel,
+      onSwitchToRegister: navigation.openRegister,
+    });
+  }
+
+  if (page === "register") {
+    return view.RegisterPage({
+      headerViewModel,
+      signInViewModel,
+      onSwitchToLogin: navigation.openLogin,
+    });
   }
 
   if (page === "editor") {
@@ -106,6 +181,14 @@ export function composeApp<R>(
       ? selectArticle(state, editingArticleTitle)
       : undefined;
     const onEditorSubmit = (draft: Omit<TDraftArticle, "createdAt">): void => {
+      // A blank title would collide under the natural-key identification
+      // scheme every essence function relies on (an article *is* its
+      // title). The real Editor's title input is required, so the
+      // browser already blocks this in practice -- this is defense in
+      // depth for whatever calls onClick directly, same as
+      // src/index.essence.ts's own publishFromForm/saveEditsFromForm
+      // guard.
+      if (!draft.title) return;
       if (editingArticleTitle) {
         setState(editArticle(getState(), editingArticleTitle, draft));
         // Off to see the result, not back to a blank form -- the title
@@ -203,10 +286,35 @@ export function composeApp<R>(
             setState,
             navigation.openArticle,
             navigation.openProfile,
+            navigation.openSettings,
           )
         : undefined;
 
     return view.ProfilePage({ headerViewModel, profileViewModel });
+  }
+
+  if (page === "settings") {
+    // Same rule as reading/writing/profile: editing your own bio and
+    // avatar requires a signed-in name -- there's no "your" anything for
+    // a guest to edit.
+    const baseSettingsViewModel = signedInName
+      ? compileSettingsViewModel(getState, setState, onSignOutClick)
+      : undefined;
+    // After saving, off to see the result on your own profile -- same
+    // "go look at what you just did" shape as onEditorSubmit returning to
+    // the article you just wrote/edited above.
+    const settingsViewModel =
+      baseSettingsViewModel && signedInName
+        ? {
+            ...baseSettingsViewModel,
+            onSaveClick: (bio: string, avatarUrl: string): void => {
+              baseSettingsViewModel.onSaveClick(bio, avatarUrl);
+              navigation.openProfile(signedInName);
+            },
+          }
+        : undefined;
+
+    return view.SettingsPage({ headerViewModel, settingsViewModel });
   }
 
   // Home.
@@ -230,8 +338,8 @@ export function composeApp<R>(
     ? feedViewModel.articlePreviewProps
     : feedViewModel.articlePreviewProps.map((preview) => ({
         ...preview,
-        onFavoriteClick: navigation.openLogin,
-        onFollowClick: navigation.openLogin,
+        toggleButtonProps: { ...preview.toggleButtonProps, onClick: navigation.openLogin },
+        buttonProps: { ...preview.buttonProps, onClick: navigation.openLogin },
       }));
 
   return view.HomePage({

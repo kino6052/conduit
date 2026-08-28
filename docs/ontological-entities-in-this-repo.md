@@ -47,13 +47,25 @@ string (`TArticle.tags: string[]`) — but the same string recurs across differe
 is used to filter the feed, so on screen it behaves like a thing with its own identity, not a
 one-off detail of a single article.
 
-### Author (a name — not a "User")
+### Author (a name — and, not yet built here, a bio and an avatar)
 
-A name string, rendered as plain text next to an article or a comment. This is deliberately
-_not_ a `User` entity: there's no bio, no avatar, no email, no page of its own — none of that
-is ever rendered, because a dedicated profile page was classified as accident, not essence (see
-[`docs/realworld-essence-checklist.md`](realworld-essence-checklist.md), Part 2). What exists,
-empirically, is the name attached to the things that name authored — nothing more.
+**Correction:** this entry previously claimed "there's no bio, no avatar, no email... none of
+that is ever rendered," and used that claim to justify deciding against a Settings page. That
+was wrong, reasoned from this codebase's own current gaps rather than checked against the actual
+RealWorld/Conduit specification this app follows. Every real RealWorld frontend renders an
+author's profile image next to their name (feed cards, the Article banner, every comment, the
+Profile page), and the Profile page renders their bio text too — both are spec-required, genuinely
+perceivable attributes of an author, not invented ones. See the correction and the newly added
+gaps in [`docs/realworld-essence-checklist.md`](realworld-essence-checklist.md) (Part 1 §2, and
+the Settings/Profile/Article-page/header-navigation entries in Part 2).
+
+What's true today, empirically, in *this* codebase's current rendered output: a name string,
+plain text next to an article or a comment, with no bio or avatar field anywhere in essence yet
+— `TArticle`/`TComment` carry only `authorName`. Email has no perceivable correlate in this app
+even under the corrected reading (nothing here ever shows or asks for one), so that part of the
+original claim stands; bio and avatar do not. A dedicated profile page exists now (`/#/profile/:authorName`)
+and is itself accident, not essence, same as before — only the "no bio, no avatar" part of this
+entry was wrong, not the page-is-accident classification.
 
 ## Non-entity
 

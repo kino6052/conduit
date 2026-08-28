@@ -14,8 +14,7 @@ const article: TArticle = {
   tags: ["x"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 function makeState(initial: TState) {
@@ -37,25 +36,45 @@ describe("compileFeedViewModel", () => {
 
     expect(viewModel.articlePreviewProps).toHaveLength(1);
     expect(viewModel.articlePreviewProps[0].title).toBe("A");
-    expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Favorite (0)");
+    expect(viewModel.articlePreviewProps[0].toggleButtonProps.label).toBe("Favorite (0)");
+  });
+
+  it("carries the author's avatar through, empty if they never set one", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      avatarUrls: [{ name: "alice", url: "https://example.com/alice.png" }],
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+
+    expect(viewModel.articlePreviewProps[0].avatarUrl).toBe("https://example.com/alice.png");
   });
 
   it("onFavoriteClick toggles the article's favorite state through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
-    viewModel.articlePreviewProps[0].onFavoriteClick();
+    viewModel.articlePreviewProps[0].toggleButtonProps.onClick();
 
-    expect(getState().articles[0].isFavorite).toBe(true);
+    expect(getState().articles[0].favoritedBy).toContain(getState().name);
   });
 
   it("labels the favorite button Unfavorite once favorited", () => {
-    const favorited: TArticle = { ...article, isFavorite: true, favoritesCount: 1 };
+    const favorited: TArticle = { ...article, favoritedBy: ["you"] };
     const { getState, setState } = makeState({ ...createInitialState(), articles: [favorited] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Unfavorite (1)");
+    expect(viewModel.articlePreviewProps[0].toggleButtonProps.label).toBe("Unfavorite (1)");
+  });
+
+  it("carries the article's own favorited state through, for the favorited icon", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+
+    expect(viewModel.articlePreviewProps[0].toggleButtonProps.isOn).toBe(false);
   });
 
   it("labels the follow button by whether you follow the author", () => {
@@ -63,7 +82,7 @@ describe("compileFeedViewModel", () => {
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].followLabel).toBe("Follow");
+    expect(viewModel.articlePreviewProps[0].buttonProps.label).toBe("Follow");
   });
 
   it("labels the follow button Unfollow once you follow the author", () => {
@@ -75,14 +94,14 @@ describe("compileFeedViewModel", () => {
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].followLabel).toBe("Unfollow");
+    expect(viewModel.articlePreviewProps[0].buttonProps.label).toBe("Unfollow");
   });
 
-  it("onFollowClick toggles following the author through essence", () => {
+  it("the follow button toggles following the author through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
-    viewModel.articlePreviewProps[0].onFollowClick();
+    viewModel.articlePreviewProps[0].buttonProps.onClick();
 
     expect(getState().followedAuthors).toEqual(["alice"]);
   });
@@ -105,6 +124,31 @@ describe("compileFeedViewModel", () => {
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
     viewModel.articlePreviewProps[0].onTagClick("x");
+
+    expect(getState().activeTag).toBeNull();
+  });
+
+  it("carries the current active tag through, null when none is set", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      activeTag: "x",
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+
+    expect(viewModel.activeTag).toBe("x");
+  });
+
+  it("onClearTagClick clears the active tag filter directly, not by re-clicking it", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      activeTag: "x",
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+    viewModel.onClearTagClick();
 
     expect(getState().activeTag).toBeNull();
   });
@@ -135,19 +179,22 @@ describe("compileFeedViewModel", () => {
     expect(opened).toBe("alice");
   });
 
-  it("shows the current feed lens", () => {
+  it("shows the current feed lens as the 'on' one of two lens buttons", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.filterName).toBe("global");
+    expect(viewModel.lensButtonProps).toEqual([
+      { label: "Global Feed", isOn: true, onClick: expect.any(Function) },
+      { label: "Your Feed", isOn: false, onClick: expect.any(Function) },
+    ]);
   });
 
-  it("onSetFilterClick switches the feed lens through essence", () => {
+  it("clicking a lens button switches the feed lens through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
-    viewModel.onSetFilterClick("personal");
+    viewModel.lensButtonProps[1].onClick();
 
     expect(getState().filterName).toBe("personal");
   });
@@ -191,7 +238,21 @@ describe("compilePopularTagsViewModel", () => {
 
     const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
 
-    expect(tagProps).toEqual([{ label: "x", onClick: expect.any(Function) }]);
+    expect(tagProps).toEqual([{ label: "x", onClick: expect.any(Function), isActive: false }]);
+  });
+
+  it("flags the currently active tag as active, and no other", () => {
+    const other: TArticle = { ...article, title: "B", tags: ["y"], authorName: "bob" };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article, other],
+      activeTag: "x",
+    });
+
+    const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
+
+    expect(tagProps.find((tag) => tag.label === "x")?.isActive).toBe(true);
+    expect(tagProps.find((tag) => tag.label === "y")?.isActive).toBe(false);
   });
 
   it("stays computed over every article, ignoring the current tag/lens filter", () => {

@@ -1,3 +1,5 @@
+import { TPersistence } from "../persistence/persistence";
+
 // Not "session"/"auth"/"store" -- none of those are entities on screen
 // (docs/ontological-entities-in-this-repo.md rejects "User" the same way).
 // What's perceivable is a name, or the absence of one -- a "guest" isn't
@@ -22,13 +24,12 @@ export type TSignIn = {
   signOut: () => void;
 };
 
-// Holds the necessary state itself, in memory -- not delegated to any
-// persistence technology. That's a separate, still-open question
-// (docs/realworld-essence-checklist.md, "how identity persists between
-// visits"). Good enough to test the contract itself, and, for now, the
-// only implementation this app has -- same starting point as
-// createMemoryNavigation before createHashNavigation existed.
-export function createSignIn(): TSignIn {
+// Holds the necessary state itself, in memory -- nothing behind it, same
+// starting point as createMemoryNavigation/createMemoryState. Good enough
+// to test the contract itself; the essential-dependencies app
+// (src/index.essential-dependencies.ts) and every test in this repo use
+// this one on purpose -- no persistence, a reload loses it.
+export function createMemorySignIn(): TSignIn {
   let name: string | undefined;
 
   return {
@@ -38,6 +39,29 @@ export function createSignIn(): TSignIn {
     },
     signOut: () => {
       name = undefined;
+    },
+  };
+}
+
+// The real app's implementation: the signed-in fact survives a reload,
+// via whatever TPersistence it's given -- injected, not hard-coded to
+// localStorage, so this stays testable with createMemoryPersistence
+// (see sign-in.test.ts) the same way createRxState's counterpart
+// (createMemoryState) is. src/index.ts wires in
+// createLocalStoragePersistence for the real app; nothing else about
+// this file's logic needs to know that.
+export function createPersistentSignIn(persistence: TPersistence<string>): TSignIn {
+  let name: string | undefined = persistence.load();
+
+  return {
+    signedInName: () => name,
+    signIn: (signedInName) => {
+      name = signedInName;
+      persistence.save(signedInName);
+    },
+    signOut: () => {
+      name = undefined;
+      persistence.clear();
     },
   };
 }

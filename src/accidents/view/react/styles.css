@@ -60,6 +60,27 @@ button:focus-visible {
   padding: 10px;
 }
 
+/* Home's own banner -- app name + tagline, same accent green as the logo,
+   white text for contrast (docs/realworld-essence-checklist.md's Home
+   entry). Purely decorative: no view-model, just markup (pages.ts). */
+.banner {
+  background-color: var(--color-accent);
+  color: #fff;
+  text-align: center;
+  padding: 32px 10px;
+}
+
+.banner h1 {
+  margin: 0 0 8px;
+  font-family: "Titillium Web", Helvetica, Arial, sans-serif;
+  font-size: 32px;
+}
+
+.banner p {
+  margin: 0;
+  font-size: 14px;
+}
+
 .header-content {
   display: flex;
   flex-wrap: wrap;
@@ -142,6 +163,27 @@ h2 {
 .form textarea {
   min-height: 128px;
   resize: vertical;
+}
+
+/* Settings' own drag-and-drop avatar picker (components.ts's
+   AvatarDropZone) -- click or drop, the URL field right below stays a
+   real second way to set the same thing. */
+.avatar-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: center;
+  color: var(--color-border);
+}
+
+.avatar-drop-zone:hover {
+  border-color: var(--color-accent);
+  background-color: var(--color-surface-muted);
 }
 
 /* buttons -- matches legacy's Button component (grey border, radius 8, lightgrey hover) */
@@ -230,6 +272,43 @@ h2 {
   color: var(--color-border);
 }
 
+/* Profile's own user-info block -- stacked and centered, unlike the
+   horizontal byline row (.meta) reused everywhere an article/comment is
+   attributed. A bigger avatar and the bio underneath the name are what
+   actually distinguish "here's an author" from "here's who wrote this". */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+/* The same avatar image, small, riding along inside a byline's AuthorLink
+   (feed cards, the Article banner, comments) -- distinct size from the
+   Profile page's own larger .avatar above. */
+.avatar-small {
+  width: 20px;
+  height: 20px;
+  border-radius: 50%;
+  object-fit: cover;
+  vertical-align: middle;
+  margin-right: 4px;
+}
+
+.bio {
+  color: var(--color-text);
+  margin: 0;
+}
+
 /* author names are buttons now (clickable through to a profile page),
    but should still read as plain text, not a button -- reset everything
    a <button> brings with it except the pointer cursor */
@@ -240,6 +319,19 @@ h2 {
   margin: 0;
   font: inherit;
   cursor: pointer;
+}
+
+/* Login <-> Register's own cross-link ("Need an account? Sign up" /
+   "Have an account? Sign in") -- pages.ts's LoginPage/RegisterPage. */
+.auth-switch {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--color-border);
+}
+
+.auth-switch .link-button {
+  color: var(--color-accent);
+  font-weight: 600;
 }
 
 .tag-list {
@@ -267,6 +359,24 @@ h2 {
   background-color: var(--color-surface-muted);
 }
 
+.tag.active {
+  color: #fff;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* The feed's own "you're filtered right now" indicator -- a dedicated
+   Clear control, not just re-clicking the same tag pill
+   (view-model.ts's onClearTag, components.ts's ActiveTagFilter). */
+.active-tag-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
 .actions {
   display: flex;
   gap: 8px;
@@ -276,8 +386,38 @@ h2 {
   white-space: pre-wrap;
 }
 
-/* comments -- matches legacy's CommentInput (lightgrey controls strip) */
+/* comment thread -- own list (not .feed's, so changes to article cards
+   don't leak into it), each comment its own small card, matching the
+   same lightgrey-surface language as .card above it */
+.comment-list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
 .comment {
-  border-top: 1px solid var(--color-border);
-  padding-top: 8px;
+  background-color: var(--color-surface-muted);
+  border: 1px solid var(--color-border);
+  border-radius: var(--radius);
+  padding: 12px;
+}
+
+.comment-body {
+  margin: 0 0 8px;
+  white-space: pre-wrap;
+}
+
+.footer {
+  text-align: center;
+  font-size: 12px;
+  color: var(--color-border);
+  padding: 24px 16px;
+}
+
+.footer a {
+  color: var(--color-accent);
+  text-decoration: underline;
 }

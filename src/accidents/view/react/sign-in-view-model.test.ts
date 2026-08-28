@@ -1,6 +1,6 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TState } from "../../../essence/state";
-import { createSignIn } from "../../sign-in/sign-in";
+import { createMemorySignIn } from "../../sign-in/sign-in";
 import { compileSignInViewModel } from "./sign-in-view-model";
 
 function makeState(initial: TState) {
@@ -15,7 +15,7 @@ function makeState(initial: TState) {
 describe("compileSignInViewModel", () => {
   it("starts as a guest", () => {
     const { getState, setState } = makeState(createInitialState());
-    const signIn = createSignIn();
+    const signIn = createMemorySignIn();
 
     const signInViewModel = compileSignInViewModel(signIn, getState, setState);
 
@@ -24,7 +24,7 @@ describe("compileSignInViewModel", () => {
 
   it("onSignInClick signs in and changes the acting identity's name through essence", () => {
     const { getState, setState } = makeState(createInitialState());
-    const signIn = createSignIn();
+    const signIn = createMemorySignIn();
 
     const signInViewModel = compileSignInViewModel(signIn, getState, setState);
     signInViewModel.onSignInClick("alice", "whatever");
@@ -35,7 +35,7 @@ describe("compileSignInViewModel", () => {
 
   it("onSignOutClick clears the signed-in name -- back to a guest -- without changing the acting identity's name", () => {
     const { getState, setState } = makeState(createInitialState());
-    const signIn = createSignIn();
+    const signIn = createMemorySignIn();
     signIn.signIn("alice", "whatever");
     setState({ ...getState(), name: "alice" });
 

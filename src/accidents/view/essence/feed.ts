@@ -1,6 +1,7 @@
 import { TArticle, TState } from "../../../essence/state";
 import { selectVisibleArticles } from "../../../essence/feed";
 import { isFollowing } from "../../../essence/follow";
+import { isFavoritedBy } from "../../../essence/favorite";
 
 export function renderFeed(state: TState): string {
   const items = selectVisibleArticles(state)
@@ -24,6 +25,7 @@ function renderArticlePreview(article: TArticle, state: TState): string {
     )
     .join("");
   const following = isFollowing(state, article.authorName);
+  const favorited = isFavoritedBy(article, state.name);
 
   return `<li>
   <h2><button data-action="open-article" data-title="${article.title}">${article.title}</button></h2>
@@ -32,6 +34,6 @@ function renderArticlePreview(article: TArticle, state: TState): string {
   <button data-action="toggle-follow" data-author-name="${article.authorName}">${following ? "Unfollow" : "Follow"}</button>
   <span>${article.createdAt}</span>
   <ul>${tags}</ul>
-  <button data-action="toggle-favorite" data-title="${article.title}">${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})</button>
+  <button data-action="toggle-favorite" data-title="${article.title}">${favorited ? "Unfavorite" : "Favorite"} (${article.favoritedBy.length})</button>
 </li>`;
 }

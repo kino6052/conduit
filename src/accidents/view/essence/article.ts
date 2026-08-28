@@ -1,6 +1,7 @@
 import { TArticle, TComment, TState } from "../../../essence/state";
 import { isFollowing } from "../../../essence/follow";
 import { isMine } from "../../../essence/ownership";
+import { isFavoritedBy } from "../../../essence/favorite";
 
 export function renderArticleDetail(
   article: TArticle,
@@ -8,6 +9,7 @@ export function renderArticleDetail(
   state: TState,
 ): string {
   const following = isFollowing(state, article.authorName);
+  const favorited = isFavoritedBy(article, state.name);
   const tags = article.tags.map((tag) => `<li>${tag}</li>`).join("");
 
   const ownerControls = isMine(article, state)
@@ -23,7 +25,7 @@ export function renderArticleDetail(
   <ul>${tags}</ul>
   <span>${article.authorName}</span>
   <button data-action="toggle-follow" data-author-name="${article.authorName}">${following ? "Unfollow" : "Follow"}</button>
-  <button data-action="toggle-favorite" data-title="${article.title}">${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})</button>
+  <button data-action="toggle-favorite" data-title="${article.title}">${favorited ? "Unfavorite" : "Favorite"} (${article.favoritedBy.length})</button>
   ${ownerControls}
   <ul>${commentsHtml}</ul>
   <form data-action="post-comment" data-article-title="${article.title}">

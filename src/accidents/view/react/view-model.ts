@@ -5,8 +5,9 @@
 
 import { TArticle, TComment, TFilterName, TState } from "../../../essence/state";
 import { selectVisibleArticles } from "../../../essence/feed";
-import { toggleFavorite } from "../../../essence/favorite";
+import { toggleFavorite, isFavoritedBy } from "../../../essence/favorite";
 import { isFollowing, toggleFollow } from "../../../essence/follow";
+import { selectAvatarUrl } from "../../../essence/avatar";
 import { writeArticle, TDraftArticle } from "../../../essence/write";
 import { writeComment, deleteComment } from "../../../essence/comment";
 import { deleteArticle } from "../../../essence/delete";
@@ -74,6 +75,15 @@ export const onSetTag = (tag: string, getState: TGetState, setState: TSetState):
   setState({ ...state, activeTag: state.activeTag === tag ? null : tag });
 };
 
+// A dedicated clear, not "click the same tag again" -- that only works if
+// you can still see the tag you clicked to filter by, which the popular
+// tags widget and the feed itself don't otherwise make obvious once
+// you've scrolled past it. Same effect as onSetTag toggling itself off,
+// just reachable without knowing which tag is even active.
+export const onClearTag = (getState: TGetState, setState: TSetState): void => {
+  setState({ ...getState(), activeTag: null });
+};
+
 export const onSetFilter = (
   filterName: TFilterName,
   getState: TGetState,
@@ -82,27 +92,56 @@ export const onSetFilter = (
   setState({ ...getState(), filterName });
 };
 
+// A labeled, clickable button whose own on/off state is part of what's
+// rendered (an icon that fills or empties) -- generic across whatever
+// it happens to toggle. Named after the interaction (a stateful button),
+// not after favoriting: renaming toggleFavorite wouldn't force a rename
+// here, which is the whole test (this README's own "essential contract"
+// section). Reused wherever a toggle button like this is needed, not
+// just for favoriting -- the type doesn't know favoriting exists.
+export type TToggleButtonProps = {
+  label: string;
+  isOn: boolean;
+  onClick: () => void;
+};
+
+// A plain button -- no icon, no state of its own beyond its label, which
+// already says what it currently does ("Follow"/"Unfollow"). Reused for
+// following, and for anything else that's just a labeled click.
+export type TButtonProps = {
+  label: string;
+  onClick: () => void;
+};
+
 export type TFavoriteFollowProps = {
-  favoriteLabel: string;
-  onFavoriteClick: () => void;
-  followLabel: string;
-  onFollowClick: () => void;
+  toggleButtonProps: TToggleButtonProps;
+  buttonProps: TButtonProps;
 };
 
 // Shared by the feed preview and the article detail (article-view-model.ts)
 // -- favoriting/following an article looks and behaves identically in both
-// places, so this is compiled once rather than duplicated per view.
+// places, so this is compiled once rather than duplicated per view. This
+// function is the one place allowed to know that the toggle button means
+// favoriting and the plain button means following (README's "essential
+// contract" section) -- everything downstream of it, including the type
+// it returns, only ever sees a toggle button and a plain button.
 export function compileFavoriteFollowProps(
   article: TArticle,
   state: TState,
   getState: TGetState,
   setState: TSetState,
 ): TFavoriteFollowProps {
+  const isFavorite = isFavoritedBy(article, state.name);
   return {
-    favoriteLabel: `${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})`,
-    onFavoriteClick: () => onToggleFavorite(article.title, getState, setState),
-    followLabel: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
-    onFollowClick: () => onToggleFollow(article.authorName, getState, setState),
+    toggleButtonProps: {
+      label: `${isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritedBy.length})`,
+      isOn: isFavorite,
+      onClick: () => onToggleFavorite(article.title, getState, setState),
+    },
+    buttonProps: {
+      label: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
+      onClick: () => onToggleFollow(article.authorName, getState, setState),
+    },
   };
 }
 
@@ -110,6 +149,9 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
   title: string;
   summary: string;
   authorName: string;
+  // "" when the author never set one through Settings -- same contract as
+  // selectAvatarUrl itself, not a broken-image placeholder.
+  avatarUrl: string;
   createdAt: string;
   tags: string[];
   onOpenClick: () => void;
@@ -119,8 +161,15 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
 
 export type TFeedViewModel = {
   articlePreviewProps: TArticlePreviewProps[];
-  filterName: TFilterName;
-  onSetFilterClick: (filterName: TFilterName) => void;
+  // Exactly two, in render order (Global Feed, Your Feed) -- the
+  // component renders them as tabs and doesn't know essence has a
+  // TFilterName at all; compileFeedViewModel below is the one place
+  // that knows which button means which lens.
+  lensButtonProps: TToggleButtonProps[];
+  // null -- no tag filter active -- not a separate isFiltered flag, same
+  // presence-not-flag rule as everywhere else in this codebase.
+  activeTag: string | null;
+  onClearTagClick: () => void;
 };
 
 // Exported -- reused by profile-view-model.ts, whose own list of article
@@ -138,6 +187,7 @@ export function compileArticlePreviewProps(
     title: article.title,
     summary: article.summary,
     authorName: article.authorName,
+    avatarUrl: selectAvatarUrl(state, article.authorName),
     createdAt: article.createdAt,
     tags: article.tags,
     onOpenClick: () => onOpenArticle(article.title),
@@ -160,6 +210,24 @@ export type TEditorProps = {
   onClick: (draft: Omit<TDraftArticle, "createdAt">) => void;
 };
 
+// Every essence lens gets its own toggle button, computed the same way:
+// on when it's the current lens, clicking it sets it as the current lens.
+// The array's own order is what the component treats as render order --
+// nothing about "global" or "personal" survives past this function.
+function compileLensButtonProps(
+  filterName: TFilterName,
+  label: string,
+  state: TState,
+  getState: TGetState,
+  setState: TSetState,
+): TToggleButtonProps {
+  return {
+    label,
+    isOn: state.filterName === filterName,
+    onClick: () => onSetFilter(filterName, getState, setState),
+  };
+}
+
 export function compileFeedViewModel(
   state: TState,
   getState: TGetState,
@@ -171,14 +239,19 @@ export function compileFeedViewModel(
     articlePreviewProps: selectVisibleArticles(state).map((article) =>
       compileArticlePreviewProps(article, state, getState, setState, onOpenArticle, onOpenProfile),
     ),
-    filterName: state.filterName,
-    onSetFilterClick: (filterName: TFilterName) => onSetFilter(filterName, getState, setState),
+    lensButtonProps: [
+      compileLensButtonProps("global", "Global Feed", state, getState, setState),
+      compileLensButtonProps("personal", "Your Feed", state, getState, setState),
+    ],
+    activeTag: state.activeTag,
+    onClearTagClick: () => onClearTag(getState, setState),
   };
 }
 
 export type TTagProps = {
   label: string;
   onClick: () => void;
+  isActive: boolean;
 };
 
 // A discovery shortcut, not the filter itself -- deliberately computed
@@ -192,5 +265,6 @@ export function compilePopularTagsViewModel(
   return selectPopularTags(state.articles).map((tag) => ({
     label: tag,
     onClick: () => onSetTag(tag, getState, setState),
+    isActive: state.activeTag === tag,
   }));
 }

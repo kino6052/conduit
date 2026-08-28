@@ -6,8 +6,7 @@ export function writeArticle(state: TState, draft: TDraftArticle): TState {
   const article: TArticle = {
     ...draft,
     authorName: state.name,
-    favoritesCount: 0,
-    isFavorite: false,
+    favoritedBy: [],
   };
 
   return { ...state, articles: [...state.articles, article] };

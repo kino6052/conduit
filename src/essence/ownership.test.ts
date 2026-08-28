@@ -9,8 +9,7 @@ const article: TArticle = {
   tags: [],
   authorName: "you",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 describe("isMine", () => {

@@ -1,0 +1,83 @@
+/* Minimal, essential styling for essence-view's existing render functions
+   (src/accidents/view/essence/*.ts) -- those stay completely unstyled on
+   purpose, a pure grounding tool (see their own README). This is a
+   separate accident, one level up: same rendering, same composition
+   root, only a stylesheet layered on top, just enough to be comfortably
+   legible -- no design system, no fonts pulled from anywhere, no color
+   palette beyond what's needed to tell things apart. */
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  font-family: system-ui, sans-serif;
+  max-width: 640px;
+  margin: 0 auto;
+  padding: 16px;
+  color: #222;
+}
+
+h1,
+h2 {
+  font-size: 1.1em;
+  margin: 0 0 8px;
+}
+
+button {
+  cursor: pointer;
+  font: inherit;
+  padding: 4px 10px;
+  border: 1px solid #999;
+  border-radius: 4px;
+  background: #fff;
+}
+
+button:hover {
+  background: #eee;
+}
+
+button[aria-current="true"] {
+  font-weight: bold;
+  background: #ddd;
+}
+
+ul {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+/* the feed's article cards and the article-detail card -- essence-view's
+   own render functions don't use classes, so this reaches them by
+   structure instead */
+#app li,
+#article article,
+#article li {
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  padding: 12px;
+  margin-bottom: 12px;
+}
+
+form {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+input,
+textarea {
+  font: inherit;
+  padding: 6px;
+  border: 1px solid #999;
+  border-radius: 4px;
+}
+
+#sidebar ul {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin-bottom: 16px;
+}

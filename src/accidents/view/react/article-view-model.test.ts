@@ -9,8 +9,7 @@ const article: TArticle = {
   tags: ["react"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 3,
-  isFavorite: false,
+  favoritedBy: ["bob", "carol", "dave"],
 };
 
 function makeState(initial: TState) {
@@ -33,8 +32,20 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel?.bodyHtml).toContain("The full body text.");
     expect(viewModel?.tags).toEqual(["react"]);
     expect(viewModel?.authorName).toBe("alice");
-    expect(viewModel?.favoriteLabel).toBe("Favorite (3)");
-    expect(viewModel?.followLabel).toBe("Follow");
+    expect(viewModel?.toggleButtonProps.label).toBe("Favorite (3)");
+    expect(viewModel?.buttonProps.label).toBe("Follow");
+  });
+
+  it("carries the author's avatar through, empty if they never set one", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      avatarUrls: [{ name: "alice", url: "https://example.com/alice.png" }],
+    });
+
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
+
+    expect(viewModel?.avatarUrl).toBe("https://example.com/alice.png");
   });
 
   it("renders the body as markdown, not plain text", () => {
@@ -62,14 +73,14 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel).toBeUndefined();
   });
 
-  it("onFavoriteClick and onFollowClick act through essence, same as the feed's", () => {
+  it("the toggle and follow buttons act through essence, same as the feed's", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
-    viewModel?.onFavoriteClick();
-    viewModel?.onFollowClick();
+    viewModel?.toggleButtonProps.onClick();
+    viewModel?.buttonProps.onClick();
 
-    expect(getState().articles[0].isFavorite).toBe(true);
+    expect(getState().articles[0].favoritedBy).toContain(getState().name);
     expect(getState().followedAuthors).toEqual(["alice"]);
   });
 
@@ -99,6 +110,33 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel?.commentProps).toHaveLength(1);
     expect(viewModel?.commentProps[0].body).toBe("Nice!");
     expect(viewModel?.commentProps[0].authorName).toBe("bob");
+  });
+
+  it("carries a commenter's avatar through, empty if they never set one", () => {
+    const comment: TComment = {
+      articleTitle: "Real World",
+      authorName: "bob",
+      body: "Nice!",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      comments: [comment],
+      avatarUrls: [{ name: "bob", url: "https://example.com/bob.png" }],
+    });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      () => {},
+      () => {},
+    );
+
+    expect(viewModel?.commentProps[0].avatarUrl).toBe("https://example.com/bob.png");
   });
 
   it("gives you a delete control on a comment you wrote", () => {
