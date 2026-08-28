@@ -129,7 +129,7 @@ reads best in their own context, not from one rule applied twice.
 
 ### Presenting & editing your identity
 
-- [ ] A dedicated settings page for changing your display name, bio, avatar image, email, or password
+- [x] A dedicated settings page — decided against, not merely deferred. Of the five fields RealWorld's own settings page offers, only display name has any essence-grounded field behind it (`TState.name`), and that's already reachable, on Login (sign in as a different name). Bio, avatar, email, and password have no perceivable correlate anywhere in this app's actual rendered output (`docs/ontological-entities-in-this-repo.md`: "Author — a name, not a `User`" — no bio/avatar/email is ever shown, so there's nothing for a settings form to *edit*). Building a page whose only real control would duplicate the header's existing Sign Out button isn't a gap to close, it's manufacturing a page nothing in this app's essence calls for. If bio/avatar/email ever become essence-grounded (something actually renders them), a settings page becomes buildable — see the ⚠️ open question this creates below
 - [x] A dedicated profile page for browsing another author ⚠️ (per your call: the _page_ is accident; the underlying attribution and follow relationship it displays are essence) — built (→ the Profile page entry under "Pages" below); bio/avatar and their favorited-articles list are not (same gaps noted there)
 
 ### Presentation & delivery of the feed
@@ -174,7 +174,7 @@ reads best in their own context, not from one rule applied twice.
 - [x] A persistent header showing the app's name and a way back to the feed (→ `compileHeaderViewModel`, `src/accidents/view/react/header-view-model.ts`; `Header`, `src/accidents/view/react/components.ts` — styled after `legacy/details/view/components/Navbar` and `Tab`: full-width bar, content capped at the page's own width, green underline on the active tab)
 - [x] Home and Login tabs, gated by whether anyone's signed in — a guest sees Login, a signed-in name sees New Article and "Sign Out (name)" instead, same gating shape as `legacy/details/services/SimpleNavigationService.getNavigationTabs`
 - [x] A link to Profile — not a header tab (legacy's own nav doesn't put one there either), reached the same way real apps do it: any author's name, wherever it's shown (feed, article, comments), links through to their profile (see the Profile page below)
-- [ ] A tab/link to Settings — doesn't exist as a page yet (see Pages below), so linking to it from the header would be a link to nothing
+- [x] No tab/link to Settings — settled, not left open: there's no Settings page to link to (decided against, "presenting & editing your identity" above), so this isn't a missing link, it's the correct absence of one
 
 ### Pages (how the accidents above get grouped into screens)
 
@@ -226,9 +226,7 @@ count, same "derived composite" standard as above.
   - [x] `NameForm` (a separate "change your display name" control, independent of signing in/out) was retired once this page existed — it was flagged as an unreconciled overlap with `SignIn` (both set `TState.name`); with a real Login page as the one place identity gets established, keeping a second, ungated control for the same fact stopped making sense
   - [x] The signed-in name persists across visits (→ `createPersistentSignIn`, "Establishing 'who you are'" above) — a reload keeps you signed in; there's still no way to *choose* a previously-used name distinct from just signing in again
 
-- [ ] **Settings** (`/settings`) — presenting & editing your identity
-  - [ ] Settings form (display name, bio, avatar image, email, password) — not built; changing your name now only happens by signing in as someone else
-  - [x] Sign-out control (→ the header's Sign Out tab, `src/accidents/view/react/components.ts`)
+- [x] **Settings** (`/settings`) — decided against as its own page, not left unbuilt by oversight (→ "presenting & editing your identity" above for the full reasoning). What it would have offered already exists elsewhere: changing your name happens on Login (sign in as someone else); signing out is the header's own Sign Out tab. Nothing left to put on a dedicated page
 
 - [x] **New article** / **Edit article** (`/editor`, `/editor/:article`) — writing (→ `EditorPage`, `src/accidents/view/react/pages.ts`, reachable via the header's New Article tab, once signed in, and `#/editor`/`#/editor/<title>`)
   - [x] Title/summary/body/tags form (→ `Editor`, `src/accidents/view/react/components.ts`), gated on being signed in — a guest sees "Sign in to write an article." instead, same message-swap shape as the Article page
@@ -271,5 +269,6 @@ These were classified using the manifesto's test without a direct answer from yo
 5. ~~`NameForm` vs. `SignIn`~~ — resolved by retiring `NameForm`: with a real Login page as the one place identity gets established, a second, always-available, ungated control for the same fact (`TState.name`) no longer made sense. See the Login page entry above.
 6. ~~Whether signing out should hide write affordances~~ — resolved: a guest now gets no Editor on Home and no Article page at all (page-level gating on `signedInName`, `src/index.ts`), rather than a technically-visible-but-meaningless form. Also extended past writing to *reading* an article specifically — see the Article page's last item above, itself a further unilateral call worth flagging: RealWorld lets guests read, this repo now doesn't.
 7. **Guests can't read articles either, not just write them** — RealWorld's actual behavior lets anyone read an article without an account; this repo now requires a signed-in name for the Article page too (`src/index.ts`: `signedInName && openArticleTitle ? compileArticleDetailViewModel(...) : undefined`), per an explicit instruction for this exercise ("article is only available when name is present"). Flagging since it's a real divergence from RealWorld's own spec, not just an accident-shape choice.
+8. **No settings page** — decided against rather than deferred: bio/avatar/email have no essence-grounded field anywhere in this app (nothing renders them), so there's nothing for a settings form to edit beyond the name-changing already covered by Login. If any of those ever become essence (something in this app's actual output starts showing a bio or an avatar), this call should flip and a settings page becomes buildable.
 
 Already settled by you: **follow/personal feed → essence**, **comments → essence**, **dedicated profile page → accident**, **pagination → accident entirely** (not even the underlying concept of "there's more, and a way to get to it" is essence — the feed showing whatever it shows is sufficient; reaching the rest is purely a delivery-mechanism concern, see Part 2).
