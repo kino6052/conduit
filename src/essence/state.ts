@@ -22,8 +22,16 @@ export type TArticle = {
   tags: string[];
   authorName: string;
   createdAt: string;
-  favoritesCount: number;
-  isFavorite: boolean;
+  // Every name who's favorited this article -- not a favoritesCount plus
+  // an isFavorite flag for whoever's currently looking. Those were both
+  // derivable from this one list (count is its length, "did I favorite
+  // this" is whether it includes state.name) and storing them alongside
+  // it would only let them drift, same "no stored flag standing in for a
+  // comparison" rule ownership.ts already follows for isMine. This also
+  // makes "which articles has a given name favorited" answerable at all
+  // (src/essence/favorite.ts's selectArticlesFavoritedBy) -- a per-viewer
+  // boolean never could.
+  favoritedBy: string[];
 };
 
 export type TComment = {

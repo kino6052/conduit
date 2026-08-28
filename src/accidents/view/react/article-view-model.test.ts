@@ -9,8 +9,7 @@ const article: TArticle = {
   tags: ["react"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 3,
-  isFavorite: false,
+  favoritedBy: ["bob", "carol", "dave"],
 };
 
 function makeState(initial: TState) {
@@ -69,7 +68,7 @@ describe("compileArticleDetailViewModel", () => {
     viewModel?.onFavoriteClick();
     viewModel?.onFollowClick();
 
-    expect(getState().articles[0].isFavorite).toBe(true);
+    expect(getState().articles[0].favoritedBy).toContain(getState().name);
     expect(getState().followedAuthors).toEqual(["alice"]);
   });
 

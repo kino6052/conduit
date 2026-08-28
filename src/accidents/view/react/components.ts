@@ -445,10 +445,19 @@ export function Profile(props: TProfileViewModel) {
       React.createElement("span", { className: "author" }, props.authorName),
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
     ),
+    React.createElement("h2", null, "Articles"),
     React.createElement(
       "ul",
       { className: "feed" },
       ...props.articlePreviewProps.map((previewProps) =>
+        React.createElement(ArticlePreview, { key: previewProps.title, ...previewProps }),
+      ),
+    ),
+    React.createElement("h2", null, "Favorited Articles"),
+    React.createElement(
+      "ul",
+      { className: "feed" },
+      ...props.favoritedArticlePreviewProps.map((previewProps) =>
         React.createElement(ArticlePreview, { key: previewProps.title, ...previewProps }),
       ),
     ),

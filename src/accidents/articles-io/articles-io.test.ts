@@ -19,7 +19,7 @@ describe("loadSeedArticles", () => {
     expect(uniqueAuthors.size).toBeLessThan(articles.length);
   });
 
-  it("every article has the shape essence expects", async () => {
+  it("every article has the shape essence expects, and isn't already favorited by a fresh visitor", async () => {
     const articles = await loadSeedArticles();
 
     for (const article of articles) {
@@ -27,7 +27,10 @@ describe("loadSeedArticles", () => {
       expect(article.title.length).toBeGreaterThan(0);
       expect(typeof article.authorName).toBe("string");
       expect(Array.isArray(article.tags)).toBe(true);
-      expect(article.isFavorite).toBe(false);
+      // "you" -- createInitialState's default acting identity -- never
+      // appears; the seed data connects alice/bob/carol/dave/erin/frank
+      // to each other, not to whoever's about to load the app fresh.
+      expect(article.favoritedBy).not.toContain("you");
     }
   });
 
@@ -40,8 +43,7 @@ describe("loadSeedArticles", () => {
       tags: [],
       authorName: "eve",
       createdAt: "2026-01-01",
-      favoritesCount: 0,
-      isFavorite: false,
+      favoritedBy: [],
     });
 
     const second = await loadSeedArticles();

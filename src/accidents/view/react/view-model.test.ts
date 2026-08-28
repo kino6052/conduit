@@ -14,8 +14,7 @@ const article: TArticle = {
   tags: ["x"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 function makeState(initial: TState) {
@@ -46,11 +45,11 @@ describe("compileFeedViewModel", () => {
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
     viewModel.articlePreviewProps[0].onFavoriteClick();
 
-    expect(getState().articles[0].isFavorite).toBe(true);
+    expect(getState().articles[0].favoritedBy).toContain(getState().name);
   });
 
   it("labels the favorite button Unfavorite once favorited", () => {
-    const favorited: TArticle = { ...article, isFavorite: true, favoritesCount: 1 };
+    const favorited: TArticle = { ...article, favoritedBy: ["you"] };
     const { getState, setState } = makeState({ ...createInitialState(), articles: [favorited] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);

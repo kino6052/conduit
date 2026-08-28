@@ -40,8 +40,7 @@ const article: TArticle = {
   tags: ["x"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 function makeDeps(
@@ -103,7 +102,7 @@ describe("composeApp", () => {
     result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
 
     expect(deps.navigation.getPage()).toBe("login");
-    expect(deps.getRealState().articles[0].isFavorite).toBe(false);
+    expect(deps.getRealState().articles[0].favoritedBy).toEqual([]);
   });
 
   it("a guest clicking Follow on the feed goes to the login page instead of following", () => {
@@ -132,7 +131,7 @@ describe("composeApp", () => {
     result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
     result.feedViewModel.articlePreviewProps[0].onFollowClick();
 
-    expect(deps.getRealState().articles[0].isFavorite).toBe(true);
+    expect(deps.getRealState().articles[0].favoritedBy).toContain("bob");
     expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
     expect(deps.navigation.getPage()).toBe("home");
   });
@@ -423,6 +422,27 @@ describe("composeApp", () => {
     expect(result.profileViewModel?.authorName).toBe("alice");
     expect(result.profileViewModel?.articlePreviewProps).toHaveLength(1);
     expect(result.profileViewModel?.articlePreviewProps[0].title).toBe("Real World");
+  });
+
+  it("a profile also shows what that author favorited, regardless of who wrote it", () => {
+    const bobsArticle: TArticle = { ...article, title: "Other", authorName: "bob", favoritedBy: ["alice"] };
+    const deps = makeDeps({ ...createInitialState(), articles: [article, bobsArticle] });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel?.favoritedArticlePreviewProps).toHaveLength(1);
+    expect(result.profileViewModel?.favoritedArticlePreviewProps[0].title).toBe("Other");
   });
 
   it("following an author from their own profile page works through essence", () => {

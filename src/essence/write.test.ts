@@ -22,8 +22,7 @@ describe("writeArticle", () => {
         tags: ["life"],
         authorName: state.name,
         createdAt: "2026-01-10",
-        favoritesCount: 0,
-        isFavorite: false,
+        favoritedBy: [],
       },
     ]);
   });
@@ -39,8 +38,7 @@ describe("writeArticle", () => {
           tags: [],
           authorName: "bob",
           createdAt: "2026-01-01",
-          favoritesCount: 0,
-          isFavorite: false,
+          favoritedBy: [],
         },
       ],
     };

@@ -13,8 +13,9 @@ const welcome: TArticle = {
   tags: ["welcome", "conduit"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 2,
-  isFavorite: false,
+  // Two favorites, neither "you" -- demonstrates the count without also
+  // claiming you favorited it (see "grounding" below for that case).
+  favoritedBy: ["alice", "bob"],
 };
 
 const grounding: TArticle = {
@@ -24,8 +25,11 @@ const grounding: TArticle = {
   tags: ["philosophy"],
   authorName: "bob",
   createdAt: "2026-01-05",
-  favoritesCount: 5,
-  isFavorite: true,
+  // "you" (the default acting identity, TState.name) is one of the five --
+  // the "A favorited article" named state below previews this exact
+  // article specifically to show the Unfavorite label from your own
+  // perspective.
+  favoritedBy: ["alice", "carol", "dave", "erin", "you"],
 };
 
 export type TNamedState = {

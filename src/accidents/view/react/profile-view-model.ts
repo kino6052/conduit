@@ -7,6 +7,7 @@
 import { TState } from "../../../essence/state";
 import { selectArticlesByAuthor } from "../../../essence/article";
 import { isFollowing } from "../../../essence/follow";
+import { selectArticlesFavoritedBy } from "../../../essence/favorite";
 import {
   TGetState,
   TSetState,
@@ -20,6 +21,12 @@ export type TProfileViewModel = {
   followLabel: string;
   onFollowClick: () => void;
   articlePreviewProps: TArticlePreviewProps[];
+  // Only answerable at all once favoriting became a real relation
+  // (TArticle.favoritedBy) instead of a per-viewer isFavorite boolean --
+  // see docs/realworld-essence-checklist.md's Profile page entry.
+  // Regardless of who wrote them, same as the feed itself never
+  // restricting favoriting to your own articles.
+  favoritedArticlePreviewProps: TArticlePreviewProps[];
 };
 
 export function compileProfileViewModel(
@@ -30,12 +37,14 @@ export function compileProfileViewModel(
   onOpenArticle: (title: string) => void,
   onOpenProfile: (authorName: string) => void,
 ): TProfileViewModel {
+  const toPreviewProps = (article: (typeof state.articles)[number]) =>
+    compileArticlePreviewProps(article, state, getState, setState, onOpenArticle, onOpenProfile);
+
   return {
     authorName,
     followLabel: isFollowing(state, authorName) ? "Unfollow" : "Follow",
     onFollowClick: () => onToggleFollow(authorName, getState, setState),
-    articlePreviewProps: selectArticlesByAuthor(state, authorName).map((article) =>
-      compileArticlePreviewProps(article, state, getState, setState, onOpenArticle, onOpenProfile),
-    ),
+    articlePreviewProps: selectArticlesByAuthor(state, authorName).map(toPreviewProps),
+    favoritedArticlePreviewProps: selectArticlesFavoritedBy(state, authorName).map(toPreviewProps),
   };
 }

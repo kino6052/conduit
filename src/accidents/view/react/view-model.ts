@@ -5,7 +5,7 @@
 
 import { TArticle, TComment, TFilterName, TState } from "../../../essence/state";
 import { selectVisibleArticles } from "../../../essence/feed";
-import { toggleFavorite } from "../../../essence/favorite";
+import { toggleFavorite, isFavoritedBy } from "../../../essence/favorite";
 import { isFollowing, toggleFollow } from "../../../essence/follow";
 import { writeArticle, TDraftArticle } from "../../../essence/write";
 import { writeComment, deleteComment } from "../../../essence/comment";
@@ -84,8 +84,9 @@ export const onSetFilter = (
 
 export type TFavoriteFollowProps = {
   favoriteLabel: string;
-  // Not a new flag standing in for anything -- this is essence's own
-  // TArticle.isFavorite, forwarded as-is, so the favorited icon
+  // Not a stored flag -- recomputed via essence's isFavoritedBy every
+  // time (TArticle.favoritedBy.includes(state.name)), same "no
+  // isOwnArticle-style cache" discipline as isMine, so the favorited icon
   // (components.ts) can render filled/outline directly instead of
   // parsing favoriteLabel's text back apart to recover the same fact.
   isFavorite: boolean;
@@ -103,9 +104,10 @@ export function compileFavoriteFollowProps(
   getState: TGetState,
   setState: TSetState,
 ): TFavoriteFollowProps {
+  const isFavorite = isFavoritedBy(article, state.name);
   return {
-    favoriteLabel: `${article.isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritesCount})`,
-    isFavorite: article.isFavorite,
+    favoriteLabel: `${isFavorite ? "Unfavorite" : "Favorite"} (${article.favoritedBy.length})`,
+    isFavorite,
     onFavoriteClick: () => onToggleFavorite(article.title, getState, setState),
     followLabel: isFollowing(state, article.authorName) ? "Unfollow" : "Follow",
     onFollowClick: () => onToggleFollow(article.authorName, getState, setState),

@@ -9,8 +9,7 @@ const article: TArticle = {
   tags: ["react", "essence"],
   authorName: "you",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 describe("renderEditor", () => {

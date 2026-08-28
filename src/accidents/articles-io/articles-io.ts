@@ -14,7 +14,10 @@ export type TLoadArticles = () => Promise<TArticle[]>;
 // Each wrote more than one article, and their tags overlap, so a fresh
 // visitor's feed and popular-tags widget both read as one small, real
 // community -- articles connected to a few recurring authors, not a pile
-// of disconnected one-off names.
+// of disconnected one-off names. favoritedBy reinforces the same thing
+// one level further: alice and bob favorite each other's articles, not
+// just their own -- a real, if small, community of readers (carol/dave/
+// erin/frank), not the guest viewing this seed data.
 const seedArticles: TArticle[] = [
   {
     title: "Grounding software in perception",
@@ -23,8 +26,7 @@ const seedArticles: TArticle[] = [
     tags: ["philosophy", "essence"],
     authorName: "alice",
     createdAt: "2026-01-05",
-    favoritesCount: 3,
-    isFavorite: false,
+    favoritedBy: ["bob", "carol", "dave"],
   },
   {
     title: "Why this app doesn't use synthetic ids",
@@ -33,8 +35,7 @@ const seedArticles: TArticle[] = [
     tags: ["philosophy", "typescript"],
     authorName: "alice",
     createdAt: "2026-01-12",
-    favoritesCount: 5,
-    isFavorite: false,
+    favoritedBy: ["bob", "carol", "dave", "erin", "frank"],
   },
   {
     title: "A love letter to red, green, refactor",
@@ -43,8 +44,7 @@ const seedArticles: TArticle[] = [
     tags: ["testing", "typescript"],
     authorName: "bob",
     createdAt: "2026-01-08",
-    favoritesCount: 2,
-    isFavorite: false,
+    favoritedBy: ["alice", "carol"],
   },
   {
     title: "What guarding the boundary actually means",
@@ -53,8 +53,7 @@ const seedArticles: TArticle[] = [
     tags: ["testing", "react"],
     authorName: "bob",
     createdAt: "2026-01-15",
-    favoritesCount: 4,
-    isFavorite: false,
+    favoritedBy: ["alice", "carol", "dave", "erin"],
   },
 ];
 

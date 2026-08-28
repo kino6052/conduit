@@ -9,8 +9,7 @@ const article: TArticle = {
   tags: ["react"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 3,
-  isFavorite: false,
+  favoritedBy: ["bob", "carol", "dave"],
 };
 
 const comment: TComment = {
@@ -88,7 +87,7 @@ describe("renderArticleDetail", () => {
   });
 
   it("labels the favorite button Unfavorite when you've already favorited it", () => {
-    const favorited: TArticle = { ...article, isFavorite: true };
+    const favorited: TArticle = { ...article, favoritedBy: [...article.favoritedBy, "you"] };
 
     const html = renderArticleDetail(favorited, [], createInitialState());
 

@@ -9,8 +9,7 @@ const alicesArticle: TArticle = {
   tags: ["x"],
   authorName: "alice",
   createdAt: "2026-01-01",
-  favoritesCount: 0,
-  isFavorite: false,
+  favoritedBy: [],
 };
 
 function makeState(initial: TState) {
@@ -86,5 +85,23 @@ describe("compileProfileViewModel", () => {
     viewModel.articlePreviewProps[0].onOpenClick();
 
     expect(opened).toBe("Real World");
+  });
+
+  it("shows only the articles this author favorited, regardless of who wrote them", () => {
+    const bobsArticle: TArticle = {
+      ...alicesArticle,
+      title: "Other",
+      authorName: "bob",
+      favoritedBy: ["alice"],
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [alicesArticle, bobsArticle],
+    });
+
+    const viewModel = compileProfileViewModel(getState(), "alice", getState, setState, noop, noop);
+
+    expect(viewModel.favoritedArticlePreviewProps).toHaveLength(1);
+    expect(viewModel.favoritedArticlePreviewProps[0].title).toBe("Other");
   });
 });
