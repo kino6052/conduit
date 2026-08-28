@@ -181,15 +181,19 @@ function Comment(props: TCommentProps) {
   return React.createElement(
     "li",
     { className: "comment" },
-    React.createElement("p", null, props.body),
-    AuthorLink(props.authorName, props.onAuthorClick),
-    props.onDeleteClick
-      ? React.createElement(
-          "button",
-          { className: "btn btn-danger", onClick: props.onDeleteClick },
-          "Delete Comment",
-        )
-      : null,
+    React.createElement("p", { className: "comment-body" }, props.body),
+    React.createElement(
+      "div",
+      { className: "meta" },
+      AuthorLink(props.authorName, props.onAuthorClick),
+      props.onDeleteClick
+        ? React.createElement(
+            "button",
+            { className: "btn btn-danger", onClick: props.onDeleteClick },
+            "Delete Comment",
+          )
+        : null,
+    ),
   );
 }
 
@@ -246,10 +250,11 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
           )
         : null,
     ),
+    React.createElement("h2", null, "Comments"),
     CommentForm(props.onCommentClick),
     React.createElement(
       "ul",
-      { className: "feed" },
+      { className: "comment-list" },
       ...props.commentProps.map((comment, index) =>
         React.createElement(Comment, { key: index, ...comment }),
       ),

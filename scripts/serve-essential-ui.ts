@@ -8,6 +8,7 @@
 // process, just refresh the page.
 
 import { fileURLToPath } from "node:url";
+import { noCacheHeaders } from "./no-cache-headers";
 
 const dir = new URL("../src/accidents/view/essential-ui/", import.meta.url);
 const port = 4324;
@@ -18,12 +19,14 @@ Bun.serve({
     const { pathname } = new URL(req.url);
 
     if (pathname === "/" || pathname === "/index.html") {
-      return new Response(Bun.file(new URL("index.html", dir)));
+      return new Response(Bun.file(new URL("index.html", dir)), {
+        headers: noCacheHeaders,
+      });
     }
 
     if (pathname === "/styles.css") {
       return new Response(Bun.file(new URL("styles.css", dir)), {
-        headers: { "Content-Type": "text/css" },
+        headers: { "Content-Type": "text/css", ...noCacheHeaders },
       });
     }
 
@@ -38,7 +41,7 @@ Bun.serve({
       }
       const [output] = result.outputs;
       return new Response(await output.text(), {
-        headers: { "Content-Type": "application/javascript" },
+        headers: { "Content-Type": "application/javascript", ...noCacheHeaders },
       });
     }
 

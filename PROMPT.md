@@ -71,6 +71,12 @@ your first change, if you haven't. It's short.
      test, not the verification. The view-model tests are the verification.
    - Every essence capability should end its cycle with something new to look at — a button,
      a rendered field — not just a passing assertion.
+   - **If a live check shows stale behavior after an edit, check the browser cache before the
+     code.** Every dev server here rebuilds `main.js` fresh per request (`scripts/no-cache-headers.ts`
+     sets `Cache-Control: no-store` on every response for exactly this reason) — but a tab left
+     open across several edits can still be showing an old cached bundle with no error to say so.
+     Reload with a cache-busting query string (`?x=1`) or open a fresh tab before concluding a
+     fix didn't work.
 6. **Commit.** One cycle, one commit. Message states what red/green/refactor produced,
    confirms coverage passed, and says plainly if verification was "tests only" vs. "also
    checked live" — don't imply you clicked through something you didn't.

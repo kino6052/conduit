@@ -6,6 +6,7 @@
 // refresh the page.
 
 import { fileURLToPath } from "node:url";
+import { noCacheHeaders } from "./no-cache-headers";
 
 const viewDir = new URL("../src/accidents/view/essence/", import.meta.url);
 const port = 4321;
@@ -16,7 +17,9 @@ Bun.serve({
     const { pathname } = new URL(req.url);
 
     if (pathname === "/" || pathname === "/index.html") {
-      return new Response(Bun.file(new URL("index.html", viewDir)));
+      return new Response(Bun.file(new URL("index.html", viewDir)), {
+        headers: noCacheHeaders,
+      });
     }
 
     if (pathname === "/main.js") {
@@ -30,7 +33,7 @@ Bun.serve({
       }
       const [output] = result.outputs;
       return new Response(await output.text(), {
-        headers: { "Content-Type": "application/javascript" },
+        headers: { "Content-Type": "application/javascript", ...noCacheHeaders },
       });
     }
 

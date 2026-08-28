@@ -153,7 +153,7 @@ reads best in their own context, not from one rule applied twice.
 
 ### Comments & favorites mechanics
 
-- [ ] Visual placement/styling of the comment thread and comment form
+- [x] Visual placement/styling of the comment thread and comment form — a "Comments" heading, the form above the thread, each comment its own small card (lightgrey surface, distinct from the white article card above it) with the body, author, and delete control laid out in the same `.meta` row pattern used elsewhere (→ `Comment`/`CommentForm`, `src/accidents/view/react/components.ts`; `.comment-list`/`.comment`/`.comment-body`, `src/accidents/view/react/styles.css` — its own list class rather than reusing `.feed`'s, so future changes to article cards don't leak into it)
 - [x] Confirmation prompts before deleting a comment (→ same `withConfirmation`; wired in both `src/index.essence.ts` and now `src/index.ts` — see the delete-comment item below, which closed the parity gap this line used to flag)
 - [x] The specific icon used to show "favorited" — a minimal inline heart, filled once favorited, outline otherwise (→ `HeartIcon`/`FavoriteButton`, `src/accidents/view/react/components.ts`; `TFavoriteFollowProps.isFavorite`, `src/accidents/view/react/view-model.ts` — essence's own `TArticle.isFavorite` forwarded as-is, not a new flag, so the icon doesn't have to parse `favoriteLabel`'s text back apart to recover the same fact). No animation — a plain state change, same as everything else in this app. React app only, same scoping as the rest of this section's visual items
 
