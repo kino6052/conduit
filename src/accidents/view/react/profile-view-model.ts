@@ -14,6 +14,7 @@ import {
   TGetState,
   TSetState,
   TArticlePreviewProps,
+  TButtonProps,
   compileArticlePreviewProps,
   onToggleFollow,
 } from "./view-model";
@@ -24,14 +25,14 @@ export type TProfileViewModel = {
   // as selectBio/selectAvatarUrl's own contract.
   bio: string;
   avatarUrl: string;
-  // True only for the acting identity's own profile -- the real Profile
-  // page shows "Edit Profile Settings" here instead of a Follow button,
-  // since following yourself isn't a meaningful action
-  // (docs/realworld-essence-checklist.md's Profile page entry).
-  isOwnProfile: boolean;
-  followLabel: string;
-  onFollowClick: () => void;
-  onEditSettingsClick: () => void;
+  // On your own profile this is "Edit Profile Settings" -> Settings;
+  // on anyone else's it's "Follow"/"Unfollow" -> toggleFollow. No
+  // isOwnProfile flag alongside it -- same "no stored flag standing in
+  // for a comparison anyone could make themselves" rule isMine already
+  // follows (docs/solid-in-this-repo.md's SRP section), just applied one
+  // level up: the component only ever needed one button, never the fact
+  // of which case it was.
+  buttonProps: TButtonProps;
   articlePreviewProps: TArticlePreviewProps[];
   // Only answerable at all once favoriting became a real relation
   // (TArticle.favoritedBy) instead of a per-viewer isFavorite boolean --
@@ -53,14 +54,19 @@ export function compileProfileViewModel(
   const toPreviewProps = (article: (typeof state.articles)[number]) =>
     compileArticlePreviewProps(article, state, getState, setState, onOpenArticle, onOpenProfile);
 
+  const buttonProps: TButtonProps =
+    authorName === state.name
+      ? { label: "Edit Profile Settings", onClick: onOpenSettings }
+      : {
+          label: isFollowing(state, authorName) ? "Unfollow" : "Follow",
+          onClick: () => onToggleFollow(authorName, getState, setState),
+        };
+
   return {
     authorName,
     bio: selectBio(state, authorName),
     avatarUrl: selectAvatarUrl(state, authorName),
-    isOwnProfile: authorName === state.name,
-    followLabel: isFollowing(state, authorName) ? "Unfollow" : "Follow",
-    onFollowClick: () => onToggleFollow(authorName, getState, setState),
-    onEditSettingsClick: onOpenSettings,
+    buttonProps,
     articlePreviewProps: selectArticlesByAuthor(state, authorName).map(toPreviewProps),
     favoritedArticlePreviewProps: selectArticlesFavoritedBy(state, authorName).map(toPreviewProps),
   };

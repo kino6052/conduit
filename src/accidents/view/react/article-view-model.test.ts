@@ -32,8 +32,8 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel?.bodyHtml).toContain("The full body text.");
     expect(viewModel?.tags).toEqual(["react"]);
     expect(viewModel?.authorName).toBe("alice");
-    expect(viewModel?.favoriteLabel).toBe("Favorite (3)");
-    expect(viewModel?.followLabel).toBe("Follow");
+    expect(viewModel?.toggleButtonProps.label).toBe("Favorite (3)");
+    expect(viewModel?.buttonProps.label).toBe("Follow");
   });
 
   it("carries the author's avatar through, empty if they never set one", () => {
@@ -73,12 +73,12 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel).toBeUndefined();
   });
 
-  it("onFavoriteClick and onFollowClick act through essence, same as the feed's", () => {
+  it("the toggle and follow buttons act through essence, same as the feed's", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
-    viewModel?.onFavoriteClick();
-    viewModel?.onFollowClick();
+    viewModel?.toggleButtonProps.onClick();
+    viewModel?.buttonProps.onClick();
 
     expect(getState().articles[0].favoritedBy).toContain(getState().name);
     expect(getState().followedAuthors).toEqual(["alice"]);

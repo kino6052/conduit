@@ -68,37 +68,20 @@ describe("compileProfileViewModel", () => {
     expect(viewModel.avatarUrl).toBe("https://example.com/alice.png");
   });
 
-  it("isOwnProfile is true only when viewing the acting identity's own profile", () => {
+  it("on your own profile, the one button opens Settings", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
-
-    const own = compileProfileViewModel(getState(), "you", getState, setState, noop, noop, noop);
-    const someoneElses = compileProfileViewModel(
-      getState(),
-      "alice",
-      getState,
-      setState,
-      noop,
-      noop,
-      noop,
-    );
-
-    expect(own.isOwnProfile).toBe(true);
-    expect(someoneElses.isOwnProfile).toBe(false);
-  });
-
-  it("onEditSettingsClick calls the given onOpenSettings", () => {
-    const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
-    let called = false;
+    let openedSettings = false;
 
     const viewModel = compileProfileViewModel(getState(), "you", getState, setState, noop, noop, () => {
-      called = true;
+      openedSettings = true;
     });
-    viewModel.onEditSettingsClick();
 
-    expect(called).toBe(true);
+    expect(viewModel.buttonProps.label).toBe("Edit Profile Settings");
+    viewModel.buttonProps.onClick();
+    expect(openedSettings).toBe(true);
   });
 
-  it("labels the follow button by whether you follow this author", () => {
+  it("on someone else's profile, the one button follows/unfollows them instead", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
 
     const viewModel = compileProfileViewModel(
@@ -111,10 +94,10 @@ describe("compileProfileViewModel", () => {
       noop,
     );
 
-    expect(viewModel.followLabel).toBe("Follow");
+    expect(viewModel.buttonProps.label).toBe("Follow");
   });
 
-  it("labels the follow button Unfollow once you follow this author", () => {
+  it("labels the button Unfollow once you follow this author", () => {
     const { getState, setState } = makeState({
       ...createInitialState(),
       articles: [alicesArticle],
@@ -131,10 +114,10 @@ describe("compileProfileViewModel", () => {
       noop,
     );
 
-    expect(viewModel.followLabel).toBe("Unfollow");
+    expect(viewModel.buttonProps.label).toBe("Unfollow");
   });
 
-  it("onFollowClick toggles following this author through essence", () => {
+  it("on someone else's profile, the button toggles following them through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
 
     const viewModel = compileProfileViewModel(
@@ -146,7 +129,7 @@ describe("compileProfileViewModel", () => {
       noop,
       noop,
     );
-    viewModel.onFollowClick();
+    viewModel.buttonProps.onClick();
 
     expect(getState().followedAuthors).toEqual(["alice"]);
   });

@@ -338,8 +338,8 @@ export function composeApp<R>(
     ? feedViewModel.articlePreviewProps
     : feedViewModel.articlePreviewProps.map((preview) => ({
         ...preview,
-        onFavoriteClick: navigation.openLogin,
-        onFollowClick: navigation.openLogin,
+        toggleButtonProps: { ...preview.toggleButtonProps, onClick: navigation.openLogin },
+        buttonProps: { ...preview.buttonProps, onClick: navigation.openLogin },
       }));
 
   return view.HomePage({

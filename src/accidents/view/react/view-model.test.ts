@@ -36,7 +36,7 @@ describe("compileFeedViewModel", () => {
 
     expect(viewModel.articlePreviewProps).toHaveLength(1);
     expect(viewModel.articlePreviewProps[0].title).toBe("A");
-    expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Favorite (0)");
+    expect(viewModel.articlePreviewProps[0].toggleButtonProps.label).toBe("Favorite (0)");
   });
 
   it("carries the author's avatar through, empty if they never set one", () => {
@@ -55,7 +55,7 @@ describe("compileFeedViewModel", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
-    viewModel.articlePreviewProps[0].onFavoriteClick();
+    viewModel.articlePreviewProps[0].toggleButtonProps.onClick();
 
     expect(getState().articles[0].favoritedBy).toContain(getState().name);
   });
@@ -66,15 +66,15 @@ describe("compileFeedViewModel", () => {
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Unfavorite (1)");
+    expect(viewModel.articlePreviewProps[0].toggleButtonProps.label).toBe("Unfavorite (1)");
   });
 
-  it("carries the article's own isFavorite through, for the favorited icon", () => {
+  it("carries the article's own favorited state through, for the favorited icon", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].isFavorite).toBe(false);
+    expect(viewModel.articlePreviewProps[0].toggleButtonProps.isOn).toBe(false);
   });
 
   it("labels the follow button by whether you follow the author", () => {
@@ -82,7 +82,7 @@ describe("compileFeedViewModel", () => {
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].followLabel).toBe("Follow");
+    expect(viewModel.articlePreviewProps[0].buttonProps.label).toBe("Follow");
   });
 
   it("labels the follow button Unfollow once you follow the author", () => {
@@ -94,14 +94,14 @@ describe("compileFeedViewModel", () => {
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.articlePreviewProps[0].followLabel).toBe("Unfollow");
+    expect(viewModel.articlePreviewProps[0].buttonProps.label).toBe("Unfollow");
   });
 
-  it("onFollowClick toggles following the author through essence", () => {
+  it("the follow button toggles following the author through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
-    viewModel.articlePreviewProps[0].onFollowClick();
+    viewModel.articlePreviewProps[0].buttonProps.onClick();
 
     expect(getState().followedAuthors).toEqual(["alice"]);
   });
@@ -179,19 +179,22 @@ describe("compileFeedViewModel", () => {
     expect(opened).toBe("alice");
   });
 
-  it("shows the current feed lens", () => {
+  it("shows the current feed lens as the 'on' one of two lens buttons", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
 
-    expect(viewModel.filterName).toBe("global");
+    expect(viewModel.lensButtonProps).toEqual([
+      { label: "Global Feed", isOn: true, onClick: expect.any(Function) },
+      { label: "Your Feed", isOn: false, onClick: expect.any(Function) },
+    ]);
   });
 
-  it("onSetFilterClick switches the feed lens through essence", () => {
+  it("clicking a lens button switches the feed lens through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
     const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
-    viewModel.onSetFilterClick("personal");
+    viewModel.lensButtonProps[1].onClick();
 
     expect(getState().filterName).toBe("personal");
   });

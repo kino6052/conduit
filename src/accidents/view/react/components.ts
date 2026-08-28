@@ -15,6 +15,7 @@ import {
   TFeedViewModel,
   TEditorProps,
   TTagProps,
+  TToggleButtonProps,
 } from "./view-model";
 import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 import { THeaderProps } from "./header-view-model";
@@ -131,10 +132,10 @@ function AuthorLink(authorName: string, avatarUrl: string, onClick: () => void) 
   );
 }
 
-// A minimal inline heart -- filled once favorited, outline otherwise --
-// next to the same favoriteLabel text that was already there. No icon
-// library: one <svg>, one <path>, styled entirely by currentColor so it
-// picks up whatever .btn-accent's own color already is.
+// A minimal inline heart -- filled when the toggle button it sits inside
+// is on, outline otherwise -- next to that same button's own label. No
+// icon library: one <svg>, one <path>, styled entirely by currentColor
+// so it picks up whatever .btn-accent's own color already is.
 function HeartIcon(filled: boolean) {
   return React.createElement(
     "svg",
@@ -153,16 +154,15 @@ function HeartIcon(filled: boolean) {
   );
 }
 
-function FavoriteButton(props: {
-  isFavorite: boolean;
-  favoriteLabel: string;
-  onFavoriteClick: () => void;
-}) {
+// Generic -- doesn't know favoriting exists, just renders whatever
+// TToggleButtonProps it's given (view-model.ts). It happens to be used
+// for the favorite button today; nothing here says so.
+function ToggleButton(props: TToggleButtonProps) {
   return React.createElement(
     "button",
-    { className: "btn btn-accent", onClick: props.onFavoriteClick },
-    HeartIcon(props.isFavorite),
-    props.favoriteLabel,
+    { className: "btn btn-accent", onClick: props.onClick },
+    HeartIcon(props.isOn),
+    props.label,
   );
 }
 
@@ -202,14 +202,18 @@ export function ArticlePreview(props: TArticlePreviewProps) {
       "div",
       { className: "meta" },
       AuthorLink(props.authorName, props.avatarUrl, props.onAuthorClick),
-      React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
+      React.createElement(
+        "button",
+        { className: "btn", onClick: props.buttonProps.onClick },
+        props.buttonProps.label,
+      ),
       React.createElement("span", { className: "date" }, props.createdAt),
     ),
     TagList(props.tags, props.onTagClick),
     React.createElement(
       "div",
       { className: "actions" },
-      FavoriteButton(props),
+      ToggleButton(props.toggleButtonProps),
     ),
   );
 }
@@ -259,7 +263,11 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
       "div",
       { className: "meta" },
       AuthorLink(props.authorName, props.avatarUrl, props.onAuthorClick),
-      React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
+      React.createElement(
+        "button",
+        { className: "btn", onClick: props.buttonProps.onClick },
+        props.buttonProps.label,
+      ),
     ),
     // dangerouslySetInnerHTML is React's own name for "insert pre-rendered
     // HTML" -- library vocabulary contained inside this component, same
@@ -271,7 +279,7 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
     React.createElement(
       "div",
       { className: "actions" },
-      FavoriteButton(props),
+      ToggleButton(props.toggleButtonProps),
       props.onEditClick
         ? React.createElement(
             "button",
@@ -563,22 +571,25 @@ export function PopularTags(tagProps: TTagProps[]) {
   );
 }
 
-function FeedLensToggle(props: TFeedViewModel) {
-  const lens = (filterName: TFeedViewModel["filterName"], label: string) =>
-    React.createElement(
-      "button",
-      {
-        className: props.filterName === filterName ? "nav-tab active" : "nav-tab",
-        onClick: () => props.onSetFilterClick(filterName),
-      },
-      label,
-    );
-
+// Doesn't know "global"/"personal" exist -- just renders whatever
+// lensButtonProps it's given, in order, as tabs. compileFeedViewModel
+// (view-model.ts) is the one place that knows which button means which
+// essence lens.
+function FeedLensToggle(lensButtonProps: TToggleButtonProps[]) {
   return React.createElement(
     "nav",
     { className: "nav" },
-    lens("global", "Global Feed"),
-    lens("personal", "Your Feed"),
+    ...lensButtonProps.map((props, index) =>
+      React.createElement(
+        "button",
+        {
+          key: index,
+          className: props.isOn ? "nav-tab active" : "nav-tab",
+          onClick: props.onClick,
+        },
+        props.label,
+      ),
+    ),
   );
 }
 
@@ -598,7 +609,7 @@ export function Feed(props: TFeedViewModel) {
   return React.createElement(
     React.Fragment,
     null,
-    FeedLensToggle(props),
+    FeedLensToggle(props.lensButtonProps),
     props.activeTag ? ActiveTagFilter(props.activeTag, props.onClearTagClick) : null,
     React.createElement(
       "ul",
@@ -652,20 +663,14 @@ export function Profile(props: TProfileViewModel) {
         : null,
       React.createElement("span", { className: "author" }, props.authorName),
       props.bio ? React.createElement("p", { className: "bio" }, props.bio) : null,
-      // Following yourself isn't a meaningful action -- your own profile
-      // offers a way to edit it instead, same swap the real spec makes
-      // (docs/spec/pages.md's Profile entry).
-      props.isOwnProfile
-        ? React.createElement(
-            "button",
-            { className: "btn", onClick: props.onEditSettingsClick },
-            "Edit Profile Settings",
-          )
-        : React.createElement(
-            "button",
-            { className: "btn", onClick: props.onFollowClick },
-            props.followLabel,
-          ),
+      // One button, whatever it's for -- profile-view-model.ts already
+      // decided whether that's Follow/Unfollow or Edit Profile Settings;
+      // this component never needed to know which.
+      React.createElement(
+        "button",
+        { className: "btn", onClick: props.buttonProps.onClick },
+        props.buttonProps.label,
+      ),
     ),
     React.createElement("h2", null, "Articles"),
     React.createElement(

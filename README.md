@@ -182,10 +182,19 @@ above: it applies to internal variable names too, including inside the compositi
 unlike React's `onSubmit` there's no library actually calling the concept "a store" — that name
 would be one we invented, not one we inherited.
 
-This is a standard to hold new code to, not a claim that everything here already meets it —
-`ArticlePreview` still takes `onFavoriteClick`/`onFollowClick` rather than fully generic button
-props. That one's a real gap, not a guarded internal detail; worth tightening in a future
-cycle, noted here rather than silently left as the model to copy.
+This was a standard to hold new code to before it was a standard the existing code actually
+met. `ArticlePreview` used to take `onFavoriteClick`/`onFollowClick` directly — real leaks, not
+guarded internal detail, flagged here rather than silently left as the model to copy. Fixed:
+`TToggleButtonProps`/`TButtonProps` (`view-model.ts`) are two fully generic shapes — a labeled
+button with an on/off state, and a labeled button without one — and `compileFavoriteFollowProps`
+is the one place now allowed to know that the first one means favoriting and the second one
+means following. The feed's lens toggle ("Global Feed"/"Your Feed") and Profile's one
+context-dependent button (Follow/Unfollow, or Edit Profile Settings on your own profile) went
+through the same fix, for the same reason: `onSetFilterClick(filterName: TFilterName)` handed a
+presentational component an essence-defined union type directly, and `isOwnProfile` was a stored
+flag standing in for a choice the view-model layer could just make once and hand down as the
+button's own label — the same "no `isOwnArticle`-style cache" rule `isMine` already followed,
+just found a second time, one layer up.
 
 ### Steps
 

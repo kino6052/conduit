@@ -105,7 +105,7 @@ describe("composeApp", () => {
       { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
-    result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
+    result.feedViewModel.articlePreviewProps[0].toggleButtonProps.onClick();
 
     expect(deps.navigation.getPage()).toBe("login");
     expect(deps.getRealState().articles[0].favoritedBy).toEqual([]);
@@ -119,7 +119,7 @@ describe("composeApp", () => {
       { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
-    result.feedViewModel.articlePreviewProps[0].onFollowClick();
+    result.feedViewModel.articlePreviewProps[0].buttonProps.onClick();
 
     expect(deps.navigation.getPage()).toBe("login");
     expect(deps.getRealState().followedAuthors).toEqual([]);
@@ -134,8 +134,8 @@ describe("composeApp", () => {
       { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
       getCreatedAt,
     ) as THomePageProps;
-    result.feedViewModel.articlePreviewProps[0].onFavoriteClick();
-    result.feedViewModel.articlePreviewProps[0].onFollowClick();
+    result.feedViewModel.articlePreviewProps[0].toggleButtonProps.onClick();
+    result.feedViewModel.articlePreviewProps[0].buttonProps.onClick();
 
     expect(deps.getRealState().articles[0].favoritedBy).toContain("bob");
     expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
@@ -501,7 +501,7 @@ describe("composeApp", () => {
       },
       getCreatedAt,
     ) as TProfilePageProps;
-    result.profileViewModel?.onFollowClick();
+    result.profileViewModel?.buttonProps.onClick();
 
     expect(deps.getRealState().followedAuthors).toEqual(["alice"]);
   });
@@ -561,13 +561,13 @@ describe("composeApp", () => {
       },
       getCreatedAt,
     ) as TProfilePageProps;
-    result.profileViewModel?.onEditSettingsClick();
 
-    expect(result.profileViewModel?.isOwnProfile).toBe(true);
+    expect(result.profileViewModel?.buttonProps.label).toBe("Edit Profile Settings");
+    result.profileViewModel?.buttonProps.onClick();
     expect(deps.navigation.getPage()).toBe("settings");
   });
 
-  it("viewing someone else's profile is not flagged as your own", () => {
+  it("viewing someone else's profile shows a Follow button instead of Edit Profile Settings", () => {
     const deps = makeDeps({ ...createInitialState(), articles: [article] });
     signInAs(deps, "bob");
 
@@ -583,7 +583,7 @@ describe("composeApp", () => {
       getCreatedAt,
     ) as TProfilePageProps;
 
-    expect(result.profileViewModel?.isOwnProfile).toBe(false);
+    expect(result.profileViewModel?.buttonProps.label).toBe("Follow");
   });
 
   it("the header's onProfileClick opens your own profile, once signed in", () => {
