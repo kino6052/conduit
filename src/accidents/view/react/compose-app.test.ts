@@ -522,6 +522,34 @@ describe("composeApp", () => {
     expect(result.profileViewModel?.isOwnProfile).toBe(false);
   });
 
+  it("the header's onProfileClick opens your own profile, once signed in", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.headerViewModel.onProfileClick();
+
+    expect(deps.navigation.getPage()).toBe("profile");
+    expect(deps.navigation.getProfileAuthorName()).toBe("bob");
+  });
+
+  it("the header's onProfileClick does nothing for a guest", () => {
+    const deps = makeDeps(createInitialState());
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.headerViewModel.onProfileClick();
+
+    expect(deps.navigation.getPage()).toBe("home");
+  });
+
   it("a guest can't reach settings -- sign-in message instead", () => {
     const deps = makeDeps(createInitialState());
 

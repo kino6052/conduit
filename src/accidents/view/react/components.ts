@@ -77,9 +77,9 @@ export function Header(props: THeaderProps) {
           : null,
         props.signedInName
           ? React.createElement(
-              "button",
-              { className: "nav-tab", onClick: props.onSignOutClick },
-              `Sign Out (${props.signedInName})`,
+              "span",
+              { className: "nav-tab" },
+              AuthorLink(props.signedInName, props.avatarUrl, props.onProfileClick),
             )
           : React.createElement(
               "button",
@@ -398,19 +398,31 @@ export function Settings(props: TSettingsViewModel) {
   };
 
   return React.createElement(
-    "form",
-    { className: "form", onSubmit: handleSubmit },
-    React.createElement("input", {
-      name: "avatarUrl",
-      placeholder: "URL of profile picture",
-      defaultValue: props.avatarUrl,
-    }),
-    React.createElement("textarea", {
-      name: "bio",
-      placeholder: "Short bio about you",
-      defaultValue: props.bio,
-    }),
-    React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Update Settings"),
+    React.Fragment,
+    null,
+    React.createElement(
+      "form",
+      { className: "form", onSubmit: handleSubmit },
+      React.createElement("input", {
+        name: "avatarUrl",
+        placeholder: "URL of profile picture",
+        defaultValue: props.avatarUrl,
+      }),
+      React.createElement("textarea", {
+        name: "bio",
+        placeholder: "Short bio about you",
+        defaultValue: props.bio,
+      }),
+      React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Update Settings"),
+    ),
+    // Sign out lives here now, not the header -- the header's signed-in
+    // name links to your own profile instead
+    // (docs/realworld-essence-checklist.md's header-navigation entry).
+    React.createElement(
+      "button",
+      { className: "btn", onClick: props.onSignOutClick },
+      "Sign Out",
+    ),
   );
 }
 

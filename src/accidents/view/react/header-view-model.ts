@@ -16,7 +16,15 @@ export type THeaderProps = {
   // undefined -- a guest -- not a separate isGuest/signedIn flag, same
   // presence-not-flag rule as sign-in-view-model.ts's own signedInName.
   signedInName: string | undefined;
-  onSignOutClick: () => void;
+  // "" for a guest, or a signed-in name that never set one through
+  // Settings -- same contract as selectAvatarUrl itself.
+  avatarUrl: string;
+  // The signed-in name (with avatar) links to your own profile -- not a
+  // Sign Out control. Real spec keeps those as two separate things
+  // (docs/spec/pages.md's Header entry); Sign Out now lives on the
+  // Settings page instead (docs/realworld-essence-checklist.md's
+  // header-navigation entry).
+  onProfileClick: () => void;
   isEditor: boolean;
   onNewArticleClick: () => void;
   isSettings: boolean;
@@ -27,10 +35,11 @@ export function compileHeaderViewModel(
   page: TPage,
   onGoHome: () => void,
   signedInName: string | undefined,
+  avatarUrl: string,
   onLogin: () => void,
-  onSignOut: () => void,
   onNewArticle: () => void,
   onSettings: () => void,
+  onProfile: () => void,
 ): THeaderProps {
   return {
     isHome: page === "home",
@@ -38,7 +47,8 @@ export function compileHeaderViewModel(
     isLogin: page === "login",
     onLoginClick: onLogin,
     signedInName,
-    onSignOutClick: onSignOut,
+    avatarUrl,
+    onProfileClick: onProfile,
     isEditor: page === "editor",
     onNewArticleClick: onNewArticle,
     isSettings: page === "settings",

@@ -13,11 +13,13 @@ function makeState(initial: TState) {
   return { getState, setState };
 }
 
+const noop = () => {};
+
 describe("compileSettingsViewModel", () => {
   it("shows the acting identity's current bio and avatar, empty if never set", () => {
     const { getState, setState } = makeState(createInitialState());
 
-    const viewModel = compileSettingsViewModel(getState, setState);
+    const viewModel = compileSettingsViewModel(getState, setState, noop);
 
     expect(viewModel.bio).toBe("");
     expect(viewModel.avatarUrl).toBe("");
@@ -30,7 +32,7 @@ describe("compileSettingsViewModel", () => {
       avatarUrls: [{ name: "you", url: "https://example.com/you.png" }],
     });
 
-    const viewModel = compileSettingsViewModel(getState, setState);
+    const viewModel = compileSettingsViewModel(getState, setState, noop);
 
     expect(viewModel.bio).toBe("existing bio");
     expect(viewModel.avatarUrl).toBe("https://example.com/you.png");
@@ -38,11 +40,23 @@ describe("compileSettingsViewModel", () => {
 
   it("onSaveClick sets both the bio and the avatar through essence", () => {
     const { getState, setState } = makeState(createInitialState());
-    const viewModel = compileSettingsViewModel(getState, setState);
+    const viewModel = compileSettingsViewModel(getState, setState, noop);
 
     viewModel.onSaveClick("new bio", "https://example.com/new.png");
 
     expect(selectBio(getState(), "you")).toBe("new bio");
     expect(selectAvatarUrl(getState(), "you")).toBe("https://example.com/new.png");
+  });
+
+  it("onSignOutClick calls the given handler through, unchanged", () => {
+    const { getState, setState } = makeState(createInitialState());
+    let called = false;
+
+    const viewModel = compileSettingsViewModel(getState, setState, () => {
+      called = true;
+    });
+    viewModel.onSignOutClick();
+
+    expect(called).toBe(true);
   });
 });

@@ -16,6 +16,7 @@ import { TState } from "../../../essence/state";
 import { TDraftArticle } from "../../../essence/write";
 import { editArticle } from "../../../essence/edit";
 import { selectArticle } from "../../../essence/article";
+import { selectAvatarUrl } from "../../../essence/avatar";
 import { TNavigation, TPage } from "../../navigation/navigation";
 import { TSignIn } from "../../sign-in/sign-in";
 import { TConfirm, withConfirmation } from "../../confirmation/confirmation";
@@ -92,10 +93,11 @@ export function composeApp<R>(
     page,
     navigation.goHome,
     signedInName,
+    signedInName ? selectAvatarUrl(state, signedInName) : "",
     navigation.openLogin,
-    onSignOutClick,
     () => navigation.openEditor(),
     navigation.openSettings,
+    () => signedInName && navigation.openProfile(signedInName),
   );
 
   if (page === "login") {
@@ -227,7 +229,7 @@ export function composeApp<R>(
     // avatar requires a signed-in name -- there's no "your" anything for
     // a guest to edit.
     const baseSettingsViewModel = signedInName
-      ? compileSettingsViewModel(getState, setState)
+      ? compileSettingsViewModel(getState, setState, onSignOutClick)
       : undefined;
     // After saving, off to see the result on your own profile -- same
     // "go look at what you just did" shape as onEditorSubmit returning to
