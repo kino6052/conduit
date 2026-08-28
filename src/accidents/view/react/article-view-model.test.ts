@@ -36,6 +36,18 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel?.followLabel).toBe("Follow");
   });
 
+  it("carries the author's avatar through, empty if they never set one", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      avatarUrls: [{ name: "alice", url: "https://example.com/alice.png" }],
+    });
+
+    const viewModel = compileArticleDetailViewModel(getState(), "Real World", getState, setState, getCreatedAt, () => {}, () => {});
+
+    expect(viewModel?.avatarUrl).toBe("https://example.com/alice.png");
+  });
+
   it("renders the body as markdown, not plain text", () => {
     const formatted: TArticle = { ...article, body: "This is **important**." };
     const { getState, setState } = makeState({ ...createInitialState(), articles: [formatted] });
@@ -98,6 +110,33 @@ describe("compileArticleDetailViewModel", () => {
     expect(viewModel?.commentProps).toHaveLength(1);
     expect(viewModel?.commentProps[0].body).toBe("Nice!");
     expect(viewModel?.commentProps[0].authorName).toBe("bob");
+  });
+
+  it("carries a commenter's avatar through, empty if they never set one", () => {
+    const comment: TComment = {
+      articleTitle: "Real World",
+      authorName: "bob",
+      body: "Nice!",
+      createdAt: "2026-01-02",
+    };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      comments: [comment],
+      avatarUrls: [{ name: "bob", url: "https://example.com/bob.png" }],
+    });
+
+    const viewModel = compileArticleDetailViewModel(
+      getState(),
+      "Real World",
+      getState,
+      setState,
+      getCreatedAt,
+      () => {},
+      () => {},
+    );
+
+    expect(viewModel?.commentProps[0].avatarUrl).toBe("https://example.com/bob.png");
   });
 
   it("gives you a delete control on a comment you wrote", () => {

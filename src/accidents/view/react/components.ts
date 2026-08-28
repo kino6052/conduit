@@ -96,11 +96,20 @@ export function Header(props: THeaderProps) {
 
 // The author name shown next to an article/comment, clickable through to
 // that author's profile -- same button-styled-as-text approach as
-// card-title above (a real click target, not a decorative label).
-function AuthorLink(authorName: string, onClick: () => void) {
+// card-title above (a real click target, not a decorative label). The
+// avatar (when set) rides along inside the same click target, same
+// "one thing, one control" shape as everywhere else in this app.
+function AuthorLink(authorName: string, avatarUrl: string, onClick: () => void) {
   return React.createElement(
     "button",
     { className: "author link-button", onClick },
+    avatarUrl
+      ? React.createElement("img", {
+          className: "avatar-small",
+          src: avatarUrl,
+          alt: "",
+        })
+      : null,
     authorName,
   );
 }
@@ -175,7 +184,7 @@ export function ArticlePreview(props: TArticlePreviewProps) {
     React.createElement(
       "div",
       { className: "meta" },
-      AuthorLink(props.authorName, props.onAuthorClick),
+      AuthorLink(props.authorName, props.avatarUrl, props.onAuthorClick),
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
       React.createElement("span", { className: "date" }, props.createdAt),
     ),
@@ -196,7 +205,7 @@ function Comment(props: TCommentProps) {
     React.createElement(
       "div",
       { className: "meta" },
-      AuthorLink(props.authorName, props.onAuthorClick),
+      AuthorLink(props.authorName, props.avatarUrl, props.onAuthorClick),
       props.onDeleteClick
         ? React.createElement(
             "button",
@@ -232,7 +241,7 @@ export function ArticleDetail(props: TArticleDetailViewModel) {
     React.createElement(
       "div",
       { className: "meta" },
-      AuthorLink(props.authorName, props.onAuthorClick),
+      AuthorLink(props.authorName, props.avatarUrl, props.onAuthorClick),
       React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
     ),
     // dangerouslySetInnerHTML is React's own name for "insert pre-rendered

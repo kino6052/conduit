@@ -7,6 +7,7 @@ import { TArticle, TComment, TFilterName, TState } from "../../../essence/state"
 import { selectVisibleArticles } from "../../../essence/feed";
 import { toggleFavorite, isFavoritedBy } from "../../../essence/favorite";
 import { isFollowing, toggleFollow } from "../../../essence/follow";
+import { selectAvatarUrl } from "../../../essence/avatar";
 import { writeArticle, TDraftArticle } from "../../../essence/write";
 import { writeComment, deleteComment } from "../../../essence/comment";
 import { deleteArticle } from "../../../essence/delete";
@@ -118,6 +119,9 @@ export type TArticlePreviewProps = TFavoriteFollowProps & {
   title: string;
   summary: string;
   authorName: string;
+  // "" when the author never set one through Settings -- same contract as
+  // selectAvatarUrl itself, not a broken-image placeholder.
+  avatarUrl: string;
   createdAt: string;
   tags: string[];
   onOpenClick: () => void;
@@ -146,6 +150,7 @@ export function compileArticlePreviewProps(
     title: article.title,
     summary: article.summary,
     authorName: article.authorName,
+    avatarUrl: selectAvatarUrl(state, article.authorName),
     createdAt: article.createdAt,
     tags: article.tags,
     onOpenClick: () => onOpenArticle(article.title),

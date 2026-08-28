@@ -39,6 +39,18 @@ describe("compileFeedViewModel", () => {
     expect(viewModel.articlePreviewProps[0].favoriteLabel).toBe("Favorite (0)");
   });
 
+  it("carries the author's avatar through, empty if they never set one", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      avatarUrls: [{ name: "alice", url: "https://example.com/alice.png" }],
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+
+    expect(viewModel.articlePreviewProps[0].avatarUrl).toBe("https://example.com/alice.png");
+  });
+
   it("onFavoriteClick toggles the article's favorite state through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
 
