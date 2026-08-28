@@ -28,7 +28,11 @@ markdown rendering aren't yet.
 - **[`src/accidents/`](src/accidents)** — everything that delivers the essence. Composition
   roots sit at the top of `src/`, not buried inside here (a composition root is where essence
   and a view meet, so it isn't itself "the view") — see
-  [`src/index.ts`](src/index.ts) and [`src/index.essence.ts`](src/index.essence.ts).
+  [`src/index.ts`](src/index.ts), [`src/index.essence.ts`](src/index.essence.ts), and
+  [`src/index.essential-dependencies.ts`](src/index.essential-dependencies.ts) — the same real
+  `composeApp`/essence/pages as `src/index.ts`, wired to every dependency's simplest, essential
+  implementation instead (in-memory navigation and state, an always-confirm function), running
+  live rather than only under test.
   - **[`view/react/`](src/accidents/view/react)** — the real delivery: React + RxJS. View-model
     compiler, pure presentational components, `pages.ts` (Home/Login/Article/Editor — separate
     routed screens), mount point, HTML shell, stylesheet. `compose-app.ts` holds the actual
@@ -65,6 +69,7 @@ bun run test:coverage   # bun's own function/line coverage
 bun run test:branches   # branch coverage via vitest+istanbul, fails under 100%
 bun run essence-view    # serve src/accidents/view/essence at http://localhost:4321
 bun run app             # serve src/accidents/view/react at http://localhost:4323
+bun run essential-app   # serve the same app on essential (in-memory) dependencies at http://localhost:4322
 ```
 
 ## Development Approach
