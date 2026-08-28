@@ -482,6 +482,32 @@ describe("composeApp", () => {
     expect(deps.navigation.getProfileAuthorName()).toBe("alice");
   });
 
+  it("navigating away clears any active tag filter", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article], activeTag: "x" });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onAuthorClick();
+
+    expect(deps.getRealState().activeTag).toBeNull();
+  });
+
+  it("navigating with no active tag filter is a no-op for it, not an error", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "home", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as THomePageProps;
+    result.feedViewModel.articlePreviewProps[0].onAuthorClick();
+
+    expect(deps.getRealState().activeTag).toBeNull();
+  });
+
   it("viewing your own profile flags it as such and can open Settings", () => {
     const deps = makeDeps(createInitialState());
     signInAs(deps, "bob");

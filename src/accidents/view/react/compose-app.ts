@@ -71,12 +71,62 @@ export type TAppSnapshot = {
   profileAuthorName: string | null;
 };
 
+// Every navigation call also clears any active tag filter -- a filter
+// that silently survived a trip to another page and back would be a
+// real surprise, not a convenience (docs/realworld-essence-checklist.md's
+// feed/discovery entry). Wrapped once, here, so it can't be missed on
+// any of the several places navigation actually gets called from below
+// (the header, the feed's own article/author clicks, the editor/profile
+// flows) -- clicking a tag itself never goes through this at all
+// (onSetTag/onClearTag, view-model.ts, act on essence directly), so
+// setting a filter is untouched, only leaving it is.
+function withTagCleared(
+  navigation: TNavigation,
+  getState: TGetState,
+  setState: TSetState,
+): TNavigation {
+  const clearTag = (): void => {
+    const state = getState();
+    if (state.activeTag !== null) {
+      setState({ ...state, activeTag: null });
+    }
+  };
+  return {
+    ...navigation,
+    goHome: () => {
+      clearTag();
+      navigation.goHome();
+    },
+    openArticle: (title) => {
+      clearTag();
+      navigation.openArticle(title);
+    },
+    openLogin: () => {
+      clearTag();
+      navigation.openLogin();
+    },
+    openEditor: (title) => {
+      clearTag();
+      navigation.openEditor(title);
+    },
+    openProfile: (authorName) => {
+      clearTag();
+      navigation.openProfile(authorName);
+    },
+    openSettings: () => {
+      clearTag();
+      navigation.openSettings();
+    },
+  };
+}
+
 export function composeApp<R>(
   deps: TComposeAppDependencies<R>,
   snapshot: TAppSnapshot,
   getCreatedAt: () => string,
 ): R {
-  const { navigation, signIn, confirm, getState, setState, view } = deps;
+  const { signIn, confirm, getState, setState, view } = deps;
+  const navigation = withTagCleared(deps.navigation, getState, setState);
   const { state, page, openArticleTitle, editingArticleTitle, profileAuthorName } = snapshot;
 
   const signInViewModel = compileSignInViewModel(signIn, getState, setState);

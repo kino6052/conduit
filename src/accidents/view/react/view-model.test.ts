@@ -128,6 +128,31 @@ describe("compileFeedViewModel", () => {
     expect(getState().activeTag).toBeNull();
   });
 
+  it("carries the current active tag through, null when none is set", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      activeTag: "x",
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+
+    expect(viewModel.activeTag).toBe("x");
+  });
+
+  it("onClearTagClick clears the active tag filter directly, not by re-clicking it", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article],
+      activeTag: "x",
+    });
+
+    const viewModel = compileFeedViewModel(getState(), getState, setState, noop, noop);
+    viewModel.onClearTagClick();
+
+    expect(getState().activeTag).toBeNull();
+  });
+
   it("onOpenClick calls onOpenArticle with the article's title", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [article] });
     let opened: string | undefined;
@@ -210,7 +235,21 @@ describe("compilePopularTagsViewModel", () => {
 
     const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
 
-    expect(tagProps).toEqual([{ label: "x", onClick: expect.any(Function) }]);
+    expect(tagProps).toEqual([{ label: "x", onClick: expect.any(Function), isActive: false }]);
+  });
+
+  it("flags the currently active tag as active, and no other", () => {
+    const other: TArticle = { ...article, title: "B", tags: ["y"], authorName: "bob" };
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [article, other],
+      activeTag: "x",
+    });
+
+    const tagProps = compilePopularTagsViewModel(getState(), getState, setState);
+
+    expect(tagProps.find((tag) => tag.label === "x")?.isActive).toBe(true);
+    expect(tagProps.find((tag) => tag.label === "y")?.isActive).toBe(false);
   });
 
   it("stays computed over every article, ignoring the current tag/lens filter", () => {

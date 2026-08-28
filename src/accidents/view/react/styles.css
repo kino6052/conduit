@@ -325,6 +325,24 @@ h2 {
   background-color: var(--color-surface-muted);
 }
 
+.tag.active {
+  color: #fff;
+  background-color: var(--color-accent);
+  border-color: var(--color-accent);
+}
+
+/* The feed's own "you're filtered right now" indicator -- a dedicated
+   Clear control, not just re-clicking the same tag pill
+   (view-model.ts's onClearTag, components.ts's ActiveTagFilter). */
+.active-tag-filter {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin: 12px 0;
+  font-size: 13px;
+  color: var(--color-text);
+}
+
 .actions {
   display: flex;
   gap: 8px;

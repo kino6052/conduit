@@ -75,6 +75,15 @@ export const onSetTag = (tag: string, getState: TGetState, setState: TSetState):
   setState({ ...state, activeTag: state.activeTag === tag ? null : tag });
 };
 
+// A dedicated clear, not "click the same tag again" -- that only works if
+// you can still see the tag you clicked to filter by, which the popular
+// tags widget and the feed itself don't otherwise make obvious once
+// you've scrolled past it. Same effect as onSetTag toggling itself off,
+// just reachable without knowing which tag is even active.
+export const onClearTag = (getState: TGetState, setState: TSetState): void => {
+  setState({ ...getState(), activeTag: null });
+};
+
 export const onSetFilter = (
   filterName: TFilterName,
   getState: TGetState,
@@ -133,6 +142,10 @@ export type TFeedViewModel = {
   articlePreviewProps: TArticlePreviewProps[];
   filterName: TFilterName;
   onSetFilterClick: (filterName: TFilterName) => void;
+  // null -- no tag filter active -- not a separate isFiltered flag, same
+  // presence-not-flag rule as everywhere else in this codebase.
+  activeTag: string | null;
+  onClearTagClick: () => void;
 };
 
 // Exported -- reused by profile-view-model.ts, whose own list of article
@@ -186,12 +199,15 @@ export function compileFeedViewModel(
     ),
     filterName: state.filterName,
     onSetFilterClick: (filterName: TFilterName) => onSetFilter(filterName, getState, setState),
+    activeTag: state.activeTag,
+    onClearTagClick: () => onClearTag(getState, setState),
   };
 }
 
 export type TTagProps = {
   label: string;
   onClick: () => void;
+  isActive: boolean;
 };
 
 // A discovery shortcut, not the filter itself -- deliberately computed
@@ -205,5 +221,6 @@ export function compilePopularTagsViewModel(
   return selectPopularTags(state.articles).map((tag) => ({
     label: tag,
     onClick: () => onSetTag(tag, getState, setState),
+    isActive: state.activeTag === tag,
   }));
 }

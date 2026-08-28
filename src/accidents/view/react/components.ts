@@ -434,7 +434,11 @@ export function PopularTags(tagProps: TTagProps[]) {
       React.createElement(
         "li",
         { key: props.label },
-        React.createElement("button", { className: "tag", onClick: props.onClick }, props.label),
+        React.createElement(
+          "button",
+          { className: props.isActive ? "tag active" : "tag", onClick: props.onClick },
+          props.label,
+        ),
       ),
     ),
   );
@@ -459,11 +463,24 @@ function FeedLensToggle(props: TFeedViewModel) {
   );
 }
 
+// Visible only while a tag filter is active -- not just "click the same
+// tag again," which only works if you can still see and remember which
+// tag that was (view-model.ts's own onClearTag comment).
+function ActiveTagFilter(activeTag: string, onClearClick: () => void) {
+  return React.createElement(
+    "div",
+    { className: "active-tag-filter" },
+    React.createElement("span", null, `Filtering by "${activeTag}"`),
+    React.createElement("button", { className: "btn", onClick: onClearClick }, "Clear"),
+  );
+}
+
 export function Feed(props: TFeedViewModel) {
   return React.createElement(
     React.Fragment,
     null,
     FeedLensToggle(props),
+    props.activeTag ? ActiveTagFilter(props.activeTag, props.onClearTagClick) : null,
     React.createElement(
       "ul",
       { className: "feed" },
