@@ -110,6 +110,23 @@ describe("createMemoryNavigation", () => {
     expect(navigation.getProfileAuthorName()).toBeNull();
   });
 
+  it("openSettings opens the settings page", () => {
+    const navigation = createMemoryNavigation();
+
+    navigation.openSettings();
+
+    expect(navigation.getPage()).toBe("settings");
+  });
+
+  it("goHome leaves the settings page", () => {
+    const navigation = createMemoryNavigation();
+    navigation.openSettings();
+
+    navigation.goHome();
+
+    expect(navigation.getPage()).toBe("home");
+  });
+
   it("notifies subscribers when the page changes", () => {
     const navigation = createMemoryNavigation();
     let notifications = 0;

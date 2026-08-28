@@ -30,12 +30,14 @@ import { compileArticleDetailViewModel } from "./article-view-model";
 import { compileHeaderViewModel } from "./header-view-model";
 import { compileSignInViewModel } from "./sign-in-view-model";
 import { compileProfileViewModel } from "./profile-view-model";
+import { compileSettingsViewModel } from "./settings-view-model";
 import {
   TArticlePageProps,
   TEditorPageProps,
   THomePageProps,
   TLoginPageProps,
   TProfilePageProps,
+  TSettingsPageProps,
 } from "./pages";
 
 export type TView<R> = {
@@ -44,6 +46,7 @@ export type TView<R> = {
   EditorPage: (props: TEditorPageProps) => R;
   ArticlePage: (props: TArticlePageProps) => R;
   ProfilePage: (props: TProfilePageProps) => R;
+  SettingsPage: (props: TSettingsPageProps) => R;
 };
 
 export type TComposeAppDependencies<R> = {
@@ -92,6 +95,7 @@ export function composeApp<R>(
     navigation.openLogin,
     onSignOutClick,
     () => navigation.openEditor(),
+    navigation.openSettings,
   );
 
   if (page === "login") {
@@ -215,6 +219,30 @@ export function composeApp<R>(
         : undefined;
 
     return view.ProfilePage({ headerViewModel, profileViewModel });
+  }
+
+  if (page === "settings") {
+    // Same rule as reading/writing/profile: editing your own bio and
+    // avatar requires a signed-in name -- there's no "your" anything for
+    // a guest to edit.
+    const baseSettingsViewModel = signedInName
+      ? compileSettingsViewModel(getState, setState)
+      : undefined;
+    // After saving, off to see the result on your own profile -- same
+    // "go look at what you just did" shape as onEditorSubmit returning to
+    // the article you just wrote/edited above.
+    const settingsViewModel =
+      baseSettingsViewModel && signedInName
+        ? {
+            ...baseSettingsViewModel,
+            onSaveClick: (bio: string, avatarUrl: string): void => {
+              baseSettingsViewModel.onSaveClick(bio, avatarUrl);
+              navigation.openProfile(signedInName);
+            },
+          }
+        : undefined;
+
+    return view.SettingsPage({ headerViewModel, settingsViewModel });
   }
 
   // Home.

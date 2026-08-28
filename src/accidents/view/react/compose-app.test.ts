@@ -11,6 +11,7 @@ import {
   THomePageProps,
   TLoginPageProps,
   TProfilePageProps,
+  TSettingsPageProps,
 } from "./pages";
 
 // The "bare bone view models" the user asked for: no React, no rendering
@@ -23,7 +24,8 @@ type TAnyPageProps =
   | THomePageProps
   | TEditorPageProps
   | TArticlePageProps
-  | TProfilePageProps;
+  | TProfilePageProps
+  | TSettingsPageProps;
 
 const identityView: TView<TAnyPageProps> = {
   LoginPage: (props) => props,
@@ -31,6 +33,7 @@ const identityView: TView<TAnyPageProps> = {
   EditorPage: (props) => props,
   ArticlePage: (props) => props,
   ProfilePage: (props) => props,
+  SettingsPage: (props) => props,
 };
 
 const article: TArticle = {
@@ -477,5 +480,52 @@ describe("composeApp", () => {
 
     expect(deps.navigation.getPage()).toBe("profile");
     expect(deps.navigation.getProfileAuthorName()).toBe("alice");
+  });
+
+  it("a guest can't reach settings -- sign-in message instead", () => {
+    const deps = makeDeps(createInitialState());
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "settings", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TSettingsPageProps;
+
+    expect(result.settingsViewModel).toBeUndefined();
+  });
+
+  it("signed in, settings shows your own current bio and avatar", () => {
+    const deps = makeDeps({
+      ...createInitialState(),
+      bios: [{ name: "bob", text: "existing bio" }],
+    });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "settings", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TSettingsPageProps;
+
+    expect(result.settingsViewModel?.bio).toBe("existing bio");
+  });
+
+  it("saving settings updates your bio/avatar through essence and opens your own profile", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "settings", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TSettingsPageProps;
+    result.settingsViewModel?.onSaveClick("new bio", "https://example.com/bob.png");
+
+    expect(deps.getRealState().bios).toEqual([{ name: "bob", text: "new bio" }]);
+    expect(deps.getRealState().avatarUrls).toEqual([
+      { name: "bob", url: "https://example.com/bob.png" },
+    ]);
+    expect(deps.navigation.getPage()).toBe("profile");
+    expect(deps.navigation.getProfileAuthorName()).toBe("bob");
   });
 });

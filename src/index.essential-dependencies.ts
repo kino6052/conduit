@@ -48,6 +48,7 @@ import {
   EditorPage,
   ArticlePage,
   ProfilePage,
+  SettingsPage,
 } from "./accidents/view/react/pages";
 
 export function createEssentialDependenciesDependencies(): TDependencies {
@@ -65,7 +66,7 @@ export function createEssentialDependenciesDependencies(): TDependencies {
     setState: stateManagement.setState,
     subscribe: stateManagement.subscribe,
     loadArticles: loadSeedArticles,
-    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage },
+    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage, SettingsPage },
   };
 }
 

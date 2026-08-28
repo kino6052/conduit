@@ -31,6 +31,7 @@ import {
   EditorPage,
   ArticlePage,
   ProfilePage,
+  SettingsPage,
 } from "./accidents/view/react/pages";
 
 export type TDependencies = TComposeAppDependencies<React.ReactElement> & {
@@ -62,7 +63,7 @@ export function createDefaultDependencies(): TDependencies {
     setState: stateManagement.setState,
     subscribe: stateManagement.subscribe,
     loadArticles: loadSeedArticles,
-    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage },
+    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage, SettingsPage },
   };
 }
 

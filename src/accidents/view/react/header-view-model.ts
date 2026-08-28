@@ -19,6 +19,8 @@ export type THeaderProps = {
   onSignOutClick: () => void;
   isEditor: boolean;
   onNewArticleClick: () => void;
+  isSettings: boolean;
+  onSettingsClick: () => void;
 };
 
 export function compileHeaderViewModel(
@@ -28,6 +30,7 @@ export function compileHeaderViewModel(
   onLogin: () => void,
   onSignOut: () => void,
   onNewArticle: () => void,
+  onSettings: () => void,
 ): THeaderProps {
   return {
     isHome: page === "home",
@@ -38,5 +41,7 @@ export function compileHeaderViewModel(
     onSignOutClick: onSignOut,
     isEditor: page === "editor",
     onNewArticleClick: onNewArticle,
+    isSettings: page === "settings",
+    onSettingsClick: onSettings,
   };
 }

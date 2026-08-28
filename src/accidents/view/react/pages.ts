@@ -22,6 +22,7 @@ import { TSignInViewModel } from "./sign-in-view-model";
 import { TEditorProps, TFeedViewModel, TTagProps } from "./view-model";
 import { TArticleDetailViewModel } from "./article-view-model";
 import { TProfileViewModel } from "./profile-view-model";
+import { TSettingsViewModel } from "./settings-view-model";
 import {
   Header,
   Footer,
@@ -31,6 +32,7 @@ import {
   Feed,
   ArticleDetail,
   Profile,
+  Settings,
 } from "./components";
 
 export type TLoginPageProps = {
@@ -158,6 +160,29 @@ export function ProfilePage(props: TProfilePageProps) {
       props.profileViewModel
         ? Profile(props.profileViewModel)
         : React.createElement("p", null, "Sign in to view this profile."),
+    ),
+    React.createElement(Footer),
+  );
+}
+
+export type TSettingsPageProps = {
+  headerViewModel: THeaderProps;
+  // Same rule as EditorPageProps.editorProps: editing your own bio/avatar
+  // requires a signed-in name -- there's no "your" bio to edit as a guest.
+  settingsViewModel: TSettingsViewModel | undefined;
+};
+
+export function SettingsPage(props: TSettingsPageProps) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Header, props.headerViewModel),
+    React.createElement(
+      "div",
+      { className: "page" },
+      props.settingsViewModel
+        ? React.createElement(Settings, props.settingsViewModel)
+        : React.createElement("p", null, "Sign in to edit your settings."),
     ),
     React.createElement(Footer),
   );

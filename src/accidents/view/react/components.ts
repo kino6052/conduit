@@ -20,6 +20,7 @@ import { TArticleDetailViewModel, TCommentProps } from "./article-view-model";
 import { THeaderProps } from "./header-view-model";
 import { TSignInViewModel } from "./sign-in-view-model";
 import { TProfileViewModel } from "./profile-view-model";
+import { TSettingsViewModel } from "./settings-view-model";
 
 // Layout matches legacy/details/view/components/Navbar + Tab: a
 // full-width bar (className "header") with an inner row capped at the
@@ -62,6 +63,16 @@ export function Header(props: THeaderProps) {
                 onClick: props.onNewArticleClick,
               },
               "New Article",
+            )
+          : null,
+        props.signedInName
+          ? React.createElement(
+              "button",
+              {
+                className: props.isSettings ? "nav-tab active" : "nav-tab",
+                onClick: props.onSettingsClick,
+              },
+              "Settings",
             )
           : null,
         props.signedInName
@@ -363,6 +374,34 @@ export function SignIn(props: TSignInViewModel) {
       required: true,
     }),
     React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Sign In"),
+  );
+}
+
+// Only bio and avatar -- username is Login's job (sign in as someone else),
+// email/password have no essence-grounded field to edit at all (see
+// settings-view-model.ts's own header comment and
+// docs/realworld-essence-checklist.md's Settings entry).
+export function Settings(props: TSettingsViewModel) {
+  const handleSubmit = (event: React.FormEvent<HTMLFormElement>) => {
+    event.preventDefault();
+    const data = new FormData(event.currentTarget);
+    props.onSaveClick(String(data.get("bio") ?? ""), String(data.get("avatarUrl") ?? ""));
+  };
+
+  return React.createElement(
+    "form",
+    { className: "form", onSubmit: handleSubmit },
+    React.createElement("input", {
+      name: "avatarUrl",
+      placeholder: "URL of profile picture",
+      defaultValue: props.avatarUrl,
+    }),
+    React.createElement("textarea", {
+      name: "bio",
+      placeholder: "Short bio about you",
+      defaultValue: props.bio,
+    }),
+    React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Update Settings"),
   );
 }
 
