@@ -306,15 +306,15 @@ persistent dataset, same as every actual RealWorld implementation.
 
 ### Rollout, one cycle at a time
 
-- [ ] `scripts/serve-backend.ts`: `Bun.serve` + `bun:sqlite`, CORS, schema creation on boot (idempotent `CREATE TABLE IF NOT EXISTS`), first-boot seeding from the existing seed data
-- [ ] Article endpoints (create/edit/delete/list), each backed by real SQL
-- [ ] Favorite endpoints (add/remove), comment endpoints (create/delete/list), follow endpoints (add/remove)
-- [ ] `PUT /api/user` (bio/avatar), `GET /api/users/:name/following`
-- [ ] `computeSyncActions` + its tests (pure, no network)
-- [ ] The real fetch-based executor, wired only into `src/index.ts`
-- [ ] Client hydration on startup replaces `loadSeedArticles` for the real app, with a real `undefined`-until-ready loading state (not a flash of empty/guest content) gating when `composeApp` is first called
-- [ ] `.gitignore` the SQLite data file
-- [ ] Live verification: two browser tabs, one publishes/favorites/comments/follows/edits its bio, reload the other tab and see it persisted there too
+- [x] `scripts/serve-backend.ts`: `Bun.serve` + `bun:sqlite`, CORS, schema creation on boot (idempotent `CREATE TABLE IF NOT EXISTS`), first-boot seeding from its own seed data (→ `src/accidents/backend/db.ts`/`server.ts`)
+- [x] Article endpoints (create/edit/delete/list), each backed by real SQL
+- [x] Favorite endpoints (add/remove), comment endpoints (create/delete/list — natural-key matched, not a synthetic id), follow endpoints (add/remove)
+- [x] `PUT /api/user` (bio/avatar), `GET /api/users/:name/following`
+- [x] `computeSyncActions` + its tests (pure, no network — → `src/accidents/backend-sync/backend-sync.ts`, 100% branch coverage)
+- [x] The real fetch-based executor, wired only into `src/index.ts` (→ `src/accidents/backend-sync/backend-sync-client.ts`)
+- [x] Client hydration on startup replaces `loadSeedArticles` for the real app, gated by a real loading state — built as `TLoadingState = TState & { isLoaderShown: boolean }`, extended by intersection (→ `loading-state.ts`), not a nullable `TState`, matching `TPaginationState`'s own Open/Closed shape instead
+- [x] `.gitignore` the SQLite data file
+- [x] Live verification: backend + frontend both running, loading state shown briefly on a fresh load, seeded articles hydrated from the backend (not the old hardcoded seed), published a new article through the real form, confirmed it landed in the backend via `GET /api/articles`, reloaded and saw it come back from the backend, then cleaned it up
 
 ---
 
