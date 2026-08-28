@@ -163,10 +163,8 @@ reads best in their own context, not from one rule applied twice.
 - [x] Front-end language/framework (→ TypeScript + React + RxJS, `src/accidents/view`, following `docs/code-example.md`'s MVVM shape — a composition root, not baked into essence)
 - [x] How the composition root itself gets tested — every dependency it needs (navigation, sign-in, confirm, state management, even the view) is injected rather than hard-coded, so `compose-app.ts`'s composition logic (which page, what props) is a plain function testable with in-memory implementations and "bare bone" view functions that just hand back their props, no rendering involved (→ `composeApp`, `src/accidents/view/react/compose-app.ts`; `TStateManagement`, `src/accidents/state-management/state-management.ts` — state management pulled out the same way navigation/sign-in already were; sanity/integration tests in `compose-app.test.ts` cover sign in, publish, edit, delete confirmed/declined, reading as a guest, reading someone else's article)
 - [x] The same injectability, proven live rather than only under test — a third composition root, `createEssentialDependenciesApp` (→ `src/index.essential-dependencies.ts`, served at `bun run essential-app`, port 4322), runs the real `composeApp`/essence/pages wired to every dependency's simplest, essential implementation instead of a browser-backed one: `createMemoryNavigation` (no URL), `createMemoryState` (no RxJS), an always-confirm function (no dialog). Clicking through it does exactly what the real app does, because none of that behavior lives in the swapped dependencies — only the URL bar staying static and a refresh losing everything reveal what was actually removed
-- [ ] Back-end language/framework — not yet decided (`TLoadArticles`, "presentation & delivery of the feed" above, is shaped for real IO but has no backend behind it yet)
-- [ ] Database/storage technology
-- [ ] API shape/protocol (REST, GraphQL, RPC, …)
-- [ ] Hosting/deployment platform
+- [ ] **Back-end language/framework, database, and API shape — decided, not yet built (see "Part 3 — The backend accident" below for the full plan).** Bun (`Bun.serve`) + `bun:sqlite`, as a separate process from the static frontend server, exposing REST endpoints shaped like the real spec's (`docs/spec/endpoints.md`) but adapted to this app's own identity model (natural keys, no accounts/JWT) — and a client-side sync adapter so essence, the view-models, and every component stay exactly as they are today, untouched by any of it.
+- [ ] Hosting/deployment platform — still undecided; out of scope for the backend cycle itself (local dev only for now)
 - [x] Validation mechanics for the one field that's genuinely load-bearing — an article's title, and a sign-in name/password. A blank title would collide under the natural-key identification scheme every essence function relies on (an article *is* its title); a blank name can't become an acting identity anything gets attributed to. React app: native HTML `required` on those inputs — the browser's own validation UI is the whole error-message mechanism, no custom one invented, consistent with "plain fields" already decided (→ `Editor`/`SignIn`, `src/accidents/view/react/components.ts`). Also a defensive `if (!draft.title) return;` in `composeApp`'s `onEditorSubmit` (`src/accidents/view/react/compose-app.ts`), since `required` only guards the real browser form, not whatever calls `onClick` directly. Essence-view: `required` would be silently inert there — its Publish/Save buttons are `type="button"` with click-delegation, not a real `submit` event (the browser-click-unreliability fix), so no native validation ever fires. Fixed with the same `if (!x) return;` guard `postCommentFromForm` already had for a blank comment body — a real, pre-existing inconsistency this cycle also caught and closed, not just a new addition. No other field is guarded (summary/body/tags can be blank); no custom error-message wording/placement was needed since browser-native validation covers the one case that actually breaks something
 - [x] Branding, footer text, attribution, favicon — a `Footer` on every page (attribution + a link to the RealWorld spec this app follows, not navigation; → `src/accidents/view/react/components.ts`/`pages.ts`), and a favicon: one inline SVG circle in the app's own accent green, no external asset file or icon library (→ `src/accidents/view/react/index.html`). Typography stays what it already was (Titillium Web/Source Sans Pro, from the earlier visual-layout item) — nothing new decided there
 
@@ -261,6 +259,58 @@ count, same "derived composite" standard as above.
   - [x] Their favorited articles (→ `selectArticlesFavoritedBy`, `src/essence/favorite.ts`; `compileProfileViewModel`'s `favoritedArticlePreviewProps`, `src/accidents/view/react/profile-view-model.ts`) — needed `TArticle.favoritedBy: string[]` (the full list of who favorited it) to replace the old per-viewer `isFavorite` boolean, which could never answer "which articles did *this* name favorite" for anyone but the current viewer; rendered as its own "Favorited Articles" section on the Profile page (→ `Profile`, `src/accidents/view/react/components.ts`), matching the real spec's toggle tabs in substance if not yet in that exact tabbed-UI shape (this app shows both sections at once rather than switching between them)
   - [x] Reachable at its own URL (→ `#/profile/<authorName>`, `src/accidents/navigation/navigation-hash.ts`)
   - [x] Only available when a name is signed in, same rule and same reasoning as the Article page above — a guest sees "Sign in to view this profile." (→ `compose-app.ts`'s page-level gating). Unlike Article, there's no second "doesn't exist" case: an author isn't an entity that can fail to exist the way an article can (any name is valid to view, even with zero articles), so `undefined` here means exactly one thing, not two
+
+---
+
+## Part 3 — The backend accident (Bun + SQLite)
+
+Not yet built; this is the plan, confirmed with you before any code —
+per your own feedback earlier in this project's history about not
+making big architecture calls unilaterally. Nothing below changes
+essence, any view-model, or any component: the whole point of the
+"adapter" design is that `src/essence`, `src/accidents/view/react/*`,
+and every existing test stay exactly as they are.
+
+### Why a backend at all
+
+Right now `src/index.ts`'s state lives in one browser tab's memory
+(`createRxState`) plus a persisted signed-in *name* (`localStorage`,
+`persistence-local-storage.ts`) — nothing else survives a reload or is
+shared between two people looking at the app at once. A backend makes
+articles/comments/follows/favorites/bios/avatars a real, shared,
+persistent dataset, same as every actual RealWorld implementation.
+
+### Decisions
+
+- [ ] **Two processes, not one** — `scripts/serve-backend.ts` (the API
+  + SQLite) runs separately from `scripts/serve-app.ts` (the static
+  frontend), on its own port. The frontend `fetch`es across origins,
+  so the backend sets CORS headers for the frontend's origin. Closer
+  to how a real deployed RealWorld app is actually split than sharing
+  one process would have been.
+- [ ] **Endpoints follow the real spec's shape (`docs/spec/endpoints.md`), adapted, not copied** — same routes and verbs where they map cleanly (`POST /api/articles`, `PUT /api/articles/:title`, `DELETE /api/articles/:title`, `POST`/`DELETE /api/articles/:title/favorite`, `POST`/`DELETE /api/profiles/:name/follow`, `POST /api/articles/:title/comments`, `GET /api/articles/:title/comments`, `PUT /api/user`), with two adaptations this app's own model requires:
+  - **Natural keys, not slugs** — `:title` in place of `:slug` everywhere, same no-synthetic-id discipline `src/essence` already follows.
+  - **No accounts, no JWT, no `Authorization` header** — every mutating request carries an explicit `asName` field instead (body or query param) naming who's asking, since there's no server session to infer it from. This is the one place the real spec's shape can't be adapted, only replaced — documented here as a deliberate, load-bearing divergence, not an oversight.
+  - **Two small, spec-adjacent additions**, since the real spec never needs to answer these questions for a single caller the way our essence does for the whole app at once: `favoritedBy: string[]` on every article response (the real spec only ever returns a per-viewer `favorited` boolean, never the full list) and `GET /api/users/:name/following` (the real spec only exposes a per-profile `following` boolean, never a bulk list). Both are additions to the spec's shape, not contradictions of it.
+- [ ] **SQLite schema, normalized, natural-key based** — `articles(title PK, summary, body, tags_json, author_name, created_at)`, `article_favorites(article_title, name)`, `comments(id INTEGER PK autoincrement, article_title, author_name, body, created_at)`, `follows(follower_name, followed_name)`, `users(name PK, bio, avatar_url)`. `comments.id` is pure SQLite bookkeeping — never exposed past the server boundary; essence still identifies a comment by its full fields (`deleteComment`'s own contract, unchanged), so comment deletion is requested by natural fields, matched to a row server-side.
+- [ ] **The client-side "adapter"** (the actual answer to "so we don't have to change our essence") — a new accident, `src/accidents/backend-sync/` (name TBD at build time), with two pure/tested pieces and one untested real one, same split as everywhere else real IO meets this codebase (`persistence.ts`/`persistence-local-storage.ts`, `navigation.ts`/`navigation-hash.ts`):
+  - `computeSyncActions(oldState, newState): TSyncAction[]` — pure, tested. Diffs two `TState`s and returns the minimal list of REST calls implied by whatever changed (an article added/edited/removed, a name added/removed from an article's `favoritedBy`, a comment added/removed, a name added/removed from `followedAuthors`, a changed bio/avatar). No network code, no `fetch`, fully unit-testable the normal way.
+  - An executor that takes `TSyncAction[]` and actually `fetch`es them — untested, real IO, same category as `navigation-hash.ts`.
+  - Wired into `createRxState`'s `setState` only inside `src/index.ts`'s `createDefaultDependencies` — every other composition root (`index.essence.ts`, `index.essential-dependencies.ts`, `essential-ui`) stays exactly as it is today, fully in-memory, no backend, same "essential vs. real IO" split already established for navigation/persistence/state-management.
+  - On startup, replaces `loadSeedArticles()` for the real app only: fetches from the backend (`GET /api/articles`, each article's comments, and — once a signed-in name is known — `GET /api/users/:name/following`) and assembles the initial `TState`. First-boot seeding (an empty database) is the *server's* job, not the client's — it seeds itself once, on boot, if `articles` is empty.
+- [ ] **Concurrency** — last-write-wins, no locking, no merge. Acceptable at this app's demo scale; flagged here so it's a documented limitation, not a silent gap.
+
+### Rollout, one cycle at a time
+
+- [ ] `scripts/serve-backend.ts`: `Bun.serve` + `bun:sqlite`, CORS, schema creation on boot (idempotent `CREATE TABLE IF NOT EXISTS`), first-boot seeding from the existing seed data
+- [ ] Article endpoints (create/edit/delete/list), each backed by real SQL
+- [ ] Favorite endpoints (add/remove), comment endpoints (create/delete/list), follow endpoints (add/remove)
+- [ ] `PUT /api/user` (bio/avatar), `GET /api/users/:name/following`
+- [ ] `computeSyncActions` + its tests (pure, no network)
+- [ ] The real fetch-based executor, wired only into `src/index.ts`
+- [ ] Client hydration on startup replaces `loadSeedArticles` for the real app
+- [ ] `.gitignore` the SQLite data file
+- [ ] Live verification: two browser tabs, one publishes/favorites/comments/follows/edits its bio, reload the other tab and see it persisted there too
 
 ---
 
