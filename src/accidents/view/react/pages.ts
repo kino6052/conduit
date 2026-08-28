@@ -65,6 +65,16 @@ export function HomePage(props: THomePageProps) {
     React.Fragment,
     null,
     React.createElement(Header, props.headerViewModel),
+    // A banner with the app's name and a one-line tagline, same
+    // placement as the real spec's Home page -- purely decorative, no
+    // view-model needed (docs/realworld-essence-checklist.md's Home
+    // entry).
+    React.createElement(
+      "div",
+      { className: "banner" },
+      React.createElement("h1", null, "conduit"),
+      React.createElement("p", null, "Where this codebase explains itself, one small essence at a time."),
+    ),
     React.createElement(
       "div",
       { className: "page" },

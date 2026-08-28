@@ -221,7 +221,7 @@ count, same "derived composite" standard as above.
   - [x] Reachable from anywhere via the header's Home tab (→ "Site-wide navigation" above)
   - [x] A control to switch feed lenses (global ↔ personal) — both sides (essence-view: `set-filter`, `renderFeed`; React: `onSetFilterClick`, `FeedLensToggle`)
   - [x] No longer includes the write form — Editor moved to its own page (see New article below); Home now only shows what everyone (guest or signed in) can see: the feed and how to narrow it down
-  - [ ] **Missing the banner tagline** — the real Home page's banner reads "conduit" plus a one-line tagline underneath (`docs/spec/pages.md`'s Home entry); this app has no banner text at all, just the feed straight away. Cosmetic, but a real, checkable omission
+  - [x] A banner with the app's name and a one-line tagline (→ `HomePage`, `src/accidents/view/react/pages.ts`; `.banner`, `styles.css`) — this app's own tagline, not a copy of the real spec's wording, same "same shape, our own words" approach as this checklist's `docs/spec/` notes
 
 - [x] **Login** (`/login`) — establishing "who you are" (→ `LoginPage`, `src/accidents/view/react/pages.ts`, reachable via the header's Login tab and `#/login`)
   - [x] A name+password form (→ `SignIn`, `src/accidents/view/react/components.ts`; `TSignIn`, `src/accidents/sign-in/sign-in.ts`) — RealWorld splits this into Login and Register because its credential scheme has accounts to distinguish; ours doesn't, so one form covers both

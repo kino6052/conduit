@@ -60,6 +60,27 @@ button:focus-visible {
   padding: 10px;
 }
 
+/* Home's own banner -- app name + tagline, same accent green as the logo,
+   white text for contrast (docs/realworld-essence-checklist.md's Home
+   entry). Purely decorative: no view-model, just markup (pages.ts). */
+.banner {
+  background-color: var(--color-accent);
+  color: #fff;
+  text-align: center;
+  padding: 32px 10px;
+}
+
+.banner h1 {
+  margin: 0 0 8px;
+  font-family: "Titillium Web", Helvetica, Arial, sans-serif;
+  font-size: 32px;
+}
+
+.banner p {
+  margin: 0;
+  font-size: 14px;
+}
+
 .header-content {
   display: flex;
   flex-wrap: wrap;
