@@ -44,6 +44,7 @@ import { composeApp } from "./accidents/view/react/compose-app";
 import type { TDependencies } from "./index";
 import {
   LoginPage,
+  RegisterPage,
   HomePage,
   EditorPage,
   ArticlePage,
@@ -66,7 +67,7 @@ export function createEssentialDependenciesDependencies(): TDependencies {
     setState: stateManagement.setState,
     subscribe: stateManagement.subscribe,
     loadArticles: loadSeedArticles,
-    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage, SettingsPage },
+    view: { LoginPage, RegisterPage, HomePage, EditorPage, ArticlePage, ProfilePage, SettingsPage },
   };
 }
 

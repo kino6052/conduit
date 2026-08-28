@@ -32,6 +32,7 @@ import {
 } from "./accidents/backend-sync/backend-sync-client";
 import {
   LoginPage,
+  RegisterPage,
   HomePage,
   EditorPage,
   ArticlePage,
@@ -110,7 +111,7 @@ export function createDefaultDependencies(): TDependencies {
     setState,
     subscribe: stateManagement.subscribe,
     loadArticles: loadSeedArticles,
-    view: { LoginPage, HomePage, EditorPage, ArticlePage, ProfilePage, SettingsPage },
+    view: { LoginPage, RegisterPage, HomePage, EditorPage, ArticlePage, ProfilePage, SettingsPage },
   };
 }
 

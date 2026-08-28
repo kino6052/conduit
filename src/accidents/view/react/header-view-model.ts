@@ -13,6 +13,8 @@ export type THeaderProps = {
   onHomeClick: () => void;
   isLogin: boolean;
   onLoginClick: () => void;
+  isRegister: boolean;
+  onRegisterClick: () => void;
   // undefined -- a guest -- not a separate isGuest/signedIn flag, same
   // presence-not-flag rule as sign-in-view-model.ts's own signedInName.
   signedInName: string | undefined;
@@ -37,6 +39,7 @@ export function compileHeaderViewModel(
   signedInName: string | undefined,
   avatarUrl: string,
   onLogin: () => void,
+  onRegister: () => void,
   onNewArticle: () => void,
   onSettings: () => void,
   onProfile: () => void,
@@ -46,6 +49,8 @@ export function compileHeaderViewModel(
     onHomeClick: onGoHome,
     isLogin: page === "login",
     onLoginClick: onLogin,
+    isRegister: page === "register",
+    onRegisterClick: onRegister,
     signedInName,
     avatarUrl,
     onProfileClick: onProfile,

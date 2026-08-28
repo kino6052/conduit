@@ -300,6 +300,19 @@ h2 {
   cursor: pointer;
 }
 
+/* Login <-> Register's own cross-link ("Need an account? Sign up" /
+   "Have an account? Sign in") -- pages.ts's LoginPage/RegisterPage. */
+.auth-switch {
+  margin-top: 16px;
+  font-size: 13px;
+  color: var(--color-border);
+}
+
+.auth-switch .link-button {
+  color: var(--color-accent);
+  font-weight: 600;
+}
+
 .tag-list {
   list-style: none;
   margin: 0;

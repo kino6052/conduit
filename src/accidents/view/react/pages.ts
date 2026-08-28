@@ -35,9 +35,18 @@ import {
   Settings,
 } from "./components";
 
+// Two genuinely separate pages, per the real spec (docs/spec/routes.md,
+// docs/spec/pages.md) -- even though the underlying action is the same
+// one (TSignIn.signIn(name, password), SignIn/submitLabel,
+// components.ts): this app's name-only identity model has no account
+// record to distinguish "already exists" from "brand new," so there's
+// nothing for the two forms to differ on except which page they're on
+// and what they say (docs/realworld-essence-checklist.md's Sign In/Sign
+// Up entry).
 export type TLoginPageProps = {
   headerViewModel: THeaderProps;
   signInViewModel: TSignInViewModel;
+  onSwitchToRegister: () => void;
 };
 
 export function LoginPage(props: TLoginPageProps) {
@@ -48,7 +57,49 @@ export function LoginPage(props: TLoginPageProps) {
     React.createElement(
       "div",
       { className: "page" },
-      React.createElement(SignIn, props.signInViewModel),
+      React.createElement("h1", null, "Sign in"),
+      SignIn(props.signInViewModel, "Sign In"),
+      React.createElement(
+        "p",
+        { className: "auth-switch" },
+        "Need an account? ",
+        React.createElement(
+          "button",
+          { className: "link-button", onClick: props.onSwitchToRegister },
+          "Sign up",
+        ),
+      ),
+    ),
+    React.createElement(Footer),
+  );
+}
+
+export type TRegisterPageProps = {
+  headerViewModel: THeaderProps;
+  signInViewModel: TSignInViewModel;
+  onSwitchToLogin: () => void;
+};
+
+export function RegisterPage(props: TRegisterPageProps) {
+  return React.createElement(
+    React.Fragment,
+    null,
+    React.createElement(Header, props.headerViewModel),
+    React.createElement(
+      "div",
+      { className: "page" },
+      React.createElement("h1", null, "Sign up"),
+      SignIn(props.signInViewModel, "Sign Up"),
+      React.createElement(
+        "p",
+        { className: "auth-switch" },
+        "Have an account? ",
+        React.createElement(
+          "button",
+          { className: "link-button", onClick: props.onSwitchToLogin },
+          "Sign in",
+        ),
+      ),
     ),
     React.createElement(Footer),
   );

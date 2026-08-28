@@ -81,14 +81,31 @@ export function Header(props: THeaderProps) {
               { className: "nav-tab" },
               AuthorLink(props.signedInName, props.avatarUrl, props.onProfileClick),
             )
-          : React.createElement(
+          : null,
+        // Two separate tabs for a guest, matching the real spec's own
+        // header (docs/spec/pages.md's Header entry) -- Sign in and Sign
+        // up used to be one "Login" tab leading to one collapsed form;
+        // now each has its own page (LoginPage/RegisterPage, pages.ts).
+        !props.signedInName
+          ? React.createElement(
               "button",
               {
                 className: props.isLogin ? "nav-tab active" : "nav-tab",
                 onClick: props.onLoginClick,
               },
-              "Login",
-            ),
+              "Sign in",
+            )
+          : null,
+        !props.signedInName
+          ? React.createElement(
+              "button",
+              {
+                className: props.isRegister ? "nav-tab active" : "nav-tab",
+                onClick: props.onRegisterClick,
+              },
+              "Sign up",
+            )
+          : null,
       ),
     ),
   );
@@ -350,7 +367,12 @@ export function Editor(props: TEditorProps) {
 // plus a Sign Out control take its place. Only rendered on LoginPage
 // (src/accidents/view/react/pages.ts) -- Home's own gating on the same
 // signedInName fact (no Editor for a guest) lives there, not here.
-export function SignIn(props: TSignInViewModel) {
+// submitLabel defaults to "Sign In" -- Login/RegisterPage (pages.ts) both
+// render this exact same form (the underlying action really is
+// identical: TSignIn.signIn(name, password) either reuses or creates
+// that name, there's no separate account record), just with different
+// button text so each page still reads honestly as what it says it is.
+export function SignIn(props: TSignInViewModel, submitLabel = "Sign In") {
   if (props.signedInName) {
     return React.createElement(
       "div",
@@ -382,7 +404,7 @@ export function SignIn(props: TSignInViewModel) {
       placeholder: "Password",
       required: true,
     }),
-    React.createElement("button", { className: "btn btn-accent", type: "submit" }, "Sign In"),
+    React.createElement("button", { className: "btn btn-accent", type: "submit" }, submitLabel),
   );
 }
 

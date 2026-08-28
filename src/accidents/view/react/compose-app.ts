@@ -38,11 +38,13 @@ import {
   THomePageProps,
   TLoginPageProps,
   TProfilePageProps,
+  TRegisterPageProps,
   TSettingsPageProps,
 } from "./pages";
 
 export type TView<R> = {
   LoginPage: (props: TLoginPageProps) => R;
+  RegisterPage: (props: TRegisterPageProps) => R;
   HomePage: (props: THomePageProps) => R;
   EditorPage: (props: TEditorPageProps) => R;
   ArticlePage: (props: TArticlePageProps) => R;
@@ -105,6 +107,10 @@ function withTagCleared(
       clearTag();
       navigation.openLogin();
     },
+    openRegister: () => {
+      clearTag();
+      navigation.openRegister();
+    },
     openEditor: (title) => {
       clearTag();
       navigation.openEditor(title);
@@ -145,13 +151,26 @@ export function composeApp<R>(
     signedInName,
     signedInName ? selectAvatarUrl(state, signedInName) : "",
     navigation.openLogin,
+    navigation.openRegister,
     () => navigation.openEditor(),
     navigation.openSettings,
     () => signedInName && navigation.openProfile(signedInName),
   );
 
   if (page === "login") {
-    return view.LoginPage({ headerViewModel, signInViewModel });
+    return view.LoginPage({
+      headerViewModel,
+      signInViewModel,
+      onSwitchToRegister: navigation.openRegister,
+    });
+  }
+
+  if (page === "register") {
+    return view.RegisterPage({
+      headerViewModel,
+      signInViewModel,
+      onSwitchToLogin: navigation.openLogin,
+    });
   }
 
   if (page === "editor") {

@@ -11,6 +11,7 @@ import {
   THomePageProps,
   TLoginPageProps,
   TProfilePageProps,
+  TRegisterPageProps,
   TSettingsPageProps,
 } from "./pages";
 
@@ -21,6 +22,7 @@ import {
 // compile*ViewModel's return value.
 type TAnyPageProps =
   | TLoginPageProps
+  | TRegisterPageProps
   | THomePageProps
   | TEditorPageProps
   | TArticlePageProps
@@ -29,6 +31,7 @@ type TAnyPageProps =
 
 const identityView: TView<TAnyPageProps> = {
   LoginPage: (props) => props,
+  RegisterPage: (props) => props,
   HomePage: (props) => props,
   EditorPage: (props) => props,
   ArticlePage: (props) => props,
@@ -287,6 +290,41 @@ describe("composeApp", () => {
 
     expect(result.headerViewModel.isLogin).toBe(true);
     expect(typeof result.signInViewModel.onSignInClick).toBe("function");
+  });
+
+  it("shows the same sign-in form on its own register page", () => {
+    const deps = makeDeps(createInitialState());
+
+    const result = composeApp(
+      deps,
+      { state: deps.getState(), page: "register", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TRegisterPageProps;
+
+    expect(result.headerViewModel.isRegister).toBe(true);
+    expect(typeof result.signInViewModel.onSignInClick).toBe("function");
+  });
+
+  it("switches from login to register and back through navigation", () => {
+    const deps = makeDeps(createInitialState());
+
+    const loginResult = composeApp(
+      deps,
+      { state: deps.getState(), page: "login", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TLoginPageProps;
+    loginResult.onSwitchToRegister();
+
+    expect(deps.navigation.getPage()).toBe("register");
+
+    const registerResult = composeApp(
+      deps,
+      { state: deps.getState(), page: "register", openArticleTitle: null, editingArticleTitle: null, profileAuthorName: null },
+      getCreatedAt,
+    ) as TRegisterPageProps;
+    registerResult.onSwitchToLogin();
+
+    expect(deps.navigation.getPage()).toBe("login");
   });
 
   it("shows nothing to read when signed in but no article title is open", () => {

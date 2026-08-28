@@ -110,6 +110,23 @@ describe("createMemoryNavigation", () => {
     expect(navigation.getProfileAuthorName()).toBeNull();
   });
 
+  it("openRegister opens the register page", () => {
+    const navigation = createMemoryNavigation();
+
+    navigation.openRegister();
+
+    expect(navigation.getPage()).toBe("register");
+  });
+
+  it("goHome leaves the register page", () => {
+    const navigation = createMemoryNavigation();
+    navigation.openRegister();
+
+    navigation.goHome();
+
+    expect(navigation.getPage()).toBe("home");
+  });
+
   it("openSettings opens the settings page", () => {
     const navigation = createMemoryNavigation();
 

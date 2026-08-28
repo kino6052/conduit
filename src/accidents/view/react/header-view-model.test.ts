@@ -14,6 +14,7 @@ describe("compileHeaderViewModel", () => {
       noop,
       noop,
       noop,
+      noop,
     );
 
     expect(headerViewModel.isHome).toBe(true);
@@ -27,6 +28,7 @@ describe("compileHeaderViewModel", () => {
       noop,
       undefined,
       "",
+      noop,
       noop,
       noop,
       noop,
@@ -46,9 +48,26 @@ describe("compileHeaderViewModel", () => {
       noop,
       noop,
       noop,
+      noop,
     );
 
     expect(headerViewModel.isLogin).toBe(true);
+  });
+
+  it("is the Register tab on the register page", () => {
+    const headerViewModel = compileHeaderViewModel(
+      "register",
+      noop,
+      undefined,
+      "",
+      noop,
+      noop,
+      noop,
+      noop,
+      noop,
+    );
+
+    expect(headerViewModel.isRegister).toBe(true);
   });
 
   it("is the New Article tab on the editor page", () => {
@@ -57,6 +76,7 @@ describe("compileHeaderViewModel", () => {
       noop,
       "alice",
       "",
+      noop,
       noop,
       noop,
       noop,
@@ -76,6 +96,7 @@ describe("compileHeaderViewModel", () => {
       noop,
       noop,
       noop,
+      noop,
     );
 
     expect(headerViewModel.isSettings).toBe(true);
@@ -90,6 +111,7 @@ describe("compileHeaderViewModel", () => {
       },
       undefined,
       "",
+      noop,
       noop,
       noop,
       noop,
@@ -114,9 +136,31 @@ describe("compileHeaderViewModel", () => {
       noop,
       noop,
       noop,
+      noop,
     );
 
     headerViewModel.onLoginClick();
+
+    expect(called).toBe(true);
+  });
+
+  it("onRegisterClick calls the given onRegister", () => {
+    let called = false;
+    const headerViewModel = compileHeaderViewModel(
+      "home",
+      noop,
+      undefined,
+      "",
+      noop,
+      () => {
+        called = true;
+      },
+      noop,
+      noop,
+      noop,
+    );
+
+    headerViewModel.onRegisterClick();
 
     expect(called).toBe(true);
   });
@@ -128,6 +172,7 @@ describe("compileHeaderViewModel", () => {
       noop,
       "alice",
       "",
+      noop,
       noop,
       noop,
       noop,
@@ -149,6 +194,7 @@ describe("compileHeaderViewModel", () => {
       "alice",
       "",
       noop,
+      noop,
       () => {
         called = true;
       },
@@ -163,9 +209,19 @@ describe("compileHeaderViewModel", () => {
 
   it("onSettingsClick calls the given onSettings", () => {
     let called = false;
-    const headerViewModel = compileHeaderViewModel("home", noop, "alice", "", noop, noop, () => {
-      called = true;
-    }, noop);
+    const headerViewModel = compileHeaderViewModel(
+      "home",
+      noop,
+      "alice",
+      "",
+      noop,
+      noop,
+      noop,
+      () => {
+        called = true;
+      },
+      noop,
+    );
 
     headerViewModel.onSettingsClick();
 
@@ -182,8 +238,19 @@ describe("compileHeaderViewModel", () => {
       noop,
       noop,
       noop,
+      noop,
     );
-    const guest = compileHeaderViewModel("home", noop, undefined, "", noop, noop, noop, noop);
+    const guest = compileHeaderViewModel(
+      "home",
+      noop,
+      undefined,
+      "",
+      noop,
+      noop,
+      noop,
+      noop,
+      noop,
+    );
 
     expect(signedIn.signedInName).toBe("alice");
     expect(signedIn.avatarUrl).toBe("https://example.com/alice.png");
