@@ -165,6 +165,27 @@ h2 {
   resize: vertical;
 }
 
+/* Settings' own drag-and-drop avatar picker (components.ts's
+   AvatarDropZone) -- click or drop, the URL field right below stays a
+   real second way to set the same thing. */
+.avatar-drop-zone {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  padding: 20px;
+  border: 2px dashed var(--color-border);
+  border-radius: var(--radius);
+  cursor: pointer;
+  text-align: center;
+  color: var(--color-border);
+}
+
+.avatar-drop-zone:hover {
+  border-color: var(--color-accent);
+  background-color: var(--color-surface-muted);
+}
+
 /* buttons -- matches legacy's Button component (grey border, radius 8, lightgrey hover) */
 .btn {
   display: inline-flex;

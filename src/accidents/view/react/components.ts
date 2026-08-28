@@ -408,6 +408,107 @@ export function SignIn(props: TSignInViewModel, submitLabel = "Sign In") {
   );
 }
 
+// A dropped/browsed file never touches essence or even TSettingsViewModel
+// -- it's read client-side (FileReader -> a data: URI, same shape a
+// pasted URL already had, just longer) and written straight into the
+// existing avatarUrl text input's own value via a plain DOM ref, not
+// React state. That keeps this component's one existing pattern (an
+// uncontrolled form, read once via FormData on submit) intact instead of
+// introducing a second, competing source of truth for the same field.
+const MAX_AVATAR_FILE_BYTES = 500_000; // ~500KB raw -- a small avatar photo, not a hi-res upload
+
+function AvatarDropZone(initialAvatarUrl: string) {
+  let avatarInput: HTMLInputElement | null = null;
+  let fileInput: HTMLInputElement | null = null;
+  let preview: HTMLImageElement | null = null;
+  let hint: HTMLElement | null = null;
+
+  const showHint = (text: string): void => {
+    if (hint) hint.textContent = text;
+  };
+
+  const applyFile = (file: File): void => {
+    if (!file.type.startsWith("image/")) {
+      showHint("That's not an image -- try a .png, .jpg, or .gif.");
+      return;
+    }
+    if (file.size > MAX_AVATAR_FILE_BYTES) {
+      showHint(`That image is too big (max ${Math.round(MAX_AVATAR_FILE_BYTES / 1000)}KB) -- try a smaller one.`);
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = () => {
+      const dataUrl = String(reader.result);
+      if (avatarInput) avatarInput.value = dataUrl;
+      if (preview) {
+        preview.src = dataUrl;
+        preview.style.display = "";
+      }
+      showHint("Drop a different image here, or click to browse.");
+    };
+    reader.readAsDataURL(file);
+  };
+
+  return React.createElement(
+    "div",
+    null,
+    React.createElement(
+      "div",
+      {
+        className: "avatar-drop-zone",
+        onClick: () => fileInput?.click(),
+        onDragOver: (event: React.DragEvent<HTMLDivElement>) => event.preventDefault(),
+        onDrop: (event: React.DragEvent<HTMLDivElement>) => {
+          event.preventDefault();
+          const file = event.dataTransfer.files[0];
+          if (file) applyFile(file);
+        },
+      },
+      React.createElement("img", {
+        ref: (el: HTMLImageElement | null) => {
+          preview = el;
+        },
+        className: "avatar",
+        src: initialAvatarUrl || undefined,
+        style: { display: initialAvatarUrl ? "" : "none" },
+        alt: "",
+      }),
+      React.createElement(
+        "small",
+        {
+          ref: (el: HTMLElement | null) => {
+            hint = el;
+          },
+        },
+        "Drop an image here, or click to browse.",
+      ),
+      React.createElement("input", {
+        ref: (el: HTMLInputElement | null) => {
+          fileInput = el;
+        },
+        type: "file",
+        accept: "image/*",
+        style: { display: "none" },
+        onChange: (event: React.ChangeEvent<HTMLInputElement>) => {
+          const file = event.currentTarget.files?.[0];
+          if (file) applyFile(file);
+        },
+      }),
+    ),
+    // Still here, still submitted -- pasting a URL directly stays a real,
+    // equally valid way to set an avatar, same field either way
+    // (docs/realworld-essence-checklist.md's Settings entry).
+    React.createElement("input", {
+      ref: (el: HTMLInputElement | null) => {
+        avatarInput = el;
+      },
+      name: "avatarUrl",
+      placeholder: "URL of profile picture",
+      defaultValue: initialAvatarUrl,
+    }),
+  );
+}
+
 // Only bio and avatar -- username is Login's job (sign in as someone else),
 // email/password have no essence-grounded field to edit at all (see
 // settings-view-model.ts's own header comment and
@@ -425,11 +526,7 @@ export function Settings(props: TSettingsViewModel) {
     React.createElement(
       "form",
       { className: "form", onSubmit: handleSubmit },
-      React.createElement("input", {
-        name: "avatarUrl",
-        placeholder: "URL of profile picture",
-        defaultValue: props.avatarUrl,
-      }),
+      AvatarDropZone(props.avatarUrl),
       React.createElement("textarea", {
         name: "bio",
         placeholder: "Short bio about you",
