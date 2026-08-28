@@ -1,0 +1,153 @@
+// THE COMPOSITION ROOT for the essence view -- src's other entry point,
+// alongside index.ts (the React one). Same rule as index.ts: this is where
+// essence and the essence-view render functions actually meet and get
+// wired together, so it lives at the top of src/, not buried inside
+// accidents/view/essence. The essence-view render functions themselves
+// (feed.ts, article.ts, sidebar.ts, editor.ts, states.ts) stay in
+// accidents/view/essence -- they're the reusable, tested part; this file
+// is the wiring, same as index.ts's createCompositionRoot.
+
+import { TFilterName, TState } from "./essence/state";
+import { toggleFavorite } from "./essence/favorite";
+import { toggleFollow } from "./essence/follow";
+import { writeArticle } from "./essence/write";
+import { editArticle } from "./essence/edit";
+import { deleteArticle } from "./essence/delete";
+import { selectArticle } from "./essence/article";
+import { writeComment, selectComments, deleteComment } from "./essence/comment";
+import { withConfirmation } from "./accidents/confirmation/confirmation";
+import { renderFeed } from "./accidents/view/essence/feed";
+import { renderSidebar } from "./accidents/view/essence/sidebar";
+import { renderEditor } from "./accidents/view/essence/editor";
+import { renderArticleDetail } from "./accidents/view/essence/article";
+import { namedStates } from "./accidents/view/essence/states";
+
+let activeStateName = namedStates[0].name;
+let state: TState = namedStates[0].state;
+let activeArticleTitle: string | null = namedStates[0].openArticleTitle ?? null;
+// Which article the editor form is pre-filled with, if any -- title, not
+// an id, same identification rule as activeArticleTitle above.
+let editingArticleTitle: string | null = null;
+
+export function render(): void {
+  const sidebar = document.getElementById("sidebar");
+  const app = document.getElementById("app");
+  const editor = document.getElementById("editor");
+  const articleEl = document.getElementById("article");
+
+  if (sidebar) {
+    sidebar.innerHTML = renderSidebar(
+      namedStates.map((named) => named.name),
+      activeStateName,
+    );
+  }
+  if (app) app.innerHTML = renderFeed(state);
+  const editingArticle = editingArticleTitle
+    ? selectArticle(state, editingArticleTitle)
+    : undefined;
+  if (!editingArticle) editingArticleTitle = null;
+  if (editor) editor.innerHTML = renderEditor(editingArticle);
+
+  const openArticle = activeArticleTitle ? selectArticle(state, activeArticleTitle) : undefined;
+  if (!openArticle) activeArticleTitle = null;
+  if (articleEl) {
+    articleEl.innerHTML = openArticle
+      ? renderArticleDetail(openArticle, selectComments(state, openArticle.title), state)
+      : "";
+  }
+}
+
+function publishFromForm(form: HTMLFormElement): void {
+  const data = new FormData(form);
+  const tags = String(data.get("tags") ?? "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
+  state = writeArticle(state, {
+    title: String(data.get("title") ?? ""),
+    summary: String(data.get("summary") ?? ""),
+    body: String(data.get("body") ?? ""),
+    tags,
+    createdAt: new Date().toISOString().slice(0, 10),
+  });
+}
+
+function saveEditsFromForm(form: HTMLFormElement): void {
+  const data = new FormData(form);
+  const originalTitle = String(data.get("originalTitle") ?? "");
+  if (!originalTitle) return;
+  const tags = String(data.get("tags") ?? "")
+    .split(",")
+    .map((tag) => tag.trim())
+    .filter(Boolean);
+
+  state = editArticle(state, originalTitle, {
+    title: String(data.get("title") ?? ""),
+    summary: String(data.get("summary") ?? ""),
+    body: String(data.get("body") ?? ""),
+    tags,
+  });
+  editingArticleTitle = null;
+}
+
+function postCommentFromForm(form: HTMLFormElement): void {
+  const articleTitle = form.dataset.articleTitle;
+  if (!articleTitle) return;
+  const data = new FormData(form);
+  const body = String(data.get("body") ?? "");
+  if (!body) return;
+
+  state = writeComment(state, articleTitle, body, new Date().toISOString().slice(0, 10));
+}
+
+export function handleClick(event: Event): void {
+  if (!(event.target instanceof Element)) return;
+  const actionEl = event.target.closest<HTMLElement>("[data-action]");
+  if (!actionEl) return;
+
+  const { action, title, authorName, tag, filterName, stateName, articleTitle, body, createdAt } =
+    actionEl.dataset;
+
+  if (action === "select-state" && stateName) {
+    const named = namedStates.find((candidate) => candidate.name === stateName);
+    if (!named) return;
+    activeStateName = named.name;
+    state = named.state;
+    activeArticleTitle = named.openArticleTitle ?? null;
+  } else if (action === "toggle-favorite" && title) {
+    state = toggleFavorite(state, title);
+  } else if (action === "toggle-follow" && authorName) {
+    state = toggleFollow(state, authorName);
+  } else if (action === "set-tag") {
+    const nextTag = tag || null;
+    state = { ...state, activeTag: state.activeTag === nextTag ? null : nextTag };
+  } else if (action === "set-filter" && filterName) {
+    state = { ...state, filterName: filterName as TFilterName };
+  } else if (action === "publish-article" && actionEl instanceof HTMLFormElement) {
+    event.preventDefault();
+    publishFromForm(actionEl);
+  } else if (action === "edit-article" && title) {
+    editingArticleTitle = title;
+  } else if (action === "save-article" && actionEl instanceof HTMLFormElement) {
+    event.preventDefault();
+    saveEditsFromForm(actionEl);
+  } else if (action === "open-article" && title) {
+    activeArticleTitle = title;
+  } else if (action === "delete-article" && title) {
+    withConfirmation("Delete this article?", window.confirm.bind(window), () => {
+      state = deleteArticle(state, title);
+    })();
+  } else if (action === "post-comment" && actionEl instanceof HTMLFormElement) {
+    event.preventDefault();
+    postCommentFromForm(actionEl);
+  } else if (action === "delete-comment" && articleTitle && authorName && body && createdAt) {
+    withConfirmation("Delete this comment?", window.confirm.bind(window), () => {
+      state = deleteComment(state, { articleTitle, authorName, body, createdAt });
+    })();
+  } else {
+    return;
+  }
+
+  render();
+}
