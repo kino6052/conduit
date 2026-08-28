@@ -32,3 +32,20 @@ export function compileSignInViewModel(
     },
   };
 }
+
+// A signed-in name can now survive a reload (createPersistentSignIn,
+// src/accidents/sign-in/sign-in.ts) -- but essence's own acting identity
+// doesn't know that on its own. Call this once at startup to pair them
+// the same way onSignInClick above always does, or ownership (isMine)
+// would keep comparing against createInitialState's default "you"
+// instead of whoever's actually signed in. A no-op for a guest.
+export function restoreSignedInIdentity(
+  signIn: TSignIn,
+  getState: TGetState,
+  setState: TSetState,
+): void {
+  const restoredName = signIn.signedInName();
+  if (restoredName) {
+    setState(changeName(getState(), restoredName));
+  }
+}

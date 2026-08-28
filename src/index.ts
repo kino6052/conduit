@@ -19,10 +19,12 @@
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { createInitialState, TState } from "./essence/state";
 import { createHashNavigation } from "./accidents/navigation/navigation-hash";
-import { createSignIn } from "./accidents/sign-in/sign-in";
+import { createPersistentSignIn } from "./accidents/sign-in/sign-in";
+import { createLocalStoragePersistence } from "./accidents/persistence/persistence-local-storage";
 import { loadSeedArticles } from "./accidents/articles-io/articles-io";
 import { createRxState } from "./accidents/state-management/state-management";
 import { composeApp, TComposeAppDependencies } from "./accidents/view/react/compose-app";
+import { restoreSignedInIdentity } from "./accidents/view/react/sign-in-view-model";
 import {
   LoginPage,
   HomePage,
@@ -42,10 +44,19 @@ export type TDependencies = TComposeAppDependencies<React.ReactElement> & {
 
 export function createDefaultDependencies(): TDependencies {
   const stateManagement = createRxState<TState>(createInitialState());
+  const signIn = createPersistentSignIn(
+    createLocalStoragePersistence<string>("conduit-signed-in-name"),
+  );
+
+  // If the signed-in name survived a reload, essence's own acting
+  // identity has to match it immediately -- otherwise ownership (isMine)
+  // would keep comparing against createInitialState's default "you"
+  // instead of whoever's actually signed in.
+  restoreSignedInIdentity(signIn, stateManagement.getState, stateManagement.setState);
 
   return {
     navigation: createHashNavigation(),
-    signIn: createSignIn(),
+    signIn,
     confirm: window.confirm.bind(window),
     getState: stateManagement.getState,
     setState: stateManagement.setState,

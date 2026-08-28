@@ -14,9 +14,13 @@
 // createMemoryNavigation instead of createHashNavigation (no URL),
 // createMemoryState instead of createRxState (no RxJS), and an
 // always-confirm function instead of window.confirm (no browser dialog).
-// createSignIn and loadSeedArticles already were the essential
-// implementation -- there was never a second, "more real" one to choose
-// between for either.
+// createMemorySignIn and loadSeedArticles already were the essential
+// implementation for their own concerns -- loadSeedArticles because there's
+// no backend to fetch from yet, createMemorySignIn deliberately here even
+// though the real app now has a persisted alternative
+// (createPersistentSignIn, src/accidents/sign-in/sign-in.ts): staying
+// signed in across a reload is exactly the kind of real-world machinery
+// this composition root exists to go without.
 //
 // The result: click through this app and every button still does exactly
 // what it does in the real one -- because none of that behavior lives in
@@ -28,7 +32,7 @@
 import React, { useEffect, useState, useSyncExternalStore } from "react";
 import { createInitialState, TState } from "./essence/state";
 import { createMemoryNavigation } from "./accidents/navigation/navigation";
-import { createSignIn } from "./accidents/sign-in/sign-in";
+import { createMemorySignIn } from "./accidents/sign-in/sign-in";
 import { loadSeedArticles } from "./accidents/articles-io/articles-io";
 import { createMemoryState } from "./accidents/state-management/state-management";
 import { composeApp } from "./accidents/view/react/compose-app";
@@ -51,7 +55,7 @@ export function createEssentialDependenciesDependencies(): TDependencies {
 
   return {
     navigation: createMemoryNavigation(),
-    signIn: createSignIn(),
+    signIn: createMemorySignIn(),
     // Not window.confirm -- a real dialog is a browser accident, same
     // category as the URL bar and RxJS this composition root already
     // does without. Always confirming is the essential stand-in: nothing

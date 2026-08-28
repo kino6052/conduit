@@ -33,6 +33,7 @@ export default defineConfig({
         "src/accidents/view/essence/main.ts",
         "src/accidents/view/essential-ui/main.ts",
         "src/accidents/navigation/navigation-hash.ts",
+        "src/accidents/persistence/persistence-local-storage.ts",
       ],
       reporter: ["text", "json-summary"],
     },

@@ -1,7 +1,7 @@
 import { describe, expect, it } from "bun:test";
 import { createInitialState, TArticle, TComment, TState } from "../../../essence/state";
 import { createMemoryNavigation } from "../../navigation/navigation";
-import { createSignIn } from "../../sign-in/sign-in";
+import { createMemorySignIn } from "../../sign-in/sign-in";
 import { createMemoryState } from "../../state-management/state-management";
 import { compileSignInViewModel } from "./sign-in-view-model";
 import { composeApp, TComposeAppDependencies, TView } from "./compose-app";
@@ -49,7 +49,7 @@ function makeDeps(
   confirm: TComposeAppDependencies<TAnyPageProps>["confirm"] = () => true,
 ): TComposeAppDependencies<TAnyPageProps> & { getRealState: () => TState } {
   const navigation = createMemoryNavigation();
-  const signIn = createSignIn();
+  const signIn = createMemorySignIn();
   const stateManagement = createMemoryState(initial);
   return {
     navigation,
