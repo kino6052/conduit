@@ -480,9 +480,35 @@ export function Profile(props: TProfileViewModel) {
     null,
     React.createElement(
       "div",
-      { className: "meta" },
+      { className: "profile-header" },
+      // No <img> at all when there's nothing to show -- same "absent, not
+      // a broken-image placeholder" rule as everywhere else an optional
+      // field is missing (docs/realworld-essence-checklist.md's bio/avatar
+      // correction: these are real fields, but a name that never set one
+      // through Settings simply has none yet).
+      props.avatarUrl
+        ? React.createElement("img", {
+            className: "avatar",
+            src: props.avatarUrl,
+            alt: props.authorName,
+          })
+        : null,
       React.createElement("span", { className: "author" }, props.authorName),
-      React.createElement("button", { className: "btn", onClick: props.onFollowClick }, props.followLabel),
+      props.bio ? React.createElement("p", { className: "bio" }, props.bio) : null,
+      // Following yourself isn't a meaningful action -- your own profile
+      // offers a way to edit it instead, same swap the real spec makes
+      // (docs/spec/pages.md's Profile entry).
+      props.isOwnProfile
+        ? React.createElement(
+            "button",
+            { className: "btn", onClick: props.onEditSettingsClick },
+            "Edit Profile Settings",
+          )
+        : React.createElement(
+            "button",
+            { className: "btn", onClick: props.onFollowClick },
+            props.followLabel,
+          ),
     ),
     React.createElement("h2", null, "Articles"),
     React.createElement(

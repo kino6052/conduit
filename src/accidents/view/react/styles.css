@@ -230,6 +230,31 @@ h2 {
   color: var(--color-border);
 }
 
+/* Profile's own user-info block -- stacked and centered, unlike the
+   horizontal byline row (.meta) reused everywhere an article/comment is
+   attributed. A bigger avatar and the bio underneath the name are what
+   actually distinguish "here's an author" from "here's who wrote this". */
+.profile-header {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 8px;
+  text-align: center;
+  margin-bottom: 24px;
+}
+
+.avatar {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.bio {
+  color: var(--color-text);
+  margin: 0;
+}
+
 /* author names are buttons now (clickable through to a profile page),
    but should still read as plain text, not a button -- reset everything
    a <button> brings with it except the pointer cursor */

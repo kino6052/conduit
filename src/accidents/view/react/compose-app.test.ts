@@ -482,6 +482,46 @@ describe("composeApp", () => {
     expect(deps.navigation.getProfileAuthorName()).toBe("alice");
   });
 
+  it("viewing your own profile flags it as such and can open Settings", () => {
+    const deps = makeDeps(createInitialState());
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "bob",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+    result.profileViewModel?.onEditSettingsClick();
+
+    expect(result.profileViewModel?.isOwnProfile).toBe(true);
+    expect(deps.navigation.getPage()).toBe("settings");
+  });
+
+  it("viewing someone else's profile is not flagged as your own", () => {
+    const deps = makeDeps({ ...createInitialState(), articles: [article] });
+    signInAs(deps, "bob");
+
+    const result = composeApp(
+      deps,
+      {
+        state: deps.getState(),
+        page: "profile",
+        openArticleTitle: null,
+        editingArticleTitle: null,
+        profileAuthorName: "alice",
+      },
+      getCreatedAt,
+    ) as TProfilePageProps;
+
+    expect(result.profileViewModel?.isOwnProfile).toBe(false);
+  });
+
   it("a guest can't reach settings -- sign-in message instead", () => {
     const deps = makeDeps(createInitialState());
 

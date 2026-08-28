@@ -215,6 +215,7 @@ export function composeApp<R>(
             setState,
             navigation.openArticle,
             navigation.openProfile,
+            navigation.openSettings,
           )
         : undefined;
 

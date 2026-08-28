@@ -31,17 +31,85 @@ describe("compileProfileViewModel", () => {
       articles: [alicesArticle, bobsArticle],
     });
 
-    const viewModel = compileProfileViewModel(getState(), "alice", getState, setState, noop, noop);
+    const viewModel = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
 
     expect(viewModel.authorName).toBe("alice");
     expect(viewModel.articlePreviewProps).toHaveLength(1);
     expect(viewModel.articlePreviewProps[0].title).toBe("Real World");
   });
 
+  it("shows the author's bio and avatar, empty if never set", () => {
+    const { getState, setState } = makeState({
+      ...createInitialState(),
+      articles: [alicesArticle],
+      bios: [{ name: "alice", text: "I write about things." }],
+      avatarUrls: [{ name: "alice", url: "https://example.com/alice.png" }],
+    });
+
+    const viewModel = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
+
+    expect(viewModel.bio).toBe("I write about things.");
+    expect(viewModel.avatarUrl).toBe("https://example.com/alice.png");
+  });
+
+  it("isOwnProfile is true only when viewing the acting identity's own profile", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
+
+    const own = compileProfileViewModel(getState(), "you", getState, setState, noop, noop, noop);
+    const someoneElses = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
+
+    expect(own.isOwnProfile).toBe(true);
+    expect(someoneElses.isOwnProfile).toBe(false);
+  });
+
+  it("onEditSettingsClick calls the given onOpenSettings", () => {
+    const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
+    let called = false;
+
+    const viewModel = compileProfileViewModel(getState(), "you", getState, setState, noop, noop, () => {
+      called = true;
+    });
+    viewModel.onEditSettingsClick();
+
+    expect(called).toBe(true);
+  });
+
   it("labels the follow button by whether you follow this author", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
 
-    const viewModel = compileProfileViewModel(getState(), "alice", getState, setState, noop, noop);
+    const viewModel = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
 
     expect(viewModel.followLabel).toBe("Follow");
   });
@@ -53,7 +121,15 @@ describe("compileProfileViewModel", () => {
       followedAuthors: ["alice"],
     });
 
-    const viewModel = compileProfileViewModel(getState(), "alice", getState, setState, noop, noop);
+    const viewModel = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
 
     expect(viewModel.followLabel).toBe("Unfollow");
   });
@@ -61,7 +137,15 @@ describe("compileProfileViewModel", () => {
   it("onFollowClick toggles following this author through essence", () => {
     const { getState, setState } = makeState({ ...createInitialState(), articles: [alicesArticle] });
 
-    const viewModel = compileProfileViewModel(getState(), "alice", getState, setState, noop, noop);
+    const viewModel = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
     viewModel.onFollowClick();
 
     expect(getState().followedAuthors).toEqual(["alice"]);
@@ -81,6 +165,7 @@ describe("compileProfileViewModel", () => {
       setState,
       onOpenArticle,
       noop,
+      noop,
     );
     viewModel.articlePreviewProps[0].onOpenClick();
 
@@ -99,7 +184,15 @@ describe("compileProfileViewModel", () => {
       articles: [alicesArticle, bobsArticle],
     });
 
-    const viewModel = compileProfileViewModel(getState(), "alice", getState, setState, noop, noop);
+    const viewModel = compileProfileViewModel(
+      getState(),
+      "alice",
+      getState,
+      setState,
+      noop,
+      noop,
+      noop,
+    );
 
     expect(viewModel.favoritedArticlePreviewProps).toHaveLength(1);
     expect(viewModel.favoritedArticlePreviewProps[0].title).toBe("Other");
